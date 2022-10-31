@@ -642,7 +642,7 @@ const DetailEditModalForm: FC<Props> = ({detail, isDetailLoading}) => {
             <div className="row">
               <div className='mb-7 col-4'>
                 {/* begin::Label */}
-                <label className='required fw-bold fs-6 mb-2'>Arrived</label>
+                <label className='required fw-bold fs-6 mb-2'>Arrived for loading</label>
                 <input
                   placeholder='load count'
                   {...formik.getFieldProps('loads')}
@@ -720,7 +720,7 @@ const DetailEditModalForm: FC<Props> = ({detail, isDetailLoading}) => {
             <div className="row">
               <div className='mb-7 col-4'>
                 {/* begin::Label */}
-                <label className='required fw-bold fs-6 mb-2'>Arrived</label>
+                <label className='required fw-bold fs-6 mb-2'>Arrived for loading</label>
                 <input
                   placeholder='load count'
                   {...formik.getFieldProps('loads')}
