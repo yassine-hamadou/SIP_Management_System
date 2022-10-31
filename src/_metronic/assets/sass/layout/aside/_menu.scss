@@ -1,0 +1,56 @@
+//
+// Menu
+//
+// Aside menu
+.aside-menu {
+    .menu {
+        // Link padding x
+        @include menu-link-padding-x(get($aside-config, padding-x));
+        // Menu indention
+        @include menu-link-indention(get($aside-config, menu-indention), get($aside-config, padding-x));
+    }
+    // Item
+    .menu-item {
+        padding: 0;
+        // Menu Link
+        .menu-link {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+        // Icon
+        .menu-icon {
+            justify-content: flex-start;
+        }
+    }
+}
+
+// Aside dark theme
+.aside-dark {
+    .hover-scroll-overlay-y {
+        --kt-scrollbar-space: 0.4rem;
+        @include scrollbar-color(get($aside-config, scrollbar-color), get($aside-config, scrollbar-hover-color));
+    }
+    .menu {
+        .menu-item {
+            .menu-section {
+                color: #aaabca !important;
+                margin: 0, 20px, 0, 20px;
+            }
+            //$title-color, $icon-color, $bullet-color, $arrow-color, $bg-color
+            @include menu-link-default-state( #f5f5f5, #fefefe, #fcfcfc, #d0d1e1, );
+            @include menu-link-hover-state( #f2f2f2, var(--kt-primary), var(--kt-primary), #f2f2f2, rgba(63, 66, 84, 0.35));
+            @include menu-link-here-state( #f2f2f2, var(--kt-primary), var(--kt-primary), #f2f2f2, rgba(63, 66, 84, 0.35));
+            @include menu-link-show-state( #f2f2f2, var(--kt-primary), var(--kt-primary), #f2f2f2, rgba(63, 66, 84, 0.35));
+            @include menu-link-active-state( #f2f2f2, var(--kt-primary), var(--kt-primary), #f2f2f2, rgba(63, 66, 84, 0.35));
+        }
+    }
+}
+
+// Aside light theme
+.aside-light {
+    .menu {
+        .menu-title {
+            font-weight: 500;
+        }
+    }
+}
