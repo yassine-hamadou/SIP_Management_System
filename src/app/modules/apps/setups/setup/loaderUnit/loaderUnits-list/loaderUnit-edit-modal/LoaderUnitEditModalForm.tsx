@@ -6,7 +6,7 @@ import {initialLoaderUnit, LoaderUnit} from '../core/_models'
 import clsx from 'clsx'
 import {useListView} from '../core/ListViewProvider'
 import {LoaderUnitsListLoading} from '../components/loading/LoaderUnitsListLoading'
-import {createLoaderUnit, updateLoaderUnit} from '../core/_requests'
+import {createLoaderUnit, } from '../core/_requests'
 import {useQueryResponse} from '../core/QueryResponseProvider'
 
 type Props = {
@@ -33,10 +33,10 @@ const LoaderUnitEditModalForm: FC<Props> = ({LoaderUnit, isLoaderUnitLoading}) =
   const [LoaderUnitForEdit] = useState<LoaderUnit>({
     ...LoaderUnit,
     
-    name: LoaderUnit.name || initialLoaderUnit.name,
-    code: LoaderUnit.code || initialLoaderUnit.code,
+    fleetID: LoaderUnit.fleetID || initialLoaderUnit.fleetID,
+    modlClass: LoaderUnit.modlClass || initialLoaderUnit.modlClass,
     
-    status: LoaderUnit.status || initialLoaderUnit.status,
+    modlName: LoaderUnit.modlName || initialLoaderUnit.modlName,
   })
 
   const cancel = (withRefresh?: boolean) => {
@@ -55,8 +55,8 @@ const LoaderUnitEditModalForm: FC<Props> = ({LoaderUnit, isLoaderUnitLoading}) =
     onSubmit: async (values, {setSubmitting}) => {
       setSubmitting(true)
       try {
-        if (isNotEmpty(values.id)) {
-          await updateLoaderUnit(values)
+        if (isNotEmpty(values.fleetID)) {
+          // await updateLoaderUnit(values)
         } else {
           await createLoaderUnit(values)
         }
@@ -71,7 +71,7 @@ const LoaderUnitEditModalForm: FC<Props> = ({LoaderUnit, isLoaderUnitLoading}) =
 
   return (
     <>
-      <form id='kt_modal_add_bank_form' className='form' onSubmit={formik.handleSubmit} noValidate>
+      <form id='kt_modal_add_loader_form' className='form' onSubmit={formik.handleSubmit} noValidate>
         {/* begin::Scroll */}
         <div
           className='d-flex flex-column scroll-y me-n7 pe-7'
@@ -112,27 +112,54 @@ const LoaderUnitEditModalForm: FC<Props> = ({LoaderUnit, isLoaderUnitLoading}) =
          </div> */}
           <div className='fv-row mb-7'>
            
-           <label className='required fw-bold fs-6 mb-2'>Name</label>
+           <label className='required fw-bold fs-6 mb-2'>Model Name</label>
            
            <input
-             placeholder='name'
-             {...formik.getFieldProps('name')}
+             placeholder='modlName'
+             {...formik.getFieldProps('modlName')}
              type='text'
-             name='name'
+             name='modlName'
              className={clsx(
                'form-control form-control-solid mb-3 mb-lg-0',
-               {'is-invalid': formik.touched.name && formik.errors.name},
+               {'is-invalid': formik.touched.modlName && formik.errors.modlName},
                {
-                 'is-valid': formik.touched.name && !formik.errors.name,
+                 'is-valid': formik.touched.modlName && !formik.errors.modlName,
                }
              )}
              autoComplete='off'
              disabled={formik.isSubmitting || isLoaderUnitLoading}
            />
-           {formik.touched.name && formik.errors.name && (
+           {formik.touched.modlName && formik.errors.modlName && (
              <div className='fv-plugins-message-container'>
                <div className='fv-help-block'>
-                 <span role='alert'>{formik.errors.name}</span>
+                 <span role='alert'>{formik.errors.modlName}</span>
+               </div>
+             </div>
+           )}
+         </div>
+          <div className='fv-row mb-7'>
+           
+           <label className='required fw-bold fs-6 mb-2'>Model Class</label>
+           
+           <input
+             placeholder='modlClass'
+             {...formik.getFieldProps('modlClass')}
+             type='text'
+             name='modlClass'
+             className={clsx(
+               'form-control form-control-solid mb-3 mb-lg-0',
+               {'is-invalid': formik.touched.modlClass && formik.errors.modlClass},
+               {
+                 'is-valid': formik.touched.modlClass && !formik.errors.modlClass,
+               }
+             )}
+             autoComplete='off'
+             disabled={formik.isSubmitting || isLoaderUnitLoading}
+           />
+           {formik.touched.modlClass && formik.errors.modlClass && (
+             <div className='fv-plugins-message-container'>
+               <div className='fv-help-block'>
+                 <span role='alert'>{formik.errors.modlClass}</span>
                </div>
              </div>
            )}

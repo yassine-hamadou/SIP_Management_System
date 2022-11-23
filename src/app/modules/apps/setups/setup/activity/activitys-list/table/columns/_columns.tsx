@@ -15,22 +15,15 @@ const ActivitysColumns: ReadonlyArray<Column<Activity>> = [
     id: 'selection',
     Cell: ({...props}) => <ActivitySelectionCell id={props.data[props.row.index].id} />,
   },
+  // {
+  //   Header: (props) => <ActivityCustomHeader tableProps={props} title='Name' className='min-w-125px' />,
+  //   id: 'name',
+  //   Cell: ({...props}) => <ActivityInfoCell Activity={props.data[props.row.index]} />,
+  // },
+ 
   {
     Header: (props) => <ActivityCustomHeader tableProps={props} title='Name' className='min-w-125px' />,
-    id: 'name',
-    Cell: ({...props}) => <ActivityInfoCell Activity={props.data[props.row.index]} />,
-  },
-  {
-    Header: (props) => <ActivityCustomHeader tableProps={props} title='Salary Grade' className='min-w-125px' />,
-    accessor: 'salaryGrade',
-  },
-  {
-    Header: (props) => <ActivityCustomHeader tableProps={props} title='Annual' className='min-w-125px' />,
-    accessor: 'annual',
-  },
-  {
-    Header: (props) => <ActivityCustomHeader tableProps={props} title='Monthly' className='min-w-125px' />,
-    accessor: 'monthly',
+    accessor: 'name',
   },
   {
     Header: (props) => <ActivityCustomHeader tableProps={props} title='Status' className='min-w-125px' />,

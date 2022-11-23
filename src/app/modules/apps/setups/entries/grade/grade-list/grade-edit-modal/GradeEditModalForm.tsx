@@ -192,79 +192,7 @@ const GradeEditModalForm: FC<Props> = ({grade, isGradeLoading}) => {
               </div>
             )}
           </div> */}
-          <div className="fw-row">
-            <div className="row">
-              <div className='fv-row mb-7 col-6'>
-                {/* begin::Label */}
-                <label className='required fw-bold fs-6 mb-2'>Date</label>
-                {/* <select name="date" id="cars" className={clsx(
-                  'form-control form-control-solid mb-3 mb-lg-0',
-                  {'is-invalid': formik.touched.date && formik.errors.date},
-                  {
-                    'is-valid': formik.touched.date && !formik.errors.date,
-                  }
-                )}>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-
-                
-                
-                </select> */}
-                <input
-                  placeholder='quantity'
-                  {...formik.getFieldProps('email')}
-                  className={clsx(
-                    'form-control form-control-solid mb-3 mb-lg-0',
-                    {'is-invalid': formik.touched.date && formik.errors.date},
-                    {
-                      'is-valid': formik.touched.date && !formik.errors.date,
-                    }
-                  )}
-                  type='date'
-                  
-                  name='quantity'
-                  autoComplete='off'
-                  disabled={formik.isSubmitting || isGradeLoading}
-                />
-                {/* end::Input */}
-                {formik.touched.date && formik.errors.date && (
-                  <div className='fv-plugins-message-container'>
-                    <span role='alert'>{formik.errors.date}</span>
-                  </div>
-                )}
-              </div>
-              <div className='fv-row mb-7 col-6'>
-                {/* begin::Label */}
-                <label className='required fw-bold fs-6 mb-2'>Destination</label>
-                <select name="hauler_unit" id="cars" className={clsx(
-                  'form-control form-control-solid mb-3 mb-lg-0',
-                  {'is-invalid': formik.touched.hauler_unit && formik.errors.hauler_unit},
-                  {
-                    'is-valid': formik.touched.hauler_unit && !formik.errors.hauler_unit,
-                  }
-                )}>
-                  {location.map((item:any)=>(
-                    <option
-                    value={item.locationCode}
-                    key={uuidv4()}
-                  >
-                    {item.locationCode} - {item.locationDesc}
-                    
-                  </option>
-
-                  ))}
-                {/* <option value="inactive">Inactive</option> */}
-                
-              </select>
-            
-                {formik.touched.hauler_unit && formik.errors.hauler_unit && (
-                  <div className='fv-plugins-message-container'>
-                    <span role='alert'>{formik.errors.hauler_unit}</span>
-                  </div>
-                )}
-              </div>
-            </div> 
-            <div className="row">
+          <div className="row">
               <div className='fv-row mb-7 col-6'>
                 {/* begin::Label */}
                 <label className='required fw-bold fs-6 mb-2'>Hauler Unit</label>
@@ -276,7 +204,7 @@ const GradeEditModalForm: FC<Props> = ({grade, isGradeLoading}) => {
                   }
                 )}>
                     {equipment.map((item: any)=>(
-                  <option key={uuidv4()} value={item.fleetID}>{item.fleetID} - {item.modlClass}</option>
+                  <option key={uuidv4()} value={item.fleetID}>{item.fleetID}</option>
                 ))}
                 
                 
@@ -300,7 +228,7 @@ const GradeEditModalForm: FC<Props> = ({grade, isGradeLoading}) => {
                   {/* <option value="active">Active</option>
                   <option value="inactive">Inactive</option> */}
                   {equipment.map((item: any)=>(
-                  <option key={uuidv4()} value={item.fleetID}>{item.fleetID} - {item.modlClass}</option>
+                  <option key={uuidv4()} value={item.fleetID}>{item.modlClass}</option>
                 ))}
                   
                   </select>
@@ -312,6 +240,68 @@ const GradeEditModalForm: FC<Props> = ({grade, isGradeLoading}) => {
                   )}
                 </div>
             </div>
+          <div className="fw-row">
+            <div className="row">
+            <div className='fv-row mb-7 col-6'>
+                {/* begin::Label */}
+                <label className='required fw-bold fs-6 mb-2'>Origin</label>
+                <select name="origin" className={clsx(
+                  'form-control form-control-solid mb-3 mb-lg-0',
+                  {'is-invalid': formik.touched.origin && formik.errors.origin},
+                  {
+                    'is-valid': formik.touched.origin && !formik.errors.origin,
+                  }
+                )}>
+                
+                 {location.map((item:any) => (
+                    <option
+                      value={item.locationCode}
+                      key={uuidv4()}
+                    >
+                   {item.locationDesc}
+                    </option>
+                  ))}
+                
+              </select>
+                {/* end::Input */}
+                {formik.touched.origin && formik.errors.origin && (
+                  <div className='fv-plugins-message-container'>
+                    <span role='alert'>{formik.errors.origin}</span>
+                  </div>
+                )}
+              </div>
+              <div className='fv-row mb-7 col-6'>
+                {/* begin::Label */}
+                <label className='required fw-bold fs-6 mb-2'>Destination</label>
+                <select name="hauler_unit" id="cars" className={clsx(
+                  'form-control form-control-solid mb-3 mb-lg-0',
+                  {'is-invalid': formik.touched.hauler_unit && formik.errors.hauler_unit},
+                  {
+                    'is-valid': formik.touched.hauler_unit && !formik.errors.hauler_unit,
+                  }
+                )}>
+                  {location.map((item:any)=>(
+                    <option
+                    value={item.locationCode}
+                    key={uuidv4()}
+                  >
+                   {item.locationCode}
+                    
+                  </option>
+
+                  ))}
+                {/* <option value="inactive">Inactive</option> */}
+                
+              </select>
+            
+                {formik.touched.hauler_unit && formik.errors.hauler_unit && (
+                  <div className='fv-plugins-message-container'>
+                    <span role='alert'>{formik.errors.hauler_unit}</span>
+                  </div>
+                )}
+              </div>
+            </div> 
+            
             <div className="row">
               <div className='fv-row mb-7 col-6'>
                 <label className='required fw-bold fs-6 mb-2'>Material</label>
@@ -333,32 +323,29 @@ const GradeEditModalForm: FC<Props> = ({grade, isGradeLoading}) => {
                   </div>
                 )}
               </div>
+              
               <div className='fv-row mb-7 col-6'>
                 {/* begin::Label */}
-                <label className='required fw-bold fs-6 mb-2'>Origin</label>
-                <select name="origin" className={clsx(
-                  'form-control form-control-solid mb-3 mb-lg-0',
-                  {'is-invalid': formik.touched.origin && formik.errors.origin},
-                  {
-                    'is-valid': formik.touched.origin && !formik.errors.origin,
-                  }
-                )}>
-                
-                 {location.map((item:any) => (
-                    <option
-                      value={item.locationCode}
-                      key={uuidv4()}
-                    >
-                      {item.locationCode} - {item.locationDesc}
-                      
-                    </option>
-                  ))}
-                
-              </select>
+                <label className='required fw-bold fs-6 mb-2'>Date</label>
+                <input
+                  placeholder='date'
+                  {...formik.getFieldProps('email')}
+                  className={clsx(
+                    'form-control form-control-solid mb-3 mb-lg-0',
+                    {'is-invalid': formik.touched.date && formik.errors.date},
+                    {
+                      'is-valid': formik.touched.date && !formik.errors.date,
+                    }
+                  )}
+                  type='date'
+                  name='date'
+                  autoComplete='off'
+                  disabled={formik.isSubmitting || isGradeLoading}
+                />
                 {/* end::Input */}
-                {formik.touched.origin && formik.errors.origin && (
+                {formik.touched.date && formik.errors.date && (
                   <div className='fv-plugins-message-container'>
-                    <span role='alert'>{formik.errors.origin}</span>
+                    <span role='alert'>{formik.errors.date}</span>
                   </div>
                 )}
               </div>

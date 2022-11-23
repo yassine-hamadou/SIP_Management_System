@@ -1,6 +1,6 @@
 // @ts-nocheck
 import clsx from 'clsx'
-import {FC} from 'react'
+import {FC, useState, useEffect} from 'react'
 import {Row} from 'react-table'
 import {LoaderUnit} from '../../core/_models'
 
@@ -9,6 +9,9 @@ type Props = {
 }
 
 const CustomRow: FC<Props> = ({row}) => (
+
+
+  
   <tr {...row.getRowProps()}>
     {row.cells.map((cell) => {
       return (

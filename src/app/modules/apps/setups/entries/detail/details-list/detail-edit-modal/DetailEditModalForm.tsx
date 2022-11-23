@@ -720,7 +720,7 @@ const DetailEditModalForm: FC<Props> = ({detail, isDetailLoading}) => {
             <div className="row">
               <div className='mb-7 col-4'>
                 {/* begin::Label */}
-                <label className='required fw-bold fs-6 mb-2'>Arrived for loading</label>
+                <label className='required fw-bold fs-6 mb-2'>Arrived for dumping</label>
                 <input
                   placeholder='load count'
                   {...formik.getFieldProps('loads')}
@@ -745,7 +745,7 @@ const DetailEditModalForm: FC<Props> = ({detail, isDetailLoading}) => {
               </div>
               <div className='mb-7 col-4'>
                 {/* begin::Label */}
-                <label className='required fw-bold fs-6 mb-2'>Started loading</label>
+                <label className='required fw-bold fs-6 mb-2'>Started dumping</label>
                 <input
                   placeholder='load count'
                   {...formik.getFieldProps('loads')}
@@ -770,12 +770,170 @@ const DetailEditModalForm: FC<Props> = ({detail, isDetailLoading}) => {
               </div>
               <div className='mb-7 col-4'>
                 {/* begin::Label */}
-                <label className='required fw-bold fs-6 mb-2'>Finished loading</label>
+                <label className='required fw-bold fs-6 mb-2'>Finished dumping</label>
                 <input
                   placeholder='load count'
                   {...formik.getFieldProps('loads')}
                   type='time'
                   name='loads'
+                  className={clsx(
+                    'form-control form-control-solid mb-3 mb-lg-0',
+                    {'is-invalid': formik.touched.loads && formik.errors.loads},
+                    {
+                      'is-valid': formik.touched.loads && !formik.errors.loads,
+                    }
+                  )}
+                  autoComplete='off'
+                  disabled={formik.isSubmitting || isDetailLoading}
+                />
+                  {/* end::Input */}
+                  {formik.touched.loads && formik.errors.loads && (
+                    <div className='fv-plugins-message-container'>
+                      <span role='alert'>{formik.errors.loads}</span>
+                    </div>
+                  )}
+              </div>
+              
+            </div>
+            <label className='fw-bold fs-6 mb-5'>Loader</label>
+            <div className="row border border-dark">
+              <div className='mb-7 col-4'>
+                {/* begin::Label */}
+                <label className='required fw-bold fs-6 mb-2'>Queue Duration</label>
+                <input
+                  placeholder='queue'
+                  {...formik.getFieldProps('loads')}
+                  type='text'
+                  name='loads'
+                  className={clsx(
+                    'form-control form-control-solid mb-3 mb-lg-0',
+                    {'is-invalid': formik.touched.loads && formik.errors.loads},
+                    {
+                      'is-valid': formik.touched.loads && !formik.errors.loads,
+                    }
+                  )}
+                  autoComplete='off'
+                  disabled={formik.isSubmitting || isDetailLoading}
+                />
+                  {/* end::Input */}
+                  {formik.touched.loads && formik.errors.loads && (
+                    <div className='fv-plugins-message-container'>
+                      <span role='alert'>{formik.errors.loads}</span>
+                    </div>
+                  )}
+              </div>
+              <div className='mb-7 col-4'>
+                {/* begin::Label */}
+                <label className='required fw-bold fs-6 mb-2'>Spot Duration</label>
+                <input
+                  placeholder='spot'
+                  {...formik.getFieldProps('loads')}
+                  type='text'
+                  name='loads'
+                  className={clsx(
+                    'form-control form-control-solid mb-3 mb-lg-0',
+                    {'is-invalid': formik.touched.loads && formik.errors.loads},
+                    {
+                      'is-valid': formik.touched.loads && !formik.errors.loads,
+                    }
+                  )}
+                  autoComplete='off'
+                  disabled={formik.isSubmitting || isDetailLoading}
+                />
+                  {/* end::Input */}
+                  {formik.touched.loads && formik.errors.loads && (
+                    <div className='fv-plugins-message-container'>
+                      <span role='alert'>{formik.errors.loads}</span>
+                    </div>
+                  )}
+              </div>
+              <div className='mb-7 col-4'> 
+                {/* begin::Label */}
+                <label className='required fw-bold fs-6 mb-2'>Loading Duration</label>
+                <input
+                  placeholder='loading'
+                  {...formik.getFieldProps('loads')}
+                  type='text'
+                  name='loads'
+                  className={clsx(
+                    'form-control form-control-solid mb-3 mb-lg-0',
+                    {'is-invalid': formik.touched.loads && formik.errors.loads},
+                    {
+                      'is-valid': formik.touched.loads && !formik.errors.loads,
+                    }
+                  )}
+                  autoComplete='off'
+                  disabled={formik.isSubmitting || isDetailLoading}
+                />
+                  {/* end::Input */}
+                  {formik.touched.loads && formik.errors.loads && (
+                    <div className='fv-plugins-message-container'>
+                      <span role='alert'>{formik.errors.loads}</span>
+                    </div>
+                  )}
+              </div>
+              
+            </div>
+            <label className='fw-bold fs-6 mb-5'>Destination</label>
+            <div className="row">
+              <div className='mb-7 col-4'>
+                {/* begin::Label */}
+                <label className='required fw-bold fs-6 mb-2'>Queue Duration</label>
+                <input
+                  placeholder='queue'
+                  {...formik.getFieldProps('loads')}
+                  type='text'
+                  name='queue'
+                  className={clsx(
+                    'form-control form-control-solid mb-3 mb-lg-0',
+                    {'is-invalid': formik.touched.loads && formik.errors.loads},
+                    {
+                      'is-valid': formik.touched.loads && !formik.errors.loads,
+                    }
+                  )}
+                  autoComplete='off'
+                  disabled={formik.isSubmitting || isDetailLoading}
+                />
+                  {/* end::Input */}
+                  {formik.touched.loads && formik.errors.loads && (
+                    <div className='fv-plugins-message-container'>
+                      <span role='alert'>{formik.errors.loads}</span>
+                    </div>
+                  )}
+              </div>
+              <div className='mb-7 col-4'>
+                {/* begin::Label */}
+                <label className='required fw-bold fs-6 mb-2'>Spot Duration</label>
+                <input
+                  placeholder='spot'
+                  {...formik.getFieldProps('loads')}
+                  type='text'
+                  name='spot'
+                  className={clsx(
+                    'form-control form-control-solid mb-3 mb-lg-0',
+                    {'is-invalid': formik.touched.loads && formik.errors.loads},
+                    {
+                      'is-valid': formik.touched.loads && !formik.errors.loads,
+                    }
+                  )}
+                  autoComplete='off'
+                  disabled={formik.isSubmitting || isDetailLoading}
+                />
+                  {/* end::Input */}
+                  {formik.touched.loads && formik.errors.loads && (
+                    <div className='fv-plugins-message-container'>
+                      <span role='alert'>{formik.errors.loads}</span>
+                    </div>
+                  )}
+              </div>
+              <div className='mb-7 col-4'> 
+                {/* begin::Label */}
+                <label className='required fw-bold fs-6 mb-2'>Loading Duration</label>
+                <input
+                  placeholder='loading'
+                  {...formik.getFieldProps('loads')}
+                  type='text'
+                  name='loading'
                   className={clsx(
                     'form-control form-control-solid mb-3 mb-lg-0',
                     {'is-invalid': formik.touched.loads && formik.errors.loads},

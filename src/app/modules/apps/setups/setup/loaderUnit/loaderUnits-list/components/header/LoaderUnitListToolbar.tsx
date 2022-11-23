@@ -9,7 +9,7 @@ const LoaderUnitsListToolbar = () => {
   }
 
   return (
-    <div className='d-flex justify-content-end' data-kt-User-table-toolbar='base'>
+    <div className='d-flex justify-content-end' data-kt-loaderunit-table-toolbar='base'>
       {/* <BanksListFilter /> */}
 
       {/* begin::Export */}
