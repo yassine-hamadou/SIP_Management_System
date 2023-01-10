@@ -23,7 +23,7 @@ import ShiftsPage from '../modules/apps/setups/setup/shift/ShiftsPage'
 import DetailsPage from '../modules/apps/setups/entries/detail/DetailsPage'
 import GradesPage from '../modules/apps/setups/entries/grade/GradePage'
 import PlansPage from '../modules/apps/setups/entries/plan/PlansPage'
-import TestReport from '../modules/apps/testReport'
+import TestReport from '../modules/apps/repports/testReport'
 
 
 const PrivateRoutes = () => {
@@ -40,6 +40,7 @@ const PrivateRoutes = () => {
         {/* Redirect to Dashboard after success login/registartion */}
         <Route path='auth/*' element={<Navigate to='/dashboard' />} />
         {/* Pages */}
+        <Route path='/*' element={<DashboardWrapper />} />
         <Route path='dashboard' element={<DashboardWrapper />} />
         <Route path='builder' element={<BuilderPageWrapper />} />
         <Route path='menu-test' element={<MenuTestPage />} />
@@ -54,7 +55,7 @@ const PrivateRoutes = () => {
         />
 
         <Route
-          path='apps/*'
+          path='apps/reports/*'
           element={
             <SuspensedView>
               <TestReport />

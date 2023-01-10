@@ -1,6 +1,7 @@
 import {Route, Routes, Outlet, Navigate} from 'react-router-dom'
 import {PageLink, PageTitle} from '../../../../../../_metronic/layout/core'
 import {GradeListWrapper} from './grade-list/GradeList'
+import { NewGrade } from './NewGrade'
 
 const gradeBreadcrumbs: Array<PageLink> = [
   {
@@ -27,6 +28,7 @@ const GradesPage = () => {
             <>
               <PageTitle breadcrumbs={gradeBreadcrumbs}>All Grade</PageTitle>
               <GradeListWrapper />
+              {/* <NewGrade/> */}
             </>
           }
         />

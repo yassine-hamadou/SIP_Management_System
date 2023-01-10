@@ -16,17 +16,21 @@ const loaderUnitsColumns: ReadonlyArray<Column<LoaderUnit>> = [
     Cell: ({...props}) => <LoaderUnitSelectionCell id={props.data[props.row.index].id} />,
   },
   {
-    Header: (props) => <LoaderUnitCustomHeader tableProps={props} title='Code' className='min-w-125px' />,
-    id: 'code',
-    Cell: ({...props}) => <LoaderUnitInfoCell loaderUnit={props.data[props.row.index]} />,
+    Header: (props) => <LoaderUnitCustomHeader tableProps={props} title='Id' className='min-w-125px' />,
+    id: 'entryId',
+    accessor: "entryId"
+  },
+  // {
+  //   Header: (props) => <LoaderUnitCustomHeader tableProps={props} title='fleet ID' className='min-w-125px' />,
+  //   accessor: 'fleetID',
+  // },
+  {
+    Header: (props) => <LoaderUnitCustomHeader tableProps={props} title='custodian' className='min-w-125px' />,
+    accessor: 'email',
   },
   {
-    Header: (props) => <LoaderUnitCustomHeader tableProps={props} title='Name' className='min-w-125px' />,
-    accessor: 'name',
-  },
-  {
-    Header: (props) => <LoaderUnitCustomHeader tableProps={props} title='Status' className='min-w-125px' />,
-    accessor: 'status',
+    Header: (props) => <LoaderUnitCustomHeader tableProps={props} title='Model class' className='min-w-125px' />,
+    accessor: 'position',
   },
   // {
   //   Header: (props) => (
@@ -53,8 +57,26 @@ const loaderUnitsColumns: ReadonlyArray<Column<LoaderUnit>> = [
       <LoaderUnitCustomHeader tableProps={props} title='Actions' className='text-end min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({...props}) => <LoaderUnitActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({...props}) => <LoaderUnitActionsCell fleetID={props.data[props.row.index].fleetID} />,
   },
 ]
 
+
+// const loaderUnitsColumns=[
+//   {
+//     Header:'Fleet ID',
+//     accessor:'fleetID',
+   
+//   },
+//   {
+//     Header:'Model Name',
+//     accessor:'modlName',
+   
+//   },
+//   {
+//     Header:'Model Class',
+//     accessor:'modlClass',
+   
+//   }
+// ]
 export {loaderUnitsColumns}

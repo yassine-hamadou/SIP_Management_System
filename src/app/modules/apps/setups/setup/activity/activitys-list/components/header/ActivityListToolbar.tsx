@@ -22,7 +22,7 @@ const ActivitysListToolbar = () => {
       {/* begin::Add Activity */}
       <button type='button' className='btn btn-primary' onClick={openAddActivityModal}>
         <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-        Add Activity
+        Add New
       </button>
       {/* end::Add user */}
     </div>

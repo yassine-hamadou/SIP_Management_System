@@ -9,7 +9,7 @@ const GradeListToolbar = () => {
   }
 
   return (
-    <div className='d-flex justify-content-end' data-kt-User-table-toolbar='base'>
+    <div className='d-flex justify-content-end' data-kt-grade-table-toolbar='base'>
       {/* <GradeListFilter /> */}
 
       {/* begin::Export */}

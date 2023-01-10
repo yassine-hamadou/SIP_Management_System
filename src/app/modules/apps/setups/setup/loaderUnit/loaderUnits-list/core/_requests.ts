@@ -2,9 +2,12 @@ import axios, {AxiosResponse} from 'axios'
 import {ID, Response} from '../../../../../../../../_metronic/helpers'
 import {LoaderUnitsQueryResponse, LoaderUnit} from './_models'
 
-const API_URL = process.env.REACT_APP_THEME_API_URL
-const LOADERUNIT_URL = `${API_URL}/user`
-const GET_LOADERUNITS_URL = `${API_URL}/users/query`
+// const API_URL = process.env.REACT_APP_THEME_API_URL
+// const API_URL = "https://cors-anywhere.herokuapp.com/https://app.sipconsult.net/Api/api/"
+// const API_URL = "https://cors-anywhere.herokuapp.com/http://208.117.44.15/SmWebApi/api/"
+const API_URL = "https://cors-anywhere.herokuapp.com/https://preview.keenthemes.com/theme-api/api/"
+const LOADERUNIT_URL = `${API_URL}/FaultEntriesApi`
+const GET_LOADERUNITS_URL = `${API_URL}/users/query` 
 
 const getLoaderUnits = (query: string): Promise<LoaderUnitsQueryResponse> => {
   return axios

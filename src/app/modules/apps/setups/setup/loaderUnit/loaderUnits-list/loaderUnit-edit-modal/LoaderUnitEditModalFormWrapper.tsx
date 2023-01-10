@@ -27,7 +27,7 @@ const LoaderUnitEditModalFormWrapper = () => {
   )
 
   if (!itemIdForUpdate) {
-    return <LoaderUnitEditModalForm isLoaderUnitLoading={isLoading} LoaderUnit={{id: undefined}} />
+    return <LoaderUnitEditModalForm isLoaderUnitLoading={isLoading} LoaderUnit={{fleetID: undefined}} />
   }
 
   if (!isLoading && !error && LoaderUnit) {

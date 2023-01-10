@@ -114,7 +114,7 @@ const ActivityEditModalForm: FC<Props> = ({activity, isActivityLoading}) => {
             )}
             
           </div>
-          <div className='fv-row mb-7'>
+          {/* <div className='fv-row mb-7'>
             <label className='required fw-bold fs-6 mb-2'>Salary Grade</label>
            
             <select name="cars" id="cars" className={clsx(
@@ -135,9 +135,9 @@ const ActivityEditModalForm: FC<Props> = ({activity, isActivityLoading}) => {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
 
-          <div className='fv-row mb-7'>
+          {/* <div className='fv-row mb-7'>
             <label className='required fw-bold fs-6 mb-2'>Annual Salary</label>
             <input
               placeholder='annual'
@@ -186,7 +186,7 @@ const ActivityEditModalForm: FC<Props> = ({activity, isActivityLoading}) => {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
           <div className='fv-row mb-7'>
             <label className=' fw-bold fs-6 mb-2'>Status</label>
             

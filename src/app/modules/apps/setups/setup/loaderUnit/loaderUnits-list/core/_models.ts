@@ -1,9 +1,14 @@
 import {ID, Response} from '../../../../../../../../_metronic/helpers'
 export type LoaderUnit = {
-  id?: ID
-  name?: string
-  code?: string
-  status?: string
+  fleetID?: string
+  modlName?: string
+  modlClass?: string
+  vmClass?: string
+  custodian?: string
+  id?:ID
+  productId?:number
+  locationId?:number
+
   
   initials?: {
     label: string
@@ -14,7 +19,7 @@ export type LoaderUnit = {
 export type LoaderUnitsQueryResponse = Response<Array<LoaderUnit>>
 
 export const initialLoaderUnit: LoaderUnit = {
-  name: '',
-  code: '',
-  status: '',
+  // name: '',
+  // code: '',
+  // status: '',
 }

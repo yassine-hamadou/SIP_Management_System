@@ -3,12 +3,12 @@ import {ID} from '../../../../../../../../../_metronic/helpers'
 import {useListView} from '../../core/ListViewProvider'
 
 type Props = {
-  id: ID
+  fleetID: ID
 }
 
-const LoaderUnitSelectionCell: FC<Props> = ({id}) => {
+const LoaderUnitSelectionCell: FC<Props> = ({fleetID}) => {
   const {selected, onSelect} = useListView()
-  const isSelected = useMemo(() => selected.includes(id), [id, selected])
+  const isSelected = useMemo(() => selected.includes(fleetID), [fleetID, selected])
   return (
     <div className='form-check form-check-custom form-check-solid'>
       <input
@@ -17,7 +17,7 @@ const LoaderUnitSelectionCell: FC<Props> = ({id}) => {
         data-kt-check={isSelected}
         data-kt-check-target='#kt_table_loaderunits .form-check-input'
         checked={isSelected}
-        onChange={() => onSelect(id)}
+        onChange={() => onSelect(fleetID)}
       />
     </div>
   )

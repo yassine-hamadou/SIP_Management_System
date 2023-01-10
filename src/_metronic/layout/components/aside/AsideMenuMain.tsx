@@ -50,7 +50,8 @@ export function AsideMenuMain() {
       {/** Setup starts here**/}
       <AsideMenuItemWithSub to='/crafted/setup/' icon='/media/icons/custom/settings.svg' title='SetUp' hasBullet={false} >
         <AsideMenuItem to='/apps/setups/setup/activity/activitys' title='Activity' hasBullet={true} />
-        <AsideMenuItem to='/apps/setups/setup/destination/destinations' title='Destination' hasBullet={true} />
+        <AsideMenuItem to='/apps/setups/setup/loaderUnit/loaderUnits' title='Units' hasBullet={true} />
+        {/* <AsideMenuItem to='/apps/setups/setup/destination/destinations' title='Destination' hasBullet={true} />
         <AsideMenuItemWithSub to='/crafted/setup/'  title='Hauler' hasBullet={true} >
           <AsideMenuItem to='/apps/setups/setup/haulerUnit/haulerUnits' title='Units' hasBullet={true} />
           <AsideMenuItem to='/apps/setups/setup/haulerOperator/haulerOperators' title='Operators' hasBullet={true} />
@@ -64,7 +65,7 @@ export function AsideMenuMain() {
           <AsideMenuItem to='/apps/setups/setup/processed/processeds' title='Processed' hasBullet={true} />
         </AsideMenuItemWithSub>
         <AsideMenuItem to='/apps/setups/setup/mineArea/mineAreas' title='Mine Area' hasBullet={true} />
-        <AsideMenuItem to='/apps/setups/setup/origin/origins' title='Origin ' hasBullet={true} />
+        <AsideMenuItem to='/apps/setups/setup/origin/origins' title='Origin ' hasBullet={true} /> */}
         <AsideMenuItem to='/apps/setups/setup/shift/shifts' title='Shift' hasBullet={true} />
       </AsideMenuItemWithSub>
       

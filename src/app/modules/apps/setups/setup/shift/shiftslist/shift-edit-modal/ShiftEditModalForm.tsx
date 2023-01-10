@@ -81,8 +81,8 @@ const ShiftEditModalForm: FC<Props> = ({shift, isShiftLoading}) => {
           data-kt-scroll-wrappers='#kt_modal_add_user_scroll'
           data-kt-scroll-offset='300px'
         >
-          <div className='fv-row mb-7'>
-            {/* begin::Label */}
+          {/* <div className='fv-row mb-7'>
+            
             <label className='required fw-bold fs-6 mb-2'>Code</label>
             <input
               placeholder='code'
@@ -106,8 +106,8 @@ const ShiftEditModalForm: FC<Props> = ({shift, isShiftLoading}) => {
                 </div>
               </div>
             )}
-            {/* end::Input */}
-          </div>
+       
+          </div> */}
           <div className='fv-row mb-7'>
             {/* begin::Label */}
             <label className='required fw-bold fs-6 mb-2'>Name</label>

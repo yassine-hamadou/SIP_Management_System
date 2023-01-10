@@ -15,11 +15,11 @@ const ShiftsColumns: ReadonlyArray<Column<Shift>> = [
   //   id: 'selection',
   //   Cell: ({...props}) => <ShiftSelectionCell id={props.data[props.row.index].id} />,
   // },
-  {
-    Header: (props) => <ShiftCustomHeader tableProps={props} title='Code' className='min-w-125px' />,
-    id: 'code',
-    Cell: ({...props}) => <ShiftInfoCell shift={props.data[props.row.index]} />,
-  },
+  // {
+  //   Header: (props) => <ShiftCustomHeader tableProps={props} title='Code' className='min-w-125px' />,
+  //   id: 'code',
+  //   Cell: ({...props}) => <ShiftInfoCell shift={props.data[props.row.index]} />,
+  // },
   {
     Header: (props) => <ShiftCustomHeader tableProps={props} title='Name' className='min-w-125px' />,
     accessor: 'name',

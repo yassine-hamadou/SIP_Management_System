@@ -11,30 +11,30 @@ type Props = {
   tableProps: PropsWithChildren<HeaderProps<LoaderUnit>>
 }
 const LoaderUnitCustomHeader: FC<Props> = ({className, title, tableProps}) => {
-  const id = tableProps.column.id
+  const fleetID = tableProps.column.id
   const {state, updateState} = useQueryRequest()
 
   const isSelectedForSorting = useMemo(() => {
-    return state.sort && state.sort === id
-  }, [state, id])
+    return state.sort && state.sort === fleetID
+  }, [state, fleetID])
   const order: 'asc' | 'desc' | undefined = useMemo(() => state.order, [state])
 
   const sortColumn = () => {
     // avoid sorting for these columns
-    if (id === 'actions' || id === 'selection') {
+    if (fleetID === 'actions' || fleetID === 'selection') {
       return
     }
 
     if (!isSelectedForSorting) {
       // enable sort asc
-      updateState({sort: id, order: 'asc', ...initialQueryState})
+      updateState({sort: fleetID, order: 'asc', ...initialQueryState})
       return
     }
 
     if (isSelectedForSorting && order !== undefined) {
       if (order === 'asc') {
         // enable sort desc
-        updateState({sort: id, order: 'desc', ...initialQueryState})
+        updateState({sort: fleetID, order: 'desc', ...initialQueryState})
         return
       }
 

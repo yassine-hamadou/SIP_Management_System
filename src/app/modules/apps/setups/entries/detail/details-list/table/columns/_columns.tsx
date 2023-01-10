@@ -15,14 +15,42 @@ const detailsColumns: ReadonlyArray<Column<Detail>> = [
   //   id: 'selection',
   //   Cell: ({...props}) => <DetailSelectionCell id={props.data[props.row.index].id} />,
   // },
+  
   {
-    Header: (props) => <DetailCustomHeader tableProps={props} title='Name' className='min-w-125px border-end border-top' />,
-    id: 'name',
-    Cell: ({...props}) => <DetailInfoCell detail={props.data[props.row.index]} />,
+    Header: (props) => <DetailCustomHeader tableProps={props} title='Date' className='min-w-125px border-end border-top' />,
+    accessor: 'date',
   },
   {
-    Header: (props) => <DetailCustomHeader tableProps={props} title='Role' className='min-w-125px border-end border-top' />,
-    accessor: 'role',
+    Header: (props) => <DetailCustomHeader tableProps={props} title='Shift' className='min-w-125px border-end border-top' />,
+    accessor: 'shift',
+  },
+  {
+    Header: (props) => <DetailCustomHeader tableProps={props} title='Loader' className='min-w-125px border-end border-top' />,
+    accessor: 'loader',
+  },
+  {
+    Header: (props) => <DetailCustomHeader tableProps={props} title='L-Unit' className='min-w-125px border-end border-top' />,
+    accessor: 'l_unit',
+  },
+  {
+    Header: (props) => <DetailCustomHeader tableProps={props} title='Hauler' className='min-w-125px border-end border-top' />,
+    accessor: 'hauler',
+  },
+  {
+    Header: (props) => <DetailCustomHeader tableProps={props} title='H-Unit' className='min-w-125px border-end border-top' />,
+    accessor: 'h_unit',
+  },
+  {
+    Header: (props) => <DetailCustomHeader tableProps={props} title='Start time' className='min-w-125px border-end border-top' />,
+    accessor: 'stime',
+  },
+  {
+    Header: (props) => <DetailCustomHeader tableProps={props} title='Finish time' className='min-w-125px border-end border-top' />,
+    accessor: 'ftime',
+  },
+  {
+    Header: (props) => <DetailCustomHeader tableProps={props} title='Duration' className='min-w-125px border-end border-top' />,
+    accessor: 'duration',
   },
   // {
   //   Header: (props) => (
@@ -38,12 +66,12 @@ const detailsColumns: ReadonlyArray<Column<Detail>> = [
   //   id: 'two_steps',
   //   Cell: ({...props}) => <DetailTwoStepsCell two_steps={props.data[props.row.index].two_steps} />,
   // },
-  {
-    Header: (props) => (
-      <DetailCustomHeader tableProps={props} title='Joined day' className='min-w-125px border-end border-top' />
-    ),
-    accessor: 'joined_day',
-  },
+  // {
+  //   Header: (props) => (
+  //     <DetailCustomHeader tableProps={props} title='Joined day' className='min-w-125px border-end border-top' />
+  //   ),
+  //   accessor: 'joined_day',
+  // },
   {
     Header: (props) => (
       <DetailCustomHeader tableProps={props} title='Actions' className='text-center min-w-100px border-top' />
