@@ -37,8 +37,6 @@ const AsideMenuItem: FC<Props & WithChildren> = ({
         {icon && aside.menuIcon === 'svg' && (
           <span className='menu-icon'>
             <KTSVG path={icon} className='svg-icon-2' />
-            {/* <i  className="bi bi-people fs-2"></i> */}
-
           </span>
         )}
         {fontIcon && aside.menuIcon === 'font' && <i className={clsx('bi fs-3', fontIcon)}></i>}

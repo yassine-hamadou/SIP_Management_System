@@ -5,7 +5,7 @@ import {Field, ErrorMessage} from 'formik'
 const Step2: FC = () => {
   return (
     <div className='w-100'>
-      {/* <div className='pb-10 pb-lg-15'>
+      <div className='pb-10 pb-lg-15'>
         <h2 className='fw-bolder text-dark'>Account Info</h2>
 
         <div className='text-gray-400 fw-bold fs-6'>
@@ -199,78 +199,7 @@ const Step2: FC = () => {
             </span>
           </label>
         </div>
-      </div> */}
-
-     
-      
-      <div className='fv-row'>
-        <div className='row'>
-            <div className='fv-row mb-10 col-lg-6'>
-              <label className='form-label required '>Phone Number</label>
-
-              <Field name='accountName' className='form-control form-control-lg form-control-solid' />
-              <div className='text-danger mt-2'>
-                <ErrorMessage name='accountName' />
-              </div>
-            </div>
-            <div className='fv-row mb-10 col-lg-6'>
-              <label className='form-label '>Alternative Phone number</label>
-
-              <Field name='altPhoneNumber' className='form-control form-control-lg form-control-solid' />
-              <div className='text-danger mt-2'>
-                <ErrorMessage name='altPhoneNumber' />
-              </div>
-            </div>
-            <div className='fv-row mb-10 col-lg-6'>
-              <label className='form-label required'>Address</label>
-
-              <Field name='address' className='form-control form-control-lg form-control-solid' />
-              <div className='text-danger mt-2'>
-                <ErrorMessage name='address' />
-              </div>
-            </div>
-            <div className='fv-row mb-10 col-lg-6'>
-              <label className='form-label required'>Residential Address</label>
-
-              <Field name='residentialAddress' className='form-control form-control-lg form-control-solid' />
-              <div className='text-danger mt-2'>
-                <ErrorMessage name='residentialAddress' />
-              </div>
-            </div>
-            <div className='fv-row mb-10 col-lg-6'>
-              <label className='form-label required'>Email</label>
-
-              <Field name='email' className='form-control form-control-lg form-control-solid' />
-              <div className='text-danger mt-2'>
-                <ErrorMessage name='email' />
-              </div>
-            </div>
-            <div className='fv-row mb-10 col-lg-6'>
-              <label className='form-label required'>Personal Email</label>
-
-              <Field name='personalEmail' className='form-control form-control-lg form-control-solid' />
-              <div className='text-danger mt-2'>
-                <ErrorMessage name='personalEmail' />
-              </div>
-            </div>
-            <div className='fv-row mb-10 col-lg-6'>
-              <label className='form-label required'>Next of kin</label>
-
-              <Field name='personalEmail' className='form-control form-control-lg form-control-solid' />
-              <div className='text-danger mt-2'>
-                <ErrorMessage name='personalEmail' />
-              </div>
-            </div>
-            <div className='fv-row mb-10 col-lg-6'>
-              <label className='form-label required'>Guarantor</label>
-
-              <Field name='personalEmail' className='form-control form-control-lg form-control-solid' />
-              <div className='text-danger mt-2'>
-                <ErrorMessage name='personalEmail' />
-              </div>
-            </div>
-          </div>
-        </div>
+      </div>
     </div>
   )
 }

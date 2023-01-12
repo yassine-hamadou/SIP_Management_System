@@ -46,16 +46,17 @@ const DefaultTitle: FC = () => {
                   })}
                   key={`${item.path}${index}`}
                 >
-                  {!item.isSeparator ? (
+                  {!item.isSeparator && (
                     <Link className='text-muted text-hover-primary' to={item.path}>
                       {item.title}
                     </Link>
-                  ) : (
-                    <span className='bullet bg-gray-200 w-5px h-2px'></span>
                   )}
+                  {/*: (*/}
+                  {/*  <span className='bullet bg-gray-200 w-5px h-2px'></span>*/}
+                  {/*)}*/}
                 </li>
               ))}
-              <li className='breadcrumb-item text-dark'>{pageTitle}</li>
+              {/*<li className='breadcrumb-item text-dark'>{pageTitle}</li>*/}
             </ul>
           </>
         )}

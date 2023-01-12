@@ -5,135 +5,7 @@ import {Field, ErrorMessage} from 'formik'
 const Step4: FC = () => {
   return (
     <div className='w-100'>
-       <div className='fv-row'>
-        <div className='row'>
-        <div className='fv-row mb-10 col-6'>
-            <label className='form-label required'>Salary Type</label>
-
-            <Field
-              as='select'
-              name='businessType'
-              className='form-select form-select-lg form-select-solid'
-            >
-              <option></option>
-              
-              <option value='1'>Corporation</option>
-              <option value='2'>Sole Proprietorship</option>
-              <option value='3'>Non-profit</option>
-              <option value='4'>Limited Liability</option>
-              <option value='5'>General Partnership</option>
-            </Field>
-            <div className='text-danger mt-2'>
-              <ErrorMessage name='businessType' />
-            </div>
-          </div>
-          <div className='fv-row mb-10 col-6'>
-            <label className='form-label required'>Payment Method</label>
-
-            <Field
-              as='select'
-              name='businessType'
-              className='form-select form-select-lg form-select-solid'
-            >
-              <option></option>
-              
-              <option value='3'>C Corporation</option>
-              <option value='2'>Sole Proprietorship</option>
-              <option value='1'>Non-profit</option>
-              <option value='4'>Limited Liability</option>
-              <option value='5'>General Partnership</option>
-            </Field>
-            <div className='text-danger mt-2'>
-              <ErrorMessage name='businessType' />
-            </div>
-          </div>
-          <div className='fv-row mb-10 col-6'>
-            <label className='form-label required'>Bank</label>
-
-            <Field
-              as='select'
-              name='businessType'
-              className='form-select form-select-lg form-select-solid'
-            >
-              <option></option>
-              
-              <option value='3'>C Corporation</option>
-              <option value='2'>Sole Proprietorship</option>
-              <option value='1'>Non-profit</option>
-              <option value='4'>Limited Liability</option>
-              <option value='5'>General Partnership</option>
-            </Field>
-            <div className='text-danger mt-2'>
-              <ErrorMessage name='businessType' />
-            </div>
-          </div>
-          <div className='fv-row mb-10 col-lg-6'>
-            <label className='form-label required'>Account</label>
-
-            <Field name='basicSalary' className='form-control form-control-lg form-control-solid' />
-            <div className='text-danger mt-2'>
-              <ErrorMessage name='basicSalary' />
-            </div>
-          </div>
-          <div className='fv-row mb-10 col-6'>
-            <label className='form-label required'>SSF</label>
-
-            <Field
-              as='select'
-              name='businessType'
-              className='form-select form-select-lg form-select-solid'
-            >
-              <option></option>
-              
-              <option value='3'>C Corporation</option>
-              <option value='2'>Sole Proprietorship</option>
-              <option value='1'>Non-profit</option>
-              <option value='4'>Limited Liability</option>
-              <option value='5'>General Partnership</option>
-            </Field>
-            <div className='text-danger mt-2'>
-              <ErrorMessage name='businessType' />
-            </div>
-          </div>
-          <div className='fv-row mb-10 col-lg-6'>
-            <label className='form-label required'>SSN</label>
-
-            <Field name='basicSalary' className='form-control form-control-lg form-control-solid' />
-            <div className='text-danger mt-2'>
-              <ErrorMessage name='basicSalary' />
-            </div>
-          </div>
-          <div className='fv-row mb-10 col-6'>
-            <label className='form-label required'>TAX</label>
-
-            <Field
-              as='select'
-              name='businessType'
-              className='form-select form-select-lg form-select-solid'
-            >
-              <option></option>
-              
-              <option value='3'>C Corporation</option>
-              <option value='2'>Sole Proprietorship</option>
-              <option value='1'>Non-profit</option>
-              <option value='4'>Limited Liability</option>
-              <option value='5'>General Partnership</option>
-            </Field>
-            <div className='text-danger mt-2'>
-              <ErrorMessage name='businessType' />
-            </div>
-          </div>
-          <div className='fv-row mb-10 col-lg-6'>
-            <label className='form-label required'>TIN</label>
-
-            <Field name='basicSalary' className='form-control form-control-lg form-control-solid' />
-            <div className='text-danger mt-2'>
-              <ErrorMessage name='basicSalary' />
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* <div className='pb-10 pb-lg-15'>
+      <div className='pb-10 pb-lg-15'>
         <h2 className='fw-bolder text-dark'>Billing Details</h2>
 
         <div className='text-gray-400 fw-bold fs-6'>
@@ -287,7 +159,7 @@ const Step4: FC = () => {
           <Field className='form-check-input' type='checkbox' value='1' checked={true} />
           <span className='form-check-label fw-bold text-gray-400'>Save Card</span>
         </label>
-      </div> */}
+      </div>
     </div>
   )
 }

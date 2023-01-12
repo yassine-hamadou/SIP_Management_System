@@ -102,7 +102,7 @@ export class LayoutSetup {
       document.body.classList.add(config.main.body.class)
     }
 
-    // if (config.loader.display) {
+    // if (config.unit.display) {
     //   document.body.classList.add('page-loading')
     //   document.body.classList.add('page-loading-enabled')
     // }
@@ -140,7 +140,7 @@ export class LayoutSetup {
       document.body.classList.add('toolbar-tablet-and-mobile-fixed')
     }
 
-    // Height setup
+    // Height activity
     const type = config.layout
     const typeOptions = config.layouts[type]
     if (typeOptions) {

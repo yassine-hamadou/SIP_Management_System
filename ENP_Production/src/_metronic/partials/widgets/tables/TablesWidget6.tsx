@@ -52,7 +52,7 @@ const TablesWidget6: React.FC<Props> = ({className}) => {
       <div className='card-body py-3'>
         <div className='tab-content'>
           {/* begin::Tap pane */}
-          <div className='tab-pane fade ' id='kt_table_widget_6_tab_1'>
+          <div className='tab-pane fade show active' id='kt_table_widget_6_tab_1'>
             {/* begin::Table container */}
             <div className='table-responsive'>
               {/* begin::Table */}
@@ -262,7 +262,7 @@ const TablesWidget6: React.FC<Props> = ({className}) => {
           </div>
           {/* end::Tap pane */}
           {/* begin::Tap pane */}
-          <div className='tab-pane fade show active' id='kt_table_widget_6_tab_2'>
+          <div className='tab-pane fade' id='kt_table_widget_6_tab_2'>
             {/* begin::Table container */}
             <div className='table-responsive'>
               {/* begin::Table */}

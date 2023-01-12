@@ -1,13 +1,9 @@
-
 import React, {FC, useEffect, useRef, useState} from 'react'
 import {Step1} from './steps/Step1'
 import {Step2} from './steps/Step2'
 import {Step3} from './steps/Step3'
 import {Step4} from './steps/Step4'
 import {Step5} from './steps/Step5'
-import {Step6} from './steps/Step6'
-import {Step7} from './steps/Step7'
-import {Step8} from './steps/Step8'
 import {KTSVG} from '../../../../_metronic/helpers'
 import {StepperComponent} from '../../../../_metronic/assets/ts/components'
 import {Formik, Form, FormikValues} from 'formik'
@@ -71,38 +67,29 @@ const Horizontal: FC = () => {
         >
           <div className='stepper-nav mb-5'>
             <div className='stepper-item current' data-kt-stepper-element='nav'>
-              <h3 className='stepper-title'>Details</h3>
+              <h3 className='stepper-title'>Account Type</h3>
             </div>
 
             <div className='stepper-item' data-kt-stepper-element='nav'>
-              <h3 className='stepper-title'>Communication</h3>
+              <h3 className='stepper-title'>Account Info</h3>
             </div>
 
             <div className='stepper-item' data-kt-stepper-element='nav'>
-              <h3 className='stepper-title'>Administration</h3>
+              <h3 className='stepper-title'>Business Info</h3>
             </div>
 
             <div className='stepper-item' data-kt-stepper-element='nav'>
-              <h3 className='stepper-title'>Payroll</h3>
+              <h3 className='stepper-title'>Billing Details</h3>
             </div>
 
             <div className='stepper-item' data-kt-stepper-element='nav'>
-              <h3 className='stepper-title'>Dimensions</h3>
-            </div>
-            <div className='stepper-item' data-kt-stepper-element='nav'>
-              <h3 className='stepper-title'>Disciplinary Action</h3>
-            </div>
-            <div className='stepper-item' data-kt-stepper-element='nav'>
-              <h3 className='stepper-title'>Training</h3>
-            </div>
-            <div className='stepper-item' data-kt-stepper-element='nav'>
-              <h3 className='stepper-title'>Medicals</h3>
+              <h3 className='stepper-title'>Completed</h3>
             </div>
           </div>
 
           <Formik validationSchema={currentSchema} initialValues={initValues} onSubmit={submitStep}>
             {() => (
-              <Form className='mx-20 mw-1000px w-100 pt-15 pb-10' id='kt_create_account_form'>
+              <Form className='mx-auto mw-600px w-100 pt-15 pb-10' id='kt_create_account_form'>
                 <div className='current' data-kt-stepper-element='content'>
                   <Step1 />
                 </div>
@@ -121,15 +108,6 @@ const Horizontal: FC = () => {
 
                 <div data-kt-stepper-element='content'>
                   <Step5 />
-                </div>
-                <div data-kt-stepper-element='content'>
-                  <Step6 />
-                </div>
-                <div data-kt-stepper-element='content'>
-                  <Step7 />
-                </div>
-                <div data-kt-stepper-element='content'>
-                  <Step8 />
                 </div>
 
                 <div className='d-flex flex-stack pt-15'>

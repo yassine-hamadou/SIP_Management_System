@@ -1,31 +1,35 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {useState} from 'react'
+import React, {useState} from 'react'
 import * as Yup from 'yup'
 import clsx from 'clsx'
 import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
 import {getUserByToken, login} from '../core/_requests'
-import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import {useAuth} from '../core/Auth'
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
-    .email('Wrong email format')
+    .email('Wrong ID')
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
-    .required('Email is required'),
+    .required('ID is required'),
   password: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
     .required('Password is required'),
+  option: Yup.string().required('Company is required'),
 })
 
 const initialValues = {
-  email: 'admin@demo.com',
-  password: 'demo',
+  email: 'User ID',
+  password: 'admin',
 }
 
-
+/*
+  Formik+YUP+Typescript:
+  https://jaredpalmer.com/formik/docs/tutorial#getfieldprops
+  https://medium.com/@maurice.de.beijer/yup-validation-and-typescript-and-formik-6c342578a20e
+*/
 
 export function Login() {
   const [loading, setLoading] = useState(false)
@@ -58,36 +62,29 @@ export function Login() {
       noValidate
       id='kt_login_signin_form'
     >
-      {/* begin::Heading */}
-      <div className='text-center mb-10'>
-        <h1 className='text-dark mb-3'>ENP HR login</h1>
-        {/* <div className='text-gray-400 fw-bold fs-4'>
-          New Here?{' '}
-          <Link to='/auth/registration' className='link-primary fw-bolder'>
-            Create an Account
-          </Link>
-        </div> */}
-      </div>
-      {/* begin::Heading */}
+      {/*/!* begin::Heading *!/*/}
+      {/*<div className='text-center mb-10'>*/}
+      {/*  <h1 className='text-dark mb-3'>Sign In to Metronic</h1>*/}
+      {/*  <div className='text-gray-400 fw-bold fs-4'>*/}
+      {/*    New Here?{' '}*/}
+      {/*    <Link to='/auth/registration' className='link-primary fw-bolder'>*/}
+      {/*      Create an Account*/}
+      {/*    </Link>*/}
+      {/*  </div>*/}
+      {/*</div>*/}
+      {/*/!* begin::Heading *!/*/}
 
-      {/* {formik.status ? (
+      {formik.status ?
         <div className='mb-lg-15 alert alert-danger'>
           <div className='alert-text font-weight-bold'>{formik.status}</div>
         </div>
-      ) : (
-        <div className='mb-10 bg-light-info p-8 rounded'>
-          <div className='text-info'>
-            Use account <strong>admin@demo.com</strong> and password <strong>demo</strong> to
-            continue.
-          </div>
-        </div>
-      )} */}
+        : null}
 
       {/* begin::Form group */}
       <div className='fv-row mb-10'>
-        <label className='form-label fs-6 fw-bolder text-dark'>Email</label>
+        <label className='form-label fs-6 fw-bolder text-dark'>USER ID</label>
         <input
-          placeholder='Email'
+          placeholder='User ID'
           {...formik.getFieldProps('email')}
           className={clsx(
             'form-control form-control-lg form-control-solid',
@@ -96,7 +93,7 @@ export function Login() {
               'is-valid': formik.touched.email && !formik.errors.email,
             }
           )}
-          type='email'
+          type='text'
           name='email'
           autoComplete='off'
         />
@@ -116,11 +113,16 @@ export function Login() {
             <label className='form-label fw-bolder text-dark fs-6 mb-0'>Password</label>
             {/* end::Label */}
             {/* begin::Link */}
-            
+            <Link
+              to='/auth/forgot-password'
+              className='link-primary fs-6 fw-bolder'
+              style={{marginLeft: '5px'}}
+            >
+              Forgot Password ?
+            </Link>
             {/* end::Link */}
           </div>
         </div>
-        
         <input
           type='password'
           autoComplete='off'
@@ -142,35 +144,34 @@ export function Login() {
             </div>
           </div>
         )}
-        <Link
-              to='/auth/forgot-password'
-              className='link-primary fs-6 fw-bolder'
-              style={{marginLeft: '5px'}}
-            >
-              Forgot Password ?
-            </Link>
       </div>
-      <div className='fv-row mb-7'>
-            {/* begin::Label */}
-            <label className='required fw-bold fs-6 mb-2'>Company</label>
-            {/* end::Label */}
-
-            {/* begin::Input */}
-            <select name="code" id="cars" className={clsx(
-               'form-control form-control-solid mb-3 mb-lg-0',
-               
-             )}>
-             <option value="active">Engineers and Planners - DAMANG DIVISION</option>
-             <option value="inactive">Engineers and Planners - DZATA DIVISION</option>
-             <option value="inactive">Engineers and Planners - MPOHOR DIVISION</option>
-             <option value="inactive">Engineers and Planners - HEAD OFFICE</option>
-             <option value="inactive">Engineers and Planners - SALAGA DIVISION</option>
-             <option value="inactive">Engineers and Planners - TARKWA DIVISION</option>
-             
-           </select>
-           
-            
+      <div className='fv-row mb-10'>
+        <div className='mb-10'>
+          <label className='form-label fw-bold'>Company:</label>
+          <div>
+            <select
+              className='form-select form-select-solid'
+              data-kt-select2='true'
+              data-placeholder='Select option'
+              data-allow-clear='true'
+              defaultValue={''}
+              {...formik.getFieldProps('option')}
+            >
+              <option></option>
+              <option value='damangDivision'>Engineers and Planners - DAMANG DIVISION</option>
+              <option value='dzataDivision'>Engineers and Planners - DZATA DIVISION</option>
+              <option value='mpohorDivision'>Engineers and Planners - MPOHOR DIVISION</option>
+              <option value='headOffice'>Engineers and Planners - HEAD OFFICE</option>
+              <option value='salagaDivision'>Engineers and Planners - SALAGA DIVISION</option>
+              <option value='tarkwaDivision'>Engineers and Planners - TARKWA DIVISION</option>
+            </select>
           </div>
+        </div>
+
+
+
+      </div>
+
       {/* end::Form group */}
 
       {/* begin::Action */}
@@ -191,43 +192,43 @@ export function Login() {
         </button>
 
         {/* begin::Separator */}
-        {/* <div className='text-center text-muted text-uppercase fw-bolder mb-5'>or</div> */}
+        {/*<div className='text-center text-muted text-uppercase fw-bolder mb-5'>or</div>*/}
         {/* end::Separator */}
 
-        {/* begin::Google link */}
-        {/* <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100 mb-5'>
-          <img
-            alt='Logo'
-            src={toAbsoluteUrl('/media/svg/brand-logos/google-icon.svg')}
-            className='h-20px me-3'
-          />
-          Continue with Google
-        </a> */}
-        {/* end::Google link */}
+        {/*/!* begin::Google link *!/*/}
+        {/*<a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100 mb-5'>*/}
+        {/*  <img*/}
+        {/*    alt='Logo'*/}
+        {/*    src={toAbsoluteUrl('/media/svg/brand-logos/google-icon.svg')}*/}
+        {/*    className='h-20px me-3'*/}
+        {/*  />*/}
+        {/*  Continue with Google*/}
+        {/*</a>*/}
+        {/*/!* end::Google link *!/*/}
 
-        {/* begin::Google link */}
-        {/* <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100 mb-5'>
-          <img
-            alt='Logo'
-            src={toAbsoluteUrl('/media/svg/brand-logos/facebook-4.svg')}
-            className='h-20px me-3'
-          />
-          Continue with Facebook
-        </a> */}
-        {/* end::Google link */}
+        {/*/!* begin::Google link *!/*/}
+        {/*<a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100 mb-5'>*/}
+        {/*  <img*/}
+        {/*    alt='Logo'*/}
+        {/*    src={toAbsoluteUrl('/media/svg/brand-logos/facebook-4.svg')}*/}
+        {/*    className='h-20px me-3'*/}
+        {/*  />*/}
+        {/*  Continue with Facebook*/}
+        {/*</a>*/}
+        {/*/!* end::Google link *!/*/}
 
-        {/* begin::Google link */}
-        {/* <a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100'>
-          <img
-            alt='Logo'
-            src={toAbsoluteUrl('/media/svg/brand-logos/apple-black.svg')}
-            className='h-20px me-3'
-          />
-          Continue with Apple
-        </a> */}
-        {/* end::Google link */}
+        {/*/!* begin::Google link *!/*/}
+        {/*<a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100'>*/}
+        {/*  <img*/}
+        {/*    alt='Logo'*/}
+        {/*    src={toAbsoluteUrl('/media/svg/brand-logos/apple-black.svg')}*/}
+        {/*    className='h-20px me-3'*/}
+        {/*  />*/}
+        {/*  Continue with Apple*/}
+        {/*</a>*/}
+        {/*/!* end::Google link *!/*/}
       </div>
-      {/* end::Action */}
+       {/*end::Action */}
     </form>
   )
 }

@@ -8,7 +8,7 @@ export const DefaultLayoutConfig: ILayout = {
   },
   loader: {
     display: true,
-    type: 'default', // Set default|spinner-message|spinner-logo to hide or show page loader
+    type: 'default', // Set default|spinner-message|spinner-logo to hide or show page unit
   },
   scrolltop: {
     display: true,
@@ -37,7 +37,7 @@ export const DefaultLayoutConfig: ILayout = {
     menuIcon: 'svg',
   },
   content: {
-    width: 'fixed', // Set fixed|fluid to change width
+    width: 'fluid', // Set fixed|fluid to change width
     layout: 'default',
   },
   toolbar: {
