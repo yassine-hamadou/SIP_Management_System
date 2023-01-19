@@ -4,7 +4,7 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 
-const DestinationTable = () => {
+const HaulerUnit = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -13,13 +13,13 @@ const DestinationTable = () => {
   const columns: any = [
    
     {
-      title: 'Name',
-      dataIndex: 'locationCode',
+      title: 'Fleet ID',
+      dataIndex: 'fleetID',
       sorter: (a: any, b: any) => {
-        if (a.locationCode > b.locationCode) {
+        if (a.fleetID > b.fleetID) {
           return 1
         }
-        if (b.locationCode > a.locationCode) {
+        if (b.fleetID > a.fleetID) {
           return -1
         }
         return 0
@@ -27,20 +27,17 @@ const DestinationTable = () => {
     },
 
     {
-      title: 'Description',
-      dataIndex: 'locationDesc',
-      sorter: (a: any, b: any) => a.locationDesc - b.locationDesc,
-    },
-    {
-      title: 'Action',
-    
+      title: 'Model Name',
+      dataIndex: 'modlName',
+      sorter: (a: any, b: any) => a.modlName - b.modlName,
     },
   ]
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/IclocsApi`)
+      const response = await axios.get(`${ENP_URL}/VmequpsApi`)
+     
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -68,8 +65,8 @@ const DestinationTable = () => {
     // @ts-ignore
     filteredData = dataWithVehicleNum.filter((value) => {
       return (
-        value.locationCode.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.locationDesc.toLowerCase().includes(searchText.toLowerCase())
+        value.fleetID.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.modlName.toLowerCase().includes(searchText.toLowerCase())
       )
     })
     setGridData(filteredData)
@@ -113,5 +110,4 @@ const DestinationTable = () => {
   )
 }
 
-export {DestinationTable}
-
+export {HaulerUnit}

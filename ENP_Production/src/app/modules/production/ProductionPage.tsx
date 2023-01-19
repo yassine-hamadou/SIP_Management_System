@@ -3,20 +3,20 @@ import {Navigate, Route, Routes, Outlet} from 'react-router-dom'
 import {PageLink, PageTitle} from '../../../_metronic/layout/core'
 import {ProductionReportTable} from "./components/report/production_table/CycleDetailsList";
 import {FuelReportTable} from "./components/report/fuel/CycleDetailsList";
-import {LoaderOperator} from "./components/setup/loaderOperator/CycleDetailsList";
-import {HaulerOperator} from "./components/setup/haulerOperator/CycleDetailsList";
-import {HaulerUnit} from "./components/setup/haulerUnit/CycleDetailsList";
-import {MineArea} from "./components/setup/mine_care/CycleDetailsList";
-import {Origin} from "./components/setup/origin/CycleDetailsList";
-import {MaterialRaw} from "./components/setup/materialRaw/CycleDetailsList";
-import {ProcessedMaterial} from "./components/setup/materialProcessed/CycleDetailsList";
-import {Shift} from "./components/setup/shift/CycleDetailsList";
 import {CycleDetailsTable} from "./components/entries/cycle_details/CycleDetailsTable";
 import {CycleGradesTable} from "./components/entries/cycle_grades/CycleGradesTable";
 import {PlannedOutputTable} from "./components/entries/planned_output/PlannedOutputTable";
 import {ActivityTable} from "./components/setup/activity/ActivityTable";
 import {DestinationTable} from "./components/setup/destination/DestinationTable";
-import {LoaderUnit} from "./components/setup/loaderUnit/CycleDetailsList";
+import { ShiftPage } from './components/setup/shift/ShiftPage';
+import { OriginPage } from './components/setup/origin/OriginPage';
+import { LoaderUnit } from './components/setup/loaderUnit/LoaderUnit';
+import { HaulerOperator } from './components/setup/haulerOperator/HaulerOperator';
+import { HaulerUnit } from './components/setup/haulerUnit/HaulerUnit';
+import { MineArea } from './components/setup/mine_care/MineArea';
+import { ProcessedMaterial } from './components/setup/materialProcessed/ProcessedMaterial';
+import { MaterialRaw } from './components/setup/materialRaw/MaterialRaw';
+import { LoaderOperator } from './components/setup/loaderOperator/LoaderOperator';
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -142,7 +142,7 @@ const ProductionPage: React.FC = () => {
           element={
             <>
               <PageTitle breadcrumbs={accountBreadCrumbs}>Origin</PageTitle>
-              <Origin />
+              <OriginPage />
             </>
           }
         />
@@ -187,7 +187,7 @@ const ProductionPage: React.FC = () => {
           element={
             <>
               <PageTitle breadcrumbs={accountBreadCrumbs}>Shift</PageTitle>
-              <Shift />
+              <ShiftPage />
             </>
           }
         />

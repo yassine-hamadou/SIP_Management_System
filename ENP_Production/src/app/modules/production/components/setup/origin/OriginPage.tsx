@@ -4,7 +4,7 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 
-const DestinationTable = () => {
+const OriginPage = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -32,9 +32,9 @@ const DestinationTable = () => {
       sorter: (a: any, b: any) => a.locationDesc - b.locationDesc,
     },
     {
-      title: 'Action',
-    
-    },
+        title: 'Action',
+      
+      },
   ]
 
   const loadData = async () => {
@@ -113,5 +113,4 @@ const DestinationTable = () => {
   )
 }
 
-export {DestinationTable}
-
+export {OriginPage}

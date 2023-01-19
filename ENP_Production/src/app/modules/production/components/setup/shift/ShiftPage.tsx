@@ -3,8 +3,9 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { Link } from 'react-router-dom'
 
-const ActivityTable = () => {
+const ShiftPage = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -29,7 +30,7 @@ const ActivityTable = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${ENP_URL}/ProductionShift/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -61,6 +62,11 @@ const ActivityTable = () => {
     },
 
     {
+      title: 'Duration',
+      dataIndex: 'duration',
+      sorter: (a: any, b: any) => a.duration - b.duration,
+    },
+    {
       title: 'Action',
       fixed: 'right',
       width: 100,
@@ -79,14 +85,14 @@ const ActivityTable = () => {
          
         </Space>
       ),
-      
+
     },
   ]
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${ENP_URL}/ProductionShift`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -114,17 +120,19 @@ const ActivityTable = () => {
     // @ts-ignore
     filteredData = dataWithVehicleNum.filter((value) => {
       return (
-        value.name.toLowerCase().includes(searchText.toLowerCase())
+        value.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.duration.toLowerCase().includes(searchText.toLowerCase())
       )
     })
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
+  const url = `${ENP_URL}/ProductionShift`
   const onFinish = async (values: any) => {
     setSubmitLoading(true)
     const data = {
       name: values.name,
+      duration: values.duration,
     }
 
     console.log(data)
@@ -167,12 +175,11 @@ const ActivityTable = () => {
               </Button>
             </Space>
             <Space style={{marginBottom: 16}}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+            <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
-              </button>
-
-              <button type='button' className='btn btn-light-primary me-3'>
+            </button>
+            <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
             </button>
@@ -180,7 +187,7 @@ const ActivityTable = () => {
           </div>
           <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
           <Modal
-                title='Add Activity'
+                title='Add Shift'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -207,16 +214,22 @@ const ActivityTable = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
+                    title='Add Shift'
                     onFinish={onFinish}
                 >
                     <Form.Item
                         name='name'
                         label='Name'
-                        
                         rules={[{required: true}]}
                     >
                         <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name='duration'
+                        label='Duration'
+                        rules={[{required: true}]}
+                    >
+                        <InputNumber />
                     </Form.Item>
                 </Form>
             </Modal>
@@ -226,4 +239,4 @@ const ActivityTable = () => {
   )
 }
 
-export {ActivityTable}
+export {ShiftPage}

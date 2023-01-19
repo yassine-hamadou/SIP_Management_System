@@ -9,14 +9,14 @@ import {
 import {KTSVG} from '../../../../../../_metronic/helpers'
 import {useState} from "react";
 
-const Origin = () => {
+const MaterialRaw = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const columns: any = [
-        {
-            title: 'ID',
-            dataIndex: '',
-            key: 'key',
-        },
+        // {
+        //     title: 'ID',
+        //     dataIndex: '',
+        //     key: 'key',
+        // },
         {
             title: 'Name',
             dataIndex: 'vmModel',
@@ -54,10 +54,10 @@ const Origin = () => {
                     </Button>
                 </Space>
                 <Space style={{marginBottom: 16}}>
-                    <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+                    {/* <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                         <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                         Add
-                    </button>
+                    </button> */}
                     <button type='button' className='btn btn-light-primary me-3'>
                         <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                         Upload
@@ -115,4 +115,4 @@ const Origin = () => {
     )
 }
 
-export {Origin}
+export {MaterialRaw}
