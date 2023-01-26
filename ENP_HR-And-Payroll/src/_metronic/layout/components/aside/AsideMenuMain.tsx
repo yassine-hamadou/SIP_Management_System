@@ -16,11 +16,20 @@ export function AsideMenuMain() {
         title={intl.formatMessage({id: 'MENU.DASHBOARD'})}
         fontIcon='bi-app-indicator'
       />
+
+      <AsideMenuItem 
+        to='employee/' 
+        // hasBullet={true} 
+        icon='/media/icons/duotune/communication/com013.svg'
+        title='Employees' 
+      />
+
+      
       <AsideMenuItemWithSub
         to='#'
         title='Transactions'
         fontIcon='bi-archive'
-        icon='/media/icons/duotune/general/gen022.svg'
+        icon='/media/icons/duotune/general/gen019.svg'
       >
        
         <AsideMenuItemWithSub to='#' title='Human Resource' hasBullet={true}>
@@ -64,6 +73,12 @@ export function AsideMenuMain() {
         fontIcon='bi-archive'
         icon='/media/icons/duotune/general/gen028.svg'
       >
+        <AsideMenuItem 
+        to='all-reports/' 
+        hasBullet={true} 
+        
+        title='All Reports' 
+        />
         
       </AsideMenuItemWithSub>
       <div className='menu-item'>

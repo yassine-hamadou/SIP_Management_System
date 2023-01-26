@@ -5,7 +5,7 @@ import TopBarProgress from 'react-topbar-progress-indicator'
 import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
 import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {WithChildren} from '../../_metronic/helpers'
-import ProductionPage from "../modules/production/ProductionPage";
+
 import { Audit } from '../modules/production/components/setup/administration/Audit'
 import { PageLink, PageTitle } from '../../_metronic/layout/core'
 import { Company } from '../modules/production/components/setup/administration/Company'
@@ -55,6 +55,8 @@ import { CheckTax } from '../modules/production/components/processes/payroll/Che
 import { Journals } from '../modules/production/components/processes/payroll/Journal'
 import { ProjectSheets } from '../modules/production/components/processes/payroll/ProjectSheet'
 import { Payrun } from '../modules/production/components/processes/payroll/Payrun'
+import { Employee } from '../modules/production/components/employee/Employee'
+import { AllReports } from '../modules/production/components/report/AllReports'
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -76,8 +78,34 @@ const PrivateRoutes = () => {
         <Route path='auth/*' element={<Navigate to='/dashboard' />} />
         {/* Pages */}
         <Route path='dashboard' element={<DashboardWrapper />} />
-        <Route path='production/*' element={<ProductionPage />} />
+        {/* <Route path='production/*' element={<ProductionPage />} /> */}
 
+
+
+        {/* Employee  */}
+
+        <Route
+         path='employee/*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Employees</PageTitle>
+             <Employee />
+           </SuspensedView>
+         }
+        />
+        {/* All Reports  */}
+
+        <Route
+         path='all-reports/*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Reports</PageTitle>
+             <AllReports />
+           </SuspensedView>
+         }
+        />
 
 
         {/* Transaction > HR Routes  */}

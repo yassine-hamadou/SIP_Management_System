@@ -47,7 +47,98 @@ const Employee = () => {
   const columns: any = [
    
     {
-      title: 'Name',
+      title: 'First Name',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Middle Name',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Surname',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'DOB',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Gender',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Salary Grade',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Department',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Basic Salary',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -66,10 +157,6 @@ const Employee = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -178,9 +265,9 @@ const Employee = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
+          <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Employee'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -210,14 +297,14 @@ const Employee = () => {
                     title='Add Service'
                     onFinish={onFinish}
                 >
-                    <Form.Item
+                    {/* <Form.Item
                         name='name'
                         label='Name'
                         
                         rules={[{required: true}]}
                     >
                         <Input />
-                    </Form.Item>
+                    </Form.Item> */}
                 </Form>
             </Modal>
         </div>
