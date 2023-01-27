@@ -1,8 +1,8 @@
 import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
+import {KTCardBody, KTSVG} from '../../../../../../../_metronic/helpers'
+import { ENP_URL } from '../../../../urls'
 
 const LeavePlanning = () => {
   const [gridData, setGridData] = useState([])
@@ -70,7 +70,7 @@ const LeavePlanning = () => {
           {/* <Link to={`/setup/sections/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Sections</span>
           </Link> */}
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a href='ENP_HR-And-Payroll/src/app/modules/production/components/transactions/hr#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
