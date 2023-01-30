@@ -47,7 +47,72 @@ const Deduction = () => {
   const columns: any = [
    
     {
+      title: 'Code',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Name',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Description',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Type',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Amount Number',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -180,10 +245,11 @@ const Deduction = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Deduction Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width={860}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -207,17 +273,136 @@ const Deduction = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
+                    
                     onFinish={onFinish}
                 >
-                    <Form.Item
+                    {/* <Form.Item
                         name='name'
                         label='Name'
                         
                         rules={[{required: true}]}
                     >
                         <Input />
-                    </Form.Item>
+                    </Form.Item> */}
+
+
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Code</label>
+                      <input type="text" name="code"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                      <input type="text" name="name"  className="form-control form-control-solid"/>
+                      
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Description</label>
+                      <input type="text" name="desc"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Amount</label>
+                      <input type="number" min={0} name="amount" defaultValue={0.00} className="form-control form-control-solid"/>
+                      
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Account No.</label>
+                      <input type="text" name="accno"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Period Type</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Monthly</option>
+                        <option value="2">Yearly</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Period Interval</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Weekly</option>
+                        <option value="2">Monthly</option>
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Currency</label>
+                      {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Cedis</option>
+                        <option value="2">Dollar</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Accrued</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">test1 </option>
+                        <option value="2">test2 </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
+                      <input type="date" name="period"  className="form-control form-control-solid"/>
+
+                      {/* <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                      </select> */}
+                    </div>
+                    {/* <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">isTaxable</label>
+                   
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option>select</option>
+                        <option value="1">Yes </option>
+                        <option value="2">No </option>
+                      </select>
+                    </div> */}
+                  </div>
                 </Form>
             </Modal>
         </div>

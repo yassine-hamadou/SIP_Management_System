@@ -180,7 +180,7 @@ const Audit = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Audit'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

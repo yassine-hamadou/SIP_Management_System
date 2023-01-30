@@ -180,7 +180,7 @@ const Nationality = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Nationality'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

@@ -180,7 +180,7 @@ const SalaryUpgrade = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Salary Upgrade'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

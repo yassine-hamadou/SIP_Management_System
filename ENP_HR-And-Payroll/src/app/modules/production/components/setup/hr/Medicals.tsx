@@ -180,7 +180,7 @@ const Medicals = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Medical Type Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -207,17 +207,18 @@ const Medicals = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
+                    // title='Add Service'
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    
+                    <div className='col-12 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                      <input type="text" name="name"  className="form-control form-control-solid"/>
+                      
+                    </div>
+                  </div>
                 </Form>
             </Modal>
         </div>

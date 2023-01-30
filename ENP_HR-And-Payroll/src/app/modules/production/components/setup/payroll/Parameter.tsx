@@ -180,7 +180,7 @@ const Parameter = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Parameter'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

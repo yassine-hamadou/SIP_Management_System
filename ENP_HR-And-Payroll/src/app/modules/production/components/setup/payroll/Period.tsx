@@ -180,7 +180,7 @@ const Period = () => {
           </div>
           <Table columns={columns} />
           <Modal
-                title='Add Activity'
+                title='Add Period'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

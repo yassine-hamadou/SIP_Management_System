@@ -180,7 +180,7 @@ const ReliefRebate = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Relief and Rebate'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

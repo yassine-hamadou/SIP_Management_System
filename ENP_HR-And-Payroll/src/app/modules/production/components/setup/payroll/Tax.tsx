@@ -47,7 +47,33 @@ const Tax = () => {
   const columns: any = [
    
     {
-      title: 'Name',
+      title: 'Order',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Chargeable Income',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Percentage',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -180,7 +206,7 @@ const Tax = () => {
           </div>
           <Table columns={columns} />
           <Modal
-                title='Add Activity'
+                title='Add Tax'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -210,12 +236,16 @@ const Tax = () => {
                     title='Add Service'
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
+                    <Form.Item name='chargeableIncome' label='Chargeable income' rules={[{required: true}]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name='percentage' label='Percentage' rules={[{required: true}]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name='order' label='Order' rules={[{required: true}]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name='taxformula' label='Tax Formula' rules={[{required: true}]}>
                         <Input />
                     </Form.Item>
                 </Form>

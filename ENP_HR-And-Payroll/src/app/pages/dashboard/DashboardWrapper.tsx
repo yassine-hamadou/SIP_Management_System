@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {FC} from 'react'
+import react, {FC} from 'react'
 import {useIntl} from 'react-intl'
 import {PageTitle} from '../../../_metronic/layout/core'
 import {
@@ -17,21 +17,39 @@ import {
 } from '../../../_metronic/partials/widgets'
 
 const DashboardPage: FC = () => (
+
+
+
+  
   <>
     {/* begin::Row */}
     <div className='row gy-5 g-xl-8'>
-      <div className='col-xxl-4'>
+      {/* <div className='col-xxl-4'>
         <MixedWidget2
           className='card-xl-stretch mb-xl-8'
           chartColor='danger'
           chartHeight='200px'
           strokeColor='#cb1e46'
         />
-      </div>
-      <div className='col-xxl-4'>
+      </div> */}
+      {/* <div className='col-xxl-4'>
         <ListsWidget5 className='card-xxl-stretch' />
+      </div> */}
+      <div className='col-xxl-6'>
+        {/* <ListsWidget5 className='card-xxl-stretch' /> */}
+        {/* <CanvasJSChart options = {options}/> */}
+        {/* <TestChart 
+          className='card-xxl-stretch-50 mb-5 mb-xl-8'
+          chartColor='primary'
+          chartHeight='175px'
+        /> */}
+        <MixedWidget11
+          className='card-xxl-stretch-50 mb-5 mb-xl-8'
+          chartColor='primary'
+          chartHeight='175px'
+        />
       </div>
-      <div className='col-xxl-4'>
+      {/* <div className='col-xxl-4'>
         <MixedWidget10
           className='card-xxl-stretch-50 mb-5 mb-xl-8'
           chartColor='primary'
@@ -42,7 +60,8 @@ const DashboardPage: FC = () => (
           chartColor='primary'
           chartHeight='175px'
         />
-      </div>
+        
+      </div> */}
     </div>
     {/* end::Row */}
   </>
@@ -54,6 +73,7 @@ const DashboardWrapper: FC = () => {
     <>
       <PageTitle breadcrumbs={[]}>{intl.formatMessage({id: 'MENU.DASHBOARD'})}</PageTitle>
       <DashboardPage />
+      
     </>
   )
 }

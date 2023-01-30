@@ -180,7 +180,7 @@ const Notches = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Notches'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

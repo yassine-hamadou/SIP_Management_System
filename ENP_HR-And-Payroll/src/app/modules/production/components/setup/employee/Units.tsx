@@ -180,7 +180,7 @@ const Units = () => {
           </div>
           <Table columns={columns} />
           <Modal
-                title='Add Activity'
+                title='Add Unit'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

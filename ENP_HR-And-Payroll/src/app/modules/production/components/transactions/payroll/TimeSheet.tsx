@@ -180,7 +180,7 @@ const TimeSheet = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Timesheet'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

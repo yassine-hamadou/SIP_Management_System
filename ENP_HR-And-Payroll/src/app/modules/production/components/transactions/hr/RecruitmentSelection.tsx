@@ -151,6 +151,18 @@ const RecruitmentSelection = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
+
+      <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+        <div className='col-6 mb-7'>
+          <label htmlFor="exampleFormControlInput1" className="required form-label">Firt Name</label>
+          <input type="text" name="fname" className="form-control form-control-solid" />
+        </div>
+
+        <div className='col-6 mb-7'>
+          <label htmlFor="exampleFormControlInput1" className="required form-label">Middle Name</label>
+          <input type="text" name="mname" className="form-control form-control-solid" />
+        </div>
+      </div>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
@@ -180,7 +192,7 @@ const RecruitmentSelection = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Recruitment and Selection'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

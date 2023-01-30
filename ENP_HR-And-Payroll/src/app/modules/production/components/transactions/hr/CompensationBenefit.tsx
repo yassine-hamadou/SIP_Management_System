@@ -180,7 +180,7 @@ const CompensationBenefit = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Compensation and Benefit'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

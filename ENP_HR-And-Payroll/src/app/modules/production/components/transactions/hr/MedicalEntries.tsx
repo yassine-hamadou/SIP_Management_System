@@ -180,7 +180,7 @@ const MedicalEntries = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Medical Entry'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

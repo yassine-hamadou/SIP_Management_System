@@ -180,7 +180,7 @@ const SavingSchemes = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Saving Scheme'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

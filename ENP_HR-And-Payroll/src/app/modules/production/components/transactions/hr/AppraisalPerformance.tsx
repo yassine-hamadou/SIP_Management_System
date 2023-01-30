@@ -180,7 +180,7 @@ const AppraisalPerformance = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Appraisal and Performance'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

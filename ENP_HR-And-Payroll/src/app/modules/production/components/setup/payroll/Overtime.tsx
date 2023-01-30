@@ -180,7 +180,7 @@ const Overtime = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Overtime'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

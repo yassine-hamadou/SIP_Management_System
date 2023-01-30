@@ -59,6 +59,45 @@ const Department = () => {
         return 0
       },
     },
+    {
+      title: 'Description',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Reporting Division',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Status',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
 
     {
       title: 'Action',
@@ -71,7 +110,7 @@ const Department = () => {
             <span className='btn btn-light-info btn-sm'>Sections</span>
           </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
-            Update
+            Details
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
@@ -180,7 +219,7 @@ const Department = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Department'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

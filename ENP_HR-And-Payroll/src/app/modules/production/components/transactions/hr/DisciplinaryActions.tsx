@@ -180,7 +180,7 @@ const DisciplinaryActions = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Disciplinary Action'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

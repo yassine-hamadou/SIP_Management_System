@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
 import { ENP_URL } from '../../urls'
+import { Link } from 'react-router-dom'
 
 const Employee = () => {
   const [gridData, setGridData] = useState([])
@@ -254,10 +255,17 @@ const Employee = () => {
               </Button>
             </Space>
             <Space style={{marginBottom: 16}}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+              {/* <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                Add
+              </button> */}
+              
+              <Link to='/employee-form'>
+              <button type='button' className='btn btn-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
+              </Link>
 
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />

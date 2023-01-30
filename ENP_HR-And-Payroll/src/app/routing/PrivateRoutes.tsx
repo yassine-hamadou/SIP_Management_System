@@ -18,9 +18,7 @@ import { JobTitle } from '../modules/production/components/setup/employee/JobTit
 import { Nationality } from '../modules/production/components/setup/employee/Nationality'
 import { Notches } from '../modules/production/components/setup/employee/Notches'
 import { Paygroups } from '../modules/production/components/setup/employee/Paygroups'
-import { SalaryUpgrade } from '../modules/production/components/setup/employee/SalaryUpgrade'
 import { Units } from '../modules/production/components/setup/employee/Units'
-import { Regions } from '../modules/production/components/setup/employee/Regions'
 import { Appraisals } from '../modules/production/components/setup/hr/Appraisals'
 import { DisciplinaryAction } from '../modules/production/components/setup/hr/DisciplinaryAction'
 import { Leaves } from '../modules/production/components/setup/hr/Leaves'
@@ -57,6 +55,11 @@ import { ProjectSheets } from '../modules/production/components/processes/payrol
 import { Payrun } from '../modules/production/components/processes/payroll/Payrun'
 import { Employee } from '../modules/production/components/employee/Employee'
 import { AllReports } from '../modules/production/components/report/AllReports'
+import { Divisions } from '../modules/production/components/setup/employee/Divisions'
+import { CompanyAsset } from '../modules/production/components/setup/hr/CompanyAsset'
+import { MultiTabForm } from '../modules/production/components/employeeFormEntry/EmployeeFormEntry'
+import { HRDashboardWrapper } from '../pages/dashboard/HumanResourceDashBoard'
+import { PayrollDashboardWrapper } from '../pages/dashboard/PayrollDashBoard'
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -75,12 +78,13 @@ const PrivateRoutes = () => {
     <Routes>
       <Route element={<MasterLayout />}>
         {/* Redirect to Dashboard after success login/registartion */}
-        <Route path='auth/*' element={<Navigate to='/dashboard' />} />
+        <Route path='auth/*' element={<Navigate to='/hr-dashboard' />} />
         {/* Pages */}
         <Route path='dashboard' element={<DashboardWrapper />} />
-        {/* <Route path='production/*' element={<ProductionPage />} /> */}
-
-
+        {/* <Route path='dashboard' element={<DashboardWrapper />} /> */}
+        <Route path='payroll-dashboard' element={<PayrollDashboardWrapper />} />
+        <Route path='hr-dashboard' element={<HRDashboardWrapper />} />
+   
 
         {/* Employee  */}
 
@@ -91,6 +95,17 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>All Employees</PageTitle>
              <Employee />
+           </SuspensedView>
+         }
+        />
+
+        <Route
+         path='employee-form/*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Entry</PageTitle>
+             <MultiTabForm />
            </SuspensedView>
          }
         />
@@ -146,7 +161,7 @@ const PrivateRoutes = () => {
          element={
           
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Appraisal and Performnance</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Appraisal and Performance</PageTitle>
              <AppraisalPerformance />
            </SuspensedView>
          }
@@ -228,7 +243,7 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='transaction/payroll/salary-upload*'
+         path='transaction/payroll/salary-upgrade*'
          element={
           
            <SuspensedView>
@@ -428,15 +443,15 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='setup/employee/regions*'
+         path='setup/employee/divisions*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Regions</PageTitle>
-             <Regions/>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Divisions</PageTitle>
+             <Divisions/>
            </SuspensedView>
          }
         />
-        <Route
+        {/* <Route
          path='setup/employee/salary-upgrade*'
          element={
            <SuspensedView>
@@ -444,7 +459,7 @@ const PrivateRoutes = () => {
              <SalaryUpgrade />
            </SuspensedView>
          }
-        />
+        /> */}
         <Route
          path='setup/employee/units*'
          element={
@@ -506,6 +521,15 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Trainings </PageTitle>
              <Trainings />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='setup/hr/company-assets*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Company Assets </PageTitle>
+             <CompanyAsset />
            </SuspensedView>
          }
         />

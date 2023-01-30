@@ -180,7 +180,7 @@ const LeavePlanning = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Leave and Planning'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

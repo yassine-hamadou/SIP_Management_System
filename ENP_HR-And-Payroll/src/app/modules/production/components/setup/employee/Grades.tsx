@@ -180,7 +180,7 @@ const Grades = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Grade'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

@@ -180,7 +180,7 @@ const Recurrent = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Recurrent'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

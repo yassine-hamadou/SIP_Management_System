@@ -59,6 +59,110 @@ const Loan = () => {
         return 0
       },
     },
+    {
+      title: 'Interest Rate',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Interest Type',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Moratorium',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Min Repay Period',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Max Repay Period',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Repayment Percentage Ceiling',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Interest on Cancellation',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Deduction',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
 
     {
       title: 'Action',
@@ -180,10 +284,11 @@ const Loan = () => {
           </div>
           <Table columns={columns}/>
           <Modal
-                title='Add Activity'
+                title='Loan Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width={860}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -202,22 +307,82 @@ const Loan = () => {
                 ]}
             >
                 <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
+                    // labelCol={{span: 7}}
+                    // wrapperCol={{span: 14}}
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
+                    
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
+                    {/* <Form.Item name='name' rules={[{required: true}]} >
                         <Input />
-                    </Form.Item>
+                    </Form.Item> */}
+
+                <hr></hr>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                    <input type="text" name="name"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Interest Rate</label>
+                    <input type="text" name="interestR"  className="form-control form-control-solid"/>
+                    
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Interest Type</label>
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>Open this select menu</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Moratorium</label>
+                  <input type="text" name="moratorium"  className="form-control form-control-solid"/>
+
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Min Repayment Period</label>
+                    <input type="text" name="repayMin"  className="form-control form-control-solid"/>
+
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Max Repayment Period</label>
+                  <input type="text" name="repayMax"  className="form-control form-control-solid"/>
+
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Repayment Percentage Ceiling</label>
+                    <input type="text" name="repayC"  className="form-control form-control-solid"/>
+
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Deduction</label>
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>Open this select menu</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Interest On Cancellation</label>
+                    <input type="text" name="interestC"  className="form-control form-control-solid"/>
+
+                  </div>
+                 
+                </div>
                 </Form>
             </Modal>
         </div>

@@ -180,7 +180,7 @@ const NonRecurrent = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Non-Recurrent'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

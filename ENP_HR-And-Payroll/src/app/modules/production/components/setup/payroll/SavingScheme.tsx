@@ -47,7 +47,85 @@ const SavingScheme = () => {
   const columns: any = [
    
     {
+      title: 'Code',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Name',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Description',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Type',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'EMployer Account No.',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'EMployee Account No.',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -71,7 +149,7 @@ const SavingScheme = () => {
             <span className='btn btn-light-info btn-sm'>Sections</span>
           </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
-            Update
+            Details
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
@@ -180,45 +258,105 @@ const SavingScheme = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='SavingScheme Setup'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            width={860}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                  Cancel
+              </Button>,
+              <Button
+              key='submit'
+              type='primary'
+              htmlType='submit'
+              loading={submitLoading}
+              onClick={() => {
+                form.submit()
+              }}
+              >
+                  Submit
+              </Button>,
+            ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
-                >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
+              <Form
+                  labelCol={{span: 7}}
+                  wrapperCol={{span: 14}}
+                  layout='horizontal'
+                  form={form}
+                  name='control-hooks'
+                  onFinish={onFinish}
+              >
+                <hr></hr>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Code</label>
+                    <input type="text" name="code"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                    <input type="text" name="name"  className="form-control form-control-solid"/>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Description</label>
+                    <input type="text" name="desc"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Employer Type</label>
+                    {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>Open this select menu</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Employer Account No.</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Employer Amount</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Type</label>
+                    {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>Open this select menu</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Account No.</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Amount</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Statutory</label>
+                    {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>Open this select menu</option>
+                      <option value="1">Yes</option>
+                      <option value="2">No</option>
+                    </select>
+                  </div>
+                </div>
+              </Form>
             </Modal>
         </div>
       </KTCardBody>

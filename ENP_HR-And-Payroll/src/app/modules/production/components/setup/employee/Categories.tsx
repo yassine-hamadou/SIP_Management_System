@@ -180,7 +180,7 @@ const Categories = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Category'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

@@ -180,7 +180,7 @@ const UserManagement = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add User'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
