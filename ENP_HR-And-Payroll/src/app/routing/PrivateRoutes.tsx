@@ -1,11 +1,10 @@
-import {lazy, FC, Suspense} from 'react'
+import {FC, Suspense} from 'react'
 import {Route, Routes, Navigate} from 'react-router-dom'
 import {MasterLayout} from '../../_metronic/layout/MasterLayout'
 import TopBarProgress from 'react-topbar-progress-indicator'
 import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
 import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {WithChildren} from '../../_metronic/helpers'
-
 import { Audit } from '../modules/production/components/setup/administration/Audit'
 import { PageLink, PageTitle } from '../../_metronic/layout/core'
 import { Company } from '../modules/production/components/setup/administration/Company'
@@ -40,7 +39,6 @@ import { CompensationBenefit } from '../modules/production/components/transactio
 import { TrainingDevelopment } from '../modules/production/components/transactions/hr/TrainingDevelopment'
 import { AppraisalPerformance } from '../modules/production/components/transactions/hr/AppraisalPerformance'
 import { DisciplinaryActions } from '../modules/production/components/transactions/hr/DisciplinaryActions'
-import { LeavePlanning } from '../modules/production/components/transactions/hr/LeavePlanning'
 import { MedicalEntries } from '../modules/production/components/transactions/hr/MedicalEntries'
 import { TimeSheet } from '../modules/production/components/transactions/payroll/TimeSheet'
 import { Recurrent } from '../modules/production/components/transactions/payroll/Recurrent'
@@ -55,11 +53,15 @@ import { ProjectSheets } from '../modules/production/components/processes/payrol
 import { Payrun } from '../modules/production/components/processes/payroll/Payrun'
 import { Employee } from '../modules/production/components/employee/Employee'
 import { AllReports } from '../modules/production/components/report/AllReports'
+
 import { Divisions } from '../modules/production/components/setup/employee/Divisions'
 import { CompanyAsset } from '../modules/production/components/setup/hr/CompanyAsset'
 import { MultiTabForm } from '../modules/production/components/employeeFormEntry/EmployeeFormEntry'
 import { HRDashboardWrapper } from '../pages/dashboard/HumanResourceDashBoard'
 import { PayrollDashboardWrapper } from '../pages/dashboard/PayrollDashBoard'
+
+import {LeavePlanning} from "../modules/production/components/transactions/hr/leavePlanning/EquipmentSchedule";
+
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -68,7 +70,6 @@ const accountBreadCrumbs: Array<PageLink> = [
     isSeparator: false,
     isActive: false,
   },
- 
 ]
 
 
