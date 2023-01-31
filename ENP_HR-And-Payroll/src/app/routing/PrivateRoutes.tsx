@@ -246,9 +246,8 @@ const PrivateRoutes = () => {
         <Route
          path='transaction/payroll/salary-upgrade*'
          element={
-          
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Salary Upload</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Salary Upgrade</PageTitle>
              <SalaryUploads />
            </SuspensedView>
          }

@@ -1,8 +1,11 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
+import {Button, Form, Input, InputNumber, Upload,Modal, Space, Table, Radio, RadioChangeEvent} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { UploadOutlined } from '@ant-design/icons';
+import { ColumnsType } from 'antd/es/table'
 
 const RecruitmentSelection = () => {
   const [gridData, setGridData] = useState([])
@@ -11,9 +14,14 @@ const RecruitmentSelection = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const [isShortModalOpen, setIsShortModalOpen] = useState(false)
+  const [radioValue, setRadioValue] = useState();
+  const [radio1Value, setRadio1Value] = useState();
+  const [radio2Value, setRadio2Value] = useState();
+  const [radio3Value, setRadio3Value] = useState();
+  const [radio4Value, setRadio4Value] = useState();
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -25,6 +33,18 @@ const RecruitmentSelection = () => {
   const handleCancel = () => {
     form.resetFields()
     setIsModalOpen(false)
+  }
+  const showShortModal = () => {
+    setIsShortModalOpen(true)
+  }
+
+  const handleShortOk = () => {
+    setIsShortModalOpen(false)
+  }
+
+  const handleShortCancel = () => {
+    form.resetFields()
+    setIsShortModalOpen(false)
   }
 
   const deleteData = async (element: any) => {
@@ -38,17 +58,126 @@ const RecruitmentSelection = () => {
       return e
     }
   }
+  const [fileList, setFileList] = useState<UploadFile[]>([
+    
+  ]);
 
-  
+  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+
+
+  // to preview the uploaded file
+  const onPreview = async (file: UploadFile) => {
+    let src = file.url as string;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj as RcFile);
+        reader.onload = () => resolve(reader.result as string);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
+  };
+
+  const onRadioChange = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadioValue(e.target.value);
+  };
+  const onRadio1Change = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadio1Value(e.target.value);
+  };
+  const onRadio2Change = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadio2Value(e.target.value);
+  };
+  const onRadio3Change = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadio3Value(e.target.value);
+  };
+  const onRadio4Change = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadio4Value(e.target.value);
+  };
 
   function handleDelete(element: any) {
     deleteData(element)
   }
-  const columns: any = [
+
+  const columns: ColumnsType<DataType> = [
    
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: 'First Name',
+      dataIndex: 'fname',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Last Name',
+      dataIndex: 'sname',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'DOB',
+      dataIndex: 'dob',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Gender',
+      dataIndex: 'gender',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Phone Number',
+      dataIndex: 'phone',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Qualification',
+      dataIndex: 'qualification',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -66,16 +195,12 @@ const RecruitmentSelection = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
-          <a href='#' className='btn btn-light-warning btn-sm'>
-            Update
+          <a href='#' onClick={showShortModal} className='btn btn-light-primary btn-sm'>
+            Shortlist
           </a>
-          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
+          {/* <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
-          </a>
+          </a> */}
          
         </Space>
       ),
@@ -93,6 +218,46 @@ const RecruitmentSelection = () => {
       console.log(error)
     }
   }
+
+  interface DataType {
+    key: React.Key;
+    fname:string, 
+      sname:string; 
+      dob:string; 
+      gender:string;
+      phone:string;
+      qualification: string;
+  }
+  const  data: DataType[] = [
+
+    {
+      key:'1',
+      fname:"Philip", 
+      sname:"Aherto", 
+      dob:"27-07-2000", 
+      gender:"Male", 
+      phone:"0249920482",
+      qualification: "Degree"
+    },
+    {
+      key:'2',
+      fname:"Kwame", 
+      sname:"Kekeli", 
+      dob:"27-07-2002", 
+      gender:"Male", 
+      phone:"0249560482",
+      qualification: "Degree"
+    },
+    {
+      key:'3',
+      fname:"Nana", 
+      sname:"Phils", 
+      dob:"27-07-2006", 
+      gender:"Male", 
+      phone:"0249920122",
+      qualification: "HND"
+    }
+  ];
 
   useEffect(() => {
     loadData()
@@ -143,6 +308,7 @@ const RecruitmentSelection = () => {
   }
 
   return (
+    
     <div
       style={{
         backgroundColor: 'white',
@@ -152,15 +318,64 @@ const RecruitmentSelection = () => {
       }}
     >
 
-      <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
-        <div className='col-6 mb-7'>
-          <label htmlFor="exampleFormControlInput1" className="required form-label">Firt Name</label>
-          <input type="text" name="fname" className="form-control form-control-solid" />
-        </div>
+      <div style={{padding: "0px 0px 40px 0px"}}  className='col-12'>
+        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Reference#</label>
+            <input type="text" name="ref" className="form-control form-control-solid" />
+          </div>
 
-        <div className='col-6 mb-7'>
-          <label htmlFor="exampleFormControlInput1" className="required form-label">Middle Name</label>
-          <input type="text" name="mname" className="form-control form-control-solid" />
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Description</label>
+            <input type="textarea" name="desc" className="form-control form-control-solid" />
+          </div>
+        </div>
+        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+          <div className='col-6 mb-3'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Start date</label>
+            <input type="date" name="sdate" className="form-control form-control-solid" />
+          </div>
+
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">End date</label>
+            <input type="date" name="edate" className="form-control form-control-solid" />
+          </div>
+        </div>
+        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              <option value="1">test1 </option>
+              <option value="2">test2 </option>
+            </select>
+          </div>
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              <option value="1">test1 </option>
+              <option value="2">test2 </option>
+            </select>
+          </div>
+        </div>
+        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              <option value="1">test1 </option>
+              <option value="2">test2 </option>
+            </select>
+          </div>
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              <option value="1">test1 </option>
+              <option value="2">test2 </option>
+            </select>
+          </div>
         </div>
       </div>
       <KTCardBody className='py-4 '>
@@ -190,12 +405,14 @@ const RecruitmentSelection = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} dataSource={data} />
+          {/* Add form */}
           <Modal
-                title='Add Recruitment and Selection'
+                title='New Applicant'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width="900px"
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -219,19 +436,184 @@ const RecruitmentSelection = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
+                 
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
+                    <hr></hr>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
+                      <input type="text" name="code"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
+                      <input type="text" name="name"  className="form-control form-control-solid"/>
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">DOB</label>
+                      <input type="date" name="code"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
+                      <input type="phone" name="name"  className="form-control form-control-solid"/>
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
+                      <input type="text" name="code"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
+                      <input type="email" name="name"  className="form-control form-control-solid"/>
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Qualification</label>
+                      <input type="text" name="code"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-3' style={{padding: "30px 20px 0 20px"}}>  
+                    <Upload
+                      // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      listType="picture"
+                      fileList={fileList}
+                      onChange={onChange}
+                      onPreview={onPreview}
+                      className="upload-list-inline"
+                    
+                    >                  
+                      {/* <a href='#' className='form-control btn btn-light-primary btn-sm'>
+                        Upload document
+                      </a> */}
+                      <Button style={{padding: "10px 20px 30px 20px"}}  className='form-control btn btn-light-primary btn-sm' icon={<UploadOutlined />}>Upload</Button>
+                     
+                      </Upload>
+                    </div>
+                  </div>
                 </Form>
-            </Modal>
+          </Modal>
+
+           {/* shortlist form */}
+          <Modal
+                title='Short List'
+                open={isShortModalOpen}
+                onCancel={handleShortCancel}
+                closable={true}
+                width="900px"
+                footer={[
+                    <Button key='back' onClick={handleShortCancel}>
+                        Cancel
+                    </Button>,
+                    <Button
+                    key='submit'
+                    type='primary'
+                    htmlType='submit'
+                    loading={submitLoading}
+                    onClick={() => {
+                      form.submit()
+                    }}
+                    >
+                        Submit
+                    </Button>,
+                ]}
+            >
+              <Form
+                labelCol={{span: 7}}
+                wrapperCol={{span: 14}}
+                layout='horizontal'
+                form={form}
+                name='control-hooks'
+              
+                onFinish={onFinish}
+              >
+                  {/* <hr></hr> */}
+                <hr></hr>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-3'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
+                    <input type="text" name="code"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-3'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
+                    <input type="text" name="name"  className="form-control form-control-solid"/>
+                  </div>
+                </div>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-3'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">DOB</label>
+                    <input type="date" name="code"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-3'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
+                    <input type="text" name="name"  className="form-control form-control-solid"/>
+                  </div>
+                </div>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-3'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
+                    <input type="phone" name="code"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-3'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
+                    <input type="text" name="name"  className="form-control form-control-solid"/>
+                  </div>
+                </div>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
+                  <div className='col-6 mb-3'>
+                    <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Qualification</label>
+                    <Radio.Group onChange={onRadioChange} value={radioValue}>
+                      <Radio value={1}>1</Radio>
+                      <Radio value={2}>2</Radio>
+                      <Radio value={3}>3</Radio>
+                      <Radio value={4}>4</Radio>
+                    </Radio.Group>
+                    <br></br>
+                    <br></br>
+                    <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Work Skills</label>
+                    <Radio.Group onChange={onRadio1Change} value={radio1Value}>
+                      <Radio value={1}>1</Radio>
+                      <Radio value={2}>2</Radio>
+                      <Radio value={3}>3</Radio>
+                      <Radio value={4}>4</Radio>
+                    </Radio.Group>
+                  
+                    <br></br>
+                    <br></br>
+                    <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Experiences </label>
+                    <Radio.Group onChange={onRadio2Change} value={radio2Value}>
+                      <Radio value={1}>1</Radio>
+                      <Radio value={2}>2</Radio>
+                      <Radio value={3}>3</Radio>
+                      <Radio value={4}>4</Radio>
+                    </Radio.Group>
+                    <br></br>
+                    <br></br>
+                    <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Reference</label>
+                    <Radio.Group onChange={onRadio3Change} value={radio3Value}>
+                      <Radio value={1}>1</Radio>
+                      <Radio value={2}>2</Radio>
+                      <Radio value={3}>3</Radio>
+                      <Radio value={4}>4</Radio>
+                    </Radio.Group>
+                    <br></br>
+                    <br></br>
+                    <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Social Skills</label>
+                    <Radio.Group onChange={onRadio4Change} value={radio4Value}>
+                      <Radio value={1}>1</Radio>
+                      <Radio value={2}>2</Radio>
+                      <Radio value={3}>3</Radio>
+                      <Radio value={4}>4</Radio>
+                    </Radio.Group>
+                  </div>
+                  <div className='col-6 mb-3' style={{padding: "30px 20px 0 20px"}}>  
+                  
+                  </div>
+                </div>
+              </Form>
+          </Modal>
         </div>
       </KTCardBody>
     </div>

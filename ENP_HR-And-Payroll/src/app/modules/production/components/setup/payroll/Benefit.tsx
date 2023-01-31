@@ -245,7 +245,7 @@ const Benefit = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Benefit'
+                title='Benefit Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -375,12 +375,6 @@ const Benefit = () => {
                     <div className='col-6 mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
                       <input type="date" name="period"  className="form-control form-control-solid"/>
-
-                      {/* <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">Yes</option>
-                        <option value="2">No</option>
-                      </select> */}
                     </div>
                     <div className='col-6 mb-7'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">isTaxable</label>
