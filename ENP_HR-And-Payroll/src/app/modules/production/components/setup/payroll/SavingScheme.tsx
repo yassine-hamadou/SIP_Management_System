@@ -112,7 +112,7 @@ const SavingScheme = () => {
       },
     },
     {
-      title: 'EMployer Account No.',
+      title: 'Employer Account No.',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -125,7 +125,7 @@ const SavingScheme = () => {
       },
     },
     {
-      title: 'EMployee Account No.',
+      title: 'Employee Account No.',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {

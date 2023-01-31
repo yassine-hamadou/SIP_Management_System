@@ -67,20 +67,13 @@ export function AsideMenuMain() {
         </AsideMenuItemWithSub>
         
       </AsideMenuItemWithSub>
-      <AsideMenuItemWithSub
-        to='#'
-        title='Report'
-        fontIcon='bi-archive'
-        icon='/media/icons/duotune/general/gen028.svg'
-      >
-        <AsideMenuItem 
+      
+      <AsideMenuItem 
         to='all-reports/' 
-        hasBullet={true} 
-        
-        title='All Reports' 
-        />
-        
-      </AsideMenuItemWithSub>
+        // hasBullet={true} 
+        icon='/media/icons/duotune/general/gen028.svg'
+        title='Reports' 
+      />
       <div className='menu-item'>
        <div className='menu-content'>
          <div className='separator  mx-1 my-4'></div>
