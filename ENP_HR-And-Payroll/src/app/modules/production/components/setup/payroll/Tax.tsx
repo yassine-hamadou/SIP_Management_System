@@ -210,6 +210,7 @@ const Tax = () => {
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width={600}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -236,7 +237,7 @@ const Tax = () => {
                     title='Add Service'
                     onFinish={onFinish}
                 >
-                    <Form.Item name='chargeableIncome' label='Chargeable income' rules={[{required: true}]}>
+                    {/* <Form.Item name='chargeableIncome' label='Chargeable income' rules={[{required: true}]}>
                         <Input />
                     </Form.Item>
                     <Form.Item name='percentage' label='Percentage' rules={[{required: true}]}>
@@ -247,7 +248,28 @@ const Tax = () => {
                     </Form.Item>
                     <Form.Item name='taxformula' label='Tax Formula' rules={[{required: true}]}>
                         <Input />
-                    </Form.Item>
+                    </Form.Item> */}
+                    <hr></hr>
+                    <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Chargeable income</label>
+                        <input type="text" name="topic"  className="form-control form-control-solid"/>
+                      </div>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="required form-label">Percentage</label>
+                        <input type="date" name="trainDate"  className="form-control form-control-solid"/>
+                      </div>
+                    </div>
+                    <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Order </label>
+                        <input type="text" name="topic"  className="form-control form-control-solid"/>
+                      </div>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Formula</label>
+                        <input type="text" name="tformula"  className="form-control form-control-solid"/>
+                      </div>
+                    </div>
                 </Form>
             </Modal>
         </div>

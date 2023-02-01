@@ -536,6 +536,7 @@ const TrainingDevelopment = () => {
     qualification: string;
     topic: string;
   }
+
   const  data: DataType[] = [
 
     {
@@ -805,7 +806,7 @@ const TrainingDevelopment = () => {
                 </Form>
           </Modal>
           <Modal
-                title='Traning Schedule'
+                title='Training Schedule'
                 open={isShortModalOpen}
                 onCancel={handleShortCancel}
                 closable={true}
@@ -847,8 +848,6 @@ const TrainingDevelopment = () => {
                       <input type="date" name="trainDate"  className="form-control form-control-solid"/>
                     </div>
                   </div>
-                  
-                  
                 </Form>
           </Modal>
 
