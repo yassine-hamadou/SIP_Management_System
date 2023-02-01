@@ -47,7 +47,33 @@ const Period = () => {
   const columns: any = [
    
     {
+      title: 'Code',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Name',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Status',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -207,14 +233,26 @@ const Period = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
+                   
                     onFinish={onFinish}
                 >
                   <hr></hr>
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                    <div className=' mb-3'>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                      <input type="text" name="code"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className=' mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" name="topic"  className="form-control form-control-solid"/>
+                      <input type="text" name="name"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Active </option>
+                        <option value="2">Not Active </option>
+                      </select>
                     </div>
                   </div>
                 </Form>

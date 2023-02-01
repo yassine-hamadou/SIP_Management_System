@@ -40,12 +40,35 @@ const Recurrent= () =>{
     >
 
 
+        <div style={{padding: "20px 0px 30px 0px"}} className="row" >
+          <div className='col-4 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              <option value="1">test1 </option>
+              <option value="2">test2 </option>
+            </select>
+          </div>
+
+          <div className='col-4 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              <option value="1">test1 </option>
+              <option value="2">test2 </option>
+            </select>
+          </div>
+          <div className='col-4 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Employee</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              <option value="1">test1 </option>
+              <option value="2">test2 </option>
+            </select>
+          </div>
+        </div>
       
-      {/* <Link to="/employee">
-        <a style={{fontSize:"16px", fontWeight: "500"}} className='btn btn-primary btn-sm mb-7'>
-          Back to list
-        </a>
-      </Link> */}
+      
       <form onSubmit={handleSubmit}>
         
         <div className="tabs">
@@ -88,6 +111,7 @@ const Recurrent= () =>{
         </div>
         {/* <button className='btn btn-primary' type="submit">Submit</button> */}
       </form>
+   
     </div>
   );
 }

@@ -237,18 +237,7 @@ const Tax = () => {
                     title='Add Service'
                     onFinish={onFinish}
                 >
-                    {/* <Form.Item name='chargeableIncome' label='Chargeable income' rules={[{required: true}]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name='percentage' label='Percentage' rules={[{required: true}]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name='order' label='Order' rules={[{required: true}]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name='taxformula' label='Tax Formula' rules={[{required: true}]}>
-                        <Input />
-                    </Form.Item> */}
+                   
                     <hr></hr>
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                       <div className='col-6 mb-3'>

@@ -59,6 +59,71 @@ const BenefitTab = () => {
         return 0
       },
     },
+    {
+      title: 'Benefit',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Category',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Start Period',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'End Period',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
 
     {
       title: 'Action',
@@ -66,17 +131,9 @@ const BenefitTab = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
-          <a href='#' className='btn btn-light-warning btn-sm'>
-            Update
+          <a href='#' className='btn btn-danger btn-sm'>
+            Stop
           </a>
-          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
-            Delete
-          </a>
-         
         </Space>
       ),
       
@@ -180,7 +237,7 @@ const BenefitTab = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Non-Recurrent'
+                title='Recurrent Benefits'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -207,7 +264,6 @@ const BenefitTab = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                     <Form.Item
