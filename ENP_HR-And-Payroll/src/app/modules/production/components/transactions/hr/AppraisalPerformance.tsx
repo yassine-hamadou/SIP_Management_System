@@ -111,6 +111,19 @@ const AppraisalPerformance = () => {
   const columns: ColumnsType<DataType> = [
    
     {
+      title: 'Employee ID',
+      dataIndex: 'key',
+      sorter: (a: any, b: any) => {
+        if (a.key > b.key) {
+          return 1
+        }
+        if (b.key > a.key) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'First Name',
       dataIndex: 'fname',
       sorter: (a: any, b: any) => {
@@ -151,7 +164,7 @@ const AppraisalPerformance = () => {
     },
     {
       title: 'Gender',
-      dataIndex: 'qua',
+      dataIndex: 'gender',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -218,7 +231,7 @@ const AppraisalPerformance = () => {
   const  data: DataType[] = [
 
     {
-      key:'1',
+      key:'001',
       fname:"Philip", 
       sname:"Aherto", 
       dob:"27-07-2000", 
@@ -227,7 +240,7 @@ const AppraisalPerformance = () => {
       qualification: "Senior Manager"
     },
     {
-      key:'2',
+      key:'002',
       fname:"Kwame", 
       sname:"Kekeli", 
       dob:"27-07-2002", 
@@ -236,7 +249,7 @@ const AppraisalPerformance = () => {
       qualification: "Developer"
     },
     {
-      key:'3',
+      key:'003',
       fname:"Nana", 
       sname:"Phils", 
       dob:"27-07-2006", 
@@ -369,16 +382,21 @@ const AppraisalPerformance = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">test1 </option>
-                        <option value="2">test2 </option>
+                        <option value="1">001 - ANANI </option>
+                        <option value="2">002 - OFOSU </option>
+                        <option value="3">003 - KOFFIE </option>
+                        <option value="4">004 - KOFFIE </option>
+                        <option value="5">005 - ADJEI </option>
                       </select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">test1 </option>
-                        <option value="2">test2 </option>
+                        <option value="1">ASSISTANT ACCOUNTANT </option>
+                        <option value="2">ACCOUNTS OFFICER </option>
+                        <option value="3">HUMAN RESOURCE MANAGER </option>
+                        <option value="4">SALES PERSONNEL 1 </option>
                       </select>
                     </div>
                   </div>
@@ -406,64 +424,7 @@ const AppraisalPerformance = () => {
                       </select>
                     </div>
                   </div>
-                  {/* <hr></hr> */}
-                  {/* <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
-                    <div className='col-6 mb-3'>
-                        <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Qualification</label>
-                        <Radio.Group onChange={onRadioChange} value={radioValue}>
-                          <Radio value={1}>Yes</Radio>
-                          <Radio value={2}>No</Radio>
-                        </Radio.Group>
-                      <br></br>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Work Skills</label>
-                      <Radio.Group onChange={onRadio1Change} value={radio1Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
-                      </Radio.Group>
-                   
-                      <br></br>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Experiences </label>
-                      <Radio.Group onChange={onRadio2Change} value={radio2Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
-                      </Radio.Group>
-                      <br></br>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Reference</label>
-                      <Radio.Group onChange={onRadio3Change} value={radio3Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
-                      </Radio.Group>
-                      <br></br>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Social Skills</label>
-                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
-                      </Radio.Group>
-                    </div>
-                    <div className='col-6 mb-3'>  
-                        <input type="text" name="fname"  className="form-control form-control-solid"/>
-                        <br></br>
-                        <input type="text" name="fname"  className="form-control form-control-solid"/>
-                        <br></br>
-                        <input type="text" name="fname"  className="form-control form-control-solid"/>
-                        <br></br>
-                        <input type="text" name="fname"  className="form-control form-control-solid"/>
-                        <br></br>
-                        <input type="text" name="fname"  className="form-control form-control-solid"/>
-                    </div>
-                  </div> */}
+                
                 </Form>
           </Modal>
         </div>

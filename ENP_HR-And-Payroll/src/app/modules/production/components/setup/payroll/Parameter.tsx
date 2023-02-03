@@ -206,7 +206,7 @@ const Parameter = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Parameter'
+                title='Parameter Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -233,7 +233,6 @@ const Parameter = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                   <hr></hr>

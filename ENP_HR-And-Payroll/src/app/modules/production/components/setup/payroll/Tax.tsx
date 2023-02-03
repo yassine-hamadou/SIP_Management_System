@@ -48,7 +48,7 @@ const Tax = () => {
    
     {
       title: 'Order',
-      dataIndex: 'name',
+      dataIndex: 'order',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -61,7 +61,7 @@ const Tax = () => {
     },
     {
       title: 'Chargeable Income',
-      dataIndex: 'name',
+      dataIndex: 'chargeIncome',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -74,7 +74,20 @@ const Tax = () => {
     },
     {
       title: 'Percentage',
-      dataIndex: 'name',
+      dataIndex: 'percentage',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Tax Formula',
+      dataIndex: 'taxf',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -123,6 +136,45 @@ const Tax = () => {
   useEffect(() => {
     loadData()
   }, [])
+
+ const TAX =[
+    {
+     chargeIncome: 402,
+     percentage: 0,
+     order: "1",
+     taxf: "FIRST"
+    },
+    {
+     chargeIncome: 110,
+     percentage: 5,
+     order: "2",
+     taxf: "NEXT"
+    },
+    {
+     chargeIncome: 130,
+     percentage: 10,
+     order: "3",
+     taxf: "NEXT"
+    },
+    {
+     chargeIncome: "3,000",
+     percentage: 17.5,
+     order: "4",
+     taxf: "NEXT"
+    },
+    {
+     chargeIncome: "16,395",
+     percentage: 25,
+     order: "5",
+     taxf: "NEXT"
+    },
+    {
+     chargeIncome: "29,963",
+     percentage: 30,
+     order: "6",
+     taxf: "EXCEEDING"
+    }
+   ]
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
@@ -204,9 +256,9 @@ const Tax = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} />
+          <Table columns={columns} dataSource={TAX}/>
           <Modal
-                title='Add Tax'
+                title='Tax Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -234,7 +286,6 @@ const Tax = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                    
@@ -246,13 +297,13 @@ const Tax = () => {
                       </div>
                       <div className='col-6 mb-3'>
                         <label htmlFor="exampleFormControlInput1" className="required form-label">Percentage</label>
-                        <input type="date" name="trainDate"  className="form-control form-control-solid"/>
+                        <input type="text" name="trainDate"  className="form-control form-control-solid"/>
                       </div>
                     </div>
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                       <div className='col-6 mb-3'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Order </label>
-                        <input type="text" name="topic"  className="form-control form-control-solid"/>
+                        <input type="text" name="order"  className="form-control form-control-solid"/>
                       </div>
                       <div className='col-6 mb-3'>
                         <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Formula</label>

@@ -469,7 +469,7 @@ const TrainingDevelopment = () => {
       },
     },
     {
-      title: 'Date',
+      title: 'Day',
       dataIndex: 'dob',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -633,62 +633,54 @@ const TrainingDevelopment = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-      <div style={{padding: "0px 0px 40px 0px"}}  className='col-12'>
-        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Reference#</label>
-            <input type="text" name="ref" className="form-control form-control-solid" />
-          </div>
 
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Training Type</label>
-            <select className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
-            </select>
+      {/* Top part of the page */}
+      <div style={{padding: "0px 0px 0px 0px"}} className='col-12 row'>
+        <div style={{padding: "0px 0px 0px 20px"}}  className='col-6'>
+          <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Reference#</label>
+              <input type="text" name="ref" className="form-control form-control-solid" />
+            </div>
+
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Training Type</label>
+              <select className="form-select form-select-solid" aria-label="Select example">
+                <option> select</option>
+                <option value="1">test1 </option>
+                <option value="2">test2 </option>
+              </select>
+            </div>
+          </div>
+          <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
+            <div className='col-6 mb-3'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Start date</label>
+              <input type="date" name="sdate" className="form-control form-control-solid" />
+            </div>
+
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">End date</label>
+              <input type="date" name="edate" className="form-control form-control-solid" />
+            </div>
+          </div>
+          <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Facilitator</label>
+              <input type="text" name="fac" className="form-control form-control-solid" />
+
+            </div>
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Venue</label>
+              <input type="text" name="venue" className="form-control form-control-solid" />
+
+              
+            </div>
           </div>
         </div>
-        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
-          <div className='col-6 mb-3'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Start date</label>
-            <input type="date" name="sdate" className="form-control form-control-solid" />
-          </div>
-
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">End date</label>
-            <input type="date" name="edate" className="form-control form-control-solid" />
-          </div>
-        </div>
-        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Facilitator</label>
-            <input type="text" name="fac" className="form-control form-control-solid" />
-
-          </div>
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Venue</label>
-            <input type="text" name="venue" className="form-control form-control-solid" />
-
-            
-          </div>
-        </div>
-        
-      </div>
-      <KTCardBody className='py-4 '>
-        <div className='table-responsive'>
+        <div className='col-6'>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
-              <Input
-                placeholder='Enter Search Text'
-                onChange={handleInputChange}
-                type='text'
-                allowClear
-                value={searchText}
-              />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
+            <h3><b>Training Schedule Table</b></h3>
             </Space>
             <Space style={{marginBottom: 16}}>
               <button type='button' className='btn btn-primary me-3' onClick={showShortModal}>
@@ -698,8 +690,11 @@ const TrainingDevelopment = () => {
             </Space>
           </div>
           <Table columns={columnSchedules} dataSource={data} />
-
-            <br></br>
+        </div>
+      </div>
+      <hr></hr>
+      <KTCardBody className='py-4 '>
+        <div className='table-responsive'>
             <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
@@ -765,16 +760,21 @@ const TrainingDevelopment = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">test1 </option>
-                        <option value="2">test2 </option>
+                        <option value="1">001 - ANANI </option>
+                        <option value="2">002 - OFOSU </option>
+                        <option value="3">003 - KOFFIE </option>
+                        <option value="4">004 - KOFFIE </option>
+                        <option value="5">005 - ADJEI </option>
                       </select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">test1 </option>
-                        <option value="2">test2 </option>
+                        <option value="1">ASSISTANT ACCOUNTANT </option>
+                        <option value="2">ACCOUNTS OFFICER </option>
+                        <option value="3">HUMAN RESOURCE MANAGER </option>
+                        <option value="4">SALES PERSONNEL 1 </option>
                       </select>
                     </div>
                   </div>
@@ -805,12 +805,13 @@ const TrainingDevelopment = () => {
                   
                 </Form>
           </Modal>
+          {/* Modal for the  */}
           <Modal
                 title='Training Schedule'
                 open={isShortModalOpen}
                 onCancel={handleShortCancel}
                 closable={true}
-                width="900px"
+                width="600px"
                 footer={[
                   <Button key='back' onClick={handleShortCancel}>
                       Cancel

@@ -48,12 +48,12 @@ const Grades = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -73,13 +73,39 @@ const Grades = () => {
       },
     },
     {
-      title: 'Status',
-      dataIndex: 'name',
+      title: 'Description',
+      dataIndex: 'desc',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.desc > b.desc) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.desc > a.desc) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Paygroup',
+      dataIndex: 'payg',
+      sorter: (a: any, b: any) => {
+        if (a.payg > b.payg) {
+          return 1
+        }
+        if (b.payg > a.payg) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      sorter: (a: any, b: any) => {
+        if (a.status > b.status) {
+          return 1
+        }
+        if (b.status > a.status) {
           return -1
         }
         return 0
@@ -108,6 +134,44 @@ const Grades = () => {
       
     },
   ]
+
+  const GRADES=[
+    {
+     code: "001",
+     name: "ASTACT1",
+     desc: "ASSISTANT ACCONTANT",
+     payg: "GENERAL",
+     status: "ACTIVE"
+    },
+    {
+     code: "002",
+     name: "ACCOFF",
+     desc: "ACCOUNT OFFICER",
+     payg: "GENERAL",
+     status: "ACTIVE"
+    },
+    {
+     code: "003",
+     name: "HRMAN",
+     desc: "HUMAN RESOURCE MANAGER",
+     payg: "MANAGEMENT",
+     status: "ACTIVE"
+    },
+    {
+     code: "004",
+     name: "SALREP1",
+     desc: "SALES REP ENTRY",
+     payg: "CASUAL",
+     status: "ACTIVE"
+    },
+    {
+     code: "005",
+     name: "FACMAN",
+     desc: "FACTORY MANAGER",
+     payg: "MANAGEMENT",
+     status: "ACTIVE"
+    }
+   ]
 
   const loadData = async () => {
     setLoading(true)
@@ -204,9 +268,9 @@ const Grades = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns}  dataSource={GRADES}/>
           <Modal
-                title='Add Grade'
+                title='Grade Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -233,7 +297,6 @@ const Grades = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                   <hr></hr>

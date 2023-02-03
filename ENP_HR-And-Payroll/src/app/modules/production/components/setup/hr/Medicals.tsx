@@ -206,7 +206,7 @@ const Medicals = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Medical Type Setup'
+                title='Medical Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

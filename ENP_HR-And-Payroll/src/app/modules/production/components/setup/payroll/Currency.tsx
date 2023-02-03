@@ -48,12 +48,12 @@ const Currency = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -74,12 +74,12 @@ const Currency = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'name',
+      dataIndex: 'status',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.status > b.status) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.status > a.status) {
           return -1
         }
         return 0
@@ -109,6 +109,34 @@ const Currency = () => {
     },
   ]
 
+
+  const CURRENCY=[
+    {
+     code: "USD",
+     name: "US DOLLARS",
+     status: "ACTIVE"
+    },
+    {
+     code: "GHC",
+     name: "GHANA CEDI",
+     status: "ACTIVE"
+    },
+    {
+     code: "GBP",
+     name: "GREAT BRITIAN POUNDS",
+     status: "ACTIVE"
+    },
+    {
+     code: "AUD",
+     name: "AUSTRALIAN DOLLLARS",
+     status: "ACTIVE"
+    },
+    {
+     code: "FRANC",
+     name: "WEST AFRICAN FRANC",
+     status: "ACTIVE"
+    }
+   ]
   const loadData = async () => {
     setLoading(true)
     try {
@@ -204,9 +232,9 @@ const Currency = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns}  dataSource={CURRENCY}/>
           <Modal
-                title='Add Currency'
+                title='Currency Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -250,8 +278,8 @@ const Currency = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Active </option>
-                        <option value="2">Not Active </option>
+                        <option value="1">ACTIVE </option>
+                        <option value="2">INACTIVE</option>
                       </select>
                     </div>
                   </div>

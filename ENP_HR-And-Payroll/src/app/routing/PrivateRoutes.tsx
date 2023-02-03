@@ -19,7 +19,6 @@ import { Notches } from '../modules/production/components/setup/employee/Notches
 import { Paygroups } from '../modules/production/components/setup/employee/Paygroups'
 import { Units } from '../modules/production/components/setup/employee/Units'
 import { Appraisals } from '../modules/production/components/setup/hr/Appraisals'
-import { DisciplinaryAction } from '../modules/production/components/setup/hr/DisciplinaryAction'
 import { Leaves } from '../modules/production/components/setup/hr/Leaves'
 import { Medicals } from '../modules/production/components/setup/hr/Medicals'
 import { Recruitments } from '../modules/production/components/setup/hr/Recruitment'
@@ -38,7 +37,6 @@ import { RecruitmentSelection } from '../modules/production/components/transacti
 import { CompensationBenefit } from '../modules/production/components/transactions/hr/CompensationBenefit'
 import { TrainingDevelopment } from '../modules/production/components/transactions/hr/TrainingDevelopment'
 import { AppraisalPerformance } from '../modules/production/components/transactions/hr/AppraisalPerformance'
-import { DisciplinaryActions } from '../modules/production/components/transactions/hr/DisciplinaryActions'
 import { MedicalEntries } from '../modules/production/components/transactions/hr/MedicalEntries'
 import { TimeSheet } from '../modules/production/components/transactions/payroll/TimeSheet'
 import { Recurrent } from '../modules/production/components/transactions/payroll/Recurrent'
@@ -53,14 +51,33 @@ import { ProjectSheets } from '../modules/production/components/processes/payrol
 import { Payrun } from '../modules/production/components/processes/payroll/Payrun'
 import { Employee } from '../modules/production/components/employee/Employee'
 import { AllReports } from '../modules/production/components/report/AllReports'
-
 import { Divisions } from '../modules/production/components/setup/employee/Divisions'
 import { CompanyAsset } from '../modules/production/components/setup/hr/CompanyAsset'
-import { MultiTabForm } from '../modules/production/components/employeeFormEntry/EmployeeFormEntry'
+
 import { HRDashboardWrapper } from '../pages/dashboard/HumanResourceDashBoard'
 import { PayrollDashboardWrapper } from '../pages/dashboard/PayrollDashBoard'
-
 import {LeavePlanning} from "../modules/production/components/transactions/hr/leavePlanning/EquipmentSchedule";
+import { Notes } from '../modules/production/components/setup/hr/Notes'
+import { NoteEntry } from '../modules/production/components/transactions/hr/NoteEntry'
+import FaultEntryReport from '../modules/production/components/report/PayrollPAYEReport'
+import PayrollPAYEReport from '../modules/production/components/report/PayrollPAYEReport'
+import BenefitTransactionInputReport from '../modules/production/components/report/BenefitTransactionInputReport'
+import DeductionTransactionInputReport from '../modules/production/components/report/DeductionTransactionInputReport'
+import EmployeeNotInDeductionInputReport from '../modules/production/components/report/EmployeeNotInDeductionInputReport'
+import EmployeeNotInBenefitInputReport from '../modules/production/components/report/EmployeeNotInBenefitInputReport'
+import EmployeeNotInSavSchemeInputReport from '../modules/production/components/report/EmployeeNotInSavSchemeInputReport'
+import HumanRessourceReport from '../modules/production/components/report/HumanRessourceReport'
+import PayrollAnalysisSheetByRegionReport from '../modules/production/components/report/PayrollAnalysisSheetByRegionReport'
+import PayrollBankSummaryReport from '../modules/production/components/report/PayrollBankSummaryReport'
+import PayrollBenefitDetailsReport from '../modules/production/components/report/PayrollBenefitDetailsReport'
+import PayrollBenefitIntegrityReport from '../modules/production/components/report/PayrollBenefitIntegrityReport'
+import PayrollDeductionsDetailsReport from '../modules/production/components/report/PayrollDeductionsDetailsReport'
+import PayrollDeductionsReport from '../modules/production/components/report/PayrollDeductionsReport'
+import PayrollJournalByDepartmentReport from '../modules/production/components/report/PayrollJournalByDepartmentReport'
+import PayrollLoansDetailsReport from '../modules/production/components/report/PayrollLoansDetailsReport'
+import PayrollSSNITReport from '../modules/production/components/report/PayrollSSNITReport'
+import SavSchemeTransactionInputReport from '../modules/production/components/report/SavSchemeTransactionInputReport'
+import { MultiTabForm } from '../modules/production/components/employeeFormEntry/EmployeeFormEntry'
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -169,12 +186,12 @@ const PrivateRoutes = () => {
         />
        
         <Route
-         path='transaction/hr/disciplinary-actions*'
+         path='transaction/hr/notes*'
          element={
           
-           <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Disciplinary Actions</PageTitle>
-             <DisciplinaryActions />
+           <SuspensedView>  
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Notes Entry</PageTitle>
+             <NoteEntry />
            </SuspensedView>
          }
         />
@@ -480,11 +497,11 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='setup/hr/disciplinary-action*'
+         path='setup/hr/notes*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Disciplinary Action</PageTitle>
-             <DisciplinaryAction />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Notes</PageTitle>
+             <Notes />
            </SuspensedView>
          }
         />
@@ -633,6 +650,160 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Saving Scheme</PageTitle>
              <SavingScheme />
+           </SuspensedView>
+         }
+        />
+        
+        <Route
+         path='report/payrollPAYEReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Payroll PAYE Report</PageTitle>
+             <PayrollPAYEReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/BenefitTransactionInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>BenefitTransactionInputReport</PageTitle>
+             <BenefitTransactionInputReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/DeductionTransactionInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>DeductionTransactionInputReport</PageTitle>
+             <DeductionTransactionInputReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/EmployeeNotInBenefitInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeNotInBenefitInputReport</PageTitle>
+             <EmployeeNotInBenefitInputReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/EmployeeNotInDeductionInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeNotInDeductionInputReport</PageTitle>
+             <EmployeeNotInDeductionInputReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/EmployeeNotInSavSchemeInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeNotInSavSchemeInputReport</PageTitle>
+             <EmployeeNotInSavSchemeInputReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/HumanRessourceReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>HumanRessourceReport</PageTitle>
+             <HumanRessourceReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollAnalysisSheetByRegionReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollAnalysisSheetByRegionReport</PageTitle>
+             <PayrollAnalysisSheetByRegionReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollBankSummaryReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollBankSummaryReport</PageTitle>
+             <PayrollBankSummaryReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollBenefitDetailsReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollBenefitDetailsReport</PageTitle>
+             <PayrollBenefitDetailsReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollBenefitIntegrityReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollBenefitIntegrityReport</PageTitle>
+             <PayrollBenefitIntegrityReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollDeductionsDetailsReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollDeductionsDetailsReport</PageTitle>
+             <PayrollDeductionsDetailsReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollDeductionsReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollDeductionsReport</PageTitle>
+             <PayrollDeductionsReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollJournalByDepartmentReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollJournalByDepartmentReport</PageTitle>
+             <PayrollJournalByDepartmentReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollLoansDetailsReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollLoansDetailsReport</PageTitle>
+             <PayrollLoansDetailsReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollSSNITReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollSSNITReport</PageTitle>
+             <PayrollSSNITReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/SavSchemeTransactionInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>SavSchemeTransactionInputReport</PageTitle>
+             <SavSchemeTransactionInputReport />
            </SuspensedView>
          }
         />

@@ -61,12 +61,12 @@ const Loan = () => {
     },
     {
       title: 'Interest Rate',
-      dataIndex: 'name',
+      dataIndex: 'interestRate',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.interestRate > b.interestRate) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.interestRate > a.interestRate) {
           return -1
         }
         return 0
@@ -74,25 +74,26 @@ const Loan = () => {
     },
     {
       title: 'Interest Type',
-      dataIndex: 'name',
+      dataIndex: 'interestType',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.interestType > b.interestType) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.interestType > a.interestType) {
           return -1
         }
         return 0
       },
     },
+    
     {
       title: 'Moratorium',
-      dataIndex: 'name',
+      dataIndex: 'moratorium',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.moratorium > b.moratorium) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.moratorium > a.moratorium) {
           return -1
         }
         return 0
@@ -100,12 +101,12 @@ const Loan = () => {
     },
     {
       title: 'Min Repay Period',
-      dataIndex: 'name',
+      dataIndex: 'minrepay',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.minrepay > b.minrepay) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.minrepay > a.minrepay) {
           return -1
         }
         return 0
@@ -113,12 +114,12 @@ const Loan = () => {
     },
     {
       title: 'Max Repay Period',
-      dataIndex: 'name',
+      dataIndex: 'maxrepay',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.maxrepay > b.maxrepay) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.maxrepay > a.maxrepay) {
           return -1
         }
         return 0
@@ -126,12 +127,12 @@ const Loan = () => {
     },
     {
       title: 'Repayment Percentage Ceiling',
-      dataIndex: 'name',
+      dataIndex: 'ceiling',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.ceiling > b.ceiling) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.ceiling > a.ceiling) {
           return -1
         }
         return 0
@@ -139,12 +140,12 @@ const Loan = () => {
     },
     {
       title: 'Interest on Cancellation',
-      dataIndex: 'name',
+      dataIndex: 'cancellation',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.cancellation > b.cancellation) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.cancellation > a.cancellation) {
           return -1
         }
         return 0
@@ -152,12 +153,12 @@ const Loan = () => {
     },
     {
       title: 'Deduction',
-      dataIndex: 'name',
+      dataIndex: 'deduction',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.deduction > b.deduction) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.deduction > a.deduction) {
           return -1
         }
         return 0
@@ -186,6 +187,64 @@ const Loan = () => {
       
     },
   ]
+
+  const LOANS =[
+    {
+     name: "001",
+     interestRate: "5%",
+     interestType: "FORMULA",
+     moratorium: "NONE",
+     minrepay: 100,
+     maxrepay: 2000,
+     ceiling: 0.15,
+     deduction: "MONTHLY",
+     cancellation: "N\/A"
+    },
+    {
+     name: "002",
+     interestRate: "15%",
+     interestType: "PERCENTAGE OF GROSS",
+     moratorium: "3 MONTHS",
+     minrepay: 100,
+     maxrepay: 2000,
+     ceiling: 0.15,
+     deduction: "MONTHLY",
+     cancellation: "N\/A"
+    },
+    {
+     name: "003",
+     interestRate: "30%",
+     interestType: "VARYING AMOUNT",
+     moratorium: "NONE",
+     minrepay: 100,
+     maxrepay: 2000,
+     ceiling: 0.15,
+     deduction: "MONTHLY",
+     cancellation: "N\/A"
+    },
+    {
+     name: "004",
+     interestRate: "2%",
+     interestType: "VARYING AMOUNT",
+     moratorium: "NONE",
+     minrepay: 100,
+     maxrepay: 2000,
+     ceiling: 0.15,
+     deduction: "MONTHLY",
+     cancellation: "N\/A"
+    },
+    {
+     name: "005",
+     interestRate: "10%",
+     interestType: "PERCENTAGE OF BASIC",
+     moratorium: "1 MONTH",
+     minrepay: 100,
+     maxrepay: 2000,
+     ceiling: 0.15,
+     deduction: "MONTHLY",
+     cancellation: "N\/A"
+    }
+   ]
 
   const loadData = async () => {
     setLoading(true)
@@ -282,7 +341,7 @@ const Loan = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}/>
+          <Table columns={columns}  dataSource={LOANS}/>
           <Modal
                 title='Loan Setup'
                 open={isModalOpen}
@@ -315,9 +374,6 @@ const Loan = () => {
                     
                     onFinish={onFinish}
                 >
-                    {/* <Form.Item name='name' rules={[{required: true}]} >
-                        <Input />
-                    </Form.Item> */}
 
                 <hr></hr>
                 <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
@@ -335,10 +391,11 @@ const Loan = () => {
                   <div className='col-6 mb-7'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Interest Type</label>
                     <select className="form-select form-select-solid" aria-label="Select example">
-                      <option>Open this select menu</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                      <option>select</option>
+                      <option value="1">FORMULA</option>
+                      <option value="2">PERCENTAGE OF GROSS</option>
+                      <option value="3">VARYING AMOUNT</option>
+                      <option value="3">PERCENTAGE OF BASIC</option>
                     </select>
                   </div>
                   <div className='col-6 mb-7'>
@@ -368,10 +425,9 @@ const Loan = () => {
                   <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Deduction</label>
                     <select className="form-select form-select-solid" aria-label="Select example">
-                      <option>Open this select menu</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                      <option>select</option>
+                      <option value="1">MONTHLY</option>
+                      <option value="2">WEEKLY</option>
                     </select>
                   </div>
                 </div>

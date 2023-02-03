@@ -48,12 +48,12 @@ const Period = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -74,12 +74,12 @@ const Period = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'name',
+      dataIndex: 'status',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.status > b.status) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.status > a.status) {
           return -1
         }
         return 0
@@ -92,10 +92,6 @@ const Period = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -108,6 +104,80 @@ const Period = () => {
       
     },
   ]
+
+  const PERIOD =[
+    {
+     code:"sip001",
+     name: "Jan-23",
+     status: "ACTIVE"
+    },
+    {
+     code:"sip002",
+     name: "Feb-23",
+     status: "ACTIVE"
+    },
+    {
+     code:"sip003",
+     name: "Mar-23",
+     status: "ACTIVE"
+   
+    },
+    {
+     code:"sip004",
+     name: "Apr-23",
+     status: "ACTIVE"
+   
+   
+    },
+    {
+     code:"sip005",
+     name: "May-23",
+     status: "ACTIVE"
+   
+    },
+    {
+     code:"sip006",
+     name: "Jun-23",
+     status: "ACTIVE"
+   
+    },
+    {
+     code:"sip007",
+     name: "Jul-23",
+     status: "ACTIVE"
+   
+    },
+    {
+     code:"sip008",
+     name: "Aug-23",
+     status: "ACTIVE"
+   
+    },
+    {
+     code:"sip009",
+     name: "Sep-23",
+     status: "ACTIVE"
+    },
+    {
+     code:"sip010",
+     name: "Oct-23",
+     status: "ACTIVE"
+   
+    },
+    {
+     code:"sip011",
+     name: "Nov-23",
+     status: "ACTIVE"
+   
+    },
+    {
+     code:"sip012",
+     name: "Dec-23",
+     status: "ACTIVE"
+   
+    }
+   
+   ]
 
   const loadData = async () => {
     setLoading(true)
@@ -204,9 +274,9 @@ const Period = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} />
+          <Table columns={columns} dataSource={PERIOD}/>
           <Modal
-                title='Add Period'
+                title='Period Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -233,7 +303,6 @@ const Period = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                   
                     onFinish={onFinish}
                 >
                   <hr></hr>
@@ -250,8 +319,8 @@ const Period = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Active </option>
-                        <option value="2">Not Active </option>
+                        <option value="1">ACTIVE </option>
+                        <option value="2">INACTIVE</option>
                       </select>
                     </div>
                   </div>

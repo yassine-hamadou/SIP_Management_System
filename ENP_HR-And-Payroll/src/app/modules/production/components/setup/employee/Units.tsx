@@ -48,12 +48,12 @@ const Units = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -74,12 +74,12 @@ const Units = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'name',
+      dataIndex: 'status',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.status > b.status) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.status > a.status) {
           return -1
         }
         return 0
@@ -108,6 +108,25 @@ const Units = () => {
       
     },
   ]
+
+  const UNITS=[
+    {
+     code: "001",
+     name: "manager",
+     status: "ACTIVE"
+    },
+    {
+     code: "002",
+     name: "junior staff",
+     status: "ACTIVE"
+    },
+    {
+     code: "003",
+     name: "senior staff",
+     status: "ACTIVE"
+    },
+    
+   ]
 
   const loadData = async () => {
     setLoading(true)
@@ -204,9 +223,9 @@ const Units = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} />
+          <Table columns={columns} dataSource={UNITS}/>
           <Modal
-                title='Add Unit'
+                title='Unit Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -233,7 +252,6 @@ const Units = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                   <hr></hr>

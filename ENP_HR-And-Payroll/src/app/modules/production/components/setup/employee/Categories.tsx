@@ -48,12 +48,12 @@ const Categories = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -74,12 +74,12 @@ const Categories = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'name',
+      dataIndex: 'status',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.status > b.status) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.status > a.status) {
           return -1
         }
         return 0
@@ -108,6 +108,36 @@ const Categories = () => {
       
     },
   ]
+
+  
+
+   const CATEGORY=[
+    {
+     code: "001",
+     name: "PERMANENT",
+     status: "ACTIVE"
+    },
+    {
+     code: "002",
+     name: "SERVICE",
+     status: "ACTIVE"
+    },
+    {
+     code: "003",
+     name: "CONTRACT",
+     status: "ACTIVE"
+    },
+    {
+     code: "004",
+     name: "SENIOR STAFF",
+     status: "ACTIVE"
+    },
+    {
+     code: "005",
+     name: "JUNIOR STAFF",
+     status: "ACTIVE"
+    }
+   ]
 
   const loadData = async () => {
     setLoading(true)
@@ -204,9 +234,9 @@ const Categories = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns}  dataSource={CATEGORY}/>
           <Modal
-                title='Add Category'
+                title='Category Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -233,7 +263,6 @@ const Categories = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                   <hr></hr>

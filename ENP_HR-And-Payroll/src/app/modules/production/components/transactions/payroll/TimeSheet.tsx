@@ -25,6 +25,11 @@ const TimeSheet = () => {
   const showModal = () => {
     setIsModalOpen(true)
   }
+  const [activeTab, setActiveTab] = useState("tab1");
+
+  const handleTabClick = (tab:any) => {
+    setActiveTab(tab);
+  };
 
   const handleOk = () => {
     setIsModalOpen(false)
@@ -394,9 +399,6 @@ const TimeSheet = () => {
             </select>
           </div>
         </div>
-        
-        
-        
       </div>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
@@ -464,16 +466,21 @@ const TimeSheet = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">test1 </option>
-                        <option value="2">test2 </option>
+                        <option value="1">001 - ANANI </option>
+                        <option value="2">002 - OFOSU </option>
+                        <option value="3">003 - KOFFIE </option>
+                        <option value="4">004 - KOFFIE </option>
+                        <option value="5">005 - ADJEI </option>
                       </select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">test1 </option>
-                        <option value="2">test2 </option>
+                        <option value="1">ASSISTANT ACCOUNTANT </option>
+                        <option value="2">ACCOUNTS OFFICER </option>
+                        <option value="3">HUMAN RESOURCE MANAGER </option>
+                        <option value="4">SALES PERSONNEL 1 </option>
                       </select>
                     </div>
                   </div>
@@ -496,15 +503,44 @@ const TimeSheet = () => {
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Male </option>
-                        <option value="2">Female </option>
+                        <option value="1">MALE </option>
+                        <option value="2">FEMALE </option>
                       </select>
                     </div>
                   </div>
+                 <hr></hr>
                  
+                 <div>
+                  <div style={{display:"flex", }} className="tabs">
+                    <div
+                      className={`tab ${activeTab === "tab1" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab1")}
+                    >
+                      Tab 1
+                    </div>
+                    <div
+                      className={`tab ${activeTab === "tab2" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab2")}
+                    >
+                      Tab 2
+                    </div>
+                    <div
+                      className={`tab ${activeTab === "tab3" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab3")}
+                    >
+                      Tab 3
+                    </div>
+                  </div>
+                  <div className="tab-content">
+                    {activeTab === "tab1" && <div>Content for Tab 1</div>}
+                    {activeTab === "tab2" && <div>Content for Tab 2</div>}
+                    {activeTab === "tab3" && <div>Content for Tab 3</div>}
+                  </div>
+                </div>
+             
                 </Form>
           </Modal>
-
+                {/* Details table */}
           <Modal
                 // title='Short List'
                 open={isShortModalOpen}

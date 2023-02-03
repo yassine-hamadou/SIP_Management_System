@@ -1,8 +1,10 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
+import {Button, Form, Input, InputNumber, Modal, Space, Table, Upload} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { UploadOutlined } from '@ant-design/icons';
 
 const MedicalEntries = () => {
   const [gridData, setGridData] = useState([])
@@ -21,6 +23,32 @@ const MedicalEntries = () => {
   const handleOk = () => {
     setIsModalOpen(false)
   }
+
+  const [fileList, setFileList] = useState<UploadFile[]>([
+    
+  ]);
+
+  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+
+
+  // to preview the uploaded file
+  const onPreview = async (file: UploadFile) => {
+    let src = file.url as string;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj as RcFile);
+        reader.onload = () => resolve(reader.result as string);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
+  };
+
 
   const handleCancel = () => {
     form.resetFields()
@@ -47,13 +75,52 @@ const MedicalEntries = () => {
   const columns: any = [
    
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: 'Employee ID',
+      dataIndex: 'employee_id',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.employee_id > b.employee_id) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.employee_id > a.employee_id) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Medical Type',
+      dataIndex: 'medtype',
+      sorter: (a: any, b: any) => {
+        if (a.medtype > b.medtype) {
+          return 1
+        }
+        if (b.medtype > a.medtype) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      sorter: (a: any, b: any) => {
+        if (a.date > b.date) {
+          return 1
+        }
+        if (b.date > a.date) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Comments',
+      dataIndex: 'comments',
+      sorter: (a: any, b: any) => {
+        if (a.comments > b.comments) {
+          return 1
+        }
+        if (b.comments > a.comments) {
           return -1
         }
         return 0
@@ -180,10 +247,11 @@ const MedicalEntries = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Medical Entry'
+                title='Medical Entry'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width="800px"
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -212,9 +280,44 @@ const MedicalEntries = () => {
                 >
                   <hr></hr>
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                    <div className=' mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
                       <input type="text" name="topic"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Medical Type</label>
+                      <input type="text" name="topic"  className="form-control form-control-solid"/>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
+                      <input type="date" name="date"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Comments</label>
+                      <input type="text" name="topic"  className="form-control form-control-solid"/>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Upload Document</label>
+                      <Upload
+                      
+                      listType="picture-card"
+                      fileList={fileList}
+                      onChange={onChange}
+                      onPreview={onPreview}
+                      // className="upload-list-inline"
+                    >                  
+                        {/* <Button 
+                          style={{padding: "10px 20px 30px 20px"}}  
+                          className='form-control btn btn-light-primary btn-sm' 
+                          icon={<UploadOutlined />}>
+                        </Button> */}
+                        <UploadOutlined/>
+                      </Upload>
+                 
                     </div>
                   </div>
                 </Form>

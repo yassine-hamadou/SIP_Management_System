@@ -148,6 +148,84 @@ const Benefit = () => {
     },
   ]
 
+  const BENEFITS =[
+    {
+     "Code": "001",
+     "Name": "CLOT",
+     "Description": "CLOTHING ALLOWANCE",
+     "Category": "PERMANENT",
+     "Type of Amount": "FORMULA",
+     "Amount": 0,
+     "Account No.": 1234560,
+     "Period Type": "MONTHLY",
+     "Period Interval": "MONTHLY",
+     "Currency": "GHS",
+     "Accrued": "NO",
+     "Tax Type": "TAX TABLE",
+     "isTaxable": "YES"
+    },
+    {
+     "Code": "002",
+     "Name": "ACCOM",
+     "Description": "ACCOMODATION ALLOWANCE",
+     "Category": "SERVICE",
+     "Type of Amount": "PERCENTAGE OF GROSS",
+     "Amount": 0,
+     "Account No.": 1234561,
+     "Period Type": "MONTHLY",
+     "Period Interval": "MONTHLY",
+     "Currency": "GHS",
+     "Accrued": "NO",
+     "Tax Type": "TAX FORMULA",
+     "isTaxable": "YES"
+    },
+    {
+     "Code": "003",
+     "Name": "MED",
+     "Description": "MEDICAL ALLOWANCE",
+     "Category": "PERMANENT",
+     "Type of Amount": "VARYING AMOUNT",
+     "Amount": 0,
+     "Account No.": 1234562,
+     "Period Type": "AMOUNT",
+     "Period Interval": "AMOUNT",
+     "Currency": "GHS",
+     "Accrued": "NO",
+     "Tax Type": "NON TAXABLE",
+     "isTaxable": "NO"
+    },
+    {
+     "Code": "004",
+     "Name": "TRAV",
+     "Description": "TRAVELLING ALLOWANCE",
+     "Category": "SENIOR STAFF",
+     "Type of Amount": "VARYING AMOUNT",
+     "Amount": 0,
+     "Account No.": 1234563,
+     "Period Type": "WEEKLY",
+     "Period Interval": "WEEKLY",
+     "Currency": "GHS",
+     "Accrued": "NO",
+     "Tax Type": "TAX FORMULA",
+     "isTaxable": "NO"
+    },
+    {
+     "Code": "005",
+     "Name": "RND",
+     "Description": "RESEARCH ALLOWANCE",
+     "Category": "SENIOR STAFF",
+     "Type of Amount": "PERCENTAGE OF BASIC",
+     "Amount": 0,
+     "Account No.": 1234564,
+     "Period Type": "ANNUAL",
+     "Period Interval": "ANNUAL",
+     "Currency": "GHS",
+     "Accrued": "NO",
+     "Tax Type": "TAX RATE",
+     "isTaxable": "YES"
+    }
+   ]
+
   const loadData = async () => {
     setLoading(true)
     try {

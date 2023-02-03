@@ -47,6 +47,19 @@ const Department = () => {
   const columns: any = [
    
     {
+      title: 'Code',
+      dataIndex: 'code',
+      sorter: (a: any, b: any) => {
+        if (a.code > b.code) {
+          return 1
+        }
+        if (b.code > a.code) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
@@ -61,12 +74,12 @@ const Department = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'name',
+      dataIndex: 'desc',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.desc > b.desc) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.desc > a.desc) {
           return -1
         }
         return 0
@@ -74,12 +87,12 @@ const Department = () => {
     },
     {
       title: 'Reporting Division',
-      dataIndex: 'name',
+      dataIndex: 'report',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.report > b.report) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.report > a.report) {
           return -1
         }
         return 0
@@ -87,12 +100,12 @@ const Department = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'name',
+      dataIndex: 'status',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.status > b.status) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.status > a.status) {
           return -1
         }
         return 0
@@ -121,6 +134,34 @@ const Department = () => {
       
     },
   ]
+
+  const DEPARTMENTS=[
+    {
+     code: "001",
+     report: "HEADOFFICE",
+     desc: "HUMAN RESOURCES",
+     status: "ACTIVE"
+    },
+    {
+     code: "002",
+     report: "PRODUCTION",
+     desc: "FACTORY",
+     status: "ACTIVE"
+    },
+    {
+     code: "003",
+     report: "ADMINISTRATION",
+     desc: "ACCOUNTING AND FINANCE",
+     status: "ACTIVE"
+    },
+    {
+     code: "004",
+     report: "RESEARCH AND DEVELOPMENT",
+     desc: "FACTORY",
+     status: "ACTIVE"
+    },
+    
+   ]
 
   const loadData = async () => {
     setLoading(true)
@@ -217,9 +258,9 @@ const Department = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} dataSource={DEPARTMENTS} />
           <Modal
-                title='Add Department'
+                title='Department Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -246,7 +287,6 @@ const Department = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                   <hr></hr>

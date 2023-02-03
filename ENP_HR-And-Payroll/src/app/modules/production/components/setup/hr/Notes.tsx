@@ -1,10 +1,10 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
+import {Button, Form, Input, InputNumber, Modal, Radio, Space, Table} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 
-const DisciplinaryAction = () => {
+const Notes = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -206,7 +206,7 @@ const DisciplinaryAction = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Disciplinary Action Setup'
+                title='Note Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -256,10 +256,18 @@ const DisciplinaryAction = () => {
                     </div>
                     <div className=' mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
+                      <Radio.Group >
+                        <Radio value={1}>Disciplinary Action</Radio>
+                        <Radio value={2}>Grievances</Radio>
+                        
+                      </Radio.Group>
+                    </div>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Active </option>
-                        <option value="2">Not Active </option>
+                        <option value="1">ACTIVE </option>
+                        <option value="2">INACTIVE</option>
                       </select>
                     </div>
                   </div>
@@ -271,4 +279,4 @@ const DisciplinaryAction = () => {
   )
 }
 
-export {DisciplinaryAction}
+export {Notes}

@@ -4,7 +4,7 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 
-const ActivityTable = () => {
+const NoteEntry = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -47,7 +47,60 @@ const ActivityTable = () => {
   const columns: any = [
    
     {
-      title: 'Name',
+      title: 'Employee ID',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Reference #',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Note Category',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    
+    {
+      title: 'Comments/ Description',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Date',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -178,11 +231,12 @@ const ActivityTable = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
+          <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Note Entry'
                 open={isModalOpen}
                 onCancel={handleCancel}
+                width="700px"
                 closable={true}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
@@ -210,14 +264,49 @@ const ActivityTable = () => {
                     title='Add Service'
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
+                    <hr></hr>
+                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Reference #</label>
+                        <input type="text" name="ref"  className="form-control form-control-solid"/>
+                      </div>
+                      
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Note Type</label>
+                        <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                          <option value="1">DISCIPLINARY ACTION</option>
+                          <option value="2">GRIEVANCE </option>
+                        </select>
+                      </div>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
+                        <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                          <option value="1">001 - ANANI </option>
+                          <option value="2">002 - OFOSU </option>
+                          <option value="3">003 - KOFFIE </option>
+                          <option value="4">004 - KOFFIE </option>
+                          <option value="5">005 - ADJEI </option>
+                        </select>
+                      </div>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Note Category</label>
+                        <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                          <option value="1">001 - ANANI </option>
+                          <option value="2">002 - OFOSU </option>
+                          <option value="3">003 - KOFFIE </option>
+                          <option value="4">004 - KOFFIE </option>
+                          <option value="5">005 - ADJEI </option>
+                        </select>
+                      </div>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Comments</label>
+                        {/* <input type="text" name="topic"  className="form-control form-control-solid"/> */}
+                        <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea>
+                      </div>
+                    </div>
                 </Form>
             </Modal>
         </div>
@@ -226,4 +315,4 @@ const ActivityTable = () => {
   )
 }
 
-export {ActivityTable}
+export {NoteEntry}

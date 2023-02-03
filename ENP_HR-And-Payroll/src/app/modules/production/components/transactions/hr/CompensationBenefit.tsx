@@ -110,16 +110,16 @@ const CompensationBenefit = () => {
     deleteData(element)
   }
 
-  const columns: ColumnsType<DataType> = [
+  const columns: any = [
    
     {
       title: 'Employee ID',
-      dataIndex: 'id',
+      dataIndex: 'empl_code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.empl_code > b.empl_code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.empl_code > a.empl_code) {
           return -1
         }
         return 0
@@ -140,12 +140,12 @@ const CompensationBenefit = () => {
     },
     {
       title: 'Last Name',
-      dataIndex: 'sname',
+      dataIndex: 'lname',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.lname > b.lname) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.lname > a.lname) {
           return -1
         }
         return 0
@@ -223,6 +223,119 @@ const CompensationBenefit = () => {
     },
   ]
 
+  const COMPENSATIONANDBENEFITS=[
+     
+    {
+     empl_code: "001",
+     unit: "manager",
+     fname: "MICHAEL ",
+     lname: "ANANI",
+     dob: "12\/07\/1990",
+     gender: "MALE",
+     qyt: "YES",
+     wkskills: "YES ",
+     exp: "YES",
+     ref: "NO",
+     socskill: "YES"
+    },
+    {
+     empl_code: "002",
+     unit: "junior staff",
+     fname: "FRANCIS",
+     lname: "OFOSU",
+     dob: "07\/11\/1989",
+     gender: "MALE",
+     qyt: "YES",
+     wkskills: "YES ",
+     exp: "NO",
+     ref: "YES",
+     socskill: "YES"
+    },
+    {
+     empl_code: "003",
+     unit: "senior staff",
+     fname: "MABEL",
+     lname: "KOFFIE",
+     dob: "11\/11\/1993",
+     gender: "FEMALE",
+     qyt: "YES",
+     wkskills: "YES ",
+     exp: "YES",
+     ref: "YES",
+     phone:"0249923582",
+     socskill: "YES"
+    },
+    {
+     empl_code: "004",
+     unit: "junior staff",
+     fname: "FRANK",
+     lname: "KORAMKYI",
+     dob: "29\/06\/1991",
+     gender: "MALE",
+     qyt: "YES",
+     wkskills: "NO",
+     exp: "YES",
+     phone:"0249920434",
+     ref: "YES",
+     socskill: "NO"
+    },
+    {
+     empl_code: "005",
+     unit: "manager",
+     fname: "MARY",
+     lname: "BROWN",
+     dob: "13\/01\/1985",
+     gender: "FEMALE",
+     qyt: "YES",
+     wkskills: "YES ",
+     exp: "YES",
+     phone:"0249926782",
+     ref: "YES",
+     socskill: "YES"
+    },
+    {
+     empl_code: "006",
+     unit: "senior staff",
+     fname: "KEZIAH",
+     lname: "DOE",
+     dob: "09\/12\/1992",
+     gender: "FEMALE",
+     qyt: "YES",
+     wkskills: "YES ",
+     phone:"0249660482",
+     exp: "YES",
+     ref: "YES",
+     socskill: "YES"
+    },
+    {
+     empl_code: "007",
+     unit: "manager",
+     fname: "COMFORT",
+     lname: "BLESSING",
+     dob: "15\/09\/1985",
+     gender: "FEMALE",
+     qyt: "YES",
+     wkskills: "YES ",
+     phone:"0243420482",
+     exp: "YES",
+     ref: "YES"
+    },
+    {
+     empl_code: "008",
+     unit: "junior staff",
+     fname: "ESTHER",
+     lname: "ADJEI",
+     dob: "19\/02\/1983",
+     gender: "FEMALE",
+     qyt: "YES",
+     wkskills: "YES ",
+     phone:"0249920482",
+     exp: "YES",
+     ref: "YES",
+     socskill: "YES"
+    }
+   ]
+
   const loadData = async () => {
     setLoading(true)
     try {
@@ -234,49 +347,49 @@ const CompensationBenefit = () => {
     }
   }
 
-  interface DataType {
-    key: React.Key;
-    id: string;
-    fname:string, 
-    sname:string; 
-    dob:string; 
-    gender:string;
-    phone:string;
-    qualification: string;
-  }
-  const  data: DataType[] = [
+  // interface DataType {
+  //   key: React.Key;
+  //   id: string;
+  //   fname:string, 
+  //   sname:string; 
+  //   dob:string; 
+  //   gender:string;
+  //   phone:string;
+  //   qualification: string;
+  // }
+  // const  data: DataType[] = [
 
-    {
-      key:'1',
-      id:'1',
-      fname:"Philip", 
-      sname:"Aherto", 
-      dob:"27-07-2000", 
-      gender:"Male", 
-      phone:"0249920482",
-      qualification: "Degree"
-    },
-    {
-      key:'2',
-      id:'2',
-      fname:"Kwame", 
-      sname:"Kekeli", 
-      dob:"27-07-2002", 
-      gender:"Male", 
-      phone:"0249560482",
-      qualification: "Degree"
-    },
-    {
-      key:'3',
-      id:'3',
-      fname:"Nana", 
-      sname:"Phils", 
-      dob:"27-07-2006", 
-      gender:"Male", 
-      phone:"0249920122",
-      qualification: "HND"
-    }
-  ];
+  //   {
+  //     key:'1',
+  //     id:'1',
+  //     fname:"Philip", 
+  //     sname:"Aherto", 
+  //     dob:"27-07-2000", 
+  //     gender:"Male", 
+  //     phone:"0249920482",
+  //     qualification: "Degree"
+  //   },
+  //   {
+  //     key:'2',
+  //     id:'2',
+  //     fname:"Kwame", 
+  //     sname:"Kekeli", 
+  //     dob:"27-07-2002", 
+  //     gender:"Male", 
+  //     phone:"0249560482",
+  //     qualification: "Degree"
+  //   },
+  //   {
+  //     key:'3',
+  //     id:'3',
+  //     fname:"Nana", 
+  //     sname:"Phils", 
+  //     dob:"27-07-2006", 
+  //     gender:"Male", 
+  //     phone:"0249920122",
+  //     qualification: "HND"
+  //   }
+  // ];
 
   useEffect(() => {
     loadData()
@@ -342,8 +455,10 @@ const CompensationBenefit = () => {
             <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              <option value="1">ASSISTANT ACCOUNTANT </option>
+              <option value="2">ACCOUNTS OFFICER </option>
+              <option value="3">HUMAN RESOURCE MANAGER </option>
+              <option value="4">SALES PERSONNEL 1 </option>
             </select>
           </div>
 
@@ -379,7 +494,7 @@ const CompensationBenefit = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={COMPENSATIONANDBENEFITS} />
           {/* Add form */}
           <Modal
                 title='Employee Details'
@@ -418,16 +533,20 @@ const CompensationBenefit = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">test1 </option>
-                        <option value="2">test2 </option>
+                        <option value="1">001 - ANANI </option>
+                        <option value="2">002 - OFOSU </option>
+                        <option value="3">003 - KOFFIE </option>
+                        <option value="4">004 - KOFFIE </option>
+                        <option value="5">005 - ADJEI </option>
                       </select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Unit</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">test1 </option>
-                        <option value="2">test2 </option>
+                        <option value="1">MANAGER </option>
+                        <option value="2">JUNIOR STAFF</option>
+                        <option value="3">SENIOR STAFF </option>
                       </select>
                     </div>
                   </div>
@@ -450,15 +569,15 @@ const CompensationBenefit = () => {
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Male </option>
-                        <option value="2">Female </option>
+                        <option value="1">MALE </option>
+                        <option value="2">FEMALE </option>
                       </select>
                     </div>
                   </div>
                   <hr></hr>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
-                        <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Qualification</label>
+                        <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
                         <Radio.Group onChange={onRadioChange} value={radioValue}>
                           <Radio value={1}>Yes</Radio>
                           <Radio value={2}>No</Radio>
@@ -466,7 +585,7 @@ const CompensationBenefit = () => {
                       <br></br>
                       <br></br>
                       <br></br>
-                      <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Work Skills</label>
+                      <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Allowance</label>
                       <Radio.Group onChange={onRadio1Change} value={radio1Value}>
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
@@ -476,7 +595,7 @@ const CompensationBenefit = () => {
                       <br></br>
                       <br></br>
                       <br></br>
-                      <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Experiences </label>
+                      <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Bonus </label>
                       <Radio.Group onChange={onRadio2Change} value={radio2Value}>
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
@@ -485,7 +604,7 @@ const CompensationBenefit = () => {
                       <br></br>
                       <br></br>
                       <br></br>
-                      <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Reference</label>
+                      <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Health Insurance</label>
                       <Radio.Group onChange={onRadio3Change} value={radio3Value}>
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
@@ -494,7 +613,25 @@ const CompensationBenefit = () => {
                       <br></br>
                       <br></br>
                       <br></br>
-                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Social Skills</label>
+                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
+                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
+                        <Radio value={1}>Yes</Radio>
+                        <Radio value={2}>No</Radio>
+                        
+                      </Radio.Group>
+                      <br></br>
+                      <br></br>
+                      <br></br>
+                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Professional Development </label>
+                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
+                        <Radio value={1}>Yes</Radio>
+                        <Radio value={2}>No</Radio>
+                        
+                      </Radio.Group>
+                      <br></br>
+                      <br></br>
+                      <br></br>
+                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Company Property</label>
                       <Radio.Group onChange={onRadio4Change} value={radio4Value}>
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
@@ -502,15 +639,22 @@ const CompensationBenefit = () => {
                       </Radio.Group>
                     </div>
                     <div className='col-6 mb-3'>  
-                        <input type="text" name="fname"  className="form-control form-control-solid"/>
+                        <input type="text" name="fname1"  className="form-control form-control-solid"/>
                         <br></br>
-                        <input type="text" name="fname"  className="form-control form-control-solid"/>
+                        <input type="text" name="fname2"  className="form-control form-control-solid"/>
                         <br></br>
-                        <input type="text" name="fname"  className="form-control form-control-solid"/>
+                        <input type="text" name="fname3"  className="form-control form-control-solid"/>
                         <br></br>
-                        <input type="text" name="fname"  className="form-control form-control-solid"/>
+                        <input type="text" name="fname4"  className="form-control form-control-solid"/>
                         <br></br>
-                        <input type="text" name="fname"  className="form-control form-control-solid"/>
+                       
+                        <input type="text" name="fname5"  className="form-control form-control-solid"/>
+                        <br></br>
+                       
+                        <input type="text" name="fname6"  className="form-control form-control-solid"/>
+                        <br></br>
+                        
+                        <input type="text" name="fname7"  className="form-control form-control-solid"/>
                     </div>
                   </div>
                 </Form>

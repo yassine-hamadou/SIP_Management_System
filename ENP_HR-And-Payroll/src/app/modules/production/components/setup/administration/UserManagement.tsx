@@ -206,7 +206,7 @@ const UserManagement = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add User'
+                title='User Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -233,7 +233,6 @@ const UserManagement = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                     <Form.Item

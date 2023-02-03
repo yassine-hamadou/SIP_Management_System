@@ -180,7 +180,7 @@ const Overtime = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Overtime'
+                title='Overtime Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -207,7 +207,6 @@ const Overtime = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                   <hr></hr>

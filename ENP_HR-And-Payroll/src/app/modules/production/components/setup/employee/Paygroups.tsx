@@ -48,12 +48,12 @@ const Paygroups = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -74,12 +74,12 @@ const Paygroups = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'name',
+      dataIndex: 'status',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.status > b.status) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.status > a.status) {
           return -1
         }
         return 0
@@ -108,6 +108,24 @@ const Paygroups = () => {
       
     },
   ]
+
+  const PAYGROUP=[
+    {
+     code: "001",
+     name: "MANAGEMENT",
+     status: "ACTIVE"
+    },
+    {
+     code: "002",
+     name: "CASUAL",
+     status: "ACTIVE"
+    },
+    {
+     code: "003",
+     name: "GENERAL",
+     status: "ACTIVE"
+    }
+   ]
 
   const loadData = async () => {
     setLoading(true)
@@ -204,9 +222,9 @@ const Paygroups = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns}  dataSource={PAYGROUP}/>
           <Modal
-                title='Add Paygroup'
+                title='Paygroup Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -233,7 +251,6 @@ const Paygroups = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                   <hr></hr>

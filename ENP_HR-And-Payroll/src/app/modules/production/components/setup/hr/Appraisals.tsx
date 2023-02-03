@@ -206,7 +206,7 @@ const Appraisals = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Appraisal'
+                title='Appraisal Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

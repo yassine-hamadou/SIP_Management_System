@@ -171,7 +171,6 @@ const Audit = () => {
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
-
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
@@ -180,7 +179,7 @@ const Audit = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Audit'
+                title='Audit Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -207,7 +206,6 @@ const Audit = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                     <Form.Item

@@ -48,12 +48,12 @@ const Nationality = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -95,6 +95,34 @@ const Nationality = () => {
       
     },
   ]
+
+  const NATIONALITY=[
+    {
+     code: "001",
+     name: "GHANAIAN",
+     status: "ACTIVE"
+    },
+    {
+     code: "002",
+     name: "NIGERIAN",
+     status: "ACTIVE"
+    },
+    {
+     code: "003",
+     name: "TOGOLESE",
+     status: "ACTIVE"
+    },
+    {
+     code: "004",
+     name: "AMERICAN",
+     status: "ACTIVE"
+    },
+    {
+     code: "005",
+     name: "CANADIAN",
+     status: "ACTIVE"
+    }
+   ]
 
   const loadData = async () => {
     setLoading(true)
@@ -191,9 +219,9 @@ const Nationality = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} dataSource={NATIONALITY} />
           <Modal
-                title='Add Nationality'
+                title='Nationality Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}

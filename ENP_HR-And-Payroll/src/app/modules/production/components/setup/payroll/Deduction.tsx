@@ -48,12 +48,12 @@ const Deduction = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -74,25 +74,38 @@ const Deduction = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'name',
+      dataIndex: 'desc',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.desc > b.desc) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.desc > a.desc) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Type',
-      dataIndex: 'name',
+      title: 'Category',
+      dataIndex: 'cat',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.cat > b.cat) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.cat > a.cat) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Type of Amount',
+      dataIndex: 'tamount',
+      sorter: (a: any, b: any) => {
+        if (a.tamount > b.tamount) {
+          return 1
+        }
+        if (b.tamount > a.tamount) {
           return -1
         }
         return 0
@@ -100,25 +113,64 @@ const Deduction = () => {
     },
     {
       title: 'Amount',
-      dataIndex: 'name',
+      dataIndex: 'amount',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.amount > b.amount) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.amount > a.amount) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Amount Number',
-      dataIndex: 'name',
+      title: 'Account Number',
+      dataIndex: 'accnum',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.accnum > b.accnum) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.accnum > a.accnum) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Currency',
+      dataIndex: 'currency',
+      sorter: (a: any, b: any) => {
+        if (a.currency > b.currency) {
+          return 1
+        }
+        if (b.currency > a.currency) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Tax Type',
+      dataIndex: 'taxtype',
+      sorter: (a: any, b: any) => {
+        if (a.taxtype > b.taxtype) {
+          return 1
+        }
+        if (b.taxtype > a.taxtype) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Accrued',
+      dataIndex: 'accrued',
+      sorter: (a: any, b: any) => {
+        if (a.accrued > b.accrued) {
+          return 1
+        }
+        if (b.accrued > a.accrued) {
           return -1
         }
         return 0
@@ -147,6 +199,80 @@ const Deduction = () => {
       
     },
   ]
+
+  const DEDUCTION=[
+    {
+     code: "001",
+     name: "CLOT",
+     desc: "CLOTHING ALLOWANCE",
+     cat: "PERMANENT",
+     tamount: "FORMULA",
+     amount: 0,
+     accnum: 1234560,
+     ptype: "MONTHLY",
+     pinterval: "MONTHLY",
+     currency: "GHS",
+     accrued: "NO",
+     taxtype: "TAX TABLE"
+    },
+    {
+     code: "002",
+     name: "ACCOM",
+     desc: "ACCOMODATION ALLOWANCE",
+     cat: "SERVICE",
+     tamount: "PERCENTAGE OF GROSS",
+     amount: 0,
+     accnum: 1234561,
+     ptype: "MONTHLY",
+     pinterval: "MONTHLY",
+     currency: "GHS",
+     accrued: "NO",
+     taxtype: "TAX FORMULA"
+    },
+    {
+     code: "003",
+     name: "MED",
+     desc: "MEDICAL ALLOWANCE",
+     cat: "PERMANENT",
+     tamount: "VARYING AMOUNT",
+     amount: 0,
+     accnum: 1234562,
+     ptype: "AMOUNT",
+     pinterval: "AMOUNT",
+     currency: "GHS",
+     accrued: "NO",
+     taxtype: "NON TAXABLE"
+    },
+    {
+     code: "004",
+     name: "TRAV",
+     desc: "TRAVELLING ALLOWANCE",
+     cat: "SENIOR STAFF",
+     tamount: "VARYING AMOUNT",
+     amount: 0,
+     accnum: 1234563,
+     ptype: "WEEKLY",
+     pinterval: "WEEKLY",
+     currency: "GHS",
+     accrued: "NO",
+     taxtype: "TAX FORMULA"
+    },
+    {
+     code: "005",
+     name: "RND",
+     desc: "RESEARCH ALLOWANCE",
+     cat: "SENIOR STAFF",
+     tamount: "PERCENTAGE OF BASIC",
+     amount: 0,
+     accnum: 1234564,
+     ptype: "ANNUAL",
+     pinterval: "ANNUAL",
+     currency: "GHS",
+     accrued: "NO",
+     taxtype: "TAX RATE"
+    }
+   ]
+   
 
   const loadData = async () => {
     setLoading(true)
@@ -243,7 +369,7 @@ const Deduction = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns}  dataSource={DEDUCTION}/>
           <Modal
                 title='Deduction Setup'
                 open={isModalOpen}
@@ -273,19 +399,8 @@ const Deduction = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    
                     onFinish={onFinish}
                 >
-                    {/* <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item> */}
-
-
                   <hr></hr>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-7'>
@@ -318,8 +433,9 @@ const Deduction = () => {
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Yes</option>
-                        <option value="2">No</option>
+                        <option value="1">FORMULA</option>
+                        <option value="2">PERCENTAGE OF GROSS</option>
+                        <option value="3">PERCENTAGE OF BASIC</option>
                       </select>
                     </div>
                     <div className='col-6 mb-7'>
@@ -338,8 +454,11 @@ const Deduction = () => {
                       {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Monthly</option>
-                        <option value="2">Yearly</option>
+                        <option value="1">Jan-23</option>
+                        <option value="2">Feb-23</option>
+                        <option value="3">Mar-23</option>
+                        <option value="4">Apr-23</option>
+                        <option value="5">May-23</option>
                       </select>
                     </div>
                   </div>
@@ -357,8 +476,10 @@ const Deduction = () => {
                       {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Cedis</option>
-                        <option value="2">Dollar</option>
+                        <option value="1">GHC</option>
+                        <option value="2">GBP</option>
+                        <option value="3">AUD</option>
+                        <option value="4">USD</option>
                       </select>
                     </div>
                   </div>
@@ -368,8 +489,8 @@ const Deduction = () => {
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Accrued</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Yes</option>
-                        <option value="2">No</option>
+                        <option value="1">YES</option>
+                        <option value="2">NO</option>
                       </select>
                     </div>
                     <div className='col-6 mb-7'>
@@ -377,8 +498,9 @@ const Deduction = () => {
                       {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">test1 </option>
-                        <option value="2">test2 </option>
+                        <option value="1">TAX TABLE </option>
+                        <option value="2">TAX FORMULA </option>
+                        <option value="3">NON TAXABLE </option>
                       </select>
                     </div>
                   </div>
@@ -387,21 +509,8 @@ const Deduction = () => {
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
                       <input type="date" name="period"  className="form-control form-control-solid"/>
 
-                      {/* <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">Yes</option>
-                        <option value="2">No</option>
-                      </select> */}
                     </div>
-                    {/* <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">isTaxable</label>
-                   
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option>select</option>
-                        <option value="1">Yes </option>
-                        <option value="2">No </option>
-                      </select>
-                    </div> */}
+                    
                   </div>
                 </Form>
             </Modal>

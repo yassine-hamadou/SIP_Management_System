@@ -318,8 +318,8 @@ const RecruitmentSelection = () => {
       }}
     >
 
-      <div style={{padding: "0px 0px 40px 0px"}}  className='col-12'>
-        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+      <div style={{padding: "0px 0px 0px 0px"}}  className='col-12 row'>
+        <div style={{padding: "20px 20px 0 20px"}} className='col-6 row mb-0'>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Reference#</label>
             <input type="text" name="ref" className="form-control form-control-solid" />
@@ -341,21 +341,24 @@ const RecruitmentSelection = () => {
             <input type="date" name="edate" className="form-control form-control-solid" />
           </div>
         </div>
-        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+        <div style={{padding: "20px 20px 0 20px"}} className='col-6 row mb-0'>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              <option value="1">MANAGEMENT </option>
+              <option value="2">CASUAL </option>
+              <option value="3">GENERAL  </option>
             </select>
           </div>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              <option value="1">PERMANENT </option>
+              <option value="2">SERVICE </option>
+              <option value="3">CONTRACT </option>
+              <option value="4">SENIOR STAFF </option>
             </select>
           </div>
         </div>
@@ -364,16 +367,19 @@ const RecruitmentSelection = () => {
             <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              <option value="1">ASSISTANT ACCOUNTANT </option>
+              <option value="2">ACCOUNTS OFFICER </option>
+              <option value="3">HUMAN RESOURCE MANAGER </option>
+              <option value="4">SALES PERSONNEL 1 </option>
             </select>
           </div>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              <option value="1">manager </option>
+              <option value="2">jsenior staff</option>
+              <option value="3">junior staff </option>
             </select>
           </div>
         </div>
@@ -558,7 +564,7 @@ const RecruitmentSelection = () => {
                   </div>
                   <div className='col-6 mb-3'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
-                    <input type="text" name="name"  className="form-control form-control-solid"/>
+                    <input type="email" name="name"  className="form-control form-control-solid"/>
                   </div>
                 </div>
                 <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
@@ -569,6 +575,7 @@ const RecruitmentSelection = () => {
                       <Radio value={2}>2</Radio>
                       <Radio value={3}>3</Radio>
                       <Radio value={4}>4</Radio>
+                      <Radio value={5}>5</Radio>
                     </Radio.Group>
                     <br></br>
                     <br></br>
@@ -578,6 +585,7 @@ const RecruitmentSelection = () => {
                       <Radio value={2}>2</Radio>
                       <Radio value={3}>3</Radio>
                       <Radio value={4}>4</Radio>
+                      <Radio value={5}>5</Radio>
                     </Radio.Group>
                   
                     <br></br>
@@ -588,6 +596,7 @@ const RecruitmentSelection = () => {
                       <Radio value={2}>2</Radio>
                       <Radio value={3}>3</Radio>
                       <Radio value={4}>4</Radio>
+                      <Radio value={5}>5</Radio>
                     </Radio.Group>
                     <br></br>
                     <br></br>
@@ -597,6 +606,7 @@ const RecruitmentSelection = () => {
                       <Radio value={2}>2</Radio>
                       <Radio value={3}>3</Radio>
                       <Radio value={4}>4</Radio>
+                      <Radio value={5}>5</Radio>
                     </Radio.Group>
                     <br></br>
                     <br></br>
@@ -606,10 +616,11 @@ const RecruitmentSelection = () => {
                       <Radio value={2}>2</Radio>
                       <Radio value={3}>3</Radio>
                       <Radio value={4}>4</Radio>
+                      <Radio value={5}>5</Radio>
                     </Radio.Group>
                   </div>
-                  <div className='col-6 mb-3' style={{padding: "30px 20px 0 20px"}}>  
-                  
+                  <div className='col-6 mb-3' style={{padding: "0px 20px 0 20px"}}>  
+                    <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea>
                   </div>
                 </div>
               </Form>

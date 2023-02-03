@@ -206,7 +206,7 @@ const SalaryUpgrade = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Salary Upgrade'
+                title='Salary Upgrade Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -233,7 +233,6 @@ const SalaryUpgrade = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                   <hr></hr>

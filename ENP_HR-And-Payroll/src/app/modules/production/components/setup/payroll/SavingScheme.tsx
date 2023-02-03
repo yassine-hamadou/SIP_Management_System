@@ -48,12 +48,12 @@ const SavingScheme = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -74,12 +74,12 @@ const SavingScheme = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'name',
+      dataIndex: 'desc',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.desc > b.desc) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.desc > a.desc) {
           return -1
         }
         return 0
@@ -98,27 +98,28 @@ const SavingScheme = () => {
         return 0
       },
     },
+    
     {
-      title: 'Amount',
-      dataIndex: 'name',
+      title: 'Employer Account No.',
+      dataIndex: 'employerAcc',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.employerAcc > b.employerAcc) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.employerAcc > a.employerAcc) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Employer Account No.',
-      dataIndex: 'name',
+      title: 'Employer Amount',
+      dataIndex: 'employerAmount',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.employerAmount > b.employerAmount) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.employerAmount > a.employerAmount) {
           return -1
         }
         return 0
@@ -126,12 +127,25 @@ const SavingScheme = () => {
     },
     {
       title: 'Employee Account No.',
-      dataIndex: 'name',
+      dataIndex: 'employeeAcc',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.employeeAcc > b.employeeAcc) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.employeeAcc > a.employeeAcc) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Employee Amount',
+      dataIndex: 'employeeAmount',
+      sorter: (a: any, b: any) => {
+        if (a.employeeAmount > b.employeeAmount) {
+          return 1
+        }
+        if (b.employeeAmount > a.employeeAmount) {
           return -1
         }
         return 0
@@ -161,6 +175,34 @@ const SavingScheme = () => {
     },
   ]
 
+
+  const SAVINGS_SCHEME=[
+    {
+     code: "001",
+     name: "INTPF",
+     desc: "INTERNAL PROVIDENT FUND",
+     "Employer Type": "PERMANENT",
+     employerAcc: 238976,
+     employerAmount: 0.06,
+     "Employee Type": "PERMANENT",
+     employeeAcc: 774323,
+     employeeAmount: 0.04,
+     "Statutory": "YES"
+    },
+    {
+     code: "002",
+     name: "FUNF",
+     desc: "FUNERAL FUND",
+     "Employer Type": "PERMANENT",
+     employerAcc: 238976,
+     employerAmount: 0.1,
+     "Employee Type": "PERMANENT",
+     employeeAcc: 774323,
+     employeeAmount: 0.1,
+     "Statutory": "NO"
+    }
+    
+   ]
   const loadData = async () => {
     setLoading(true)
     try {
@@ -256,7 +298,7 @@ const SavingScheme = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns}  dataSource={SAVINGS_SCHEME}/>
           <Modal
             title='SavingScheme Setup'
             open={isModalOpen}
@@ -308,10 +350,9 @@ const SavingScheme = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Employer Type</label>
                     {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                     <select className="form-select form-select-solid" aria-label="Select example">
-                      <option>Open this select menu</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                      <option>select </option>
+                      <option value="1">PERMANENT</option>
+                     
                     </select>
                   </div>
                 </div>
@@ -330,10 +371,9 @@ const SavingScheme = () => {
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Type</label>
                     {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                     <select className="form-select form-select-solid" aria-label="Select example">
-                      <option>Open this select menu</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                      <option>select</option>
+                      <option value="1">PERMANENT</option>
+                      
                     </select>
                   </div>
                   <div className='col-6 mb-7'>
@@ -350,9 +390,9 @@ const SavingScheme = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Statutory</label>
                     {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                     <select className="form-select form-select-solid" aria-label="Select example">
-                      <option>Open this select menu</option>
-                      <option value="1">Yes</option>
-                      <option value="2">No</option>
+                      <option>select</option>
+                      <option value="1">YES</option>
+                      <option value="2">NO</option>
                     </select>
                   </div>
                 </div>

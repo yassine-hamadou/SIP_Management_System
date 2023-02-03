@@ -233,7 +233,6 @@ const Leaves = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    // title='Add Service'
                     onFinish={onFinish}
                 >
                  

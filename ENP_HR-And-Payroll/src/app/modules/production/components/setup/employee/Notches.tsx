@@ -60,31 +60,31 @@ const Notches = () => {
       },
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: 'Salary Upgrade',
+      dataIndex: 'salgrade',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.salgrade > b.salgrade) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.salgrade > a.salgrade) {
           return -1
         }
         return 0
       },
     },
-    {
-      title: 'Status',
-      dataIndex: 'name',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'name',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.name > b.name) {
+    //       return 1
+    //     }
+    //     if (b.name > a.name) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
 
     {
       title: 'Action',
@@ -108,6 +108,73 @@ const Notches = () => {
       
     },
   ]
+
+  const NOTCHES=[
+    {
+     name: "NOTCH 1",
+     salgrade: "ASSISTANT ACCONTANT"
+    },
+    {
+     name: "NOTCH 2",
+     salgrade: "ASSISTANT ACCONTANT"
+    },
+    {
+     name: "NOTCH 3",
+     salgrade: "ASSISTANT ACCONTANT"
+    },
+    {
+     name: "NOTCH 4",
+     salgrade: "ASSISTANT ACCONTANT"
+    },
+    {
+     name: "NOTCH 1",
+     salgrade: "ACCOUNT OFFICER"
+    },
+    {
+     name: "NOTCH 2",
+     salgrade: "ACCOUNT OFFICER"
+    },
+    {
+     name: "NOTCH 3",
+     salgrade: "ACCOUNT OFFICER"
+    },
+    {
+     name: "NOTCH 1",
+     salgrade: "HUMAN RESOURCE MANAGER"
+    },
+    {
+     name: "NOTCH 2",
+     salgrade: "HUMAN RESOURCE MANAGER"
+    },
+    {
+     name: "NOTCH 3",
+     salgrade: "HUMAN RESOURCE MANAGER"
+    },
+    {
+     name: "NOTCH 1",
+     salgrade: "SALES REP ENTRY"
+    },
+    {
+     name: "NOTCH 2",
+     salgrade: "SALES REP ENTRY"
+    },
+    {
+     name: "NOTCH 3",
+     salgrade: "SALES REP ENTRY"
+    },
+    {
+     name: "NOTCH 4",
+     salgrade: "SALES REP ENTRY"
+    },
+    {
+     name: "NOTCH 5",
+     salgrade: "SALES REP ENTRY"
+    },
+    {
+     name: "NOTCH 1",
+     salgrade: "FACTORY MANAGER"
+    }
+   ]
 
   const loadData = async () => {
     setLoading(true)
@@ -204,9 +271,9 @@ const Notches = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} dataSource={NOTCHES}/>
           <Modal
-                title='Add Notches'
+                title='Notches Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -233,7 +300,6 @@ const Notches = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                    <hr></hr>
