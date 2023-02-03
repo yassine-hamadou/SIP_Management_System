@@ -11,7 +11,7 @@ type Props = {
   chartHeight: string
 }
 
-const HRChart: React.FC<Props> = ({className, chartColor, chartHeight}) => {
+const TestChart: React.FC<Props> = ({className, chartColor, chartHeight}) => {
   const chartRef = useRef<HTMLDivElement | null>(null)
   const {mode} = useThemeMode()
   const refreshChart = () => {
@@ -72,21 +72,19 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
       fontFamily: 'inherit',
       type: 'bar',
       height: 450,
-      stacked: true,
-      toolbar: {
-        show: false,
-      },
+      
+      
     },
     plotOptions: {
       bar: {
         horizontal: false,
         columnWidth: '50%',
-        borderRadius: 5,
+        
       },
     },
     legend: {
-        position: 'top',
-        offsetY: 40
+        position: 'bottom',
+        // offsetY: 0
     },
     dataLabels: {
       enabled: false,
@@ -98,27 +96,21 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
     },
     xaxis: {
       categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
-      labels: {
-        style: {
-          colors: labelColor,
-          fontSize: '12px',
-        },
-      },
+
     },
     yaxis: {
-      labels: {
-        style: {
-          colors: labelColor,
-          fontSize: '12px',
-        },
+        title: {
+          text: 'Per Month'
+        }
       },
-    },
+    // yaxis: {
+    //   labels: {
+    //     style: {
+    //       colors: labelColor,
+    //       fontSize: '12px',
+    //     },
+    //   },
+    // },
     fill: {
       type: 'solid',
     },
@@ -150,11 +142,11 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
       },
       y: {
         formatter: function (val) {
-          return + val + '%'
+          return  val + ' %'
         },
       },
     },
-    colors: ["#445C3C", "#FDA77F","#C9D99E"],
+    colors: ["#125B50", "#F8B400","#FF6363"],
     grid: {
       padding: {
         top: 10,
@@ -170,4 +162,4 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
   }
 }
 
-export {HRChart}
+export {TestChart}

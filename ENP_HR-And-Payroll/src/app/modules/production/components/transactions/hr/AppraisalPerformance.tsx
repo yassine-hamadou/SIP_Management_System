@@ -22,6 +22,11 @@ const AppraisalPerformance = () => {
   const [radio2Value, setRadio2Value] = useState();
   const [radio3Value, setRadio3Value] = useState();
   const [radio4Value, setRadio4Value] = useState();
+  const [activeTab, setActiveTab] = useState("tab1");
+
+  const handleTabClick = (tab:any) => {
+    setActiveTab(tab);
+  };
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -316,6 +321,21 @@ const AppraisalPerformance = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
+      <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Start Period</label>
+            <input type="date" name="ref" className="form-control form-control-solid" />
+          </div>
+
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">End Period</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              <option value="1">test1 </option>
+              <option value="2">test2 </option>
+            </select>
+          </div>
+        </div>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
@@ -425,6 +445,42 @@ const AppraisalPerformance = () => {
                     </div>
                   </div>
                 
+                  <hr></hr>
+                 
+                 <div>
+                  <div style={{display:"flex", }} className="tabs">
+                    <div
+                      className={`tab ${activeTab === "tab1" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab1")}
+                    >
+                      Accomplishments
+                    </div>
+
+                    <div className={`tab ${activeTab === "tab2" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab2")}
+                    >
+                      Areas of Improvements
+                    </div>
+                    <div
+                      className={`tab ${activeTab === "tab3" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab3")}
+                    >
+                      Goals for Performance
+                    </div>
+                    <div
+                      className={`tab ${activeTab === "tab4" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab4")}
+                    >
+                      Supporting Documentation
+                    </div>
+                  </div>
+                  <div className="tab-content">
+                    {activeTab === "tab1" && <div>Content for Tab 1</div>}
+                    {activeTab === "tab2" && <div>Content for Tab 2</div>}
+                    {activeTab === "tab3" && <div>Content for Tab 3</div>}
+                    {activeTab === "tab4" && <div>supporting Documentation</div>}
+                  </div>
+                </div>
                 </Form>
           </Modal>
         </div>

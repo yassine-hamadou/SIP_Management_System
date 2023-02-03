@@ -25,11 +25,7 @@ const TimeSheet = () => {
   const showModal = () => {
     setIsModalOpen(true)
   }
-  const [activeTab, setActiveTab] = useState("tab1");
 
-  const handleTabClick = (tab:any) => {
-    setActiveTab(tab);
-  };
 
   const handleOk = () => {
     setIsModalOpen(false)
@@ -86,27 +82,6 @@ const TimeSheet = () => {
     image.src = src;
     const imgWindow = window.open(src);
     imgWindow?.document.write(image.outerHTML);
-  };
-
-  const onRadioChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadioValue(e.target.value);
-  };
-  const onRadio1Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio1Value(e.target.value);
-  };
-  const onRadio2Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio2Value(e.target.value);
-  };
-  const onRadio3Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio3Value(e.target.value);
-  };
-  const onRadio4Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio4Value(e.target.value);
   };
 
   function handleDelete(element: any) {
@@ -508,36 +483,6 @@ const TimeSheet = () => {
                       </select>
                     </div>
                   </div>
-                 <hr></hr>
-                 
-                 <div>
-                  <div style={{display:"flex", }} className="tabs">
-                    <div
-                      className={`tab ${activeTab === "tab1" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab1")}
-                    >
-                      Tab 1
-                    </div>
-                    <div
-                      className={`tab ${activeTab === "tab2" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab2")}
-                    >
-                      Tab 2
-                    </div>
-                    <div
-                      className={`tab ${activeTab === "tab3" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab3")}
-                    >
-                      Tab 3
-                    </div>
-                  </div>
-                  <div className="tab-content">
-                    {activeTab === "tab1" && <div>Content for Tab 1</div>}
-                    {activeTab === "tab2" && <div>Content for Tab 2</div>}
-                    {activeTab === "tab3" && <div>Content for Tab 3</div>}
-                  </div>
-                </div>
-             
                 </Form>
           </Modal>
                 {/* Details table */}
