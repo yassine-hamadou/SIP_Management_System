@@ -3,6 +3,8 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { Link } from 'react-router-dom'
+import { DIVISION } from '../../../../../data/DummyData'
 
 const Divisions = () => {
   const [gridData, setGridData] = useState([])
@@ -48,12 +50,12 @@ const Divisions = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -74,12 +76,12 @@ const Divisions = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'name',
+      dataIndex: 'status',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.status > b.status) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.status > a.status) {
           return -1
         }
         return 0
@@ -93,9 +95,9 @@ const Divisions = () => {
       render: (_: any, record: any) => (
         <Space size='middle'>
           
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
+          <Link to={`/department/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Departments</span>
+          </Link>
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -108,6 +110,9 @@ const Divisions = () => {
       
     },
   ]
+
+
+
 
   const loadData = async () => {
     setLoading(true)
@@ -204,7 +209,7 @@ const Divisions = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} dataSource={DIVISION} />
           <Modal
                 title='Division Setup'
                 open={isModalOpen}
@@ -249,8 +254,8 @@ const Divisions = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Active </option>
-                        <option value="2">Not Active </option>
+                        <option value="1">ACTIVE</option>
+                        <option value="2">INACTIVE</option>
                       </select>
                     </div>
                   </div>

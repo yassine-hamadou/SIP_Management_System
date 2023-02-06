@@ -106,7 +106,7 @@ export function AsideMenuMain() {
         <AsideMenuItemWithSub to='#' title='Human Resource' hasBullet={true}>
           <AsideMenuItem to='setup/hr/appraisals' hasBullet={true} title='Appraisals' />
           <AsideMenuItem to='setup/hr/company-assets' hasBullet={true} title='Company Assets' />
-          <AsideMenuItem to='setup/hr/notes' hasBullet={true} title='Note Categorys' />
+          <AsideMenuItem to='setup/hr/notes' hasBullet={true} title='Note Categories' />
           <AsideMenuItem to='setup/hr/leaves' hasBullet={true} title='Leaves' />
           <AsideMenuItem to='setup/hr/medical' hasBullet={true} title='Medicals' />
           <AsideMenuItem to='setup/hr/recruitments' hasBullet={true} title='Recruitments' />
@@ -114,16 +114,16 @@ export function AsideMenuMain() {
         </AsideMenuItemWithSub>
   
         <AsideMenuItemWithSub to='#' title='Payroll' hasBullet={true}>
-          <AsideMenuItem to='setup/payroll/approval-level' hasBullet={true} title='Approval Levels' />
           <AsideMenuItem to='setup/payroll/benefit' hasBullet={true} title='Benefits' />
-          <AsideMenuItem to='setup/payroll/currency' hasBullet={true} title='Currencies' />
           <AsideMenuItem to='setup/payroll/deduction' hasBullet={true} title='Deductions' />
-          <AsideMenuItem to='setup/payroll/loan' hasBullet={true} title='Loans' />
-          {/* <AsideMenuItem to='setup/payroll/overtime' hasBullet={true} title='Overtimes' /> */}
-          <AsideMenuItem to='setup/payroll/parameter' hasBullet={true} title='Parameters' />
-          <AsideMenuItem to='setup/payroll/period' hasBullet={true} title='Periods' />
           <AsideMenuItem to='setup/payroll/saving-scheme' hasBullet={true} title='Saving Schemes' />
+          <AsideMenuItem to='setup/payroll/loan' hasBullet={true} title='Loans' />
+          <AsideMenuItem to='setup/payroll/approval-level' hasBullet={true} title='Approval Levels' />
+          <AsideMenuItem to='setup/payroll/period' hasBullet={true} title='Periods' />
+          <AsideMenuItem to='setup/payroll/currency' hasBullet={true} title='Currencies' />
+          {/* <AsideMenuItem to='setup/payroll/overtime' hasBullet={true} title='Overtimes' /> */}
           <AsideMenuItem to='setup/payroll/tax' hasBullet={true} title='Taxes'/>
+          <AsideMenuItem to='setup/payroll/parameter' hasBullet={true} title='Parameters' />
         </AsideMenuItemWithSub>
       </AsideMenuItemWithSub>      
     </>

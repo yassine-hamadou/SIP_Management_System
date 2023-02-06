@@ -48,12 +48,12 @@ const Appraisals = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -72,19 +72,19 @@ const Appraisals = () => {
         return 0
       },
     },
-    {
-      title: 'Status',
-      dataIndex: 'name',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'name',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.name > b.name) {
+    //       return 1
+    //     }
+    //     if (b.name > a.name) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
 
     {
       title: 'Action',

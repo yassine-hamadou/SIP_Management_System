@@ -620,7 +620,14 @@ const RecruitmentSelection = () => {
                     </Radio.Group>
                   </div>
                   <div className='col-6 mb-3' style={{padding: "0px 20px 0 20px"}}>  
-                    <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea>
+                    {/* <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea> */}
+                    {/* <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label> */}
+                      <input type="phone" name="name"  className="form-control form-control-solid"/>
+                      <br></br>
+                    {/* <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label> */}
+                      <input type="phone" name="name"  className="form-control form-control-solid"/>
+                    {/* <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label> */}
+                      <input type="phone" name="name"  className="form-control form-control-solid"/>
                   </div>
                 </div>
               </Form>

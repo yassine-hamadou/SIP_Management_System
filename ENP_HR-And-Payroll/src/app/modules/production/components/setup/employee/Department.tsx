@@ -3,6 +3,8 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { DEPARTMENTS, DIVISION } from '../../../../../data/DummyData'
 
 const Department = () => {
   const [gridData, setGridData] = useState([])
@@ -11,9 +13,10 @@ const Department = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  let [itemName, setItemName] = useState<any>("")
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const param:any  = useParams();
+  const navigate = useNavigate();
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -39,8 +42,6 @@ const Department = () => {
     }
   }
 
-  
-
   function handleDelete(element: any) {
     deleteData(element)
   }
@@ -59,6 +60,19 @@ const Department = () => {
         return 0
       },
     },
+    // {
+    //   title: 'Name',
+    //   dataIndex: 'name',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.name > b.name) {
+    //       return 1
+    //     }
+    //     if (b.name > a.name) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
       title: 'Name',
       dataIndex: 'name',
@@ -67,19 +81,6 @@ const Department = () => {
           return 1
         }
         if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Description',
-      dataIndex: 'desc',
-      sorter: (a: any, b: any) => {
-        if (a.desc > b.desc) {
-          return 1
-        }
-        if (b.desc > a.desc) {
           return -1
         }
         return 0
@@ -119,9 +120,9 @@ const Department = () => {
       render: (_: any, record: any) => (
         <Space size='middle'>
           
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
+          <Link to={`/units/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Units</span>
+          </Link>
           <a href='#' className='btn btn-light-warning btn-sm'>
             Details
           </a>
@@ -135,34 +136,6 @@ const Department = () => {
     },
   ]
 
-  const DEPARTMENTS=[
-    {
-     code: "001",
-     report: "HEADOFFICE",
-     desc: "HUMAN RESOURCES",
-     status: "ACTIVE"
-    },
-    {
-     code: "002",
-     report: "PRODUCTION",
-     desc: "FACTORY",
-     status: "ACTIVE"
-    },
-    {
-     code: "003",
-     report: "ADMINISTRATION",
-     desc: "ACCOUNTING AND FINANCE",
-     status: "ACTIVE"
-    },
-    {
-     code: "004",
-     report: "RESEARCH AND DEVELOPMENT",
-     desc: "FACTORY",
-     status: "ACTIVE"
-    },
-    
-   ]
-
   const loadData = async () => {
     setLoading(true)
     try {
@@ -174,7 +147,30 @@ const Department = () => {
     }
   }
 
+  const getItemName= async (param:any) =>{
+
+    let newName=null
+  
+     const   itemTest = await DIVISION.find((item:any) =>
+      item.id.toString()===param
+    )
+     newName = await itemTest
+    return newName
+ }
+
+
+
+ const dataByID = DEPARTMENTS.filter((section:any) =>{
+  return section.divisionID.toString() ===param.id
+})
+
+console.log(dataByID)
+
   useEffect(() => {
+    (async ()=>{
+      let res = await getItemName(param.id)
+      setItemName(res?.name)
+    })();
     loadData()
   }, [])
 
@@ -233,6 +229,10 @@ const Department = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <h3 style={{fontWeight:"bolder"}}>{itemName} </h3>
+        <br></br>
+        <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
               <Input
@@ -258,7 +258,7 @@ const Department = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={DEPARTMENTS} />
+          <Table columns={columns} dataSource={dataByID} />
           <Modal
                 title='Department Setup'
                 open={isModalOpen}

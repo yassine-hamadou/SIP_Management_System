@@ -55,24 +55,28 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
 
   return {
     series: [
+      // {
+      //   name: 'Departments',
+      //   data: [740, 740, 740, 740, 740, 740, 740, 740,740,740,740,740],
+      // },
       {
-        name: 'Departments',
-        data: [40, 60, 50, 20, 50, 70, 30, 60],
+        name: 'TOTAL N0. OF EMPLOYEES',
+        data: [740, 740, 740, 740, 740, 740, 740, 740,740,740,740,740],
       },
       {
-        name: 'No. of Staff',
-        data: [20, 50, 70, 40, 60, 30, 70, 20],
+        name: 'LEAVE',
+        data: [35, 45, 35, 20, 40, 55, 30, 45,30,25,45,25],
       },
       {
-        name: 'Leave Planning',
-        data: [40, 20, 40, 70, 30, 50, 60, 90],
+        name: 'TRAINING',
+        data: [30, 30, 50, 35, 40, 30, 55, 20,45,30,20,35],
       },
     ],
     chart: {
       fontFamily: 'inherit',
-      type: 'bar',
+      type: 'area',
       height: 450,
-      
+      stacked: true,
       
     },
     plotOptions: {
@@ -83,8 +87,9 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
       },
     },
     legend: {
-        position: 'bottom',
-        // offsetY: 0
+        position: 'top',
+        horizontalAlign:'left',
+        offsetY: 10
     },
     dataLabels: {
       enabled: false,
@@ -92,10 +97,11 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
     stroke: {
       show: true,
       width: 2,
-      colors: ['transparent'],
+      curve: 'smooth',
+      // colors: ['transparent'],
     },
     xaxis: {
-      categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+      categories: ['Jan','Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep','Oct','Nov','Dec'],
 
     },
     yaxis: {
@@ -103,16 +109,13 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
           text: 'Per Month'
         }
       },
-    // yaxis: {
-    //   labels: {
-    //     style: {
-    //       colors: labelColor,
-    //       fontSize: '12px',
-    //     },
-    //   },
-    // },
+   
     fill: {
-      type: 'solid',
+      type: 'gradient',
+      gradient: {
+        opacityFrom: 0.6,
+        opacityTo: 0.8,
+      }
     },
     states: {
       normal: {
@@ -142,7 +145,7 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
       },
       y: {
         formatter: function (val) {
-          return  val + ' %'
+          return  val + ''
         },
       },
     },

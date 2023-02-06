@@ -56,16 +56,12 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
   return {
     series: [
       {
-        name: 'Departments',
-        data: [40, 60, 50, 20, 50, 70, 30, 60],
+        name: 'MALE',
+        data: [40, 60, 50, 20, 50, 70, 30, 60,380],
       },
       {
-        name: 'No. of Staff',
-        data: [20, 50, 70, 40, 60, 30, 70, 20],
-      },
-      {
-        name: 'Leave Planning',
-        data: [40, 20, 40, 70, 30, 50, 60, 90],
+        name: 'FEMALE',
+        data: [20, 50, 70, 40, 60, 30, 70, 20,360],
       },
     ],
     chart: {
@@ -86,7 +82,7 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
     },
     legend: {
         position: 'top',
-        offsetY: 40
+        offsetY: 20
     },
     dataLabels: {
       enabled: false,
@@ -97,7 +93,7 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
       colors: ['transparent'],
     },
     xaxis: {
-      categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+      categories: ['Finance','HR', 'IT', 'Corporate', 'Mining', 'Engineering', 'Transport', 'Security', 'Total'],
       axisBorder: {
         show: false,
       },
@@ -110,6 +106,9 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
           fontSize: '12px',
         },
       },
+      title: {
+        text: 'Employee By Department'
+      },
     },
     yaxis: {
       labels: {
@@ -119,6 +118,7 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
         },
       },
     },
+    
     fill: {
       type: 'solid',
     },
@@ -150,7 +150,7 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
       },
       y: {
         formatter: function (val) {
-          return + val + '%'
+          return val + ''
         },
       },
     },

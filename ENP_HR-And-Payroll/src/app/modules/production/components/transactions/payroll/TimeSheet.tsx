@@ -360,8 +360,16 @@ const TimeSheet = () => {
             <label htmlFor="exampleFormControlInput1" className=" form-label">Payroll Period</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              <option value="1">JAN23 </option>
+              <option value="2">FEB23 </option>
+              <option value="3">MAR23 </option>
+              <option value="4">APR23 </option>
+              <option value="5">MAY23 </option>
+              <option value="6">JUN23 </option>
+              <option value="7">JUL23 </option>
+              <option value="8">AUG23 </option>
+              <option value="9">SEP23 </option>
+              <option value="10">OCT23 </option>
             </select>
           </div>
 

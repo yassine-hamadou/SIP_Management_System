@@ -48,12 +48,12 @@ const Leaves = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0

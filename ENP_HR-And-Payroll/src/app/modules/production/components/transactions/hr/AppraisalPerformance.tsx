@@ -212,6 +212,70 @@ const AppraisalPerformance = () => {
       
     },
   ]
+  const columnTab1 = [
+   
+    {
+      title: '#',
+      dataIndex: 'key',
+      sorter: (a: any, b: any) => {
+        if (a.key > b.key) {
+          return 1
+        }
+        if (b.key > a.key) {
+          return -1
+        }
+        return 0
+      },
+    },
+  ]
+  const columnTab4 = [
+   
+    {
+      title: '#',
+      dataIndex: 'key',
+      sorter: (a: any, b: any) => {
+        if (a.key > b.key) {
+          return 1
+        }
+        if (b.key > a.key) {
+          return -1
+        }
+        return 0
+      },
+    },
+  ]
+  const columnTab2 = [
+   
+    {
+      title: '#',
+      dataIndex: 'key',
+      sorter: (a: any, b: any) => {
+        if (a.key > b.key) {
+          return 1
+        }
+        if (b.key > a.key) {
+          return -1
+        }
+        return 0
+      },
+    },
+  ]
+  const columnTab3 = [
+   
+    {
+      title: '#',
+      dataIndex: 'key',
+      sorter: (a: any, b: any) => {
+        if (a.key > b.key) {
+          return 1
+        }
+        if (b.key > a.key) {
+          return -1
+        }
+        return 0
+      },
+    },
+  ]
 
   const loadData = async () => {
     setLoading(true)
@@ -475,10 +539,42 @@ const AppraisalPerformance = () => {
                     </div>
                   </div>
                   <div className="tab-content">
-                    {activeTab === "tab1" && <div>Content for Tab 1</div>}
-                    {activeTab === "tab2" && <div>Content for Tab 2</div>}
-                    {activeTab === "tab3" && <div>Content for Tab 3</div>}
-                    {activeTab === "tab4" && <div>supporting Documentation</div>}
+                    {activeTab === "tab1" && 
+                    <div>
+                      <button type='button' className='btn btn-primary me-3 mb-7'>
+                      <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                      Add
+                    </button>
+                      <Table columns={columnTab1}  />
+                      
+                    </div>}
+                    
+                    {activeTab === "tab2" && 
+                    <div>
+                      <button type='button' className='btn btn-primary me-3 mb-7'>
+                      <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                      Add
+                    </button>
+                      <Table columns={columnTab1}  />
+                    </div>}
+
+                    {activeTab === "tab3" && 
+                    <div>
+                      <button type='button' className='btn btn-primary me-3 mb-7'>
+                      <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                      Add
+                    </button>
+                      <Table columns={columnTab1}  />
+                    </div>}
+
+                    {activeTab === "tab4" && 
+                    <div>
+                      <button type='button' className='btn btn-primary me-3 mb-7'>
+                      <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                      Add
+                    </button>
+                      <Table columns={columnTab1}  />
+                    </div>}
                   </div>
                 </div>
                 </Form>

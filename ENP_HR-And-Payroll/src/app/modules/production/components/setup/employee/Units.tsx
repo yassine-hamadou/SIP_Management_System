@@ -3,6 +3,8 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { DEPARTMENTS, DIVISION, UNITS } from '../../../../../data/DummyData'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const Units = () => {
   const [gridData, setGridData] = useState([])
@@ -10,8 +12,11 @@ const Units = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
+  let [departmentName, setItemName] = useState<any>("")
+  let [divisionName, setDivisionName] = useState<any>("")
   const [form] = Form.useForm()
-
+  const param:any  = useParams();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -109,24 +114,7 @@ const Units = () => {
     },
   ]
 
-  const UNITS=[
-    {
-     code: "001",
-     name: "manager",
-     status: "ACTIVE"
-    },
-    {
-     code: "002",
-     name: "junior staff",
-     status: "ACTIVE"
-    },
-    {
-     code: "003",
-     name: "senior staff",
-     status: "ACTIVE"
-    },
-    
-   ]
+
 
   const loadData = async () => {
     setLoading(true)
@@ -139,7 +127,37 @@ const Units = () => {
     }
   }
 
+  
+  const getItemName= async (param:any) =>{
+
+    let newName=null
+  
+     const   itemTest = await DEPARTMENTS.find((item:any) =>
+      item.id.toString()===param
+    )
+     newName = await itemTest
+    return newName
+ }
+//  const getDivisionName= async (param:any) =>{
+
+//   let newName=null
+
+//    const   itemTest = await DIVISION.find((item:any) =>
+//     item.id.toString()===param
+//   )
+//    newName = await itemTest
+//   return newName
+// }
+
   useEffect(() => {
+    (async ()=>{
+      let res = await getItemName(param.id)
+      setItemName(res?.name)
+    })();
+    (async ()=>{
+      let res = await getItemName(param.id)
+      setDivisionName(res?.division.name)
+    })();
     loadData()
   }, [])
 
@@ -147,6 +165,10 @@ const Units = () => {
     ...item,
     key: index,
   }))
+
+  const dataByID = UNITS.filter((section:any) =>{
+    return section.departmentID.toString() ===param.id
+  })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -198,6 +220,11 @@ const Units = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <h3 style={{fontWeight:"bolder"}}>{divisionName}<span style={{color: "blue", fontSize:"22px", fontWeight:"normal"}}> &gt; </span> {departmentName} </h3>
+
+        <br></br>
+        <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
               <Input
@@ -223,7 +250,7 @@ const Units = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={UNITS}/>
+          <Table columns={columns} dataSource={dataByID}/>
           <Modal
                 title='Unit Setup'
                 open={isModalOpen}

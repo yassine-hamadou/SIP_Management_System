@@ -78,6 +78,7 @@ import PayrollLoansDetailsReport from '../modules/production/components/report/P
 import PayrollSSNITReport from '../modules/production/components/report/PayrollSSNITReport'
 import SavSchemeTransactionInputReport from '../modules/production/components/report/SavSchemeTransactionInputReport'
 import { MultiTabForm } from '../modules/production/components/employeeFormEntry/EmployeeFormEntry'
+import { EmployeeEditForm } from '../modules/production/components/employeeFormEntry/EmployeeEditForm'
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -127,6 +128,16 @@ const PrivateRoutes = () => {
            </SuspensedView>
          }
         />
+        <Route
+         path='employee-edit-form/:id'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Entries</PageTitle>
+             <EmployeeEditForm />
+           </SuspensedView>
+         }
+        />
         {/* All Reports  */}
 
         <Route
@@ -147,7 +158,6 @@ const PrivateRoutes = () => {
         <Route
          path='transaction/hr/recruitment-selection*'
          element={
-          
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Recruitment and Selections</PageTitle>
              <RecruitmentSelection />
@@ -157,7 +167,6 @@ const PrivateRoutes = () => {
         <Route
          path='transaction/hr/compensation-benefit*'
          element={
-          
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Compensation and Benefits</PageTitle>
              <CompensationBenefit />
@@ -167,7 +176,6 @@ const PrivateRoutes = () => {
         <Route
          path='transaction/hr/training-development*'
          element={
-          
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Training and Developments</PageTitle>
              <TrainingDevelopment />
@@ -177,7 +185,6 @@ const PrivateRoutes = () => {
         <Route
          path='transaction/hr/appraisal-performance*'
          element={
-          
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Appraisal and Performances</PageTitle>
              <AppraisalPerformance />
@@ -188,7 +195,6 @@ const PrivateRoutes = () => {
         <Route
          path='transaction/hr/notes*'
          element={
-          
            <SuspensedView>  
             <PageTitle breadcrumbs={accountBreadCrumbs}>Notes Entries</PageTitle>
              <NoteEntry />
@@ -198,7 +204,6 @@ const PrivateRoutes = () => {
         <Route
          path='transaction/hr/leave-planning*'
          element={
-          
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Leave Plannings</PageTitle>
              <LeavePlanning />
@@ -406,7 +411,7 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='setup/employee/department*'
+         path='department/:id'
          element={
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Departments</PageTitle>
@@ -478,7 +483,7 @@ const PrivateRoutes = () => {
          }
         /> */}
         <Route
-         path='setup/employee/units*'
+         path='units/:id'
          element={
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Units</PageTitle>
