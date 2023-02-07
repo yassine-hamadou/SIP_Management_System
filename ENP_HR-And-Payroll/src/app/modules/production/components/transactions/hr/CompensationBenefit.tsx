@@ -575,9 +575,80 @@ const CompensationBenefit = () => {
                     </div>
                   </div>
                   <hr></hr>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
+                        <Radio.Group onChange={onRadioChange} value={radioValue}>
+                          <Radio value={1}>Yes</Radio>
+                          <Radio value={2}>No</Radio>
+                        </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on basic salary (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Allowance</label>
+                      <Radio.Group onChange={onRadio1Change} value={radio1Value}>
+                        <Radio value={1}>Yes</Radio>
+                        <Radio value={2}>No</Radio>
+                        
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on allowance (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Bonus </label>
+                      <Radio.Group onChange={onRadio2Change} value={radio2Value}>
+                        <Radio value={1}>Yes</Radio>
+                        <Radio value={2}>No</Radio>
+                        
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on bonus (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Health Insurance</label>
+                      <Radio.Group onChange={onRadio3Change} value={radio3Value}>
+                        <Radio value={1}>Yes</Radio>
+                        <Radio value={2}>No</Radio>
+                        
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on allowance (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                       <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
+                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
+                        <Radio value={1}>Yes</Radio>
+                        <Radio value={2}>No</Radio>
+                        
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on saving scheme (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Professional Development </label>
+                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
+                        <Radio value={1}>Yes</Radio>
+                        <Radio value={2}>No</Radio>
+                        
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on professional development (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                    <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Company Property</label>
+                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
+                        <Radio value={1}>Yes</Radio>
+                        <Radio value={2}>No</Radio>
+                        
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on company property (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                    
+                  </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
-                        <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
+                        {/* <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
                         <Radio.Group onChange={onRadioChange} value={radioValue}>
                           <Radio value={1}>Yes</Radio>
                           <Radio value={2}>No</Radio>
@@ -594,26 +665,26 @@ const CompensationBenefit = () => {
                    
                       <br></br>
                       <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Bonus </label>
+                      <br></br> */}
+                      {/* <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Bonus </label>
                       <Radio.Group onChange={onRadio2Change} value={radio2Value}>
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
                         
-                      </Radio.Group>
+                      </Radio.Group> */}
+                      {/* <br></br>
                       <br></br>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Health Insurance</label>
+                      <br></br> */}
+                      {/* <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Health Insurance</label>
                       <Radio.Group onChange={onRadio3Change} value={radio3Value}>
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
                         
-                      </Radio.Group>
+                      </Radio.Group> */}
+                      {/* <br></br>
                       <br></br>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
+                      <br></br> */}
+                      {/* <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
                       <Radio.Group onChange={onRadio4Change} value={radio4Value}>
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
@@ -621,8 +692,8 @@ const CompensationBenefit = () => {
                       </Radio.Group>
                       <br></br>
                       <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Professional Development </label>
+                      <br></br> */}
+                      {/* <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Professional Development </label>
                       <Radio.Group onChange={onRadio4Change} value={radio4Value}>
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
@@ -636,9 +707,9 @@ const CompensationBenefit = () => {
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
                         
-                      </Radio.Group>
+                      </Radio.Group> */}
                     </div>
-                    <div className='col-6 mb-3'>  
+                    {/* <div className='col-6 mb-3'>  
                         <input type="text" name="fname1"  className="form-control form-control-solid"/>
                         <br></br>
                         <input type="text" name="fname2"  className="form-control form-control-solid"/>
@@ -655,7 +726,7 @@ const CompensationBenefit = () => {
                         <br></br>
                         
                         <input type="text" name="fname7"  className="form-control form-control-solid"/>
-                    </div>
+                    </div> */}
                   </div>
                 </Form>
           </Modal>

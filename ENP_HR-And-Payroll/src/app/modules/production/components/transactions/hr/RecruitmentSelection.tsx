@@ -23,6 +23,8 @@ const RecruitmentSelection = () => {
   const [radio2Value, setRadio2Value] = useState();
   const [radio3Value, setRadio3Value] = useState();
   const [radio4Value, setRadio4Value] = useState();
+
+  const [employeeRecord, setEmployeeRecord]= useState<any>(null)
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -35,8 +37,9 @@ const RecruitmentSelection = () => {
     form.resetFields()
     setIsModalOpen(false)
   }
-  const showShortModal = () => {
+  const showShortModal = (record:any) => {
     setIsShortModalOpen(true)
+    setEmployeeRecord({...record})
   }
 
   const handleShortOk = () => {
@@ -209,7 +212,7 @@ const RecruitmentSelection = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a href='#' onClick={showShortModal} className=' btn btn-light-info btn-sm'>
+          <a href='#' onClick={()=>{showShortModal(record)}} className=' btn btn-light-info btn-sm'>
             Shortlist
           </a>
           <a href='#'  className='btn btn-light-primary btn-sm'>
@@ -424,7 +427,7 @@ const RecruitmentSelection = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={employeedata} />
+          <Table columns={columns} rowKey={(record)=>record.code} dataSource={employeedata} />
           {/* Add form */}
           <Modal
                 title='New Applicant'
@@ -553,27 +556,27 @@ const RecruitmentSelection = () => {
                 <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                   <div className='col-6 mb-3'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
-                    <input type="text" name="code"  className="form-control form-control-solid"/>
+                    <input type="text" name="code" value={employeeRecord?.firstname} className="form-control form-control-solid"/>
                   </div>
                   <div className='col-6 mb-3'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
-                    <input type="text" name="name"  className="form-control form-control-solid"/>
+                    <input type="text" name="name" value={employeeRecord?.lastname} className="form-control form-control-solid"/>
                   </div>
                 </div>
                 <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                   <div className='col-6 mb-3'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">DOB</label>
-                    <input type="date" name="code"  className="form-control form-control-solid"/>
+                    <input type="text" name="code" value={employeeRecord?.dob}  className="form-control form-control-solid"/>
                   </div>
                   <div className='col-6 mb-3'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
-                    <input type="text" name="name"  className="form-control form-control-solid"/>
+                    <input type="text" name="name" value={employeeRecord?.sex} className="form-control form-control-solid"/>
                   </div>
                 </div>
                 <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                   <div className='col-6 mb-3'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
-                    <input type="phone" name="code"  className="form-control form-control-solid"/>
+                    <input type="phone" name="code" value={employeeRecord?.phone}  className="form-control form-control-solid"/>
                   </div>
                   <div className='col-6 mb-3'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
