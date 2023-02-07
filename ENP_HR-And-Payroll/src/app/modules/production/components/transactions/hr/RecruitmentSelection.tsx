@@ -6,6 +6,7 @@ import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
+import { employeedata } from '../../../../../data/DummyData'
 
 const RecruitmentSelection = () => {
   const [gridData, setGridData] = useState([])
@@ -108,16 +109,29 @@ const RecruitmentSelection = () => {
     deleteData(element)
   }
 
-  const columns: ColumnsType<DataType> = [
+  const columns:any = [
    
     {
       title: 'First Name',
-      dataIndex: 'fname',
+      dataIndex: 'empcode',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.empcode > b.empcode) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.empcode > a.empcode) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'First Name',
+      dataIndex: 'firstname',
+      sorter: (a: any, b: any) => {
+        if (a.firstname > b.firstname) {
+          return 1
+        }
+        if (b.firstname > a.firstname) {
           return -1
         }
         return 0
@@ -125,12 +139,12 @@ const RecruitmentSelection = () => {
     },
     {
       title: 'Last Name',
-      dataIndex: 'sname',
+      dataIndex: 'lastname',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.lastname > b.lastname) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.lastname > a.lastname) {
           return -1
         }
         return 0
@@ -151,12 +165,12 @@ const RecruitmentSelection = () => {
     },
     {
       title: 'Gender',
-      dataIndex: 'gender',
+      dataIndex: 'sex',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.sex > b.sex) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.sex > a.sex) {
           return -1
         }
         return 0
@@ -195,13 +209,12 @@ const RecruitmentSelection = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a href='#' onClick={showShortModal} className='btn btn-light-primary btn-sm'>
+          <a href='#' onClick={showShortModal} className=' btn btn-light-info btn-sm'>
             Shortlist
           </a>
-          {/* <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
-            Delete
-          </a> */}
-         
+          <a href='#'  className='btn btn-light-primary btn-sm'>
+            Selection
+          </a>
         </Space>
       ),
       
@@ -219,45 +232,45 @@ const RecruitmentSelection = () => {
     }
   }
 
-  interface DataType {
-    key: React.Key;
-    fname:string, 
-      sname:string; 
-      dob:string; 
-      gender:string;
-      phone:string;
-      qualification: string;
-  }
-  const  data: DataType[] = [
+  // interface DataType {
+  //   key: React.Key;
+  //   fname:string, 
+  //     sname:string; 
+  //     dob:string; 
+  //     gender:string;
+  //     phone:string;
+  //     qualification: string;
+  // }
+  // const  data: DataType[] = [
 
-    {
-      key:'1',
-      fname:"Philip", 
-      sname:"Aherto", 
-      dob:"27-07-2000", 
-      gender:"Male", 
-      phone:"0249920482",
-      qualification: "Degree"
-    },
-    {
-      key:'2',
-      fname:"Kwame", 
-      sname:"Kekeli", 
-      dob:"27-07-2002", 
-      gender:"Male", 
-      phone:"0249560482",
-      qualification: "Degree"
-    },
-    {
-      key:'3',
-      fname:"Nana", 
-      sname:"Phils", 
-      dob:"27-07-2006", 
-      gender:"Male", 
-      phone:"0249920122",
-      qualification: "HND"
-    }
-  ];
+  //   {
+  //     key:'1',
+  //     fname:"Philip", 
+  //     sname:"Aherto", 
+  //     dob:"27-07-2000", 
+  //     gender:"Male", 
+  //     phone:"0249920482",
+  //     qualification: "Degree"
+  //   },
+  //   {
+  //     key:'2',
+  //     fname:"Kwame", 
+  //     sname:"Kekeli", 
+  //     dob:"27-07-2002", 
+  //     gender:"Male", 
+  //     phone:"0249560482",
+  //     qualification: "Degree"
+  //   },
+  //   {
+  //     key:'3',
+  //     fname:"Nana", 
+  //     sname:"Phils", 
+  //     dob:"27-07-2006", 
+  //     gender:"Male", 
+  //     phone:"0249920122",
+  //     qualification: "HND"
+  //   }
+  // ];
 
   useEffect(() => {
     loadData()
@@ -411,7 +424,7 @@ const RecruitmentSelection = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={employeedata} />
           {/* Add form */}
           <Modal
                 title='New Applicant'
@@ -567,9 +580,9 @@ const RecruitmentSelection = () => {
                     <input type="email" name="name"  className="form-control form-control-solid"/>
                   </div>
                 </div>
-                <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                   <div className='col-6 mb-3'>
-                    <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Qualification</label>
+                  <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Qualification</label>
                     <Radio.Group onChange={onRadioChange} value={radioValue}>
                       <Radio value={1}>1</Radio>
                       <Radio value={2}>2</Radio>
@@ -577,8 +590,9 @@ const RecruitmentSelection = () => {
                       <Radio value={4}>4</Radio>
                       <Radio value={5}>5</Radio>
                     </Radio.Group>
-                    <br></br>
-                    <br></br>
+                    <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on qualification (optional)' aria-label="With textarea"></textarea>
+                  </div>
+                  <div className='col-6 mb-3'>
                     <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Work Skills</label>
                     <Radio.Group onChange={onRadio1Change} value={radio1Value}>
                       <Radio value={1}>1</Radio>
@@ -587,10 +601,12 @@ const RecruitmentSelection = () => {
                       <Radio value={4}>4</Radio>
                       <Radio value={5}>5</Radio>
                     </Radio.Group>
-                  
-                    <br></br>
-                    <br></br>
-                    <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Experiences </label>
+                    <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on work skills (optional)' aria-label="With textarea"></textarea>
+                  </div>
+                </div>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-3'>
+                  <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Experiences </label>
                     <Radio.Group onChange={onRadio2Change} value={radio2Value}>
                       <Radio value={1}>1</Radio>
                       <Radio value={2}>2</Radio>
@@ -599,8 +615,10 @@ const RecruitmentSelection = () => {
                       <Radio value={5}>5</Radio>
                     </Radio.Group>
                     <br></br>
-                    <br></br>
-                    <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Reference</label>
+                    <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on experiences (optional)' aria-label="With textarea"></textarea>
+                  </div>
+                  <div className='col-6 mb-3'>
+                  <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Reference</label>
                     <Radio.Group onChange={onRadio3Change} value={radio3Value}>
                       <Radio value={1}>1</Radio>
                       <Radio value={2}>2</Radio>
@@ -608,8 +626,11 @@ const RecruitmentSelection = () => {
                       <Radio value={4}>4</Radio>
                       <Radio value={5}>5</Radio>
                     </Radio.Group>
-                    <br></br>
-                    <br></br>
+                    <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on reference (optional)' aria-label="With textarea"></textarea>
+                  </div>
+                </div>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
+                  <div className='col-6 mb-3'>
                     <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Social Skills</label>
                     <Radio.Group onChange={onRadio4Change} value={radio4Value}>
                       <Radio value={1}>1</Radio>
@@ -618,17 +639,10 @@ const RecruitmentSelection = () => {
                       <Radio value={4}>4</Radio>
                       <Radio value={5}>5</Radio>
                     </Radio.Group>
+                   
+                    <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on social skills (optional)' aria-label="With textarea"></textarea>
                   </div>
-                  <div className='col-6 mb-3' style={{padding: "0px 20px 0 20px"}}>  
-                    {/* <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea> */}
-                    {/* <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label> */}
-                      <input type="phone" name="name"  className="form-control form-control-solid"/>
-                      <br></br>
-                    {/* <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label> */}
-                      <input type="phone" name="name"  className="form-control form-control-solid"/>
-                    {/* <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label> */}
-                      <input type="phone" name="name"  className="form-control form-control-solid"/>
-                  </div>
+                 
                 </div>
               </Form>
           </Modal>

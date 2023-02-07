@@ -59,21 +59,21 @@ const JobTitle = () => {
         return 0
       },
     },
+    // {
+    //   title: 'Name',
+    //   dataIndex: 'name',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.name > b.name) {
+    //       return 1
+    //     }
+    //     if (b.name > a.name) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
       title: 'Name',
-      dataIndex: 'name',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Status',
       dataIndex: 'desc',
       sorter: (a: any, b: any) => {
         if (a.desc > b.desc) {

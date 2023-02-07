@@ -447,7 +447,7 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='setup/employee/notches*'
+         path='notches/:id*'
          element={
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Notches</PageTitle>

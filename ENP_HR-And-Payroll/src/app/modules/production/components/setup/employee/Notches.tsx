@@ -112,19 +112,19 @@ const Notches = () => {
   const NOTCHES=[
     {
      name: "NOTCH 1",
-     salgrade: "ASSISTANT ACCONTANT"
+     salgrade: "ASSISTANT ACCOUNTANT"
     },
     {
      name: "NOTCH 2",
-     salgrade: "ASSISTANT ACCONTANT"
+     salgrade: "ASSISTANT ACCOUNTANT"
     },
     {
      name: "NOTCH 3",
-     salgrade: "ASSISTANT ACCONTANT"
+     salgrade: "ASSISTANT ACCOUNTANT"
     },
     {
      name: "NOTCH 4",
-     salgrade: "ASSISTANT ACCONTANT"
+     salgrade: "ASSISTANT ACCOUNTANT"
     },
     {
      name: "NOTCH 1",

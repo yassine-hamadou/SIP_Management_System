@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { LEAVE } from '../../../../../data/DummyData'
 
 const Leaves = () => {
   const [gridData, setGridData] = useState([])
@@ -72,19 +73,19 @@ const Leaves = () => {
         return 0
       },
     },
-    {
-      title: 'Status',
-      dataIndex: 'name',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'name',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.name > b.name) {
+    //       return 1
+    //     }
+    //     if (b.name > a.name) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
 
     {
       title: 'Action',
@@ -204,7 +205,7 @@ const Leaves = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} dataSource={LEAVE} />
           <Modal
                 title='Leave Setup'
                 open={isModalOpen}

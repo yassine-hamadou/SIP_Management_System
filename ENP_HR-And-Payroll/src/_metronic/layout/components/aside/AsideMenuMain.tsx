@@ -92,25 +92,25 @@ export function AsideMenuMain() {
           <AsideMenuItem to='setup/administration/user-management' hasBullet={true} title='User Management' />
         </AsideMenuItemWithSub>
         <AsideMenuItemWithSub to='#' title='Employee' hasBullet={true}>
-          <AsideMenuItem to='setup/employee/category' hasBullet={true} title='Categories' />
-          {/* <AsideMenuItem to='setup/employee/department' hasBullet={true} title='Department' /> */}
-          <AsideMenuItem to='setup/employee/grades' hasBullet={true} title='Grades' />
-          <AsideMenuItem to='setup/employee/jobtitle' hasBullet={true} title='Job Titles' />
-          <AsideMenuItem to='setup/employee/nationality' hasBullet={true} title='Nationalities' />
-          {/* <AsideMenuItem to='setup/employee/notches' hasBullet={true} title='Notches' /> */}
           <AsideMenuItem to='setup/employee/paygroups' hasBullet={true} title='Paygroups' />
           <AsideMenuItem to='setup/employee/divisions' hasBullet={true} title='Divisions' />
+          <AsideMenuItem to='setup/employee/jobtitle' hasBullet={true} title='Job Titles' />
+          <AsideMenuItem to='setup/employee/grades' hasBullet={true} title='Grades' />
+          <AsideMenuItem to='setup/employee/nationality' hasBullet={true} title='Nationalities' />
+          <AsideMenuItem to='setup/employee/category' hasBullet={true} title='Categories' />
+          {/* <AsideMenuItem to='setup/employee/department' hasBullet={true} title='Department' /> */}
+          {/* <AsideMenuItem to='setup/employee/notches' hasBullet={true} title='Notches' /> */}
           {/* <AsideMenuItem to='setup/employee/salary-upgrade' hasBullet={true} title='Salary Upgrade' /> */}
           {/* <AsideMenuItem to='setup/employee/units' hasBullet={true} title='Units' /> */}
         </AsideMenuItemWithSub>
         <AsideMenuItemWithSub to='#' title='Human Resource' hasBullet={true}>
-          <AsideMenuItem to='setup/hr/appraisals' hasBullet={true} title='Appraisals' />
-          <AsideMenuItem to='setup/hr/company-assets' hasBullet={true} title='Company Assets' />
-          <AsideMenuItem to='setup/hr/notes' hasBullet={true} title='Note Categories' />
-          <AsideMenuItem to='setup/hr/leaves' hasBullet={true} title='Leaves' />
-          <AsideMenuItem to='setup/hr/medical' hasBullet={true} title='Medicals' />
           <AsideMenuItem to='setup/hr/recruitments' hasBullet={true} title='Recruitments' />
           <AsideMenuItem to='setup/hr/training' hasBullet={true} title='Trainings' />
+          <AsideMenuItem to='setup/hr/company-assets' hasBullet={true} title='Company Assets' />
+          <AsideMenuItem to='setup/hr/appraisals' hasBullet={true} title='Appraisals' />
+          <AsideMenuItem to='setup/hr/leaves' hasBullet={true} title='Leaves' />
+          <AsideMenuItem to='setup/hr/notes' hasBullet={true} title='Note Categories' />
+          <AsideMenuItem to='setup/hr/medical' hasBullet={true} title='Medicals' />
         </AsideMenuItemWithSub>
   
         <AsideMenuItemWithSub to='#' title='Payroll' hasBullet={true}>
@@ -122,7 +122,11 @@ export function AsideMenuMain() {
           <AsideMenuItem to='setup/payroll/period' hasBullet={true} title='Periods' />
           <AsideMenuItem to='setup/payroll/currency' hasBullet={true} title='Currencies' />
           {/* <AsideMenuItem to='setup/payroll/overtime' hasBullet={true} title='Overtimes' /> */}
-          <AsideMenuItem to='setup/payroll/tax' hasBullet={true} title='Taxes'/>
+
+          <AsideMenuItemWithSub to='#' title='Statutories' hasBullet={true}>
+            <AsideMenuItem to='setup/payroll/tax' hasBullet={true} title='Taxes'/>
+
+          </AsideMenuItemWithSub>
           <AsideMenuItem to='setup/payroll/parameter' hasBullet={true} title='Parameters' />
         </AsideMenuItemWithSub>
       </AsideMenuItemWithSub>      

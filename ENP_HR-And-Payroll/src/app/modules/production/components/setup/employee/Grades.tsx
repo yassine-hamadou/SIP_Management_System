@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { Link } from 'react-router-dom'
 
 const Grades = () => {
   const [gridData, setGridData] = useState([])
@@ -119,9 +120,9 @@ const Grades = () => {
       render: (_: any, record: any) => (
         <Space size='middle'>
           
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
+          <Link to={`/notches/${record.code}`}>
+            <span className='btn btn-light-info btn-sm'>Notches</span>
+          </Link>
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -138,36 +139,36 @@ const Grades = () => {
   const GRADES=[
     {
      code: "001",
-     name: "ASTACT1",
-     desc: "ASSISTANT ACCONTANT",
+     desc: "ASTACT1",
+     name: "ASSISTANT ACCONTANT",
      payg: "GENERAL",
      status: "ACTIVE"
     },
     {
      code: "002",
-     name: "ACCOFF",
-     desc: "ACCOUNT OFFICER",
+     desc: "ACCOFF",
+     name: "ACCOUNT OFFICER",
      payg: "GENERAL",
      status: "ACTIVE"
     },
     {
      code: "003",
-     name: "HRMAN",
-     desc: "HUMAN RESOURCE MANAGER",
+     desc: "HRMAN",
+     name: "HUMAN RESOURCE MANAGER",
      payg: "MANAGEMENT",
      status: "ACTIVE"
     },
     {
      code: "004",
-     name: "SALREP1",
-     desc: "SALES REP ENTRY",
+     desc: "SALREP1",
+     name: "SALES REP ENTRY",
      payg: "CASUAL",
      status: "ACTIVE"
     },
     {
      code: "005",
-     name: "FACMAN",
-     desc: "FACTORY MANAGER",
+     desc: "FACMAN",
+     name: "FACTORY MANAGER",
      payg: "MANAGEMENT",
      status: "ACTIVE"
     }
