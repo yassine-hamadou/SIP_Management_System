@@ -190,13 +190,13 @@ const RecruitmentSelection = () => {
       },
     },
     {
-      title: 'Qualification',
-      dataIndex: 'qualification',
+      title: 'Score',
+      dataIndex: 'score',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.score > b.score) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.score > a.score) {
           return -1
         }
         return 0
