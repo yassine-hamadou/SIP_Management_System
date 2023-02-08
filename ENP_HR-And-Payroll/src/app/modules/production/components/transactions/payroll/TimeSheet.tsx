@@ -6,6 +6,7 @@ import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
+import { DEPARTMENTS, employeedata } from '../../../../../data/DummyData'
 
 const TimeSheet = () => {
   const [gridData, setGridData] = useState([])
@@ -88,16 +89,29 @@ const TimeSheet = () => {
     deleteData(element)
   }
 
-  const columns: ColumnsType<DataType> = [
+  const columns: any = [
    
     {
-      title: 'First Name',
-      dataIndex: 'fname',
+      title: 'Employee ID',
+      dataIndex: 'empcode',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.empcode > b.empcode) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.empcode > a.empcode) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'First Name',
+      dataIndex: 'firstname',
+      sorter: (a: any, b: any) => {
+        if (a.firstname > b.firstname) {
+          return 1
+        }
+        if (b.firstname > a.firstname) {
           return -1
         }
         return 0
@@ -105,12 +119,12 @@ const TimeSheet = () => {
     },
     {
       title: 'Last Name',
-      dataIndex: 'sname',
+      dataIndex: 'lastname',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.lastname > b.lastname) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.lastname > a.lastname) {
           return -1
         }
         return 0
@@ -120,10 +134,10 @@ const TimeSheet = () => {
       title: 'DOB',
       dataIndex: 'dob',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.dob > b.dob) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.dob > a.dob) {
           return -1
         }
         return 0
@@ -131,12 +145,12 @@ const TimeSheet = () => {
     },
     {
       title: 'Gender',
-      dataIndex: 'gender',
+      dataIndex: 'sex',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.sex > b.sex) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.sex > a.sex) {
           return -1
         }
         return 0
@@ -144,12 +158,12 @@ const TimeSheet = () => {
     },
     {
       title: 'Job Title',
-      dataIndex: 'qualification',
+      dataIndex: 'job',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.job > b.job) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.job > a.job) {
           return -1
         }
         return 0
@@ -174,16 +188,16 @@ const TimeSheet = () => {
       
     },
   ]
-  const columnForDetails: ColumnsType<DataType> = [
+  const columnForDetails: any = [
    
     {
       title: 'Date',
-      dataIndex: 'fname',
+      dataIndex: 'date',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.date > b.date) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.date > a.date) {
           return -1
         }
         return 0
@@ -191,7 +205,7 @@ const TimeSheet = () => {
     },
     {
       title: 'Time In',
-      dataIndex: 'timein',
+      dataIndex: 'timeout',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -204,7 +218,7 @@ const TimeSheet = () => {
     },
     {
       title: 'Time Out',
-      dataIndex: 'timeout',
+      dataIndex: 'timein',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -241,60 +255,214 @@ const TimeSheet = () => {
     }
   }
 
-  interface DataType {
-    key: React.Key;
-    fname:string, 
-    sname:string; 
-    dob:string; 
-    date:string; 
-    gender:string;
-    phone:string;
-    qualification: string;
-    type: string;
-    timeout: string;
-    timein: string;
-  }
-  const  data: DataType[] = [
+
+  const  data= [
 
     {
       key:'1',
-      fname:"Philip", 
-      sname:"Aherto", 
-      dob:"27-07-2000", 
-      date:"27/01/2023", 
-      gender:"Male", 
+      date:"01/02/2023", 
       type:"Normal", 
       timeout:"8:15am", 
       timein:"5:00pm", 
-      phone:"0249920482",
-      qualification: "Senior Manager"
+      
     },
     {
       key:'2',
-      fname:"Kwame", 
-      sname:"Kekeli", 
-      dob:"27-07-2002", 
-      date:"23/01/2023",
-      gender:"Male",
-      type:"Test Type",
+      date:"02/02/2023",
+      type:"Normal",
       timeout:"9:15am", 
       timein:"5:20pm",
-      phone:"0249560482",
-      qualification: "Developer"
     },
     {
-      key:'3',
-      fname:"Nana", 
-      sname:"Phils", 
-      dob:"27-07-2006", 
-      date:"09/01/2023",
-      gender:"Male",
+      key:'3',  
+      date:"03/02/2023",
       type:"Weekend",
       timeout:"8:30am", 
       timein:"4:50pm", 
-      phone:"0249920122",
-      qualification: "Accountant"
-    }
+    },
+    {
+      key:'4',
+      date:"04/02/2023", 
+      type:"Normal", 
+      timeout:"8:15am", 
+      timein:"5:00pm", 
+      
+    },
+    {
+      key:'5',
+      date:"05/02/2023",
+      type:"Normal",
+      timeout:"9:15am", 
+      timein:"5:20pm",
+    },
+    {
+      key:'6', 
+      date:"06/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+    {
+      key:'7', 
+      date:"07/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+    {
+      key:'8',
+      date:"08/02/2023", 
+      type:"Normal", 
+      timeout:"8:15am", 
+      timein:"5:00pm", 
+      
+    },
+    {
+      key:'9',
+      date:"09/02/2023",
+      type:"Normal",
+      timeout:"9:15am", 
+      timein:"5:20pm",
+    },
+    {
+      key:'10',  
+      date:"10/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+    {
+      key:'11',
+      date:"11/02/2023", 
+      type:"Normal", 
+      timeout:"8:15am", 
+      timein:"5:00pm", 
+      
+    },
+    {
+      key:'12',
+      date:"12/02/2023",
+      type:"Normal",
+      timeout:"9:15am", 
+      timein:"5:20pm",
+    },
+    {
+      key:'13', 
+      date:"13/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+    {
+      key:'14', 
+      date:"14/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+    {
+      key:'15',
+      date:"15/02/2023", 
+      type:"Normal", 
+      timeout:"8:15am", 
+      timein:"5:00pm", 
+      
+    },
+    {
+      key:'16',
+      date:"16/02/2023",
+      type:"Normal",
+      timeout:"9:15am", 
+      timein:"5:20pm",
+    },
+    {
+      key:'17',  
+      date:"17/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+    {
+      key:'18',
+      date:"18/02/2023", 
+      type:"Normal", 
+      timeout:"8:15am", 
+      timein:"5:00pm", 
+      
+    },
+    {
+      key:'19',
+      date:"19/02/2023",
+      type:"Normal",
+      timeout:"9:15am", 
+      timein:"5:20pm",
+    },
+    {
+      key:'20', 
+      date:"20/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+    {
+      key:'21', 
+      date:"21/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+    {
+      key:'22',
+      date:"22/02/2023", 
+      type:"Normal", 
+      timeout:"8:15am", 
+      timein:"5:00pm", 
+      
+    },
+    {
+      key:'23',
+      date:"23/02/2023",
+      type:"Normal",
+      timeout:"9:15am", 
+      timein:"5:20pm",
+    },
+    {
+      key:'24',  
+      date:"24/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+    {
+      key:'25',
+      date:"25/02/2023", 
+      type:"Normal", 
+      timeout:"8:15am", 
+      timein:"5:00pm", 
+      
+    },
+    {
+      key:'26',
+      date:"26/02/2023",
+      type:"Normal",
+      timeout:"9:15am", 
+      timein:"5:20pm",
+    },
+    {
+      key:'27', 
+      date:"27/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+    {
+      key:'28', 
+      date:"28/02/2023",
+      type:"Weekend",
+      timeout:"8:30am", 
+      timein:"4:50pm", 
+    },
+   
   ];
 
   useEffect(() => {
@@ -377,8 +545,9 @@ const TimeSheet = () => {
             <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              {DEPARTMENTS.map((item: any) => (
+                <option value={item.code}>{item.name}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -410,7 +579,7 @@ const TimeSheet = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={employeedata} />
           {/* Add form */}
           <Modal
                 title='Employee Details'
@@ -449,11 +618,9 @@ const TimeSheet = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">001 - ANANI </option>
-                        <option value="2">002 - OFOSU </option>
-                        <option value="3">003 - KOFFIE </option>
-                        <option value="4">004 - KOFFIE </option>
-                        <option value="5">005 - ADJEI </option>
+                        {employeedata.map((item: any) => (
+                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
+                        ))}
                       </select>
                     </div>
                     <div className='col-6 mb-3'>

@@ -6,6 +6,7 @@ import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
+import { employeedata, period } from '../../../../../data/DummyData'
 
 const AppraisalPerformance = () => {
   const [gridData, setGridData] = useState([])
@@ -16,13 +17,12 @@ const AppraisalPerformance = () => {
   const [form] = Form.useForm()
   
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isShortModalOpen, setIsShortModalOpen] = useState(false)
-  const [radioValue, setRadioValue] = useState();
-  const [radio1Value, setRadio1Value] = useState();
-  const [radio2Value, setRadio2Value] = useState();
-  const [radio3Value, setRadio3Value] = useState();
-  const [radio4Value, setRadio4Value] = useState();
+  const [tabModalOpen, setTabModalOpen] = useState(false)
+  const [tab1ModalOpen, setTab1Modal1Open] = useState(false)
+  const [tab2ModalOpen, setTab2ModalOpen] = useState(false)
+  const [tab3ModalOpen, setTab3ModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("tab1");
+  const [employeeRecord, setEmployeeRecord]= useState<any>([])
 
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
@@ -39,17 +39,29 @@ const AppraisalPerformance = () => {
     form.resetFields()
     setIsModalOpen(false)
   }
-  const showShortModal = () => {
-    setIsShortModalOpen(true)
+  const showTabModal = () => {
+    setTabModalOpen(true)
   }
 
-  const handleShortOk = () => {
-    setIsShortModalOpen(false)
+  const handleTabOk = () => {
+    setTabModalOpen(false)
   }
 
-  const handleShortCancel = () => {
+  const handleTabCancel = () => {
     form.resetFields()
-    setIsShortModalOpen(false)
+    setTabModalOpen(false)
+  }
+  const showTab1Modal = () => {
+    setTabModalOpen(true)
+  }
+
+  const handleTa1bOk = () => {
+    setTabModalOpen(false)
+  }
+
+  const handleTab1Cancel = () => {
+    form.resetFields()
+    setTabModalOpen(false)
   }
 
   const deleteData = async (element: any) => {
@@ -88,41 +100,17 @@ const AppraisalPerformance = () => {
     imgWindow?.document.write(image.outerHTML);
   };
 
-  const onRadioChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadioValue(e.target.value);
-  };
-  const onRadio1Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio1Value(e.target.value);
-  };
-  const onRadio2Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio2Value(e.target.value);
-  };
-  const onRadio3Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio3Value(e.target.value);
-  };
-  const onRadio4Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio4Value(e.target.value);
-  };
 
-  function handleDelete(element: any) {
-    deleteData(element)
-  }
-
-  const columns: ColumnsType<DataType> = [
+  const columns: any = [
    
     {
       title: 'Employee ID',
-      dataIndex: 'key',
+      dataIndex: 'empcode',
       sorter: (a: any, b: any) => {
-        if (a.key > b.key) {
+        if (a.empcode > b.empcode) {
           return 1
         }
-        if (b.key > a.key) {
+        if (b.empcode > a.empcode) {
           return -1
         }
         return 0
@@ -130,12 +118,12 @@ const AppraisalPerformance = () => {
     },
     {
       title: 'First Name',
-      dataIndex: 'fname',
+      dataIndex: 'firstname',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.fistname > b.fistname) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.fistname > a.fistname) {
           return -1
         }
         return 0
@@ -143,12 +131,12 @@ const AppraisalPerformance = () => {
     },
     {
       title: 'Last Name',
-      dataIndex: 'sname',
+      dataIndex: 'lastname',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.lastname > b.lastname) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.lastname > a.lastname) {
           return -1
         }
         return 0
@@ -158,10 +146,10 @@ const AppraisalPerformance = () => {
       title: 'DOB',
       dataIndex: 'dob',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.dob > b.dob) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.dob > a.dob) {
           return -1
         }
         return 0
@@ -169,12 +157,12 @@ const AppraisalPerformance = () => {
     },
     {
       title: 'Gender',
-      dataIndex: 'gender',
+      dataIndex: 'sex',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.sex > b.sex) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.sex > a.sex) {
           return -1
         }
         return 0
@@ -182,12 +170,12 @@ const AppraisalPerformance = () => {
     },
     {
       title: 'Job Title',
-      dataIndex: 'qualification',
+      dataIndex: 'jobt',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.jobt > b.jobt) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.jobt > a.jobt) {
           return -1
         }
         return 0
@@ -328,6 +316,8 @@ const AppraisalPerformance = () => {
     }
   ];
 
+  
+
   useEffect(() => {
     loadData()
   }, [])
@@ -388,15 +378,21 @@ const AppraisalPerformance = () => {
       <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Start Period</label>
-            <input type="date" name="ref" className="form-control form-control-solid" />
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              {period.map((item: any) => (
+                <option value={item.code}>{item.code}</option>
+              ))}
+            </select>
           </div>
 
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">End Period</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              {period.map((item: any) => (
+                <option value={item.code}>{item.code}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -427,7 +423,7 @@ const AppraisalPerformance = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={employeedata} />
           {/* Add form */}
           <Modal
                 title='Employee Details'
@@ -452,25 +448,17 @@ const AppraisalPerformance = () => {
                   </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
-                >
+                <form>
                     <hr></hr>
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">001 - ANANI </option>
-                        <option value="2">002 - OFOSU </option>
-                        <option value="3">003 - KOFFIE </option>
-                        <option value="4">004 - KOFFIE </option>
-                        <option value="5">005 - ADJEI </option>
+                        
+                        {employeedata.map((item: any) => (
+                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
+                        ))}
                       </select>
                     </div>
                     <div className='col-6 mb-3'>
@@ -541,7 +529,7 @@ const AppraisalPerformance = () => {
                   <div className="tab-content">
                     {activeTab === "tab1" && 
                     <div>
-                      <button type='button' className='btn btn-primary me-3 mb-7'>
+                      <button type='button' className='btn btn-primary me-3 mb-7' onClick={showTabModal}>
                       <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                       Add
                     </button>
@@ -551,7 +539,7 @@ const AppraisalPerformance = () => {
                     
                     {activeTab === "tab2" && 
                     <div>
-                      <button type='button' className='btn btn-primary me-3 mb-7'>
+                      <button type='button' className='btn btn-primary me-3 mb-7' onClick={showTabModal}>
                       <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                       Add
                     </button>
@@ -560,7 +548,7 @@ const AppraisalPerformance = () => {
 
                     {activeTab === "tab3" && 
                     <div>
-                      <button type='button' className='btn btn-primary me-3 mb-7'>
+                      <button type='button' className='btn btn-primary me-3 mb-7' onClick={showTabModal}>
                       <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                       Add
                     </button>
@@ -577,7 +565,7 @@ const AppraisalPerformance = () => {
                     </div>}
                   </div>
                 </div>
-                </Form>
+                </form>
           </Modal>
         </div>
       </KTCardBody>

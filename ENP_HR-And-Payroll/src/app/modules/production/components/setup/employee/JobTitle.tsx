@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { JOBTITLE } from '../../../../../data/DummyData'
 
 const JobTitle = () => {
   const [gridData, setGridData] = useState([])
@@ -122,38 +123,7 @@ const JobTitle = () => {
     },
   ]
 
-  const JOBTITLE=[
-    {
-     code: "001",
-     name: "ASTACT",
-     desc: "ASSISTANT ACCOUNTANT",
-     status: "ACTIVE"
-    },
-    {
-     code: "002",
-     name: "ACCOFF",
-     desc: "ACCOUNTS OFFICER",
-     status: "ACTIVE"
-    },
-    {
-     code: "003",
-     name: "HRMAN",
-     desc: "HUMAN RESOURCE MANAGER",
-     status: "ACTIVE"
-    },
-    {
-     code: "004",
-     name: "SALREP1",
-     desc: "SALES PERSONNEL 1",
-     status: "ACTIVE"
-    },
-    {
-     code: "005",
-     name: "FACMAN",
-     desc: "FACTORY MANAGER",
-     status: "ACTIVE"
-    }
-   ]
+  
    
 
   const loadData = async () => {

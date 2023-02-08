@@ -238,6 +238,7 @@ import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
+import { employeedata } from '../../../../../data/DummyData'
 
 const TrainingDevelopment = () => {
   const [gridData, setGridData] = useState([])
@@ -254,6 +255,7 @@ const TrainingDevelopment = () => {
   const [radio2Value, setRadio2Value] = useState();
   const [radio3Value, setRadio3Value] = useState();
   const [radio4Value, setRadio4Value] = useState();
+  const [employeeRecord, setEmployeeRecord]= useState<any>([])
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -340,16 +342,16 @@ const TrainingDevelopment = () => {
     deleteData(element)
   }
 
-  const columns: ColumnsType<DataType> = [
+  const columns: any = [
    
     {
       title: 'Employee ID',
-      dataIndex: 'id',
+      dataIndex: 'empcode',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.empcode > b.empcode) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.empcode > a.empcode) {
           return -1
         }
         return 0
@@ -357,12 +359,12 @@ const TrainingDevelopment = () => {
     },
     {
       title: 'First Name',
-      dataIndex: 'fname',
+      dataIndex: 'firstname',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.firstname > b.firstname) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.firstname > a.firstname) {
           return -1
         }
         return 0
@@ -370,12 +372,12 @@ const TrainingDevelopment = () => {
     },
     {
       title: 'Last Name',
-      dataIndex: 'sname',
+      dataIndex: 'lastname',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.lastname > b.lastname) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.lastname > a.lastname) {
           return -1
         }
         return 0
@@ -385,10 +387,10 @@ const TrainingDevelopment = () => {
       title: 'DOB',
       dataIndex: 'dob',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.dob > b.dob) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.dob > a.dob) {
           return -1
         }
         return 0
@@ -396,12 +398,12 @@ const TrainingDevelopment = () => {
     },
     {
       title: 'Gender',
-      dataIndex: 'gender',
+      dataIndex: 'sex',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.sex > b.sex) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.sex > a.sex) {
           return -1
         }
         return 0
@@ -411,10 +413,10 @@ const TrainingDevelopment = () => {
       title: 'Phone Number',
       dataIndex: 'phone',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.phone > b.phone) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.phone > a.phone) {
           return -1
         }
         return 0
@@ -452,7 +454,7 @@ const TrainingDevelopment = () => {
       
     },
   ]
-  const columnSchedules: ColumnsType<DataType> = [
+  const columnSchedules: any = [
    
     
     {
@@ -470,12 +472,12 @@ const TrainingDevelopment = () => {
     },
     {
       title: 'Day',
-      dataIndex: 'dob',
+      dataIndex: 'date',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.date > b.date) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.date > a.date) {
           return -1
         }
         return 0
@@ -525,52 +527,28 @@ const TrainingDevelopment = () => {
     }
   }
 
-  interface DataType {
-    key: React.Key;
-    id: string;
-    fname:string, 
-    sname:string; 
-    dob:string; 
-    gender:string;
-    phone:string;
-    qualification: string;
-    topic: string;
-  }
 
-  const  data: DataType[] = [
+  const  data = [
 
     {
       key:'1',
       id:'1',
-      fname:"Philip", 
-      sname:"Aherto", 
-      dob:"27-07-2000", 
-      gender:"Male", 
+      date:"Day 1 - Morning", 
       phone:"0249920482",
-      qualification: "Degree",
+    
       topic: "Sage Installation",
     },
     {
       key:'2',
       id:'2',
-      fname:"Kwame", 
-      sname:"Kekeli", 
-      dob:"27-07-2002", 
-      gender:"Male", 
-      phone:"0249560482",
-      qualification: "Degree",
+      date:"Day 2 - Morning",
       topic: "DevOps",
 
     },
     {
       key:'3',
       id:'3',
-      fname:"Nana", 
-      sname:"Phils", 
-      dob:"27-07-2006", 
-      gender:"Male", 
-      phone:"0249920122",
-      qualification: "HND",
+      date:"Day 3 - Morning", 
       topic: "MySQL Basics",
 
     }
@@ -635,6 +613,7 @@ const TrainingDevelopment = () => {
     >
 
       {/* Top part of the page */}
+
       <div style={{padding: "0px 0px 0px 0px"}} className='col-12 row'>
         <div style={{padding: "0px 0px 0px 20px"}}  className='col-6'>
           <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
@@ -647,8 +626,10 @@ const TrainingDevelopment = () => {
               <label htmlFor="exampleFormControlInput1" className=" form-label">Training Type</label>
               <select className="form-select form-select-solid" aria-label="Select example">
                 <option> select</option>
-                <option value="1">test1 </option>
-                <option value="2">test2 </option>
+                <option value="1">IN-HOUSE </option>
+                <option value="2">PROFESSIONAL DEVELOPMENT </option>
+                <option value="3">EXTERNAL </option>
+                <option value="4">CERTIFICATION</option>
               </select>
             </div>
           </div>
@@ -721,7 +702,7 @@ const TrainingDevelopment = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={employeedata} />
           {/* Add form */}
           <Modal
                 title='Employee Details'
@@ -759,12 +740,10 @@ const TrainingDevelopment = () => {
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">001 - ANANI </option>
-                        <option value="2">002 - OFOSU </option>
-                        <option value="3">003 - KOFFIE </option>
-                        <option value="4">004 - KOFFIE </option>
-                        <option value="5">005 - ADJEI </option>
+                       
+                        {employeedata.map((item: any) => (
+                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
+                        ))}
                       </select>
                     </div>
                     <div className='col-6 mb-3'>
@@ -797,15 +776,18 @@ const TrainingDevelopment = () => {
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">Male </option>
-                        <option value="2">Female </option>
+                        <option value="1">MALE </option>
+                        <option value="2">FEMALE </option>
                       </select>
                     </div>
                   </div>
                   
                 </Form>
           </Modal>
+
+
           {/* Modal for the  */}
+
           <Modal
                 title='Training Schedule'
                 open={isShortModalOpen}
@@ -845,8 +827,8 @@ const TrainingDevelopment = () => {
                       <input type="text" name="topic"  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Date</label>
-                      <input type="date" name="trainDate"  className="form-control form-control-solid"/>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Day</label>
+                      <input type="text" name="trainDate"  className="form-control form-control-solid"/>
                     </div>
                   </div>
                 </Form>

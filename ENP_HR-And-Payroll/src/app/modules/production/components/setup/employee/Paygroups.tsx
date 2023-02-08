@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { PAYGROUP } from '../../../../../data/DummyData'
 
 const Paygroups = () => {
   const [gridData, setGridData] = useState([])
@@ -109,23 +110,7 @@ const Paygroups = () => {
     },
   ]
 
-  const PAYGROUP=[
-    {
-     code: "001",
-     name: "MANAGEMENT",
-     status: "ACTIVE"
-    },
-    {
-     code: "002",
-     name: "CASUAL",
-     status: "ACTIVE"
-    },
-    {
-     code: "003",
-     name: "GENERAL",
-     status: "ACTIVE"
-    }
-   ]
+
 
   const loadData = async () => {
     setLoading(true)
