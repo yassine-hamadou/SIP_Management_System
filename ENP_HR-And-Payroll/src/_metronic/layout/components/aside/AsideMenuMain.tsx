@@ -57,6 +57,8 @@ export function AsideMenuMain() {
         icon='/media/icons/duotune/general/gen022.svg'
       >
         <AsideMenuItemWithSub to='#' title='Human Resource' hasBullet={true}>
+        <AsideMenuItem to='#' hasBullet={true} title='Approvals' />
+          <AsideMenuItem to='#' hasBullet={true} title='Promotions' />
         </AsideMenuItemWithSub>
         <AsideMenuItemWithSub to='#' title='Payroll' hasBullet={true}>
           <AsideMenuItem to='processes/payroll/approval' hasBullet={true} title='Approvals' />
@@ -94,10 +96,10 @@ export function AsideMenuMain() {
         <AsideMenuItemWithSub to='#' title='Employee' hasBullet={true}>
           <AsideMenuItem to='setup/employee/paygroups' hasBullet={true} title='Paygroups' />
           <AsideMenuItem to='setup/employee/divisions' hasBullet={true} title='Divisions' />
+          <AsideMenuItem to='setup/employee/category' hasBullet={true} title='Categories' />
           <AsideMenuItem to='setup/employee/jobtitle' hasBullet={true} title='Job Titles' />
           <AsideMenuItem to='setup/employee/grades' hasBullet={true} title='Grades' />
           <AsideMenuItem to='setup/employee/nationality' hasBullet={true} title='Nationalities' />
-          <AsideMenuItem to='setup/employee/category' hasBullet={true} title='Categories' />
           {/* <AsideMenuItem to='setup/employee/department' hasBullet={true} title='Department' /> */}
           {/* <AsideMenuItem to='setup/employee/notches' hasBullet={true} title='Notches' /> */}
           {/* <AsideMenuItem to='setup/employee/salary-upgrade' hasBullet={true} title='Salary Upgrade' /> */}

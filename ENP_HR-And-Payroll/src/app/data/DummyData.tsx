@@ -281,7 +281,156 @@ export const DIVISION = [
       status:'ACTIVE'
     }
 ]
+export const period = [
+  
+    {
+     code: "JAN23",
+     name: "JANUARY 2023",
+     start_date: "1\/1\/23",
+     end_date: "31\/01\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "FEB23",
+     name: "FEBRUARY 2023",
+     start_date: "2\/1\/23",
+     end_date: "28\/02\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "MAR23",
+     name: "MARCH 2023",
+     start_date: "3\/1\/23",
+     end_date: "31\/03\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "APR23",
+     name: "APRIL 2023",
+     start_date: "4\/1\/23",
+     end_date: "30\/04\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "MAY23",
+     name: "MAY 2023",
+     start_date: "5\/1\/23",
+     end_date: "31\/05\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "JUN23",
+     name: "JUNE 2023",
+     start_date: "6\/1\/23",
+     end_date: "30\/06\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "JUL23",
+     name: "JULY 2023",
+     start_date: "7\/1\/23",
+     end_date: "31\/7\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "AUG23",
+     name: "AUGUST 2023",
+     start_date: "8\/1\/23",
+     end_date: "31\/8\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "SEP23",
+     name: "SEPTEMBER 2023",
+     start_date: "9\/1\/23",
+     end_date: "30\/9\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "OCT23",
+     name: "OCTOBER 2023",
+     start_date: "10\/1\/23",
+     end_date: "31\/10\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "NOV23",
+     name: "NOVEMBER 2023",
+     start_date: "11\/1\/23",
+     end_date: "30\/11\/23",
+     status: "ACTIVE"
+    },
+    {
+     code: "DEC23",
+     name: "DECEMBER 2023",
+     start_date: "12\/1\/23",
+     end_date: "31\/12\/23",
+     status: "ACTIVE"
+    },
+  
+    
+]
 
+export const JOBTITLE=[
+  {
+   code: "001",
+   name: "ASTACT",
+   desc: "ASSISTANT ACCOUNTANT",
+   status: "ACTIVE"
+  },
+  {
+   code: "002",
+   name: "ACCOFF",
+   desc: "ACCOUNTS OFFICER",
+   status: "ACTIVE"
+  },
+  {
+   code: "003",
+   name: "HRMAN",
+   desc: "HUMAN RESOURCE MANAGER",
+   status: "ACTIVE"
+  },
+  {
+   code: "004",
+   name: "SALREP1",
+   desc: "SALES PERSONNEL 1",
+   status: "ACTIVE"
+  },
+  {
+   code: "005",
+   name: "FACMAN",
+   desc: "FACTORY MANAGER",
+   status: "ACTIVE"
+  }
+ ]
+
+ export const CATEGORY=[
+  {
+   code: "001",
+   name: "PERMANENT",
+   status: "ACTIVE"
+  },
+  {
+   code: "002",
+   name: "SERVICE",
+   status: "ACTIVE"
+  },
+  {
+   code: "003",
+   name: "CONTRACT",
+   status: "ACTIVE"
+  },
+  {
+   code: "004",
+   name: "SENIOR STAFF",
+   status: "ACTIVE"
+  },
+  {
+   code: "005",
+   name: "JUNIOR STAFF",
+   status: "ACTIVE"
+  }
+ ]
 
 
 // HR Setup DATA
@@ -414,6 +563,8 @@ export const employeedata=[
    dob:"27-07-1999",
    phone:"0249560426",
    score:0,
+   unit:"TREASURY",
+   jobt:"ASSISTANT ACCOUNTANT",
    "bsal": '2,000',
    "status": "Active"
   },
@@ -430,6 +581,8 @@ export const employeedata=[
    dob:"04-07-1989",
     phone:"0249560353",
     score:0,
+    unit:"TREASURY",
+    jobt:"HUMAN RESOURCE MANAGER",
    "grade": "ACCOUNT OFFICER",
    "notch": "NOTCH 2",
    "accnum": 221343,
@@ -455,6 +608,8 @@ export const employeedata=[
     dob:"22-07-1979",
     phone:"0245360467",
     score:0,
+    unit:"TREASURY",
+    jobt:"ASSISTANT ACCOUNTANT",
    "status": "Active"
   },
   {
@@ -473,6 +628,8 @@ export const employeedata=[
     dob:"11-07-1984",
     phone:"0249560423",
     score:0,
+    unit:"PR",
+    jobt:"ASSISTANT ACCOUNTANT",
    "annsal": '60,000',
    "bsal": '5,000',
    "status": "Active"
@@ -488,6 +645,8 @@ export const employeedata=[
     dob:"02-04-1989",
     phone:"0249560567",
     score:0,
+    unit:"LEGAL",
+    jobt:"SALES PERSONNEL 1",
    "paygroup": "GENERAL",
    "depart": "HEADOFFICE",
    "grade": "FACTORY MANAGER",
@@ -508,6 +667,8 @@ export const employeedata=[
     dob:"14-05-1989",
     phone:"0249560467",
     score:0,
+    jobt:"HUMAN RESOURCE MANAGER",
+    unit:"PAY OFFICE",
    "paygroup": "MANAGEMENT",
    "depart": "PRODUCTION",
    "grade": "ASSISTANT ACCONTANT",
@@ -532,6 +693,8 @@ export const employeedata=[
     dob:"13-05-1999",
     phone:"0243460580",
     score:0,
+    jobt:"ACCOUNTS OFFICER",
+    unit:"RECEIVALBLES",
    "accnum": 221348,
    "annsal": '96,000',
    "bsal": '8,000',
@@ -553,6 +716,9 @@ export const employeedata=[
     dob:"13-05-1996",
     phone:"024956345",
     score:0,
+    jobt:"ASSISTANT ACCOUNTANT",
+    unit:"PAYABLES",
+    
    "annsal": '108,000',
    "bsal": '9,000',
    "status": "Active"
@@ -568,6 +734,8 @@ export const employeedata=[
    dob:"13-09-1996",
    phone:"0249560434",
    score:0,
+   jobt:"ACCOUNTS OFFICER",
+   unit:"TRAINING",
    "paygroup": "MANAGEMENT",
    "depart": "HEADOFFICE",
    "grade": "SALES REP ENTRY",
@@ -588,6 +756,8 @@ export const employeedata=[
    dob:"13-05-1996",
    phone:"0249560678",
    score:0,
+   jobt:"HUMAN RESOURCE MANAGER",
+   unit:"	TREASURY",
    "paygroup": "CASUAL",
    "depart": "PRODUCTION",
    "grade": "FACTORY MANAGER",
@@ -608,6 +778,8 @@ export const employeedata=[
    dob:"13-10-1996",
    phone:"0249560409",
    score:0,
+   unit:"	PAYABLES",
+   jobt:"SALES PERSONNEL 1",
    "paygroup": "GENERAL",
    "depart": "ADMINISTRATION",
    "grade": "ASSISTANT ACCONTANT",
@@ -628,6 +800,8 @@ export const employeedata=[
    dob:"13-05-1997",
    phone:"0249567867",
    score:0,
+   jobt:"ASSISTANT ACCOUNTANT",
+   unit:"	PAYABLES",
    "paygroup": "MANAGEMENT",
    "depart": "RESEARCH AND DEVELOPMENT",
    "grade": "ACCOUNT OFFICER",
@@ -648,6 +822,8 @@ export const employeedata=[
    dob:"12-08-1996",
    phone:"0249765467",
    score:0,
+   jobt:"ACCOUNTS OFFICER",
+   unit:"	RECEIVALBLES",
    "paygroup": "CASUAL",
    "depart": "HEADOFFICE",
    "grade": "HUMAN RESOURCE MANAGER",
@@ -668,6 +844,8 @@ export const employeedata=[
    dob:"19-09-1996",
    phone:"0249564567",
    score:0,
+   jobt:"HUMAN RESOURCE MANAGER",
+   unit:"DATABASE",
    "paygroup": "GENERAL",
    "depart": "PRODUCTION",
    "grade": "SALES REP ENTRY",
@@ -688,6 +866,8 @@ export const employeedata=[
    dob:"13-05-1988",
    phone:"0249560482",
    score:0,
+   unit:"WELFARE",
+   jobt:"ASSISTANT ACCOUNTANT",
    "paygroup": "MANAGEMENT",
    "depart": "ADMINISTRATION",
    "grade": "FACTORY MANAGER",
@@ -708,6 +888,8 @@ export const employeedata=[
    dob:"13-05-1996",
    phone:"0256560467",
    score:0,
+   unit:"WELFARE",
+   jobt:"ACCOUNTS OFFICER",
    "paygroup": "CASUAL",
    "depart": "RESEARCH AND DEVELOPMENT",
    "grade": "ASSISTANT ACCONTANT",
@@ -728,6 +910,8 @@ export const employeedata=[
    dob:"13-05-1989",
    phone:"0249560432",
    score:0,
+   unit:"DATABASE",
+   jobt:"SALES PERSONNEL 1",
    "paygroup": "CASUAL",
    "depart": "HEADOFFICE",
    "grade": "ACCOUNT OFFICER",
@@ -748,6 +932,8 @@ export const employeedata=[
    dob:"13-05-1999",
    phone:"0249560423",
    score:0,
+   unit:"DATABASE",
+   jobt:"ACCOUNTS OFFICER",
    "paygroup": "GENERAL",
    "depart": "PRODUCTION",
    "grade": "HUMAN RESOURCE MANAGER",
@@ -768,6 +954,8 @@ export const employeedata=[
    dob:"13-05-1969",
    phone:"0249578482",
    score:0,
+   jobt:"ACCOUNTS OFFICER",
+   unit:"INFRASTRUCTURE",
    "paygroup": "MANAGEMENT",
    "depart": "ADMINISTRATION",
    "grade": "SALES REP ENTRY",
@@ -788,6 +976,8 @@ export const employeedata=[
    dob:"13-03-1988",
    phone:"0249560467",
    score:0,
+   unit:"PERSONNEL",
+   jobt:"HUMAN RESOURCE MANAGER",
    "paygroup": "CASUAL",
    "depart": "RESEARCH AND DEVELOPMENT",
    "grade": "FACTORY MANAGER",
@@ -3162,3 +3352,20 @@ export const employeedata=[
   // }
  ]
 
+ export const PAYGROUP=[
+  {
+   code: "001",
+   name: "MANAGEMENT",
+   status: "ACTIVE"
+  },
+  {
+   code: "002",
+   name: "CASUAL",
+   status: "ACTIVE"
+  },
+  {
+   code: "003",
+   name: "GENERAL",
+   status: "ACTIVE"
+  }
+ ]

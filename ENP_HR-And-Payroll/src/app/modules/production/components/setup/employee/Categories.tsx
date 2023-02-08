@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { CATEGORY } from '../../../../../data/DummyData'
 
 const Categories = () => {
   const [gridData, setGridData] = useState([])
@@ -111,33 +112,7 @@ const Categories = () => {
 
   
 
-   const CATEGORY=[
-    {
-     code: "001",
-     name: "PERMANENT",
-     status: "ACTIVE"
-    },
-    {
-     code: "002",
-     name: "SERVICE",
-     status: "ACTIVE"
-    },
-    {
-     code: "003",
-     name: "CONTRACT",
-     status: "ACTIVE"
-    },
-    {
-     code: "004",
-     name: "SENIOR STAFF",
-     status: "ACTIVE"
-    },
-    {
-     code: "005",
-     name: "JUNIOR STAFF",
-     status: "ACTIVE"
-    }
-   ]
+   
 
   const loadData = async () => {
     setLoading(true)

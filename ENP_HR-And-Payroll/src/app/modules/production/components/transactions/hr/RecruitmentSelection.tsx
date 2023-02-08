@@ -6,7 +6,7 @@ import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
-import { employeedata } from '../../../../../data/DummyData'
+import { CATEGORY, employeedata, JOBTITLE, PAYGROUP, UNITS } from '../../../../../data/DummyData'
 
 const RecruitmentSelection = () => {
   const [gridData, setGridData] = useState([])
@@ -115,7 +115,7 @@ const RecruitmentSelection = () => {
   const columns:any = [
    
     {
-      title: 'First Name',
+      title: 'Employee ID',
       dataIndex: 'empcode',
       sorter: (a: any, b: any) => {
         if (a.empcode > b.empcode) {
@@ -235,46 +235,6 @@ const RecruitmentSelection = () => {
     }
   }
 
-  // interface DataType {
-  //   key: React.Key;
-  //   fname:string, 
-  //     sname:string; 
-  //     dob:string; 
-  //     gender:string;
-  //     phone:string;
-  //     qualification: string;
-  // }
-  // const  data: DataType[] = [
-
-  //   {
-  //     key:'1',
-  //     fname:"Philip", 
-  //     sname:"Aherto", 
-  //     dob:"27-07-2000", 
-  //     gender:"Male", 
-  //     phone:"0249920482",
-  //     qualification: "Degree"
-  //   },
-  //   {
-  //     key:'2',
-  //     fname:"Kwame", 
-  //     sname:"Kekeli", 
-  //     dob:"27-07-2002", 
-  //     gender:"Male", 
-  //     phone:"0249560482",
-  //     qualification: "Degree"
-  //   },
-  //   {
-  //     key:'3',
-  //     fname:"Nana", 
-  //     sname:"Phils", 
-  //     dob:"27-07-2006", 
-  //     gender:"Male", 
-  //     phone:"0249920122",
-  //     qualification: "HND"
-  //   }
-  // ];
-
   useEffect(() => {
     loadData()
   }, [])
@@ -362,19 +322,18 @@ const RecruitmentSelection = () => {
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">MANAGEMENT </option>
-              <option value="2">CASUAL </option>
-              <option value="3">GENERAL  </option>
+              {PAYGROUP.map((item: any) => (
+                <option value={item.code}>{item.name}</option>
+              ))}
             </select>
           </div>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">PERMANENT </option>
-              <option value="2">SERVICE </option>
-              <option value="3">CONTRACT </option>
-              <option value="4">SENIOR STAFF </option>
+              {CATEGORY.map((item: any) => (
+                <option value={item.code}>{item.name}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -383,19 +342,19 @@ const RecruitmentSelection = () => {
             <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">ASSISTANT ACCOUNTANT </option>
-              <option value="2">ACCOUNTS OFFICER </option>
-              <option value="3">HUMAN RESOURCE MANAGER </option>
-              <option value="4">SALES PERSONNEL 1 </option>
+              
+              {JOBTITLE.map((item: any) => (
+                <option value={item.code}>{item.desc}</option>
+              ))}
             </select>
           </div>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">manager </option>
-              <option value="2">jsenior staff</option>
-              <option value="3">junior staff </option>
+              {UNITS.map((item: any) => (
+                <option value={item.code}>{item.name}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -583,6 +542,7 @@ const RecruitmentSelection = () => {
                     <input type="email" name="name"  className="form-control form-control-solid"/>
                   </div>
                 </div>
+                <hr></hr>
                 <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                   <div className='col-6 mb-3'>
                   <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Qualification</label>

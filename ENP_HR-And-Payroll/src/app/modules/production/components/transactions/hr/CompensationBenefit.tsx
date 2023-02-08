@@ -8,6 +8,7 @@ import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
+import { employeedata } from '../../../../../data/DummyData'
 
 const CompensationBenefit = () => {
   const [gridData, setGridData] = useState([])
@@ -24,6 +25,8 @@ const CompensationBenefit = () => {
   const [radio2Value, setRadio2Value] = useState();
   const [radio3Value, setRadio3Value] = useState();
   const [radio4Value, setRadio4Value] = useState();
+  const [employeeRecord, setEmployeeRecord]= useState<any>([])
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -114,7 +117,7 @@ const CompensationBenefit = () => {
    
     {
       title: 'Employee ID',
-      dataIndex: 'empl_code',
+      dataIndex: 'empcode',
       sorter: (a: any, b: any) => {
         if (a.empl_code > b.empl_code) {
           return 1
@@ -127,7 +130,7 @@ const CompensationBenefit = () => {
     },
     {
       title: 'First Name',
-      dataIndex: 'fname',
+      dataIndex: 'firstname',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -140,7 +143,7 @@ const CompensationBenefit = () => {
     },
     {
       title: 'Last Name',
-      dataIndex: 'lname',
+      dataIndex: 'lastname',
       sorter: (a: any, b: any) => {
         if (a.lname > b.lname) {
           return 1
@@ -166,7 +169,7 @@ const CompensationBenefit = () => {
     },
     {
       title: 'Gender',
-      dataIndex: 'gender',
+      dataIndex: 'sex',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -347,49 +350,18 @@ const CompensationBenefit = () => {
     }
   }
 
-  // interface DataType {
-  //   key: React.Key;
-  //   id: string;
-  //   fname:string, 
-  //   sname:string; 
-  //   dob:string; 
-  //   gender:string;
-  //   phone:string;
-  //   qualification: string;
-  // }
-  // const  data: DataType[] = [
 
-  //   {
-  //     key:'1',
-  //     id:'1',
-  //     fname:"Philip", 
-  //     sname:"Aherto", 
-  //     dob:"27-07-2000", 
-  //     gender:"Male", 
-  //     phone:"0249920482",
-  //     qualification: "Degree"
-  //   },
-  //   {
-  //     key:'2',
-  //     id:'2',
-  //     fname:"Kwame", 
-  //     sname:"Kekeli", 
-  //     dob:"27-07-2002", 
-  //     gender:"Male", 
-  //     phone:"0249560482",
-  //     qualification: "Degree"
-  //   },
-  //   {
-  //     key:'3',
-  //     id:'3',
-  //     fname:"Nana", 
-  //     sname:"Phils", 
-  //     dob:"27-07-2006", 
-  //     gender:"Male", 
-  //     phone:"0249920122",
-  //     qualification: "HND"
-  //   }
-  // ];
+
+
+  const onEmployeeChange = (e: any) => {
+    const objectId = e.target.value 
+    const newEmplo = employeedata.find((item:any)=>{
+      return item.code.toString()===objectId
+    })
+  setEmployeeRecord(newEmplo)
+    
+  }
+
 
   useEffect(() => {
     loadData()
@@ -438,6 +410,15 @@ const CompensationBenefit = () => {
       return error.statusText
     }
   }
+
+  // console.log(employeeRecord)
+
+  // const found = employeedata.find(obj => {
+  //   return obj.code === 3;
+  // });
+
+
+  // console.log(found)
 
   return (
     <div
@@ -494,7 +475,7 @@ const CompensationBenefit = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={COMPENSATIONANDBENEFITS} />
+          <Table columns={columns} dataSource={employeedata} />
           {/* Add form */}
           <Modal
                 title='Employee Details'
@@ -519,59 +500,45 @@ const CompensationBenefit = () => {
                   </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
-                >
+                <form >
                     <hr></hr>
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">001 - ANANI </option>
-                        <option value="2">002 - OFOSU </option>
-                        <option value="3">003 - KOFFIE </option>
-                        <option value="4">004 - KOFFIE </option>
-                        <option value="5">005 - ADJEI </option>
+                      <select className="form-select form-select-solid" aria-label="Select example" 
+                      onChange={(e)=>onEmployeeChange(e)}>
+                        {employeedata.map((item: any) => (
+                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
+                        ))}
                       </select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Unit</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">MANAGER </option>
-                        <option value="2">JUNIOR STAFF</option>
-                        <option value="3">SENIOR STAFF </option>
-                      </select>
+                      <input type="text" name="unit" value={employeeRecord?.unit} className="form-control form-control-solid"/>
+
+              
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
-                      <input type="text" name="fname"  className="form-control form-control-solid"/>
+                      <input type="text" name="firstname" value={employeeRecord?.firstname}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
-                      <input type="text" name="lname"  className="form-control form-control-solid"/>
+                      <input type="text" name="lastname" value={employeeRecord?.lastname}   className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="date" name="code"  className="form-control form-control-solid"/>
+                      <input type="text" name="dob" value={employeeRecord?.dob}    className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">MALE </option>
-                        <option value="2">FEMALE </option>
-                      </select>
+                      <input type="text" name="sex" value={employeeRecord?.sex}   className="form-control form-control-solid"/>
+
+                     
                     </div>
                   </div>
                   <hr></hr>
@@ -611,7 +578,7 @@ const CompensationBenefit = () => {
                         <Radio value={2}>No</Radio>
                         
                       </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on allowance (optional)' aria-label="With textarea"></textarea>
+                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on health insurance (optional)' aria-label="With textarea"></textarea>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
@@ -646,8 +613,8 @@ const CompensationBenefit = () => {
                     </div>
                     
                   </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
-                    <div className='col-6 mb-3'>
+                  {/* <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
+                    <div className='col-6 mb-3'> */}
                         {/* <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
                         <Radio.Group onChange={onRadioChange} value={radioValue}>
                           <Radio value={1}>Yes</Radio>
@@ -708,7 +675,7 @@ const CompensationBenefit = () => {
                         <Radio value={2}>No</Radio>
                         
                       </Radio.Group> */}
-                    </div>
+                    {/* </div> */}
                     {/* <div className='col-6 mb-3'>  
                         <input type="text" name="fname1"  className="form-control form-control-solid"/>
                         <br></br>
@@ -727,8 +694,8 @@ const CompensationBenefit = () => {
                         
                         <input type="text" name="fname7"  className="form-control form-control-solid"/>
                     </div> */}
-                  </div>
-                </Form>
+                  {/* </div> */}
+                </form>
           </Modal>
 
            {/* shortlist form */}

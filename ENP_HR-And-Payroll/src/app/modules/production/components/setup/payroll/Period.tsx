@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { period } from '../../../../../data/DummyData'
 
 const Period = () => {
   const [gridData, setGridData] = useState([])
@@ -901,7 +902,7 @@ const Period = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={PERIOD}/>
+          <Table columns={columns} dataSource={period}/>
           <Modal
                 title='Period Setup'
                 open={isModalOpen}
