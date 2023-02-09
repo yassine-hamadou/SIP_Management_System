@@ -6,7 +6,7 @@ import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
-import { DEPARTMENTS, employeedata } from '../../../../../data/DummyData'
+import { DEPARTMENTS, employeedata, period } from '../../../../../data/DummyData'
 
 const TimeSheet = () => {
   const [gridData, setGridData] = useState([])
@@ -18,6 +18,7 @@ const TimeSheet = () => {
   
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isShortModalOpen, setIsShortModalOpen] = useState(false)
+  const [employeeRecord, setEmployeeRecord]= useState<any>([])
   const [radioValue, setRadioValue] = useState();
   const [radio1Value, setRadio1Value] = useState();
   const [radio2Value, setRadio2Value] = useState();
@@ -60,6 +61,16 @@ const TimeSheet = () => {
       return e
     }
   }
+
+  const onEmployeeChange = (e: any) => {
+    const objectId = e.target.value 
+    const newEmplo = employeedata.find((item:any)=>{
+      return item.code.toString()===objectId
+    })
+  setEmployeeRecord(newEmplo)
+    
+  }
+
   const [fileList, setFileList] = useState<UploadFile[]>([
     
   ]);
@@ -158,12 +169,12 @@ const TimeSheet = () => {
     },
     {
       title: 'Job Title',
-      dataIndex: 'job',
+      dataIndex: 'jobt',
       sorter: (a: any, b: any) => {
-        if (a.job > b.job) {
+        if (a.jobt > b.jobt) {
           return 1
         }
-        if (b.job > a.job) {
+        if (b.jobt > a.jobt) {
           return -1
         }
         return 0
@@ -528,16 +539,9 @@ const TimeSheet = () => {
             <label htmlFor="exampleFormControlInput1" className=" form-label">Payroll Period</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">JAN23 </option>
-              <option value="2">FEB23 </option>
-              <option value="3">MAR23 </option>
-              <option value="4">APR23 </option>
-              <option value="5">MAY23 </option>
-              <option value="6">JUN23 </option>
-              <option value="7">JUL23 </option>
-              <option value="8">AUG23 </option>
-              <option value="9">SEP23 </option>
-              <option value="10">OCT23 </option>
+              {period.map((item: any) => (
+                <option value={item.code}>{item.code}</option>
+              ))}
             </select>
           </div>
 
@@ -616,7 +620,7 @@ const TimeSheet = () => {
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
+                      <select className="form-select form-select-solid" aria-label="Select example" onChange={(e)=>onEmployeeChange(e)}>
                         <option> select</option>
                         {employeedata.map((item: any) => (
                           <option value={item.code}> {item.empcode} - {item.lastname}</option>
@@ -625,41 +629,32 @@ const TimeSheet = () => {
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">ASSISTANT ACCOUNTANT </option>
-                        <option value="2">ACCOUNTS OFFICER </option>
-                        <option value="3">HUMAN RESOURCE MANAGER </option>
-                        <option value="4">SALES PERSONNEL 1 </option>
-                      </select>
+                      <input type="text" name="fname" value={employeeRecord?.jobt} className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
-                      <input type="text" name="fname"  className="form-control form-control-solid"/>
+                      <input type="text" name="fname" value={employeeRecord?.firstname} className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
-                      <input type="text" name="lname"  className="form-control form-control-solid"/>
+                      <input type="text" name="fname" value={employeeRecord?.lastname} className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="date" name="code"  className="form-control form-control-solid"/>
+                      <input type="text" name="fname" value={employeeRecord?.dob} className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">MALE </option>
-                        <option value="2">FEMALE </option>
-                      </select>
+                      <input type="text" name="fname" value={employeeRecord?.sex} className="form-control form-control-solid"/>
                     </div>
                   </div>
                 </Form>
           </Modal>
+
                 {/* Details table */}
           <Modal
                 // title='Short List'

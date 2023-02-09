@@ -114,7 +114,7 @@ export function AsideMenuMain() {
           <AsideMenuItem to='setup/hr/notes' hasBullet={true} title='Note Categories' />
           <AsideMenuItem to='setup/hr/medical' hasBullet={true} title='Medicals' />
         </AsideMenuItemWithSub>
-  
+
         <AsideMenuItemWithSub to='#' title='Payroll' hasBullet={true}>
           <AsideMenuItem to='setup/payroll/benefit' hasBullet={true} title='Benefits' />
           <AsideMenuItem to='setup/payroll/deduction' hasBullet={true} title='Deductions' />
@@ -127,6 +127,7 @@ export function AsideMenuMain() {
 
           <AsideMenuItemWithSub to='#' title='Statutories' hasBullet={true}>
             <AsideMenuItem to='setup/payroll/tax' hasBullet={true} title='Taxes'/>
+            <AsideMenuItem to='setup/payroll/snnit' hasBullet={true} title='SNNITs'/>
 
           </AsideMenuItemWithSub>
           <AsideMenuItem to='setup/payroll/parameter' hasBullet={true} title='Parameters' />

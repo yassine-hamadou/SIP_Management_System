@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { CURRENCY } from '../../../../../data/DummyData'
 
 const Currency = () => {
   const [gridData, setGridData] = useState([])
@@ -110,33 +111,7 @@ const Currency = () => {
   ]
 
 
-  const CURRENCY=[
-    {
-     code: "USD",
-     name: "US DOLLARS",
-     status: "ACTIVE"
-    },
-    {
-     code: "GHC",
-     name: "GHANA CEDI",
-     status: "ACTIVE"
-    },
-    {
-     code: "GBP",
-     name: "GREAT BRITIAN POUNDS",
-     status: "ACTIVE"
-    },
-    {
-     code: "AUD",
-     name: "AUSTRALIAN DOLLLARS",
-     status: "ACTIVE"
-    },
-    {
-     code: "FRANC",
-     name: "WEST AFRICAN FRANC",
-     status: "ACTIVE"
-    }
-   ]
+
   const loadData = async () => {
     setLoading(true)
     try {

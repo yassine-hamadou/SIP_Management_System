@@ -432,7 +432,6 @@ export const JOBTITLE=[
   }
  ]
 
-
 // HR Setup DATA
 
 export const APPRAISAL=[
@@ -449,11 +448,23 @@ export const APPRAISAL=[
 export const NOTES=[
     {
         code:'001',
-        name:'ANNUAL',
+        name:'LATENESS',
     },
     {
         code:'002',
-        name:'PROMOTION',
+        name:'INSUBORDINATION',
+    },
+    {
+        code:'003',
+        name:'LOW PRODUCTIVITY',
+    },
+    {
+        code:'004',
+        name:'ABSENTEEISM',
+    },
+    {
+        code:'004',
+        name:'WORKING CONDITIONS',
     },
 ]
 
@@ -3367,5 +3378,301 @@ export const employeedata=[
    code: "003",
    name: "GENERAL",
    status: "ACTIVE"
+  }
+ ]
+
+ export const LOANS =[
+  {
+   code: "001",
+   interestRate: "5%",
+   interestType: "FORMULA",
+   moratorium: "NONE",
+   minrepay: 100,
+   maxrepay: 2000,
+   ceiling: 0.15,
+   deduction: "MONTHLY",
+   cancellation: "N\/A"
+  },
+  {
+   code: "002",
+   interestRate: "15%",
+   interestType: "PERCENTAGE OF GROSS",
+   moratorium: "3 MONTHS",
+   minrepay: 100,
+   maxrepay: 2000,
+   ceiling: 0.15,
+   deduction: "MONTHLY",
+   cancellation: "N\/A"
+  },
+  {
+   code: "003",
+   interestRate: "30%",
+   interestType: "VARYING AMOUNT",
+   moratorium: "NONE",
+   minrepay: 100,
+   maxrepay: 2000,
+   ceiling: 0.15,
+   deduction: "MONTHLY",
+   cancellation: "N\/A"
+  },
+  {
+   code: "004",
+   interestRate: "2%",
+   interestType: "VARYING AMOUNT",
+   moratorium: "NONE",
+   minrepay: 100,
+   maxrepay: 2000,
+   ceiling: 0.15,
+   deduction: "MONTHLY",
+   cancellation: "N\/A"
+  },
+  {
+   code: "005",
+   interestRate: "10%",
+   interestType: "PERCENTAGE OF BASIC",
+   moratorium: "1 MONTH",
+   minrepay: 100,
+   maxrepay: 2000,
+   ceiling: 0.15,
+   deduction: "MONTHLY",
+   cancellation: "N\/A"
+  }
+ ]
+
+ export const DEDUCTION=[
+  {
+   code: "001",
+   name: "CLOT",
+   desc: "CLOTHING ALLOWANCE",
+   cat: "PERMANENT",
+   tamount: "FORMULA",
+   amount: 0,
+   accnum: 1234560,
+   ptype: "MONTHLY",
+   pinterval: "MONTHLY",
+   currency: "GHS",
+   accrued: "NO",
+   taxtype: "TAX TABLE"
+  },
+  {
+   code: "002",
+   name: "ACCOM",
+   desc: "ACCOMODATION ALLOWANCE",
+   cat: "SERVICE",
+   tamount: "PERCENTAGE OF GROSS",
+   amount: 0,
+   accnum: 1234561,
+   ptype: "MONTHLY",
+   pinterval: "MONTHLY",
+   currency: "GHS",
+   accrued: "NO",
+   taxtype: "TAX FORMULA"
+  },
+  {
+   code: "003",
+   name: "MED",
+   desc: "MEDICAL ALLOWANCE",
+   cat: "PERMANENT",
+   tamount: "VARYING AMOUNT",
+   amount: 0,
+   accnum: 1234562,
+   ptype: "AMOUNT",
+   pinterval: "AMOUNT",
+   currency: "GHS",
+   accrued: "NO",
+   taxtype: "NON TAXABLE"
+  },
+  {
+   code: "004",
+   name: "TRAV",
+   desc: "TRAVELLING ALLOWANCE",
+   cat: "SENIOR STAFF",
+   tamount: "VARYING AMOUNT",
+   amount: 0,
+   accnum: 1234563,
+   ptype: "WEEKLY",
+   pinterval: "WEEKLY",
+   currency: "GHS",
+   accrued: "NO",
+   taxtype: "TAX FORMULA"
+  },
+  {
+   code: "005",
+   name: "RND",
+   desc: "RESEARCH ALLOWANCE",
+   cat: "SENIOR STAFF",
+   tamount: "PERCENTAGE OF BASIC",
+   amount: 0,
+   accnum: 1234564,
+   ptype: "ANNUAL",
+   pinterval: "ANNUAL",
+   currency: "GHS",
+   accrued: "NO",
+   taxtype: "TAX RATE"
+  }
+ ]
+
+ export const CURRENCY=[
+  {
+   code: "USD",
+   name: "US DOLLARS",
+   status: "ACTIVE"
+  },
+  {
+   code: "GHC",
+   name: "GHANA CEDI",
+   status: "ACTIVE"
+  },
+  {
+   code: "GBP",
+   name: "GREAT BRITAIN POUNDS",
+   status: "ACTIVE"
+  },
+  {
+   code: "AUD",
+   name: "AUSTRALIAN DOLLARS",
+   status: "ACTIVE"
+  },
+  {
+   code: "FRANC",
+   name: "WEST AFRICAN FRANC",
+   status: "ACTIVE"
+  }
+ ]
+
+ export const GRADES=[
+  {
+   code: "001",
+   desc: "ASTACT1",
+   name: "ASSISTANT ACCONTANT",
+   payg: "GENERAL",
+   status: "ACTIVE"
+  },
+  {
+   code: "002",
+   desc: "ACCOFF",
+   name: "ACCOUNT OFFICER",
+   payg: "GENERAL",
+   status: "ACTIVE"
+  },
+  {
+   code: "003",
+   desc: "HRMAN",
+   name: "HUMAN RESOURCE MANAGER",
+   payg: "MANAGEMENT",
+   status: "ACTIVE"
+  },
+  {
+   code: "004",
+   desc: "SALREP1",
+   name: "SALES REP ENTRY",
+   payg: "CASUAL",
+   status: "ACTIVE"
+  },
+  {
+   code: "005",
+   desc: "FACMAN",
+   name: "FACTORY MANAGER",
+   payg: "MANAGEMENT",
+   status: "ACTIVE"
+  }
+ ]
+
+ export const NOTCHES=[
+  {
+   name: "NOTCH 1",
+   currency:"USD",
+   amount:"0.00",
+   salgrade: "ASSISTANT ACCOUNTANT"
+  },
+  {
+   name: "NOTCH 2",
+   currency:"FRANC",
+   amount:"0.00",
+   salgrade: "ASSISTANT ACCOUNTANT"
+  },
+  {
+   name: "NOTCH 3",
+   currency:"USD",
+   amount:"0.00",
+   salgrade: "ASSISTANT ACCOUNTANT"
+  },
+  {
+   name: "NOTCH 4",
+   currency:"FRANC",
+   amount:"0.00",
+   salgrade: "ASSISTANT ACCOUNTANT"
+  },
+  {
+   name: "NOTCH 1",
+   currency:"USD",
+   amount:"0.00",
+   salgrade: "ACCOUNT OFFICER"
+  },
+  {
+   name: "NOTCH 2",
+   currency:"AUD",
+   amount:"0.00",
+   salgrade: "ACCOUNT OFFICER"
+  },
+  {
+   name: "NOTCH 3",
+   currency:"USD",
+   amount:"0.00",
+   salgrade: "ACCOUNT OFFICER"
+  },
+  {
+   name: "NOTCH 1",
+   currency:"USD",
+   amount:"0.00",
+   salgrade: "HUMAN RESOURCE MANAGER"
+  },
+  {
+   name: "NOTCH 2",
+   currency:"GBP",
+   amount:"0.00",
+   salgrade: "HUMAN RESOURCE MANAGER"
+  },
+  {
+   name: "NOTCH 3",
+   currency:"FRANC",
+   amount:"0.00",
+   salgrade: "HUMAN RESOURCE MANAGER"
+  },
+  {
+   name: "NOTCH 1",
+   currency:"GBP",
+   amount:"0.00",
+   salgrade: "SALES REP ENTRY"
+  },
+  {
+   name: "NOTCH 2",
+   currency:"AUD",
+   amount:"0.00",
+   salgrade: "SALES REP ENTRY"
+  },
+  {
+   name: "NOTCH 3",
+   currency:"AUD",
+   amount:"0.00",
+   salgrade: "SALES REP ENTRY"
+  },
+  {
+   name: "NOTCH 4",
+   currency:"USD",
+   amount:"0.00",
+   salgrade: "SALES REP ENTRY"
+  },
+  {
+   name: "NOTCH 5",
+   currency:"GBP",
+   amount:"0.00",
+   salgrade: "SALES REP ENTRY"
+  },
+  {
+   name: "NOTCH 1",
+   currency:"FRANC",
+   amount:"0.00",
+   salgrade: "FACTORY MANAGER"
   }
  ]

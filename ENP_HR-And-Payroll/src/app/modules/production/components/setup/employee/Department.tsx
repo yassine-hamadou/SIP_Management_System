@@ -86,19 +86,19 @@ const Department = () => {
         return 0
       },
     },
-    {
-      title: 'Reporting Division',
-      dataIndex: 'report',
-      sorter: (a: any, b: any) => {
-        if (a.report > b.report) {
-          return 1
-        }
-        if (b.report > a.report) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Reporting Division',
+    //   dataIndex: 'report',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.report > b.report) {
+    //       return 1
+    //     }
+    //     if (b.report > a.report) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
       title: 'Status',
       dataIndex: 'status',

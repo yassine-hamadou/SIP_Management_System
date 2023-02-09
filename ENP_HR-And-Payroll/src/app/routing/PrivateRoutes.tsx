@@ -79,6 +79,7 @@ import PayrollSSNITReport from '../modules/production/components/report/PayrollS
 import SavSchemeTransactionInputReport from '../modules/production/components/report/SavSchemeTransactionInputReport'
 import { MultiTabForm } from '../modules/production/components/employeeFormEntry/EmployeeFormEntry'
 import { EmployeeEditForm } from '../modules/production/components/employeeFormEntry/EmployeeEditForm'
+import { SNNIT } from '../modules/production/components/setup/payroll/Snnit'
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -587,7 +588,7 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='setup/payroll/decustion*'
+         path='setup/payroll/deduction*'
          element={
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Deductions</PageTitle>
@@ -646,6 +647,15 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Taxes</PageTitle>
              <Tax />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='setup/payroll/snnit*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>SNNITs</PageTitle>
+             <SNNIT />
            </SuspensedView>
          }
         />

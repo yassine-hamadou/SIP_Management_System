@@ -8,7 +8,7 @@ import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
-import { employeedata } from '../../../../../data/DummyData'
+import { employeedata, JOBTITLE } from '../../../../../data/DummyData'
 
 const CompensationBenefit = () => {
   const [gridData, setGridData] = useState([])
@@ -38,19 +38,21 @@ const CompensationBenefit = () => {
   const handleCancel = () => {
     form.resetFields()
     setIsModalOpen(false)
+    setEmployeeRecord(null)
   }
-  const showShortModal = () => {
-    setIsShortModalOpen(true)
-  }
+  // const showShortModal = () => {
+  //   setIsShortModalOpen(true)
+  // }
 
-  const handleShortOk = () => {
-    setIsShortModalOpen(false)
-  }
+  // const handleShortOk = () => {
+  //   setIsShortModalOpen(false)
+  // }
 
-  const handleShortCancel = () => {
-    form.resetFields()
-    setIsShortModalOpen(false)
-  }
+  // const handleShortCancel = () => {
+  //   form.resetFields()
+    
+  //   setIsShortModalOpen(false)
+  // }
 
   const deleteData = async (element: any) => {
     try {
@@ -436,10 +438,9 @@ const CompensationBenefit = () => {
             <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">ASSISTANT ACCOUNTANT </option>
-              <option value="2">ACCOUNTS OFFICER </option>
-              <option value="3">HUMAN RESOURCE MANAGER </option>
-              <option value="4">SALES PERSONNEL 1 </option>
+              {JOBTITLE.map((item: any) => (
+                <option value={item.code}>{item.desc}</option>
+              ))}
             </select>
           </div>
 
@@ -507,6 +508,7 @@ const CompensationBenefit = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
                       <select className="form-select form-select-solid" aria-label="Select example" 
                       onChange={(e)=>onEmployeeChange(e)}>
+                        <option>select</option>
                         {employeedata.map((item: any) => (
                           <option value={item.code}> {item.empcode} - {item.lastname}</option>
                         ))}
@@ -613,209 +615,11 @@ const CompensationBenefit = () => {
                     </div>
                     
                   </div>
-                  {/* <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
-                    <div className='col-6 mb-3'> */}
-                        {/* <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
-                        <Radio.Group onChange={onRadioChange} value={radioValue}>
-                          <Radio value={1}>Yes</Radio>
-                          <Radio value={2}>No</Radio>
-                        </Radio.Group>
-                      <br></br>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Allowance</label>
-                      <Radio.Group onChange={onRadio1Change} value={radio1Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
-                      </Radio.Group>
-                   
-                      <br></br>
-                      <br></br>
-                      <br></br> */}
-                      {/* <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Bonus </label>
-                      <Radio.Group onChange={onRadio2Change} value={radio2Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
-                      </Radio.Group> */}
-                      {/* <br></br>
-                      <br></br>
-                      <br></br> */}
-                      {/* <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Health Insurance</label>
-                      <Radio.Group onChange={onRadio3Change} value={radio3Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
-                      </Radio.Group> */}
-                      {/* <br></br>
-                      <br></br>
-                      <br></br> */}
-                      {/* <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
-                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
-                      </Radio.Group>
-                      <br></br>
-                      <br></br>
-                      <br></br> */}
-                      {/* <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Professional Development </label>
-                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
-                      </Radio.Group>
-                      <br></br>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Company Property</label>
-                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
-                      </Radio.Group> */}
-                    {/* </div> */}
-                    {/* <div className='col-6 mb-3'>  
-                        <input type="text" name="fname1"  className="form-control form-control-solid"/>
-                        <br></br>
-                        <input type="text" name="fname2"  className="form-control form-control-solid"/>
-                        <br></br>
-                        <input type="text" name="fname3"  className="form-control form-control-solid"/>
-                        <br></br>
-                        <input type="text" name="fname4"  className="form-control form-control-solid"/>
-                        <br></br>
-                       
-                        <input type="text" name="fname5"  className="form-control form-control-solid"/>
-                        <br></br>
-                       
-                        <input type="text" name="fname6"  className="form-control form-control-solid"/>
-                        <br></br>
-                        
-                        <input type="text" name="fname7"  className="form-control form-control-solid"/>
-                    </div> */}
-                  {/* </div> */}
+                  
                 </form>
           </Modal>
 
-           {/* shortlist form */}
-          <Modal
-                title='Short List'
-                open={isShortModalOpen}
-                onCancel={handleShortCancel}
-                closable={true}
-                width="900px"
-                footer={[
-                    <Button key='back' onClick={handleShortCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
-            >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                 
-                    onFinish={onFinish}
-                >
-                    {/* <hr></hr> */}
-                    <hr></hr>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
-                      <input type="text" name="code"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
-                      <input type="text" name="name"  className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">DOB</label>
-                      <input type="date" name="code"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
-                      <input type="text" name="name"  className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
-                      <input type="phone" name="code"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
-                      <input type="text" name="name"  className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
-                    <div className='col-6 mb-3'>
-                      <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Qualification</label>
-                      <Radio.Group onChange={onRadioChange} value={radioValue}>
-                        <Radio value={1}>1</Radio>
-                        <Radio value={2}>2</Radio>
-                        <Radio value={3}>3</Radio>
-                        <Radio value={4}>4</Radio>
-                      </Radio.Group>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Work Skills</label>
-                      <Radio.Group onChange={onRadio1Change} value={radio1Value}>
-                        <Radio value={1}>1</Radio>
-                        <Radio value={2}>2</Radio>
-                        <Radio value={3}>3</Radio>
-                        <Radio value={4}>4</Radio>
-                      </Radio.Group>
-                   
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Experiences </label>
-                      <Radio.Group onChange={onRadio2Change} value={radio2Value}>
-                        <Radio value={1}>1</Radio>
-                        <Radio value={2}>2</Radio>
-                        <Radio value={3}>3</Radio>
-                        <Radio value={4}>4</Radio>
-                      </Radio.Group>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Reference</label>
-                      <Radio.Group onChange={onRadio3Change} value={radio3Value}>
-                        <Radio value={1}>1</Radio>
-                        <Radio value={2}>2</Radio>
-                        <Radio value={3}>3</Radio>
-                        <Radio value={4}>4</Radio>
-                      </Radio.Group>
-                      <br></br>
-                      <br></br>
-                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Social Skills</label>
-                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
-                        <Radio value={1}>1</Radio>
-                        <Radio value={2}>2</Radio>
-                        <Radio value={3}>3</Radio>
-                        <Radio value={4}>4</Radio>
-                      </Radio.Group>
-                    </div>
-                    <div className='col-6 mb-3' style={{padding: "30px 20px 0 20px"}}>  
-                    
-                    </div>
-                  </div>
-                </Form>
-          </Modal>
+          
         </div>
       </KTCardBody>
     </div>

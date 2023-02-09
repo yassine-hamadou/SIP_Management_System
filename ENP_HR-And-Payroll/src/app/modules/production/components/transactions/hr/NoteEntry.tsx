@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { employeedata, NOTES } from '../../../../../data/DummyData'
 
 const NoteEntry = () => {
   const [gridData, setGridData] = useState([])
@@ -261,7 +262,6 @@ const NoteEntry = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                     <hr></hr>
@@ -283,22 +283,18 @@ const NoteEntry = () => {
                         <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
                         <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                          <option value="1">001 - ANANI </option>
-                          <option value="2">002 - OFOSU </option>
-                          <option value="3">003 - KOFFIE </option>
-                          <option value="4">004 - KOFFIE </option>
-                          <option value="5">005 - ADJEI </option>
+                        {employeedata.map((item: any) => (
+                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
+                        ))}
                         </select>
                       </div>
                       <div className='col-6 mb-3'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Note Category</label>
                         <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                          <option value="1">001 - ANANI </option>
-                          <option value="2">002 - OFOSU </option>
-                          <option value="3">003 - KOFFIE </option>
-                          <option value="4">004 - KOFFIE </option>
-                          <option value="5">005 - ADJEI </option>
+                        {NOTES.map((item: any) => (
+                          <option value={item.code}>{item.name}</option>
+                        ))}
                         </select>
                       </div>
                       <div className='col-6 mb-3'>

@@ -5,7 +5,7 @@ import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Space, Table, Upload } from 'antd';
-import { employeedata } from '../../../../data/DummyData';
+import { CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, NOTCHES, UNITS } from '../../../../data/DummyData';
 import { KTSVG } from '../../../../../_metronic/helpers';
 
 const EmployeeEditForm= () =>{
@@ -441,46 +441,48 @@ const EmployeeEditForm= () =>{
             Payroll
           </button>
           <button 
-            className={`tab ${activeTab === 'tab5' ? 'active' : ''}`} 
-            onClick={() => handleTabClick('tab5')}
+            className={`tab ${activeTab === 'tab8' ? 'active' : ''}`} 
+            onClick={() => handleTabClick('tab8')}
           >
-            Note
+            Skills & Qualifications
+          </button>
+          
+          
+          <button 
+            className={`tab ${activeTab === 'tab7' ? 'active' : ''}`} 
+            onClick={() => handleTabClick('tab7')}
+          >
+            Compensations
           </button>
           <button 
             className={`tab ${activeTab === 'tab6' ? 'active' : ''}`} 
             onClick={() => handleTabClick('tab6')}
           >
-            Training
-          </button>
-          <button 
-            className={`tab ${activeTab === 'tab7' ? 'active' : ''}`} 
-            onClick={() => handleTabClick('tab7')}
-          >
-            Compensation
-          </button>
-          <button 
-            className={`tab ${activeTab === 'tab8' ? 'active' : ''}`} 
-            onClick={() => handleTabClick('tab8')}
-          >
-            Recruitment
+            Trainings
           </button>
           <button 
             className={`tab ${activeTab === 'tab9' ? 'active' : ''}`} 
             onClick={() => handleTabClick('tab9')}
           >
-            Appraisal
+            Appraisals
+          </button>
+          <button 
+            className={`tab ${activeTab === 'tab5' ? 'active' : ''}`} 
+            onClick={() => handleTabClick('tab5')}
+          >
+            Notes
           </button>
           <button 
             className={`tab ${activeTab === 'tab10' ? 'active' : ''}`} 
             onClick={() => handleTabClick('tab10')}
           >
-            Leave
+            Leaves
           </button>
           <button 
             className={`tab ${activeTab === 'tab11' ? 'active' : ''}`} 
             onClick={() => handleTabClick('tab11')}
           >
-            Medical
+            Medicals & Family
           </button>
           
         </div>
@@ -489,7 +491,7 @@ const EmployeeEditForm= () =>{
         
           {/* Details */}
           {activeTab === 'tab1' && 
-          <div>
+          <div className='col-8'>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <Upload
@@ -506,12 +508,12 @@ const EmployeeEditForm= () =>{
             </div>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
-              <input type="text" name="fname" value={dataByID?.firstname}  className="form-control form-control-solid" />
+                <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
+                <input type="text" name="fname" value={dataByID?.firstname}  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className="required form-label">Surname</label>
-              <input type="text" name="mname" value={dataByID?.lastname} className="form-control form-control-solid" />
+                <label htmlFor="exampleFormControlInput1" className="required form-label">Surname</label>
+                <input type="text" name="mname" value={dataByID?.lastname} className="form-control form-control-solid" />
               </div>
             </div>
 
@@ -521,7 +523,7 @@ const EmployeeEditForm= () =>{
                 <input type="text" name="lname"  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className="required form-label">Date of Birth</label>
+                <label htmlFor="exampleFormControlInput1" className="required form-label">Date of Birth</label>
                 <input type="date" name="dob"  className="form-control form-control-solid" />
               </div>
             </div>
@@ -529,11 +531,10 @@ const EmployeeEditForm= () =>{
               
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
-                  <option value={dataByID?.sex}>{dataByID?.sex}</option>
-                  {/* <option value="1">MALE</option>
-                  <option value="2">FEMALE</option> */}
-                 
+                <select className="form-select form-select-solid" aria-label="Select example">
+                <option value={dataByID?.sex}>{dataByID?.sex}</option>
+                
+                
                 </select>
               </div>
               <div className='col-6 mb-7'>
@@ -558,6 +559,10 @@ const EmployeeEditForm= () =>{
                   <option value="5">CANADIAN</option>
                 </select>
               </div>
+              <div className='col-6 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">National ID</label>
+                <input type="text" name="dob" className="form-control form-control-solid" />
+              </div>
             </div>
 
           </div>
@@ -566,7 +571,7 @@ const EmployeeEditForm= () =>{
           {/* Communications */}
           {
           activeTab === 'tab2' && 
-            <div>
+            <div className='col-8'>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
@@ -611,38 +616,48 @@ const EmployeeEditForm= () =>{
           }
           {/* Administration */}
           {activeTab === 'tab3' && 
-          <div>
+          <div className='col-8'>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Group</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>{dataByID?.paygroup} </option>
+                  
                   <option value="1">MANAGEMENT</option>
                   <option value="2">CASUAL</option>
                   <option value="3">GENERAL</option>
                 </select>
               </div>
               <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Notch</label>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>{dataByID?.notch} </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                 
+                  {CATEGORY.map((item: any) => (
+                    <option value={item.code}>{item.name}</option>
+                  ))}
                 </select>
               </div>
+              
             </div>
             <div className='row mb-0'>
+            <div className='col-6 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
+                <select className="form-select form-select-solid" aria-label="Select example">
+                {/* <option>{dataByID?.region} </option> */}
+                {DIVISION.map((item: any) => (
+                    <option value={item.code}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Salary Grade</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
                   <option>{dataByID?.grade} </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                  {GRADES.map((item: any) => (
+                    <option value={item.code}>{item.name}</option>
+                  ))}
                 </select>
               </div>
-              <div className='col-6 mb-7'>
+              {/* <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
@@ -650,39 +665,38 @@ const EmployeeEditForm= () =>{
                   <option value="2">Ghc400</option>
                   <option value="3">Ghc3000</option>
                 </select>
-              </div>
+              </div> */}
             </div>
             <div className='row mb-0'>
-              <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
-                  <option value="1">PERMANENT</option>
-                  <option value="2">SERVICE</option>
-                  <option value="3">CONTRACT</option>
-                  <option value="4">SENIOR STAFF</option>
-                  <option value="5">JUNIOR STAFF</option>
-                </select>
-              </div>
+              
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>{dataByID?.depart} </option>
-                  <option value="1">HUMAN RESOURCES</option>
-                  <option value="2">FACTORY</option>
-                  <option value="3">ACCOUNTING AND FINANCE</option>
-                  <option value="4">FACTORY</option>
+                  {/* <option>{dataByID?.depart} </option> */}
+                  {DEPARTMENTS.map((item: any) => (
+                    <option value={item.code}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className='col-6 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Notch</label>
+                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <option>{dataByID?.notch} </option>
+                 
+                  {NOTCHES.map((item: any) => (
+                    <option value={item.code}>{item.name}</option>
+                  ))}
                 </select>
               </div>
             </div>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
                 <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                <option>{dataByID?.unit} </option>
+                {UNITS.map((item: any) => (
+                    <option value={item.code}>{item.name}</option>
+                  ))}
                 </select>
               </div>
               <div className='col-3 mb-7'>
@@ -712,15 +726,15 @@ const EmployeeEditForm= () =>{
 
           {/* Payroll */}
           {activeTab === 'tab4' && 
-          <div>
+          <div className='col-8'>
             <div className='row mb-0'>
               <div  className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Salary Type</label>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Type</label>
                 <select className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                  <option value="1">MONTHLY</option>
+                  <option value="2">WEEKLY</option>
+                  <option value="3">HOURLY</option>
                 </select>
               </div>
               <div className='col-6 mb-7'>
@@ -750,63 +764,50 @@ const EmployeeEditForm= () =>{
               </div>
             </div>
             <div className='row mb-0'>
-              <div  className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">SSF</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>{dataByID?.ssfno} </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
-                </select>
+              
+              <div className='col-6 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">TIN </label>
+                <input type="text" name="tin" onChange={handleChange}  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">SSN </label>
                 <input type="text" name="ssn" onChange={handleChange}  className="form-control form-control-solid" />
               </div>
             </div>
-            <div className='row mb-0'>
-              <div  className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Tax</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
-                </select>
-
-              </div>
-              <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">TIN </label>
-                <input type="text" name="tin" onChange={handleChange}  className="form-control form-control-solid" />
-              </div>
-            </div>
+            
           </div>
           }
-          {/* Notes */}
-          {activeTab === 'tab5' && 
-          <div>
-            <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
+
+          {/* Recruitment */}
+          {activeTab === 'tab8' && 
+            <div >
+              <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
+              
               <Table columns={recruitColumns}  />
-            {/* <div className='row mb-0'>
-              <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Date</label>
-                <input type="date" name="date" onChange={handleChange}  className="form-control form-control-solid" />
+              {/* <div className='row mb-0'>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Date</label>
+                  <input type="date" name="date" onChange={handleChange}  className="form-control form-control-solid" />
 
-              </div>
-              <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Note </label>
-                <input type="text" name="dnote" onChange={handleChange}  className="form-control form-control-solid" />
-              </div>
-            </div> */}
-          </div>
-          }
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Note </label>
+                  <input type="text" name="mnote" onChange={handleChange}  className="form-control form-control-solid" />
+                </div>
+              </div> */}
+            </div>}
+          {/* Compensation */}
+          {activeTab === 'tab7' && 
+            <div >
+              <Table columns={compensationColumns}  />
+            </div>}
 
           {/* Trainings */}
           {activeTab === 'tab6' && 
-            <div>
+            <div >
             <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -826,37 +827,9 @@ const EmployeeEditForm= () =>{
             </div>
             }
 
-            {/* Compensation */}
-          {activeTab === 'tab7' && 
-            <div>
-              <Table columns={compensationColumns}  />
-            </div>}
-
-            {/* Recruitment */}
-          {activeTab === 'tab8' && 
-            <div>
-              <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
-              
-              <Table columns={recruitColumns}  />
-              {/* <div className='row mb-0'>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Date</label>
-                  <input type="date" name="date" onChange={handleChange}  className="form-control form-control-solid" />
-
-                </div>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Note </label>
-                  <input type="text" name="mnote" onChange={handleChange}  className="form-control form-control-solid" />
-                </div>
-              </div> */}
-            </div>}
-
             {/* Appraisal */}
           {activeTab === 'tab9' && 
-            <div>
+            <div >
               <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -876,10 +849,21 @@ const EmployeeEditForm= () =>{
               </div> */}
             </div>}
 
+              {/* Notes */}
+          {activeTab === 'tab5' && 
+          <div >
+            <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
+                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                Add
+              </button>
+              <Table columns={recruitColumns}  />
+            
+          </div>
+          }
 
             {/* Leave */}
           {activeTab === 'tab10' && 
-            <div>
+            <div >
               <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -899,10 +883,9 @@ const EmployeeEditForm= () =>{
               </div> */}
             </div>}
 
-
             {/* Medical */}
           {activeTab === 'tab11' && 
-            <div>
+            <div >
               <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -921,15 +904,9 @@ const EmployeeEditForm= () =>{
                 </div>
               </div> */}
             </div>}
-
-
-
-
         </div>
 
-
-
-        {/* <button className='btn btn-primary' type="submit">Submit</button> */}
+        <button className='btn btn-primary' type="submit">Submit</button>
       </form>
     </div>
   );

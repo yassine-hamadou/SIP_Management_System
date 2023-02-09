@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { NOTCHES } from '../../../../../data/DummyData'
 
 const Notches = () => {
   const [gridData, setGridData] = useState([])
@@ -30,7 +31,6 @@ const Notches = () => {
   const deleteData = async (element: any) => {
     try {
       const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
       return response.status
@@ -72,19 +72,32 @@ const Notches = () => {
         return 0
       },
     },
-    // {
-    //   title: 'Status',
-    //   dataIndex: 'name',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.name > b.name) {
-    //       return 1
-    //     }
-    //     if (b.name > a.name) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
+    {
+      title: 'Currency',
+      dataIndex: 'currency',
+      sorter: (a: any, b: any) => {
+        if (a.currency > b.currency) {
+          return 1
+        }
+        if (b.currency > a.currency) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      sorter: (a: any, b: any) => {
+        if (a.amount > b.amount) {
+          return 1
+        }
+        if (b.amount > a.amount) {
+          return -1
+        }
+        return 0
+      },
+    },
 
     {
       title: 'Action',
@@ -92,10 +105,6 @@ const Notches = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -109,72 +118,7 @@ const Notches = () => {
     },
   ]
 
-  const NOTCHES=[
-    {
-     name: "NOTCH 1",
-     salgrade: "ASSISTANT ACCOUNTANT"
-    },
-    {
-     name: "NOTCH 2",
-     salgrade: "ASSISTANT ACCOUNTANT"
-    },
-    {
-     name: "NOTCH 3",
-     salgrade: "ASSISTANT ACCOUNTANT"
-    },
-    {
-     name: "NOTCH 4",
-     salgrade: "ASSISTANT ACCOUNTANT"
-    },
-    {
-     name: "NOTCH 1",
-     salgrade: "ACCOUNT OFFICER"
-    },
-    {
-     name: "NOTCH 2",
-     salgrade: "ACCOUNT OFFICER"
-    },
-    {
-     name: "NOTCH 3",
-     salgrade: "ACCOUNT OFFICER"
-    },
-    {
-     name: "NOTCH 1",
-     salgrade: "HUMAN RESOURCE MANAGER"
-    },
-    {
-     name: "NOTCH 2",
-     salgrade: "HUMAN RESOURCE MANAGER"
-    },
-    {
-     name: "NOTCH 3",
-     salgrade: "HUMAN RESOURCE MANAGER"
-    },
-    {
-     name: "NOTCH 1",
-     salgrade: "SALES REP ENTRY"
-    },
-    {
-     name: "NOTCH 2",
-     salgrade: "SALES REP ENTRY"
-    },
-    {
-     name: "NOTCH 3",
-     salgrade: "SALES REP ENTRY"
-    },
-    {
-     name: "NOTCH 4",
-     salgrade: "SALES REP ENTRY"
-    },
-    {
-     name: "NOTCH 5",
-     salgrade: "SALES REP ENTRY"
-    },
-    {
-     name: "NOTCH 1",
-     salgrade: "FACTORY MANAGER"
-    }
-   ]
+  
 
   const loadData = async () => {
     setLoading(true)

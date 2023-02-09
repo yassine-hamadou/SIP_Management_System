@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { DEDUCTION } from '../../../../../data/DummyData'
 
 const Deduction = () => {
   const [gridData, setGridData] = useState([])
@@ -200,78 +201,7 @@ const Deduction = () => {
     },
   ]
 
-  const DEDUCTION=[
-    {
-     code: "001",
-     name: "CLOT",
-     desc: "CLOTHING ALLOWANCE",
-     cat: "PERMANENT",
-     tamount: "FORMULA",
-     amount: 0,
-     accnum: 1234560,
-     ptype: "MONTHLY",
-     pinterval: "MONTHLY",
-     currency: "GHS",
-     accrued: "NO",
-     taxtype: "TAX TABLE"
-    },
-    {
-     code: "002",
-     name: "ACCOM",
-     desc: "ACCOMODATION ALLOWANCE",
-     cat: "SERVICE",
-     tamount: "PERCENTAGE OF GROSS",
-     amount: 0,
-     accnum: 1234561,
-     ptype: "MONTHLY",
-     pinterval: "MONTHLY",
-     currency: "GHS",
-     accrued: "NO",
-     taxtype: "TAX FORMULA"
-    },
-    {
-     code: "003",
-     name: "MED",
-     desc: "MEDICAL ALLOWANCE",
-     cat: "PERMANENT",
-     tamount: "VARYING AMOUNT",
-     amount: 0,
-     accnum: 1234562,
-     ptype: "AMOUNT",
-     pinterval: "AMOUNT",
-     currency: "GHS",
-     accrued: "NO",
-     taxtype: "NON TAXABLE"
-    },
-    {
-     code: "004",
-     name: "TRAV",
-     desc: "TRAVELLING ALLOWANCE",
-     cat: "SENIOR STAFF",
-     tamount: "VARYING AMOUNT",
-     amount: 0,
-     accnum: 1234563,
-     ptype: "WEEKLY",
-     pinterval: "WEEKLY",
-     currency: "GHS",
-     accrued: "NO",
-     taxtype: "TAX FORMULA"
-    },
-    {
-     code: "005",
-     name: "RND",
-     desc: "RESEARCH ALLOWANCE",
-     cat: "SENIOR STAFF",
-     tamount: "PERCENTAGE OF BASIC",
-     amount: 0,
-     accnum: 1234564,
-     ptype: "ANNUAL",
-     pinterval: "ANNUAL",
-     currency: "GHS",
-     accrued: "NO",
-     taxtype: "TAX RATE"
-    }
-   ]
+  
    
 
   const loadData = async () => {

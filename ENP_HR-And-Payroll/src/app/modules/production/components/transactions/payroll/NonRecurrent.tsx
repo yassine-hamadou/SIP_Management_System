@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { DEPARTMENTS, employeedata, PAYGROUP, period } from '../../../../../data/DummyData';
 import "../../employeeFormEntry/formStyle.css"
 import { NonRecurrentBenefitTab } from './nonrecurrentTabs/NonRecurrentBenefitTab';
 import { NonRecurrentDeductionTab } from './nonrecurrentTabs/NonRecurrentDeductionTab';
@@ -45,8 +46,9 @@ const NonRecurrent= () =>{
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              {PAYGROUP.map((item: any) => (
+                <option value={item.code}>{item.name}</option>
+              ))}
             </select>
           </div>
 
@@ -54,16 +56,18 @@ const NonRecurrent= () =>{
             <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              {DEPARTMENTS.map((item: any) => (
+                <option value={item.code}>{item.name}</option>
+              ))}
             </select>
           </div>
           <div className='col-4 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Employee</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              <option value="1">test1 </option>
-              <option value="2">test2 </option>
+              {employeedata.map((item: any) => (
+                <option value={item.code}>{item.empcode}-{item.lastname}</option>
+              ))}
             </select>
           </div>
         </div>

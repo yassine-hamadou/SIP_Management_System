@@ -3,9 +3,8 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
-import { LOANS } from '../../../../../data/DummyData'
 
-const Loan = () => {
+const SNNIT = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -61,26 +60,39 @@ const Loan = () => {
       },
     },
     {
-      title: 'Interest Rate',
-      dataIndex: 'interestRate',
+      title: 'Name',
+      dataIndex: 'name',
       sorter: (a: any, b: any) => {
-        if (a.interestRate > b.interestRate) {
+        if (a.name > b.name) {
           return 1
         }
-        if (b.interestRate > a.interestRate) {
+        if (b.name > a.name) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Interest Type',
-      dataIndex: 'interestType',
+      title: 'Description',
+      dataIndex: 'desc',
       sorter: (a: any, b: any) => {
-        if (a.interestType > b.interestType) {
+        if (a.desc > b.desc) {
           return 1
         }
-        if (b.interestType > a.interestType) {
+        if (b.desc > a.desc) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Type',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
           return -1
         }
         return 0
@@ -88,78 +100,52 @@ const Loan = () => {
     },
     
     {
-      title: 'Moratorium',
-      dataIndex: 'moratorium',
+      title: 'Employer Account No.',
+      dataIndex: 'employerAcc',
       sorter: (a: any, b: any) => {
-        if (a.moratorium > b.moratorium) {
+        if (a.employerAcc > b.employerAcc) {
           return 1
         }
-        if (b.moratorium > a.moratorium) {
+        if (b.employerAcc > a.employerAcc) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Min Repay Period',
-      dataIndex: 'minrepay',
+      title: 'Employer Percentage',
+      dataIndex: 'employerAmount',
       sorter: (a: any, b: any) => {
-        if (a.minrepay > b.minrepay) {
+        if (a.employerAmount > b.employerAmount) {
           return 1
         }
-        if (b.minrepay > a.minrepay) {
+        if (b.employerAmount > a.employerAmount) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Max Repay Period',
-      dataIndex: 'maxrepay',
+      title: 'Employee Account No.',
+      dataIndex: 'employeeAcc',
       sorter: (a: any, b: any) => {
-        if (a.maxrepay > b.maxrepay) {
+        if (a.employeeAcc > b.employeeAcc) {
           return 1
         }
-        if (b.maxrepay > a.maxrepay) {
+        if (b.employeeAcc > a.employeeAcc) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Repayment Percentage Ceiling',
-      dataIndex: 'ceiling',
+      title: 'Employee Percentage',
+      dataIndex: 'employeeAmount',
       sorter: (a: any, b: any) => {
-        if (a.ceiling > b.ceiling) {
+        if (a.employeeAmount > b.employeeAmount) {
           return 1
         }
-        if (b.ceiling > a.ceiling) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Interest on Cancellation',
-      dataIndex: 'cancellation',
-      sorter: (a: any, b: any) => {
-        if (a.cancellation > b.cancellation) {
-          return 1
-        }
-        if (b.cancellation > a.cancellation) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Deduction',
-      dataIndex: 'deduction',
-      sorter: (a: any, b: any) => {
-        if (a.deduction > b.deduction) {
-          return 1
-        }
-        if (b.deduction > a.deduction) {
+        if (b.employeeAmount > a.employeeAmount) {
           return -1
         }
         return 0
@@ -189,8 +175,34 @@ const Loan = () => {
     },
   ]
 
-  
 
+  const SAVINGS_SCHEME=[
+    {
+     code: "001",
+     name: "INTPF",
+     desc: "INTERNAL PROVIDENT FUND",
+     "Employer Type": "PERMANENT",
+     employerAcc: 238976,
+     employerAmount: 0.06,
+     "Employee Type": "PERMANENT",
+     employeeAcc: 774323,
+     employeeAmount: 0.04,
+     "Statutory": "YES"
+    },
+    {
+     code: "002",
+     name: "FUNF",
+     desc: "FUNERAL FUND",
+     "Employer Type": "PERMANENT",
+     employerAcc: 238976,
+     employerAmount: 0.1,
+     "Employee Type": "PERMANENT",
+     employeeAcc: 774323,
+     employeeAmount: 0.1,
+     "Statutory": "NO"
+    }
+    
+   ]
   const loadData = async () => {
     setLoading(true)
     try {
@@ -286,105 +298,105 @@ const Loan = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  dataSource={LOANS}/>
+          <Table columns={columns}  dataSource={SAVINGS_SCHEME}/>
           <Modal
-                title='Loan Setup'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                width={860}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='SNNIT Setup'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            width={860}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                  Cancel
+              </Button>,
+              <Button
+              key='submit'
+              type='primary'
+              htmlType='submit'
+              loading={submitLoading}
+              onClick={() => {
+                form.submit()
+              }}
+              >
+                  Submit
+              </Button>,
+            ]}
             >
-                <Form
-                    // labelCol={{span: 7}}
-                    // wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    
-                    onFinish={onFinish}
-                >
-
+              <Form
+                  labelCol={{span: 7}}
+                  wrapperCol={{span: 14}}
+                  layout='horizontal'
+                  form={form}
+                  name='control-hooks'
+                  onFinish={onFinish}
+              >
                 <hr></hr>
                 <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                   <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Code</label>
+                    <input type="text" name="code"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
                     <input type="text" name="name"  className="form-control form-control-solid"/>
                   </div>
-                  <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Interest Rate</label>
-                    <input type="text" name="interestR"  className="form-control form-control-solid"/>
-                    
-                  </div>
                 </div>
                 <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
                   <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Interest Type</label>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Description</label>
+                    <input type="text" name="desc"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Employer Type</label>
+                    {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                     <select className="form-select form-select-solid" aria-label="Select example">
-                      <option>select</option>
-                      <option value="1">FORMULA</option>
-                      <option value="2">PERCENTAGE OF GROSS</option>
-                      <option value="3">VARYING AMOUNT</option>
-                      <option value="3">PERCENTAGE OF BASIC</option>
-                    </select>
-                  </div>
-                  <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Moratorium</label>
-                  <input type="text" name="moratorium"  className="form-control form-control-solid"/>
-
-                  </div>
-                </div>
-                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Min Repayment Period</label>
-                    <input type="text" name="repayMin"  className="form-control form-control-solid"/>
-
-                  </div>
-                  <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Max Repayment Period</label>
-                  <input type="text" name="repayMax"  className="form-control form-control-solid"/>
-
-                  </div>
-                </div>
-                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Repayment Percentage Ceiling</label>
-                    <input type="text" name="repayC"  className="form-control form-control-solid"/>
-
-                  </div>
-                  <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Deduction</label>
-                    <select className="form-select form-select-solid" aria-label="Select example">
-                      <option>select</option>
-                      <option value="1">MONTHLY</option>
-                      <option value="2">WEEKLY</option>
+                      <option>select </option>
+                      <option value="1">PERMANENT</option>
+                     
                     </select>
                   </div>
                 </div>
                 <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
                   <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Interest On Cancellation</label>
-                    <input type="text" name="interestC"  className="form-control form-control-solid"/>
-
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Employer Account No.</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
                   </div>
-                 
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Employer Amount</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
                 </div>
-                </Form>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Type</label>
+                    {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>select</option>
+                      <option value="1">PERMANENT</option>
+                      
+                    </select>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Account No.</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Amount</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
+                  {/* <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Statutory</label>
+                  
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>select</option>
+                      <option value="1">YES</option>
+                      <option value="2">NO</option>
+                    </select>
+                  </div> */}
+                </div>
+              </Form>
             </Modal>
         </div>
       </KTCardBody>
@@ -392,4 +404,4 @@ const Loan = () => {
   )
 }
 
-export {Loan}
+export {SNNIT}

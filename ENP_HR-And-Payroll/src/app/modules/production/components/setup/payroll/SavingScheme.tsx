@@ -113,7 +113,7 @@ const SavingScheme = () => {
       },
     },
     {
-      title: 'Employer Amount',
+      title: 'Employer Percentage',
       dataIndex: 'employerAmount',
       sorter: (a: any, b: any) => {
         if (a.employerAmount > b.employerAmount) {
@@ -139,7 +139,7 @@ const SavingScheme = () => {
       },
     },
     {
-      title: 'Employee Amount',
+      title: 'Employee Percentage',
       dataIndex: 'employeeAmount',
       sorter: (a: any, b: any) => {
         if (a.employeeAmount > b.employeeAmount) {
@@ -158,12 +158,8 @@ const SavingScheme = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
-            Details
+            Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete

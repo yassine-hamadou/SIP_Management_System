@@ -226,16 +226,16 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
   return {
     series: [
       {
-        name: 'Timesheets',
-        data: [40, 60, 50, 20, 50, 70, 30, 60],
+        name: 'Basic salary',
+        data: [40, 60, 50, 20, 50, 70, 30, 60,77,47,58,98],
       },
       {
         name: 'Recurrent',
-        data: [20, 50, 70, 40, 60, 30, 70, 20],
+        data: [20, 50, 70, 40, 60, 30, 70, 20,89,67,83,67],
       },
       {
         name: 'No-Recurrent',
-        data: [40, 20, 40, 70, 30, 50, 60, 90],
+        data: [40, 20, 40, 70, 30, 50, 60, 90,84,75,89,49],
       },
     ],
     chart: {
@@ -267,7 +267,7 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
       colors: ['transparent'],
     },
     xaxis: {
-      categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+      categories: ['Jan','Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep','Oct','Nov','Dec'],
       axisBorder: {
         show: false,
       },

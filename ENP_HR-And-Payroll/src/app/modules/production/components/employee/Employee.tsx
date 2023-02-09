@@ -167,27 +167,40 @@ const Employee = () => {
         return 0
       },
     },
+    // {
+    //   title: 'Annual Salary',
+    //   dataIndex: 'annsal',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.annsal > b.annsal) {
+    //       return 1
+    //     }
+    //     if (b.annsal > a.annsal) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
+    // {
+    //   title: 'Basic Salary',
+    //   dataIndex: 'bsal',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.bsal > b.bsal) {
+    //       return 1
+    //     }
+    //     if (b.bsal > a.bsal) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
-      title: 'Annual Salary',
-      dataIndex: 'annsal',
+      title: 'Phone',
+      dataIndex: 'phone',
       sorter: (a: any, b: any) => {
-        if (a.annsal > b.annsal) {
+        if (a.phone > b.phone) {
           return 1
         }
-        if (b.annsal > a.annsal) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Basic Salary',
-      dataIndex: 'bsal',
-      sorter: (a: any, b: any) => {
-        if (a.bsal > b.bsal) {
-          return 1
-        }
-        if (b.bsal > a.bsal) {
+        if (b.phone > a.phone) {
           return -1
         }
         return 0

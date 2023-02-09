@@ -86,8 +86,47 @@ const Tax = () => {
       },
     },
     {
+      title: 'Tax Payable GH¢',
+      dataIndex: 'taxp',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Tax Formula',
       dataIndex: 'taxf',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Cumulative Income GH¢',
+      dataIndex: 'cumIn',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Cumulative Tax GH¢',
+      dataIndex: 'cumTax',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -139,20 +178,29 @@ const Tax = () => {
 
  const TAX =[
     {
-     chargeIncome: 402,
+     chargeIncome: 365,
      percentage: 0,
      order: "1",
-     taxf: "FIRST"
+     taxf: "FIRST",
+     taxp: "0",
+     cumIn: "365",
+     cumTax: "0",
     },
     {
      chargeIncome: 110,
      percentage: 5,
+     taxp: "5.5",
+     cumIn: "475",
+     cumTax: "5.5",
      order: "2",
      taxf: "NEXT"
     },
     {
      chargeIncome: 130,
      percentage: 10,
+     taxp: "13",
+     cumIn: "605",
+     cumTax: "18.5",
      order: "3",
      taxf: "NEXT"
     },
@@ -160,16 +208,23 @@ const Tax = () => {
      chargeIncome: "3,000",
      percentage: 17.5,
      order: "4",
+     taxp: "525",
+     cumIn: "3,650.00",
+     cumTax: "543.5",
      taxf: "NEXT"
     },
     {
      chargeIncome: "16,395",
      percentage: 25,
      order: "5",
+     taxp: "4098.75",
+     cumIn: "20,000",
+     cumTax: "4642.25",
      taxf: "NEXT"
     },
     {
-     chargeIncome: "29,963",
+      chargeIncome: "29,963",
+      taxp: "6,000",
      percentage: 30,
      order: "6",
      taxf: "EXCEEDING"

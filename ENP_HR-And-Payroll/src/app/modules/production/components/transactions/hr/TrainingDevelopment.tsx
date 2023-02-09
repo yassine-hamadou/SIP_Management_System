@@ -554,6 +554,16 @@ const TrainingDevelopment = () => {
     }
   ];
 
+
+  const onEmployeeChange = (e: any) => {
+    const objectId = e.target.value 
+    const newEmplo = employeedata.find((item:any)=>{
+      return item.code.toString()===objectId
+    })
+  setEmployeeRecord(newEmplo)
+    
+  }
+
   useEffect(() => {
     loadData()
   }, [])
@@ -739,8 +749,8 @@ const TrainingDevelopment = () => {
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                       
+                      <select className="form-select form-select-solid" aria-label="Select example" onChange={(e)=>onEmployeeChange(e)}>
+                       <option>select</option>
                         {employeedata.map((item: any) => (
                           <option value={item.code}> {item.empcode} - {item.lastname}</option>
                         ))}
@@ -748,37 +758,27 @@ const TrainingDevelopment = () => {
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">ASSISTANT ACCOUNTANT </option>
-                        <option value="2">ACCOUNTS OFFICER </option>
-                        <option value="3">HUMAN RESOURCE MANAGER </option>
-                        <option value="4">SALES PERSONNEL 1 </option>
-                      </select>
+                      <input type="text" name="code" value={employeeRecord?.jobt} className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
-                      <input type="text" name="fname"  className="form-control form-control-solid"/>
+                      <input type="text" name="fname" value={employeeRecord?.firstname} className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
-                      <input type="text" name="lname"  className="form-control form-control-solid"/>
+                      <input type="text" name="lname" value={employeeRecord?.lastname} className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="date" name="code"  className="form-control form-control-solid"/>
+                      <input type="text" name="code" value={employeeRecord?.dob} className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">MALE </option>
-                        <option value="2">FEMALE </option>
-                      </select>
+                      <input type="text" name="code" value={employeeRecord?.sex} className="form-control form-control-solid"/>
                     </div>
                   </div>
                   

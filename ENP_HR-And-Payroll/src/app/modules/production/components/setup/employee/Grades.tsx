@@ -4,6 +4,7 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { Link } from 'react-router-dom'
+import { GRADES } from '../../../../../data/DummyData'
 
 const Grades = () => {
   const [gridData, setGridData] = useState([])
@@ -136,43 +137,7 @@ const Grades = () => {
     },
   ]
 
-  const GRADES=[
-    {
-     code: "001",
-     desc: "ASTACT1",
-     name: "ASSISTANT ACCONTANT",
-     payg: "GENERAL",
-     status: "ACTIVE"
-    },
-    {
-     code: "002",
-     desc: "ACCOFF",
-     name: "ACCOUNT OFFICER",
-     payg: "GENERAL",
-     status: "ACTIVE"
-    },
-    {
-     code: "003",
-     desc: "HRMAN",
-     name: "HUMAN RESOURCE MANAGER",
-     payg: "MANAGEMENT",
-     status: "ACTIVE"
-    },
-    {
-     code: "004",
-     desc: "SALREP1",
-     name: "SALES REP ENTRY",
-     payg: "CASUAL",
-     status: "ACTIVE"
-    },
-    {
-     code: "005",
-     desc: "FACMAN",
-     name: "FACTORY MANAGER",
-     payg: "MANAGEMENT",
-     status: "ACTIVE"
-    }
-   ]
+
 
   const loadData = async () => {
     setLoading(true)

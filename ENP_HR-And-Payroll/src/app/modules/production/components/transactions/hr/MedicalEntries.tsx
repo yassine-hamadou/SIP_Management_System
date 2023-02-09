@@ -5,6 +5,7 @@ import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
+import { employeedata, MEDICALS } from '../../../../../data/DummyData'
 
 const MedicalEntries = () => {
   const [gridData, setGridData] = useState([])
@@ -282,11 +283,21 @@ const MedicalEntries = () => {
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                      <input type="text" name="topic"  className="form-control form-control-solid"/>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        {employeedata.map((item: any) => (
+                          <option value={item.code}>{item.empcode}-{item.lastname}</option>
+                        ))}
+                      </select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Medical Type</label>
-                      <input type="text" name="topic"  className="form-control form-control-solid"/>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        {MEDICALS.map((item: any) => (
+                          <option value={item.code}>{item.name}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>

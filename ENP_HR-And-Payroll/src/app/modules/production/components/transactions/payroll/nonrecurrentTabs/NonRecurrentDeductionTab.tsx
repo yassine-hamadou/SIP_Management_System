@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../../urls'
+import { employeedata, period } from '../../../../../../data/DummyData'
 
 const NonRecurrentDeductionTab = () => {
   const [gridData, setGridData] = useState([])
@@ -47,6 +48,19 @@ const NonRecurrentDeductionTab = () => {
   const columns: any = [
    
     {
+      title: 'Employee ID',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
@@ -61,19 +75,6 @@ const NonRecurrentDeductionTab = () => {
     },
     {
       title: 'Benefit',
-      dataIndex: 'name',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Category',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -234,6 +235,7 @@ const NonRecurrentDeductionTab = () => {
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width={860}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -259,14 +261,103 @@ const NonRecurrentDeductionTab = () => {
                     name='control-hooks'
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
+                        <hr></hr>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Input Option</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Test 1</option>
+                        <option value="2">Test 2</option>
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Deduction</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Clothing Allowance</option>
+                        <option value="2">Accommodation Allowance</option>
+                        <option value="3">Shit Allowance</option>
+                        <option value="4">Overtime </option>
+                        <option value="5">Allowance </option>
+                      </select>
+                      
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Employee ID</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        {employeedata.map((item: any) => (
+                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className=" form-label">Deduction Amount Type</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Test1</option>
+                        <option value="2">Test2</option>
+                        <option value="3">Test3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Name</label>
+                      <input type="number" name="amount" disabled className="form-control form-control-solid"/>
+
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Deduction Amount or Percentage</label>
+                      <input type="number" name="amount" min={0} defaultValue={0} className="form-control form-control-solid"/>
+                      
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
+                      <input type="text" name="accno" disabled className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className=" form-label">Start date</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        {period.map((item: any) => (
+                          <option value={item.code}>{item.code}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Salary Grade</label>
+                      <input type="text" name="accno" disabled className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">End date</label>
+                      {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        {period.map((item: any) => (
+                          <option value={item.code}>{item.code}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
+                      <input type="text" name="accno" disabled  className="form-control disabled form-control-solid"/>
+                    </div>
+                    
+                    
+                  </div>
                 </Form>
             </Modal>
         </div>

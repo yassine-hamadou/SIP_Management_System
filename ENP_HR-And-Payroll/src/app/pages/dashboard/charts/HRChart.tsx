@@ -57,11 +57,11 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
     series: [
       {
         name: 'MALE',
-        data: [40, 60, 50, 20, 50, 70, 30, 60,380],
+        data: [40, 60, 50, 20, 200, 160, 180, 60,380],
       },
       {
         name: 'FEMALE',
-        data: [20, 50, 70, 40, 60, 30, 70, 20,360],
+        data: [20, 50, 70, 40, 120, 130, 140, 20,360],
       },
     ],
     chart: {
