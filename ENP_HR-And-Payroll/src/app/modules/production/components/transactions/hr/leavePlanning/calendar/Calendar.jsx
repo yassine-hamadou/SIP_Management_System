@@ -27,10 +27,9 @@ import {
   fetchSchedules,
   fetchServiceTypes,
   fetchVmequps,
-  localData,
   updateSchedule,
 } from './requests'
-import {message} from 'antd'
+import {Input, message} from 'antd'
 import {employeedata, LEAVE} from "../../../../../../../data/DummyData";
 
 /**
@@ -128,13 +127,11 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
     function getEmployeeUnit(e) {
     if (e.itemData) {
       console.log("e.itemData", e.itemData)
-      const fleetModel = vmQuery.getQueryData('vmequps')?.data?.find((fleet) => fleet.fleetID.trimEnd() === e.itemData.value.trimEnd())?.modlName
-      const serviceTypesOfSelectedModel = serviceTypes?.data?.filter((service) => service.model.trimEnd() === fleetModel.trimEnd())
-      console.log('serviceTypesOfSelectedModel', serviceTypesOfSelectedModel)
-      dropDownListObject.dataSource = serviceTypesOfSelectedModel.map((service) => {
-        return { text: service.name, value: service.id }
-      })
-      dropDownListObject.dataBind() // refresh the dropdown list
+      // udpate location dropdown component to automatically select the selected employee unit
+      const employeeDepart = employeedata.find((employee) => employee.code == e.itemData.value).depart
+      const unitInputField = document.getElementById("Location")
+      unitInputField.value = employeeDepart
+
     }
   }
     return props !== undefined ? (
@@ -164,20 +161,13 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
           <tr>
             <td className='e-textlabel'>Unit</td>
             <td colSpan={4}>
-              <DropDownListComponent
+              <Input
                 id='Location'
+                disabled
                 placeholder='Choose Employee Unit'
                 data-name='locationId'
                 className='e-field'
                 style={{width: '100%'}}
-                // dataSource={locationQuery?.data.map((location) => {
-                //   return {
-                //     text: `${location.locationCode} - ${location.locationDesc}`,
-                //     value: `${location.locationCode}`,
-                //   }
-                // })}
-                fields={{text: 'text', value: 'value'}}
-                value={props?.locationId}
               />
             </td>
           </tr>
