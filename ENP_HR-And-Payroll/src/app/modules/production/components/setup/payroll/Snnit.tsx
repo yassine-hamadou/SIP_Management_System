@@ -175,7 +175,6 @@ const SNNIT = () => {
     },
   ]
 
-
   const SAVINGS_SCHEME=[
     {
      code: "001",

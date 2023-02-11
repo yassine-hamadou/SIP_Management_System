@@ -1,27 +1,88 @@
-
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Space, Table, Upload } from 'antd';
+import { Button, Form, Modal, Space, Table, Upload } from 'antd';
 import { CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, NOTCHES, UNITS } from '../../../../data/DummyData';
 import { KTSVG } from '../../../../../_metronic/helpers';
 
 const EmployeeEditForm= () =>{
   const [formData, setFormData] = useState({});
   const [activeTab, setActiveTab] = useState('tab1');
+  const [activeTab1, setActiveTab1] = useState('skill');
+  const [activeTab2, setActiveTab2] = useState('medical');
+  const [skillOpen, setSkillOpen] = useState(false)
+  const [qualificationOpen,setQualificationOpen] = useState(false)
+  const [medicalOpen,setMedicalOpen] = useState(false)
+  const [familyOpen,setFamilyOpen] = useState(false)
+  const [trainingOpen,setTrainingOpen] = useState(false)
+  const [leaveOpen,setLeaveOpen] = useState(false)
+  const [appraisalOpen,setAppraisalOpen] = useState(false)
+  const [noteOpen,setNoteOpen] = useState(false)
+  // const [form] = Form.useForm()
 
-
+  // const { register, handleSubmit } = useForm();
   const param:any  = useParams();
 
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
   }
+  const handleTab1Click = (tab1:any) => {
+    setActiveTab1(tab1);
+  }
+  const handleTab2Click = (tab2:any) => {
+    setActiveTab2(tab2);
+  }
 
   const handleChange = (event:any) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   }
+
+  const showSkillModal = () => {
+    setSkillOpen(true)
+  }
+  const showQualificationModal = () => {
+    setQualificationOpen(true)
+  }
+  const showMedicalModal = () => {
+    setMedicalOpen(true)
+  }
+  const showFamilyModal = () => {
+    setFamilyOpen(true)
+  }
+
+  const showTrainingModal = () => {
+    setTrainingOpen(true)
+  }
+
+  const showLeaveModal = () => {
+    setLeaveOpen(true)
+  }
+
+  const showAppraisalModal = () => {
+    setAppraisalOpen(true)
+  }
+  const showNoteModal = () => {
+    setNoteOpen(true)
+  }
+
+  const handleCancel = () => {
+    setSkillOpen(false)
+    setQualificationOpen(false)
+    setMedicalOpen(false)
+    setFamilyOpen(false)
+    setTrainingOpen(false)
+    setLeaveOpen(false)
+    setAppraisalOpen(false)
+    setNoteOpen(false)
+
+  }
+
+  const [submitLoading, setSubmitLoading] = useState(false)
+
+
+
 
   const recruitColumns: any = [
    
@@ -364,9 +425,9 @@ const EmployeeEditForm= () =>{
   });
 
   // console.log(dataByID)
-  const handleTabChange = (newTab:any) => {
-    setActiveTab(newTab);
-  }
+  // const handleTabChange = (newTab:any) => {
+  //   setActiveTab(newTab);
+  // }
 
   const [fileList, setFileList] = useState<UploadFile[]>([
     
@@ -406,7 +467,8 @@ const EmployeeEditForm= () =>{
     >
 
 
-      
+      <h3> You are updating:- <span style={{color:"#009EF7"}}>  {dataByID?.firstname} {dataByID?.lastname}</span></h3>
+      <br></br>
       <Link to="/employee">
         <a style={{fontSize:"16px", fontWeight: "500"}} className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>
           Back to list
@@ -486,7 +548,8 @@ const EmployeeEditForm= () =>{
           </button>
           
         </div>
-        
+        <hr></hr>
+        <br></br>
         <div className="tab-content">
         
           {/* Details */}
@@ -778,27 +841,132 @@ const EmployeeEditForm= () =>{
           </div>
           }
 
-          {/* Recruitment */}
+          {/* skills & qualifications */}
           {activeTab === 'tab8' && 
             <div >
-              <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
+              {/* tabs for skills and qualification */}
+              <div className="tab1s">
+                
+                <button 
+                  className={`tab1 ${activeTab1 === 'skill' ? 'active' : ''}`} 
+                  onClick={() => handleTab1Click('skill')}
+                >
+                  Skills
+                </button>
+                <button 
+                  className={`tab1 ${activeTab1 === 'qual' ? 'active' : ''}`} 
+                  onClick={() => handleTab1Click('qual')}
+                >
+                  Qualifications
+                </button>
+              </div>
+              {/* <hr></hr> */}
+              <br></br> 
+              <div className='tab1-content'>
+                  {activeTab1 === 'skill' && 
+                    <div >
+                      
+                      <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showSkillModal}>
+                        <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                        Add New Skill
+                      </button>
               
-              <Table columns={recruitColumns}  />
-              {/* <div className='row mb-0'>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Date</label>
-                  <input type="date" name="date" onChange={handleChange}  className="form-control form-control-solid" />
+                      <Table columns={recruitColumns}  />
+                      <Modal
+                        title="Add skill"
+                        open={skillOpen}
+                        onCancel={handleCancel}
+                        closable={true}
+                        footer={[
+                            <Button key='back' onClick={handleCancel}>
+                                Cancel
+                            </Button>,
+                            <Button
+                            key='submit'
+                            type='primary'
+                            htmlType='submit'
+                            loading={submitLoading}
+                            onClick={() => {
+                             
+                            }}
+                            >
+                                Submit
+                            </Button>,
+                        ]}
+                      >
+                        <Form
+                            labelCol={{span: 7}}
+                            wrapperCol={{span: 14}}
+                            layout='horizontal'
+                            name='control-hooks'
+                            
+                        >
+                          <hr></hr>
+                          <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                            <div className=' mb-7'>
+                              <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                              <input type="text" name="name"  className="form-control form-control-solid"/>
+                            </div>
+                            
+                          </div>
+                        </Form>
+                      </Modal> 
+                    </div>}
+                  {activeTab1 === 'qual' && 
+                    <div >
+                      
+                      <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showQualificationModal}>
+                        <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                        Add New Qualification
+                      </button>
+              
+                      <Table columns={recruitColumns}  /> 
+                      <Modal
+                        title="Add Qualification"
+                        open={qualificationOpen}
+                        onCancel={handleCancel}
+                        closable={true}
+                        footer={[
+                            <Button key='back' onClick={handleCancel}>
+                                Cancel
+                            </Button>,
+                            <Button
+                            key='submit'
+                            type='primary'
+                            htmlType='submit'
+                            loading={submitLoading}
+                            onClick={() => {
+                              
+                            }}
+                            >
+                                Submit
+                            </Button>,
+                        ]}
+                      >
+                        <Form
+                            labelCol={{span: 7}}
+                            wrapperCol={{span: 14}}
+                            layout='horizontal'
+                            name='control-hooks'
+                            
+                        >
+                          <hr></hr>
+                          <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                            <div className=' mb-7'>
+                              <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                              <input type="text" name="name"  className="form-control form-control-solid"/>
+                            </div>
+                            
+                          </div>
+                        </Form>
+                      </Modal>
+                    </div>}
+                </div>
+              
+            
+            </div>
+          }
 
-                </div>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Note </label>
-                  <input type="text" name="mnote" onChange={handleChange}  className="form-control form-control-solid" />
-                </div>
-              </div> */}
-            </div>}
           {/* Compensation */}
           {activeTab === 'tab7' && 
             <div >
@@ -808,55 +976,150 @@ const EmployeeEditForm= () =>{
           {/* Trainings */}
           {activeTab === 'tab6' && 
             <div >
-            <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
+            <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showTrainingModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
               <Table columns={trainingColumns}  />
-              {/* <div className='row mb-0'>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Date</label>
-                  <input type="date" name="date" onChange={handleChange}  className="form-control form-control-solid" />
-
-                </div>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Note </label>
-                  <input type="text" name="tnote" onChange={handleChange}  className="form-control form-control-solid" />
-                </div>
-              </div> */}
+              <Modal
+                  title="Add Training"
+                  open={trainingOpen}
+                  onCancel={handleCancel}
+                  closable={true}
+                  footer={[
+                      <Button key='back' onClick={handleCancel}>
+                          Cancel
+                      </Button>,
+                      <Button
+                      key='submit'
+                      type='primary'
+                      htmlType='submit'
+                      loading={submitLoading}
+                      onClick={() => {
+                        
+                      }}
+                      >
+                          Submit
+                      </Button>,
+                  ]}
+                >
+                  <Form
+                      labelCol={{span: 7}}
+                      wrapperCol={{span: 14}}
+                      layout='horizontal'
+                      name='control-hooks'
+                      
+                  >
+                    <hr></hr>
+                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                      <div className=' mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                        <input type="text" name="name"  className="form-control form-control-solid"/>
+                      </div>
+                      
+                    </div>
+                  </Form>
+                </Modal>
             </div>
             }
 
             {/* Appraisal */}
           {activeTab === 'tab9' && 
             <div >
-              <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
+              <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showAppraisalModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
               <Table columns={appraisalColumns}  />
-
-              {/* <div className='row mb-0'>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Date</label>
-                  <input type="date" name="date" onChange={handleChange}  className="form-control form-control-solid" />
-
-                </div>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Note </label>
-                  <input type="text" name="mnote" onChange={handleChange}  className="form-control form-control-solid" />
-                </div>
-              </div> */}
+              <Modal
+                  title="Add Appraisal"
+                  open={appraisalOpen}
+                  onCancel={handleCancel}
+                  closable={true}
+                  footer={[
+                      <Button key='back' onClick={handleCancel}>
+                          Cancel
+                      </Button>,
+                      <Button
+                      key='submit'
+                      type='primary'
+                      htmlType='submit'
+                      loading={submitLoading}
+                      onClick={() => {
+                        
+                      }}
+                      >
+                          Submit
+                      </Button>,
+                  ]}
+                >
+                  <Form
+                      labelCol={{span: 7}}
+                      wrapperCol={{span: 14}}
+                      layout='horizontal'
+                      name='control-hooks'
+                      
+                  >
+                    <hr></hr>
+                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                      <div className=' mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                        <input type="text" name="name"  className="form-control form-control-solid"/>
+                      </div>
+                      
+                    </div>
+                  </Form>
+                </Modal>
+             
             </div>}
 
               {/* Notes */}
           {activeTab === 'tab5' && 
           <div >
-            <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
+            <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showNoteModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
               <Table columns={recruitColumns}  />
+              <Modal
+                  title="Add Note"
+                  open={noteOpen}
+                  onCancel={handleCancel}
+                  closable={true}
+                  footer={[
+                      <Button key='back' onClick={handleCancel}>
+                          Cancel
+                      </Button>,
+                      <Button
+                      key='submit'
+                      type='primary'
+                      htmlType='submit'
+                      loading={submitLoading}
+                      onClick={() => {
+                        
+                      }}
+                      >
+                          Submit
+                      </Button>,
+                  ]}
+                >
+                  <Form
+                      labelCol={{span: 7}}
+                      wrapperCol={{span: 14}}
+                      layout='horizontal'
+                      name='control-hooks'
+                      
+                  >
+                    <hr></hr>
+                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                      <div className=' mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                        <input type="text" name="name"  className="form-control form-control-solid"/>
+                      </div>
+                      
+                    </div>
+                  </Form>
+                </Modal>
             
           </div>
           }
@@ -864,49 +1127,177 @@ const EmployeeEditForm= () =>{
             {/* Leave */}
           {activeTab === 'tab10' && 
             <div >
-              <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
+              <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showLeaveModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
               <Table columns={leaveColumns}  />
 
-              {/* <div className='row mb-0'>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Date</label>
-                  <input type="date" name="date" onChange={handleChange}  className="form-control form-control-solid" />
-
-                </div>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Note </label>
-                  <input type="text" name="mnote" onChange={handleChange}  className="form-control form-control-solid" />
-                </div>
-              </div> */}
+              <Modal
+                  title="Add Leave"
+                  open={leaveOpen}
+                  onCancel={handleCancel}
+                  closable={true}
+                  footer={[
+                      <Button key='back' onClick={handleCancel}>
+                          Cancel
+                      </Button>,
+                      <Button
+                      key='submit'
+                      type='primary'
+                      htmlType='submit'
+                      loading={submitLoading}
+                      onClick={() => {
+                        
+                      }}
+                      >
+                          Submit
+                      </Button>,
+                  ]}
+                >
+                  <Form
+                      labelCol={{span: 7}}
+                      wrapperCol={{span: 14}}
+                      layout='horizontal'
+                      name='control-hooks'
+                      
+                  >
+                    <hr></hr>
+                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                      <div className=' mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                        <input type="text" name="name"  className="form-control form-control-solid"/>
+                      </div>
+                      
+                    </div>
+                  </Form>
+                </Modal>
             </div>}
 
             {/* Medical */}
           {activeTab === 'tab11' && 
             <div >
-              <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
-              <Table columns={medicalColumns}  />
-
-              {/* <div className='row mb-0'>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Date</label>
-                  <input type="date" name="date" onChange={handleChange}  className="form-control form-control-solid" />
-
-                </div>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Note </label>
-                  <input type="text" name="mnote" onChange={handleChange}  className="form-control form-control-solid" />
-                </div>
-              </div> */}
+               <div className="tab2s">
+                
+                <button
+                  className={`tab2 ${activeTab2=== 'medical' ? 'active' : ''}`} 
+                  onClick={() => handleTab2Click('medical')}
+                >
+                  Medical
+                </button>
+                <button 
+                  className={`tab2 ${activeTab2 === 'fam' ? 'active' : ''}`} 
+                  onClick={() => handleTab2Click('fam')}
+                >
+                  Family
+                </button>
+              </div>
+                <br></br>
+              <div className='tab2-content'>
+                {activeTab2 === 'medical' && 
+                <div >
+                  
+                  <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showMedicalModal}>
+                    <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                    Add New Medical
+                  </button>
+          
+                  <Table columns={recruitColumns}  />
+                  <Modal
+                    title="Add Medical"
+                    open={medicalOpen}
+                    onCancel={handleCancel}
+                    closable={true}
+                    footer={[
+                        <Button key='back' onClick={handleCancel}>
+                            Cancel
+                        </Button>,
+                        <Button
+                        key='submit'
+                        type='primary'
+                        htmlType='submit'
+                        loading={submitLoading}
+                        onClick={() => {
+                          
+                        }}
+                        >
+                            Submit
+                        </Button>,
+                    ]}
+                  >
+                    <Form
+                        labelCol={{span: 7}}
+                        wrapperCol={{span: 14}}
+                        layout='horizontal'
+                        name='control-hooks'
+                        
+                    >
+                      <hr></hr>
+                      <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                        <div className=' mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                          <input type="text" name="name"  className="form-control form-control-solid"/>
+                        </div>
+                        
+                      </div>
+                    </Form>
+                  </Modal> 
+                </div>}
+                {activeTab2 === 'fam' && 
+                <div >
+                  
+                  <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showFamilyModal}>
+                    <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                    Add New Family 
+                  </button>
+          
+                  <Table columns={recruitColumns}  />
+                  <Modal
+                    title="Add Family Member"
+                    open={familyOpen}
+                    onCancel={handleCancel}
+                    closable={true}
+                    footer={[
+                        <Button key='back' onClick={handleCancel}>
+                            Cancel
+                        </Button>,
+                        <Button
+                        key='submit'
+                        type='primary'
+                        htmlType='submit'
+                        loading={submitLoading}
+                        onClick={() => {
+                          
+                        }}
+                        >
+                            Submit
+                        </Button>,
+                    ]}
+                  >
+                    <Form
+                        labelCol={{span: 7}}
+                        wrapperCol={{span: 14}}
+                        layout='horizontal'
+                        name='control-hooks'
+                        
+                    >
+                      <hr></hr>
+                      <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                        <div className=' mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                          <input type="text" name="name"  className="form-control form-control-solid"/>
+                        </div>
+                        
+                      </div>
+                    </Form>
+                  </Modal> 
+                </div>}
+              </div>
+              
             </div>}
         </div>
 
-        <button className='btn btn-primary' type="submit">Submit</button>
+        <button className='btn btn-primary' disabled type="submit">Submit</button>
       </form>
     </div>
   );
