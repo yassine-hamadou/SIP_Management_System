@@ -4,7 +4,7 @@ import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Form, Modal, Space, Table, Upload } from 'antd';
-import { CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, NOTCHES, UNITS } from '../../../../data/DummyData';
+import { CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, MEDICALS, NOTCHES, UNITS } from '../../../../data/DummyData';
 import { KTSVG } from '../../../../../_metronic/helpers';
 
 const EmployeeEditForm= () =>{
@@ -14,6 +14,7 @@ const EmployeeEditForm= () =>{
   const [activeTab2, setActiveTab2] = useState('medical');
   const [skillOpen, setSkillOpen] = useState(false)
   const [qualificationOpen,setQualificationOpen] = useState(false)
+  const [experienceOpen,setExperienceOpen] = useState(false)
   const [medicalOpen,setMedicalOpen] = useState(false)
   const [familyOpen,setFamilyOpen] = useState(false)
   const [trainingOpen,setTrainingOpen] = useState(false)
@@ -44,6 +45,9 @@ const EmployeeEditForm= () =>{
   }
   const showQualificationModal = () => {
     setQualificationOpen(true)
+  }
+  const showExperienceModal = () => {
+    setExperienceOpen(true)
   }
   const showMedicalModal = () => {
     setMedicalOpen(true)
@@ -76,13 +80,181 @@ const EmployeeEditForm= () =>{
     setLeaveOpen(false)
     setAppraisalOpen(false)
     setNoteOpen(false)
+    setExperienceOpen(false)
 
   }
 
   const [submitLoading, setSubmitLoading] = useState(false)
 
+  const familyColumns: any = [
+   
+    {
+      title: 'National ID',
+      dataIndex: 'code',
+      sorter: (a: any, b: any) => {
+        if (a.code > b.code) {
+          return 1
+        }
+        if (b.code > a.code) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Full Name',
+      dataIndex: 'code',
+      sorter: (a: any, b: any) => {
+        if (a.code > b.code) {
+          return 1
+        }
+        if (b.code > a.code) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Relationship',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Date of Birth',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Phone Number',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Address',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Note',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
 
-
+    {
+      title: 'Action',
+      fixed: 'right',
+      width: 100,
+      render: (_: any, record: any) => (
+        <Space size='middle'>
+          
+          
+          <a className='btn btn-light-danger btn-sm'>
+            Delete
+          </a>
+         
+        </Space>
+      ),
+      
+    },
+  ]
+  const medicalColumns: any = [
+   
+    {
+      title: 'Medical Type',
+      dataIndex: 'code',
+      sorter: (a: any, b: any) => {
+        if (a.code > b.code) {
+          return 1
+        }
+        if (b.code > a.code) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Date',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Comment',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },    
+    {
+      title: 'Action',
+      fixed: 'right',
+      width: 100,
+      render: (_: any, record: any) => (
+        <Space size='middle'>
+          
+          
+          <a className='btn btn-light-danger btn-sm'>
+            Delete
+          </a>
+         
+        </Space>
+      ),
+      
+    },
+  ]
 
   const recruitColumns: any = [
    
@@ -318,52 +490,6 @@ const EmployeeEditForm= () =>{
     },
   ]
 
-  const medicalColumns: any = [
-   
-    {
-      title: 'Code',
-      dataIndex: 'code',
-      sorter: (a: any, b: any) => {
-        if (a.code > b.code) {
-          return 1
-        }
-        if (b.code > a.code) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
-
-    {
-      title: 'Action',
-      fixed: 'right',
-      width: 100,
-      render: (_: any, record: any) => (
-        <Space size='middle'>
-          
-          
-          <a className='btn btn-light-danger btn-sm'>
-            Delete
-          </a>
-         
-        </Space>
-      ),
-      
-    },
-  ]
   const trainingColumns: any = [
    
     {
@@ -420,6 +546,14 @@ const EmployeeEditForm= () =>{
   
   }
 
+
+  const validatePhoneNumber=(event:any)=>{
+    if (!/[0-9]/.test(event.key)) {
+      event.preventDefault();
+    }
+                  
+  }
+
   const dataByID = employeedata.find((employee:any) =>{
     return employee.code.toString() ===param.id
   });
@@ -467,7 +601,7 @@ const EmployeeEditForm= () =>{
     >
 
 
-      <h3> You are updating:- <span style={{color:"#009EF7"}}>  {dataByID?.firstname} {dataByID?.lastname}</span></h3>
+      <h3> You are updating <span style={{color:"#FF6363"}}>  {dataByID?.firstname} {dataByID?.lastname}</span></h3>
       <br></br>
       <Link to="/employee">
         <a style={{fontSize:"16px", fontWeight: "500"}} className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>
@@ -596,8 +730,6 @@ const EmployeeEditForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
                 <select className="form-select form-select-solid" aria-label="Select example">
                 <option value={dataByID?.sex}>{dataByID?.sex}</option>
-                
-                
                 </select>
               </div>
               <div className='col-6 mb-7'>
@@ -638,11 +770,11 @@ const EmployeeEditForm= () =>{
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
-                  <input type="phone" name="phone"  className="form-control form-control-solid" />
+                  <input type="phone" name="tel" pattern="[0-9]*" className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Alternative Phone numbe</label>
-                  <input type="phone" name="aphone" onChange={handleChange}  className="form-control form-control-solid" />
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Alternative Phone number</label>
+                  <input type="phone" name="tel" maxLength={15} onKeyPress={validatePhoneNumber} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
@@ -859,6 +991,12 @@ const EmployeeEditForm= () =>{
                 >
                   Qualifications
                 </button>
+                <button 
+                  className={`tab1 ${activeTab1 === 'exper' ? 'active' : ''}`} 
+                  onClick={() => handleTab1Click('exper')}
+                >
+                  Experiences
+                </button>
               </div>
               {/* <hr></hr> */}
               <br></br> 
@@ -868,7 +1006,7 @@ const EmployeeEditForm= () =>{
                       
                       <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showSkillModal}>
                         <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                        Add New Skill
+                        Add Skill
                       </button>
               
                       <Table columns={recruitColumns}  />
@@ -915,15 +1053,70 @@ const EmployeeEditForm= () =>{
                   {activeTab1 === 'qual' && 
                     <div >
                       
+
+                      
+
                       <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showQualificationModal}>
                         <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                        Add New Qualification
+                        Add Qualification
                       </button>
               
                       <Table columns={recruitColumns}  /> 
                       <Modal
                         title="Add Qualification"
                         open={qualificationOpen}
+                        onCancel={handleCancel}
+                        closable={true}
+                        footer={[
+                            <Button key='back' onClick={handleCancel}>
+                                Cancel
+                            </Button>,
+                            <Button
+                            key='submit'
+                            type='primary'
+                            htmlType='submit'
+                            loading={submitLoading}
+                            onClick={() => {
+                              
+                            }}
+                            >
+                                Submit
+                            </Button>,
+                        ]}
+                      >
+                        <Form
+                            labelCol={{span: 7}}
+                            wrapperCol={{span: 14}}
+                            layout='horizontal'
+                            name='control-hooks'
+                            
+                        >
+                          <hr></hr>
+                          <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                            <div className=' mb-7'>
+                              <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                              <input type="text" name="name"  className="form-control form-control-solid"/>
+                            </div>
+                            
+                          </div>
+                        </Form>
+                      </Modal>
+                    </div>}
+                  {activeTab1 === 'exper' && 
+                    <div >
+                      
+
+                      
+
+                      <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showExperienceModal}>
+                        <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                        Add Experience
+                      </button>
+              
+                      <Table columns={recruitColumns}  /> 
+                      <Modal
+                        title="Add Experience"
+                        open={experienceOpen}
                         onCancel={handleCancel}
                         closable={true}
                         footer={[
@@ -1202,7 +1395,7 @@ const EmployeeEditForm= () =>{
                     Add New Medical
                   </button>
           
-                  <Table columns={recruitColumns}  />
+                  <Table columns={medicalColumns}  />
                   <Modal
                     title="Add Medical"
                     open={medicalOpen}
@@ -1235,6 +1428,15 @@ const EmployeeEditForm= () =>{
                       <hr></hr>
                       <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                         <div className=' mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Medical Type</label>
+                          <select className="form-select form-select-solid" aria-label="Select example">
+                            <option> select</option>
+                            {MEDICALS.map((item: any) => (
+                              <option value={item.code}>{item.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className=' mb-7'>
                           <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                           <input type="text" name="name"  className="form-control form-control-solid"/>
                         </div>
@@ -1251,12 +1453,13 @@ const EmployeeEditForm= () =>{
                     Add New Family 
                   </button>
           
-                  <Table columns={recruitColumns}  />
+                  <Table columns={familyColumns}  />
                   <Modal
                     title="Add Family Member"
                     open={familyOpen}
                     onCancel={handleCancel}
                     closable={true}
+                    width={800}
                     footer={[
                         <Button key='back' onClick={handleCancel}>
                             Cancel
@@ -1282,11 +1485,66 @@ const EmployeeEditForm= () =>{
                         
                     >
                       <hr></hr>
+                      <div className='row mb-0'>
+                        <div className='col-6 mb-7'>
+                          <Upload
+                                
+                            listType="picture-card"
+                            fileList={fileList}
+                            onChange={onChange}
+                            onPreview={onPreview}
+                          > 
+                            <UploadOutlined />
+                          </Upload>
+                        </div>
+                      
+                      </div>
                       <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                        <div className=' mb-7'>
+                        <div className='col-6 mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">National ID</label>
+                          <input type="text" name="name"  className="form-control form-control-solid"/>
+                        </div>
+                        <div className='col-6 mb-7'>
                           <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                           <input type="text" name="name"  className="form-control form-control-solid"/>
                         </div>
+                        
+                      </div>
+                      <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
+                        <div className='col-6 mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Relationship</label>
+                          <select className="form-select form-select-solid" aria-label="Select example">
+                            <option>select </option>
+                            <option value="1">Spouse</option>
+                            <option value="2">Parent</option>
+                            <option value="3">Child</option>
+                            <option value="3">Sibling</option>
+                          </select>
+                        </div>
+                        <div className='col-6 mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Date od Birth</label>
+                          <input type="date" name="name"  className="form-control form-control-solid"/>
+                        </div>
+                        
+                      </div>
+                      <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
+                        <div className='col-6 mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Address</label>
+                          <input type="text" name="name"  className="form-control form-control-solid"/>
+                        </div>
+                        <div className='col-6 mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Phone Number</label>
+                          <input type="text" name="name"  className="form-control form-control-solid"/>
+                        </div>
+                        
+                      </div>
+                      <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
+                        <div className=' mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Notes</label>
+                          <textarea  name="note"  className="form-control form-control-solid"> </textarea>
+                          {/* <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid"  aria-label="With textarea"></textarea> */}
+                        </div>
+                        
                         
                       </div>
                     </Form>

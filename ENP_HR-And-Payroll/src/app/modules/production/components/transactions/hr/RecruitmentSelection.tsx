@@ -114,19 +114,19 @@ const RecruitmentSelection = () => {
 
   const columns:any = [
    
-    {
-      title: 'Employee ID',
-      dataIndex: 'empcode',
-      sorter: (a: any, b: any) => {
-        if (a.empcode > b.empcode) {
-          return 1
-        }
-        if (b.empcode > a.empcode) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Employee ID',
+    //   dataIndex: 'empcode',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.empcode > b.empcode) {
+    //       return 1
+    //     }
+    //     if (b.empcode > a.empcode) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
       title: 'First Name',
       dataIndex: 'firstname',

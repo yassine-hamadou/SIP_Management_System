@@ -17,12 +17,45 @@ export function AsideMenuMain() {
         fontIcon='bi-app-indicator'
       /> */}
 
-      <AsideMenuItem 
+      {/* <AsideMenuItem 
         to='employee/' 
         // hasBullet={true} 
         icon='/media/icons/duotune/communication/com013.svg'
         title='Employees' 
-      />
+      /> */}
+      <AsideMenuItemWithSub 
+        to='#' 
+        icon='/media/icons/duotune/communication/com013.svg'
+        title='Employee' >
+          <AsideMenuItem 
+            to='employee/' 
+            hasBullet={true} 
+            
+            title='Details' 
+          />
+          <AsideMenuItem 
+            to='all-reports/' 
+            hasBullet={true} 
+            
+            title='Reports' 
+          />
+          {/* <AsideMenuItem to='setup/employee/paygroups' hasBullet={true} title='Paygroups' />
+          <AsideMenuItem to='setup/employee/divisions' hasBullet={true} title='Divisions' />
+          <AsideMenuItem to='setup/employee/category' hasBullet={true} title='Categories' />
+          <AsideMenuItem to='setup/employee/jobtitle' hasBullet={true} title='Job Titles' />
+          <AsideMenuItem to='setup/employee/grades' hasBullet={true} title='Grades' />
+          <AsideMenuItem to='setup/employee/nationality' hasBullet={true} title='Nationalities' /> */}
+          <AsideMenuItemWithSub to='#' title='Setups' hasBullet={true}>
+          <AsideMenuItem to='setup/employee/paygroups' hasBullet={true} title='Paygroups' />
+          <AsideMenuItem to='setup/employee/divisions' hasBullet={true} title='Divisions' />
+          <AsideMenuItem to='setup/employee/category' hasBullet={true} title='Categories' />
+          <AsideMenuItem to='setup/employee/jobtitle' hasBullet={true} title='Job Titles' />
+          <AsideMenuItem to='setup/employee/grades' hasBullet={true} title='Grades' />
+          <AsideMenuItem to='setup/employee/nationality' hasBullet={true} title='Nationalities' />
+          
+        </AsideMenuItemWithSub>
+        </AsideMenuItemWithSub>
+      
 
       
       <AsideMenuItemWithSub

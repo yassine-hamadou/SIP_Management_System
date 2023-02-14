@@ -1,8 +1,14 @@
 import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import {useForm} from 'react-hook-form'
+
+
+type Fields={
+  name: string
+}
 
 const Benefit = () => {
   const [gridData, setGridData] = useState([])
@@ -10,10 +16,11 @@ const Benefit = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
+  
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const {register, reset, handleSubmit} = useForm()
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -23,8 +30,9 @@ const Benefit = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
+    
   }
 
   const deleteData = async (element: any) => {
@@ -148,83 +156,7 @@ const Benefit = () => {
     },
   ]
 
-  const BENEFITS =[
-    {
-     "Code": "001",
-     "Name": "CLOT",
-     "Description": "CLOTHING ALLOWANCE",
-     "Category": "PERMANENT",
-     "Type of Amount": "FORMULA",
-     "Amount": 0,
-     "Account No.": 1234560,
-     "Period Type": "MONTHLY",
-     "Period Interval": "MONTHLY",
-     "Currency": "GHS",
-     "Accrued": "NO",
-     "Tax Type": "TAX TABLE",
-     "isTaxable": "YES"
-    },
-    {
-     "Code": "002",
-     "Name": "ACCOM",
-     "Description": "ACCOMODATION ALLOWANCE",
-     "Category": "SERVICE",
-     "Type of Amount": "PERCENTAGE OF GROSS",
-     "Amount": 0,
-     "Account No.": 1234561,
-     "Period Type": "MONTHLY",
-     "Period Interval": "MONTHLY",
-     "Currency": "GHS",
-     "Accrued": "NO",
-     "Tax Type": "TAX FORMULA",
-     "isTaxable": "YES"
-    },
-    {
-     "Code": "003",
-     "Name": "MED",
-     "Description": "MEDICAL ALLOWANCE",
-     "Category": "PERMANENT",
-     "Type of Amount": "VARYING AMOUNT",
-     "Amount": 0,
-     "Account No.": 1234562,
-     "Period Type": "AMOUNT",
-     "Period Interval": "AMOUNT",
-     "Currency": "GHS",
-     "Accrued": "NO",
-     "Tax Type": "NON TAXABLE",
-     "isTaxable": "NO"
-    },
-    {
-     "Code": "004",
-     "Name": "TRAV",
-     "Description": "TRAVELLING ALLOWANCE",
-     "Category": "SENIOR STAFF",
-     "Type of Amount": "VARYING AMOUNT",
-     "Amount": 0,
-     "Account No.": 1234563,
-     "Period Type": "WEEKLY",
-     "Period Interval": "WEEKLY",
-     "Currency": "GHS",
-     "Accrued": "NO",
-     "Tax Type": "TAX FORMULA",
-     "isTaxable": "NO"
-    },
-    {
-     "Code": "005",
-     "Name": "RND",
-     "Description": "RESEARCH ALLOWANCE",
-     "Category": "SENIOR STAFF",
-     "Type of Amount": "PERCENTAGE OF BASIC",
-     "Amount": 0,
-     "Account No.": 1234564,
-     "Period Type": "ANNUAL",
-     "Period Interval": "ANNUAL",
-     "Currency": "GHS",
-     "Accrued": "NO",
-     "Tax Type": "TAX RATE",
-     "isTaxable": "YES"
-    }
-   ]
+  
 
   const loadData = async () => {
     setLoading(true)
@@ -263,6 +195,12 @@ const Benefit = () => {
     setGridData(filteredData)
   }
 
+  const OnSUbmit = handleSubmit((data)=>{
+    console.log(data)
+    reset()
+    setIsModalOpen(false)
+  })
+
   const url = `${ENP_URL}/ProductionActivity`
   const onFinish = async (values: any) => {
     setSubmitLoading(true)
@@ -275,7 +213,7 @@ const Benefit = () => {
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
-      form.resetFields()
+      
       setIsModalOpen(false)
       loadData()
       return response.statusText
@@ -337,31 +275,25 @@ const Benefit = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
+                    onClick={OnSUbmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
+                <form
+                  onSubmit={OnSUbmit}
                 >
                   <hr></hr>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Code</label>
-                      <input type="text" name="code"  className="form-control form-control-solid"/>
+                      <label htmlFor="code" className="required form-label">Code</label>
+                
+                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
-                      <input type="text" name="name"  className="form-control form-control-solid"/>
+                    <label htmlFor="name" className="required form-label">Name</label>
+                      <input {...register("name")} type="text"  className="form-control form-control-solid"/>
                       
                     </div>
                   </div>
@@ -422,7 +354,7 @@ const Benefit = () => {
                     <div className='col-6 mb-7'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Currency</label>
                       {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
-                      <select className="form-select form-select-solid" aria-label="Select example">
+                      <select {...register("currency")} className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
                         <option value="1">Cedis</option>
                         <option value="2">Dollar</option>
@@ -433,7 +365,7 @@ const Benefit = () => {
                   <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Accrued</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
+                      <select className="form-select form-select-solid" {...register("accrued")} aria-label="Select example">
                         <option> select</option>
                         <option value="1">Yes</option>
                         <option value="2">No</option>
@@ -442,29 +374,29 @@ const Benefit = () => {
                     <div className='col-6 mb-7'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
                       {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
-                      <select className="form-select form-select-solid" aria-label="Select example">
+                      <select {...register("tax")} className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        <option value="1">test1 </option>
-                        <option value="2">test2 </option>
+                        <option value="test1">test1 </option>
+                        <option value="test2">test2 </option>
                       </select>
                     </div>
                   </div>
                   <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
-                      <input type="date" name="period"  className="form-control form-control-solid"/>
+                      <input type="date" {...register("period")} className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-7'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">isTaxable</label>
                       {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
-                      <select className="form-select form-select-solid" aria-label="Select example">
+                      <select {...register("isTaxable")} className="form-select form-select-solid" aria-label="Select example">
                         <option>select</option>
-                        <option value="1">Yes </option>
+                        <option  value="1">Yes </option>
                         <option value="2">No </option>
                       </select>
                     </div>
                   </div>
-                </Form>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

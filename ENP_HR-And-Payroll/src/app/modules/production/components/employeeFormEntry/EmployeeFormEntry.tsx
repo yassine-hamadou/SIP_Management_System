@@ -5,7 +5,7 @@ import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Upload } from 'antd';
-import { CATEGORY, DEPARTMENTS, DIVISION, GRADES, NOTCHES, NOTES, PAYGROUP, UNITS } from '../../../../data/DummyData';
+import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, GRADES, NOTCHES, NOTES, PAYGROUP, UNITS } from '../../../../data/DummyData';
 
 const MultiTabForm= () =>{
   const [formData, setFormData] = useState({});
@@ -346,11 +346,11 @@ const MultiTabForm= () =>{
                 <input type="date" name="edate" onChange={handleChange}  className="form-control form-control-solid" />
 
               </div>
-              <div className='col-3 mb-7'>
+              {/* <div className='col-3 mb-7'>
                 <br></br>
              
                 <a href="#" className="btn btn-danger"> Terminate</a>
-              </div>
+              </div> */}
             </div>
             <div className='row mb-0'>
               
@@ -374,9 +374,9 @@ const MultiTabForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Payment Method</label>
                 <select className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                  <option value="1">BANK</option>
+                  <option value="2">CASH</option>
+                  
                 </select>
 
               </div>
@@ -384,15 +384,19 @@ const MultiTabForm= () =>{
             <div className='row mb-0'>
               <div  className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Bank</label>
+                <br></br>
+                <span>(leave empty if you selected cash as payment method)</span>
                 <select className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                  {BANKS.map((item: any) => (
+                    <option value={item.code}>{item.branch}</option>
+                  ))}
                 </select>
               </div>
               <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Account </label>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Account  </label>
+                <br></br>
+                <span>(leave empty if you selected cash as payment method)</span>
                 <input type="text" name="account" onChange={handleChange}  className="form-control form-control-solid" />
               </div>
             </div>
