@@ -151,6 +151,18 @@ const PrivateRoutes = () => {
            </SuspensedView>
          }
         />
+        <Route
+         path='employee-report-page/*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Employee Reports</PageTitle>
+             <AllReports />
+           </SuspensedView>
+         }
+        />
+
+
 
 
         {/* Transaction > HR Routes  */}

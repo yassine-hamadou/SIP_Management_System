@@ -6,6 +6,7 @@ import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { employeedata, MEDICALS, period } from '../../../../../data/DummyData'
+import { useForm } from 'react-hook-form'
 
 const MedicalEntries = () => {
   const [gridData, setGridData] = useState([])
@@ -16,7 +17,7 @@ const MedicalEntries = () => {
   const [form] = Form.useForm()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const {register, reset, handleSubmit} = useForm()
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -188,6 +189,12 @@ const MedicalEntries = () => {
     setGridData(filteredData)
   }
 
+  const OnSUbmit = handleSubmit((data)=>{
+    console.log(data)
+    reset()
+    setIsModalOpen(false)
+  })
+
   const url = `${ENP_URL}/ProductionActivity`
   const onFinish = async (values: any) => {
     setSubmitLoading(true)
@@ -284,14 +291,8 @@ const MedicalEntries = () => {
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
+                <form
+                  onSubmit={OnSUbmit}  
                 >
                   <hr></hr>
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
@@ -345,7 +346,7 @@ const MedicalEntries = () => {
                  
                     </div>
                   </div>
-                </Form>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

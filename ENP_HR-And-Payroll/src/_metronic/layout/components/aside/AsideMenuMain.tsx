@@ -65,7 +65,7 @@ export function AsideMenuMain() {
         icon='/media/icons/duotune/general/gen019.svg'
       >
        
-        <AsideMenuItemWithSub to='#' title='Transactions' hasBullet={true}>
+        <AsideMenuItemWithSub to='#' title='Transactions' icon='/media/icons/duotune/ecommerce/ecm001.svg' hasBullet={false}>
           <AsideMenuItem to='transaction/hr/recruitment-selection' hasBullet={true} title='Recruitments and Selections' />
           <AsideMenuItem to='transaction/hr/compensation-benefit' hasBullet={true} title='Compensations and Benefits' />
           <AsideMenuItem to='transaction/hr/training-development' hasBullet={true} title='Trainings and Developments' />
@@ -74,17 +74,17 @@ export function AsideMenuMain() {
           <AsideMenuItem to='transaction/hr/leave-planning' hasBullet={true} title='Leaves Planning' />
           <AsideMenuItem to='transaction/hr/medical-entries' hasBullet={true} title='Medical Entries' />
         </AsideMenuItemWithSub>
-        <AsideMenuItemWithSub to='#' title='Processes' hasBullet={true}>
+        <AsideMenuItemWithSub to='#' title='Processes' icon='/media/icons/duotune/general/gen008.svg' hasBullet={false}>
           <AsideMenuItem to='#' hasBullet={true} title='Approvals' />
           <AsideMenuItem to='#' hasBullet={true} title='Promotions' />
         </AsideMenuItemWithSub>
         <AsideMenuItem 
         to='all-reports/' 
-        hasBullet={true}
-        // icon='/media/icons/duotune/general/gen028.svg'
+        hasBullet={false}
+        icon='/media/icons/duotune/general/gen028.svg'
         title='Reports' 
       />
-        <AsideMenuItemWithSub to='#' title='Setups' hasBullet={true}>
+        <AsideMenuItemWithSub to='#' title='Setups' icon='/media/icons/duotune/technology/teh004.svg' hasBullet={false}>
         <AsideMenuItem to='setup/hr/recruitments' hasBullet={true} title='Recruitments' />
           <AsideMenuItem to='setup/hr/training' hasBullet={true} title='Trainings' />
           <AsideMenuItem to='setup/hr/company-assets' hasBullet={true} title='Company Assets' />
@@ -100,7 +100,7 @@ export function AsideMenuMain() {
         fontIcon='bi-archive'
         icon='/media/icons/duotune/general/gen022.svg'
       >
-        <AsideMenuItemWithSub to='#' title='Transactions' hasBullet={true}>
+        <AsideMenuItemWithSub to='#' title='Transactions' icon='/media/icons/duotune/ecommerce/ecm001.svg' hasBullet={false}>
           <AsideMenuItem to='transaction/payroll/timesheet' hasBullet={true} title='Timesheets' />
           <AsideMenuItem to='transaction/payroll/recurrent' hasBullet={true} title='Recurrents' />
           <AsideMenuItem to='transaction/payroll/non-recurrent' hasBullet={true} title='Non-recurrents' />
@@ -108,7 +108,7 @@ export function AsideMenuMain() {
           <AsideMenuItem to='transaction/payroll/salary-upgrade' hasBullet={true} title='Salary Upgrades' />
           <AsideMenuItem to='transaction/payroll/relief-rebate' hasBullet={true} title='Reliefs and Rebate Inputs' />
         </AsideMenuItemWithSub>
-        <AsideMenuItemWithSub to='#' title='Processes' hasBullet={true}>
+        <AsideMenuItemWithSub to='#' title='Processes' icon='/media/icons/duotune/general/gen008.svg' hasBullet={false}>
           <AsideMenuItem to='processes/payroll/approval' hasBullet={true} title='Approvals' />
           <AsideMenuItem to='processes/payroll/check-tax' hasBullet={true} title='Check Taxes' />
           <AsideMenuItem to='processes/payroll/journal' hasBullet={true} title='Journals' />
@@ -117,11 +117,11 @@ export function AsideMenuMain() {
         </AsideMenuItemWithSub>
         <AsideMenuItem 
         to='all-reports/' 
-        hasBullet={true} 
-        // icon='/media/icons/duotune/general/gen028.svg'
+        hasBullet={false} 
+        icon='/media/icons/duotune/general/gen028.svg'
         title='Reports' 
       />
-        <AsideMenuItemWithSub to='#' title='Setups' hasBullet={true}>
+        <AsideMenuItemWithSub to='#' title='Setups' icon='/media/icons/duotune/technology/teh004.svg' hasBullet={false}>
           <AsideMenuItem to='setup/payroll/benefit' hasBullet={true} title='Benefits' />
           <AsideMenuItem to='setup/payroll/deduction' hasBullet={true} title='Deductions' />
           <AsideMenuItem to='setup/payroll/saving-scheme' hasBullet={true} title='Saving Schemes' />
