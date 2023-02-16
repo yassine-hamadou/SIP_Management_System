@@ -4,7 +4,7 @@ import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Form, Modal, Space, Table, Upload } from 'antd';
-import { CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, MEDICALS, NOTCHES, UNITS } from '../../../../data/DummyData';
+import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, MEDICALS, NOTCHES, UNITS } from '../../../../data/DummyData';
 import { KTSVG } from '../../../../../_metronic/helpers';
 
 const EmployeeEditForm= () =>{
@@ -547,6 +547,7 @@ const EmployeeEditForm= () =>{
   }
 
 
+  // validates input field to accept only numbers
   const validatePhoneNumber=(event:any)=>{
     if (!/[0-9]/.test(event.key)) {
       event.preventDefault();
@@ -946,11 +947,14 @@ const EmployeeEditForm= () =>{
             <div className='row mb-0'>
               <div  className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Bank</label>
+                
+                <br></br>
+                <span>(leave empty if you selected cash as payment method)</span>
                 <select className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                  {BANKS.map((item: any) => (
+                    <option value={item.code}>{item.branch}</option>
+                  ))}
                 </select>
               </div>
               <div className='col-6 mb-7'>

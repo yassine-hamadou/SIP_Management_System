@@ -5,7 +5,7 @@ import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
-import { employeedata, MEDICALS } from '../../../../../data/DummyData'
+import { employeedata, MEDICALS, period } from '../../../../../data/DummyData'
 
 const MedicalEntries = () => {
   const [gridData, setGridData] = useState([])
@@ -219,6 +219,20 @@ const MedicalEntries = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
+      <div style={{padding: "0px 0px 40px 0px"}}  className='col-12'>
+        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Period</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              {period.map((item: any) => (
+                <option value={item.code}>{item.name}</option>
+              ))}
+            </select>
+          </div>
+
+        </div>
+      </div>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>

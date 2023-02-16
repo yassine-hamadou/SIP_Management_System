@@ -445,9 +445,6 @@ const CompensationBenefit = () => {
           </div>
 
         </div>
-        
-        
-       
       </div>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>

@@ -30,11 +30,11 @@ const Medicals = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      // const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
-      return response.status
+      // return response.status
     } catch (e) {
       return e
     }

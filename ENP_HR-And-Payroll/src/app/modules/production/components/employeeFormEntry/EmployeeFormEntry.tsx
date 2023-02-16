@@ -102,24 +102,7 @@ const MultiTabForm= () =>{
           >
             Payroll
           </button>
-          {/* <button 
-            className={`tab ${activeTab === 'tab5' ? 'active' : ''}`} 
-            onClick={() => handleTabClick('tab5')}
-          >
-            Notes
-          </button>
-          <button 
-            className={`tab ${activeTab === 'tab6' ? 'active' : ''}`} 
-            onClick={() => handleTabClick('tab6')}
-          >
-            Training
-          </button>
-          <button 
-            className={`tab ${activeTab === 'tab7' ? 'active' : ''}`} 
-            onClick={() => handleTabClick('tab7')}
-          >
-            Medicals
-          </button> */}
+        
           
         </div>
         
@@ -223,7 +206,7 @@ const MultiTabForm= () =>{
                   <input type="phone" name="phone" onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Alternative Phone numbe</label>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Alternative Phone number</label>
                   <input type="phone" name="aphone" onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>

@@ -215,7 +215,7 @@ const TrainingDevelopment = () => {
             Shortlist
           </a> */}
           <a  className='btn btn-light-primary btn-sm'>
-            Update
+            Remove
           </a>
          
         </Space>
