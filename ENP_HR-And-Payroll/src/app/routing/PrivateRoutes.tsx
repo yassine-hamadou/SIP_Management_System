@@ -80,6 +80,9 @@ import SavSchemeTransactionInputReport from '../modules/production/components/re
 import { MultiTabForm } from '../modules/production/components/employeeFormEntry/EmployeeFormEntry'
 import { EmployeeEditForm } from '../modules/production/components/employeeFormEntry/EmployeeEditForm'
 import { SNNIT } from '../modules/production/components/setup/payroll/Snnit'
+import { EmployeeReportPage } from '../modules/production/components/report/EmployeeReportPage'
+import { PayrollReportPage } from '../modules/production/components/report/PayrollReportPage'
+import { HrReportPage } from '../modules/production/components/report/HrReportPage'
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -157,14 +160,30 @@ const PrivateRoutes = () => {
           
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>All Employee Reports</PageTitle>
-             <AllReports />
+             <EmployeeReportPage />
            </SuspensedView>
          }
         />
-
-
-
-
+        <Route
+         path='hr-report-page/*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Human Resource Reports</PageTitle>
+             <HrReportPage />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='payroll-report-page/*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Payroll Reports</PageTitle>
+             <PayrollReportPage />
+           </SuspensedView>
+         }
+        />
         {/* Transaction > HR Routes  */}
 
 

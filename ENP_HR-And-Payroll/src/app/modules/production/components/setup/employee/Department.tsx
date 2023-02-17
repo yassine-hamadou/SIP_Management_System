@@ -5,6 +5,9 @@ import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { DEPARTMENTS, DIVISION } from '../../../../../data/DummyData'
+import { useForm } from 'react-hook-form'
+import { Api_Endpoint, fetchDivisions } from '../../../../../services/ApiCalls'
+import { useQuery } from 'react-query'
 
 const Department = () => {
   const [gridData, setGridData] = useState([])
@@ -12,7 +15,7 @@ const Department = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
+  const {register, reset, handleSubmit} = useForm()
   let [itemName, setItemName] = useState<any>("")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const param:any  = useParams();
@@ -26,13 +29,13 @@ const Department = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
   }
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/Departments/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -60,19 +63,7 @@ const Department = () => {
         return 0
       },
     },
-    // {
-    //   title: 'Name',
-    //   dataIndex: 'name',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.name > b.name) {
-    //       return 1
-    //     }
-    //     if (b.name > a.name) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
+    
     {
       title: 'Name',
       dataIndex: 'name',
@@ -86,33 +77,7 @@ const Department = () => {
         return 0
       },
     },
-    // {
-    //   title: 'Reporting Division',
-    //   dataIndex: 'report',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.report > b.report) {
-    //       return 1
-    //     }
-    //     if (b.report > a.report) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      sorter: (a: any, b: any) => {
-        if (a.status > b.status) {
-          return 1
-        }
-        if (b.status > a.status) {
-          return -1
-        }
-        return 0
-      },
-    },
-
+    
     {
       title: 'Action',
       fixed: 'right',
@@ -139,7 +104,7 @@ const Department = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/Departments`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -147,11 +112,12 @@ const Department = () => {
     }
   }
 
+   const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
   const getItemName= async (param:any) =>{
 
     let newName=null
   
-     const   itemTest = await DIVISION.find((item:any) =>
+     const   itemTest = await allDivisions?.data.find((item:any) =>
       item.id.toString()===param
     )
      newName = await itemTest
@@ -159,12 +125,11 @@ const Department = () => {
  }
 
 
-
- const dataByID = DEPARTMENTS.filter((section:any) =>{
-  return section.divisionID.toString() ===param.id
+ const dataByID = gridData.filter((section:any) =>{
+  return section.divisionId.toString() ===param.id
 })
-
 console.log(dataByID)
+
 
   useEffect(() => {
     (async ()=>{
@@ -196,19 +161,17 @@ console.log(dataByID)
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
+  const url = `${Api_Endpoint}/Departments`
+  const OnSUbmit = handleSubmit( async (values)=> {
+    setLoading(true)
     const data = {
-      name: values.name,
-    }
-
-    console.log(data)
-
+          code: values.code,
+          name: values.name,
+        }
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
-      form.resetFields()
+      reset()
       setIsModalOpen(false)
       loadData()
       return response.statusText
@@ -216,7 +179,7 @@ console.log(dataByID)
       setSubmitLoading(false)
       return error.statusText
     }
-  }
+  })
 
   return (
     <div
@@ -273,30 +236,27 @@ console.log(dataByID)
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
+                    onClick={OnSUbmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
+                <form
+                   onSubmit={OnSUbmit}
                 >
                   <hr></hr>
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                     <div className=' mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
+                    </div>
+                    <div className=' mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" name="topic"  className="form-control form-control-solid"/>
+                      <input type="text" {...register("name")}  className="form-control form-control-solid"/>
                     </div>
                   </div>
-                </Form>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

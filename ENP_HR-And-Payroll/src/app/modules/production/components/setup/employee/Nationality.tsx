@@ -3,6 +3,8 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { useForm } from 'react-hook-form'
+import { Api_Endpoint } from '../../../../../services/ApiCalls'
 
 const Nationality = () => {
   const [gridData, setGridData] = useState([])
@@ -10,7 +12,7 @@ const Nationality = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
+  const {register, reset, handleSubmit} = useForm()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -23,13 +25,13 @@ const Nationality = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
   }
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/Nationalities/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -127,7 +129,7 @@ const Nationality = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/Nationalities`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -161,19 +163,17 @@ const Nationality = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
+  const url = `${Api_Endpoint}/Nationalities`
+  const OnSUbmit = handleSubmit( async (values)=> {
+    setLoading(true)
     const data = {
-      name: values.name,
-    }
-
-    console.log(data)
-
+          code: values.code,
+          name: values.name,
+        }
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
-      form.resetFields()
+      reset()
       setIsModalOpen(false)
       loadData()
       return response.statusText
@@ -181,7 +181,7 @@ const Nationality = () => {
       setSubmitLoading(false)
       return error.statusText
     }
-  }
+  })
 
   return (
     <div
@@ -219,7 +219,7 @@ const Nationality = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={NATIONALITY} />
+          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
           <Modal
                 title='Nationality Setup'
                 open={isModalOpen}
@@ -234,42 +234,28 @@ const Nationality = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
+                    onClick={OnSUbmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
+                <form
+                    onSubmit={OnSUbmit}
                 >
                    <hr></hr>
                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                     <div className=' mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                      <input type="text" name="code"  className="form-control form-control-solid"/>
+                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
                     </div>
                     <div className=' mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" name="name"  className="form-control form-control-solid"/>
+                      <input type="text" {...register("name")}  className="form-control form-control-solid"/>
                     </div>
-                    {/* <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">Active </option>
-                        <option value="2">Not Active </option>
-                      </select>
-                    </div> */}
+                    
                   </div>
-                </Form>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

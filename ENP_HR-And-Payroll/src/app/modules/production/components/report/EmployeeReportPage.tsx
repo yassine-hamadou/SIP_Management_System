@@ -5,31 +5,40 @@ import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
 const EmployeeReportPage = () => {
 
   return (
-    <div
-      style={{
-        backgroundColor: 'white',
-        padding: '20px',
-        borderRadius: '5px',
-        boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-      }}
-    >
-      <KTCardBody className='py-4 '>
+    // <div
+    //   style={{
+    //     backgroundColor: 'white',
+    //     padding: '20px',
+    //     borderRadius: '5px',
+    //     boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
+    //   }}
+    // >
+      // <KTCardBody className='py-4 '>
       
-          <div className='row mb-10'>
-            <div className='col-4'>
-              <h2>
-                Employees Reports
-              </h2>
-              <br />
-              <ul>
-                <li><h4><Link to="/report/payrollPAYEReport">List</Link></h4></li>
+          <div className='row col-8 mb-10'>
+            <div 
+              // style={{
+              //       backgroundColor: 'white',
+              //       padding: '15px',
+              //       borderRadius: '5px',
+              //       boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
+              //     }}
+              className='col-4'>
+              <h2><span className="bullet me-5"></span><Link to="/report/payrollPAYEReport">List</Link></h2>
+              <h2><span className="bullet me-5"></span><Link to="/report/payrollPAYEReport">Age Profile</Link></h2>
+              <h2><span className="bullet me-5"></span><Link to="/report/payrollPAYEReport">History</Link></h2>
+              <h2><span className="bullet me-5"></span><Link to="/report/payrollPAYEReport">Status</Link></h2>
+              {/* <ul>
+                <li>
+                
+                  </li>
                 <li><h4><Link to="">Age Profile</Link></h4></li>
                 <li><h4><Link to="#">Staff Movement</Link></h4></li>
                 <li><h4><Link to="#">History</Link></h4></li>
                 <li><h4><Link to="#">Status</Link></h4></li>
-              </ul>
+              </ul> */}
             </div>
-            <div className='col-4'>
+            {/* <div className='col-4'>
               <h2>
                 Human Resource Reports
               </h2>
@@ -43,7 +52,7 @@ const EmployeeReportPage = () => {
                 <li><h4><Link to="#">Leave Planning</Link></h4></li>
                 <li><h4><Link to="#">Medical</Link></h4></li>
               </ul>
-            </div>
+            </div> */}
             {/* <div className='col-4'>
               <h2>
                 Payroll Reports 
@@ -64,8 +73,8 @@ const EmployeeReportPage = () => {
           </div>
           
     
-      </KTCardBody>
-    </div>
+    //   {/* </KTCardBody>
+    // </div> */}
   )
 }
 

@@ -29,23 +29,18 @@ export function AsideMenuMain() {
         title='Employee' >
           <AsideMenuItem 
             to='employee/' 
-            hasBullet={true} 
-            
+            hasBullet={false} 
+            icon='/media/icons/duotune/general/gen005.svg'
             title='Details' 
           />
           <AsideMenuItem 
-            to='all-reports/' 
-            hasBullet={true} 
-            
+            to='employee-report-page/' 
+            hasBullet={false} 
+            icon='/media/icons/duotune/general/gen028.svg'
             title='Reports' 
           />
-          {/* <AsideMenuItem to='setup/employee/paygroups' hasBullet={true} title='Paygroups' />
-          <AsideMenuItem to='setup/employee/divisions' hasBullet={true} title='Divisions' />
-          <AsideMenuItem to='setup/employee/category' hasBullet={true} title='Categories' />
-          <AsideMenuItem to='setup/employee/jobtitle' hasBullet={true} title='Job Titles' />
-          <AsideMenuItem to='setup/employee/grades' hasBullet={true} title='Grades' />
-          <AsideMenuItem to='setup/employee/nationality' hasBullet={true} title='Nationalities' /> */}
-          <AsideMenuItemWithSub to='#' title='Setups' hasBullet={true}>
+         
+          <AsideMenuItemWithSub to='#' title='Setups' icon='/media/icons/duotune/technology/teh004.svg' hasBullet={false}>
           <AsideMenuItem to='setup/employee/paygroups' hasBullet={true} title='Paygroups' />
           <AsideMenuItem to='setup/employee/divisions' hasBullet={true} title='Divisions' />
           <AsideMenuItem to='setup/employee/category' hasBullet={true} title='Categories' />
@@ -79,7 +74,7 @@ export function AsideMenuMain() {
           <AsideMenuItem to='#' hasBullet={true} title='Promotions' />
         </AsideMenuItemWithSub>
         <AsideMenuItem 
-        to='all-reports/' 
+        to='hr-report-page/' 
         hasBullet={false}
         icon='/media/icons/duotune/general/gen028.svg'
         title='Reports' 
@@ -116,7 +111,7 @@ export function AsideMenuMain() {
           <AsideMenuItem to='processes/payroll/payrun' hasBullet={true} title='Payruns' />
         </AsideMenuItemWithSub>
         <AsideMenuItem 
-        to='all-reports/' 
+        to='payroll-report-page/' 
         hasBullet={false} 
         icon='/media/icons/duotune/general/gen028.svg'
         title='Reports' 
@@ -137,11 +132,7 @@ export function AsideMenuMain() {
 
           </AsideMenuItemWithSub>
           <AsideMenuItem to='setup/payroll/parameter' hasBullet={true} title='Parameters' />
-          {/* <AsideMenuItem to='processes/payroll/approval' hasBullet={true} title='Approvals' />
-          <AsideMenuItem to='processes/payroll/check-tax' hasBullet={true} title='Check Taxes' />
-          <AsideMenuItem to='processes/payroll/journal' hasBullet={true} title='Journals' />
-          <AsideMenuItem to='processes/payroll/project-sheets-input' hasBullet={true} title='Project Sheets and Inputs' />
-          <AsideMenuItem to='processes/payroll/payrun' hasBullet={true} title='Payruns' /> */}
+          
         </AsideMenuItemWithSub>
         
       </AsideMenuItemWithSub>
