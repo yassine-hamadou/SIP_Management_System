@@ -6,7 +6,7 @@ import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
-import { employeedata, period } from '../../../../../data/DummyData'
+import { APPRAISAL, employeedata, period } from '../../../../../data/DummyData'
 
 const AppraisalPerformance = () => {
   const [gridData, setGridData] = useState([])
@@ -382,23 +382,32 @@ const AppraisalPerformance = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-      <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
-          <div className='col-6 mb-7'>
+      <div style={{padding: "20px 0px 0 0px"}} className='col-8 row mb-0'>
+          <div className='col-4 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Appraisal Type</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              {APPRAISAL.map((item: any) => (
+                <option value={item.code}>{item.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className='col-4 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Start Period</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
               {period.map((item: any) => (
-                <option value={item.code}>{item.code}</option>
+                <option value={item.code}>{item.name}</option>
               ))}
             </select>
           </div>
 
-          <div className='col-6 mb-7'>
+          <div className='col-4 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">End Period</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
               {period.map((item: any) => (
-                <option value={item.code}>{item.code}</option>
+                <option value={item.code}>{item.name}</option>
               ))}
             </select>
           </div>

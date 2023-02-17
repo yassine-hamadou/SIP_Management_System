@@ -6,7 +6,8 @@ import { ENP_URL } from '../../../urls'
 import { DEPARTMENTS, DIVISION, UNITS } from '../../../../../data/DummyData'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchDepartments, fetchDivisions } from '../../../../../services/ApiCalls'
+import { useQuery } from 'react-query'
 
 const Units = () => {
   const [gridData, setGridData] = useState([])
@@ -112,8 +113,6 @@ const Units = () => {
     },
   ]
 
-
-
   const loadData = async () => {
     setLoading(true)
     try {
@@ -125,28 +124,18 @@ const Units = () => {
     }
   }
 
-  
+  const {data:allDepartments} = useQuery('departments', fetchDepartments, {cacheTime:5000})
+  const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
   const getItemName= async (param:any) =>{
 
     let newName=null
   
-     const   itemTest = await DEPARTMENTS.find((item:any) =>
+     const   itemTest = await allDepartments?.data.find((item:any) =>
       item.id.toString()===param
     )
      newName = await itemTest
     return newName
  }
-//  const getDivisionName= async (param:any) =>{
-
-//   let newName=null
-
-//    const   itemTest = await DIVISION.find((item:any) =>
-//     item.id.toString()===param
-//   )
-//    newName = await itemTest
-//   return newName
-// }
-
   useEffect(() => {
     (async ()=>{
       let res = await getItemName(param.id)
@@ -154,7 +143,13 @@ const Units = () => {
     })();
     (async ()=>{
       let res = await getItemName(param.id)
-      setDivisionName(res?.division.name)
+      let divisionId = res?.divisionId
+      let divisionName = allDivisions?.data.find((div:any)=>{
+        return div.id===divisionId
+      })
+
+      console.log("division name obtained: " + divisionName.name)
+      setDivisionName(divisionName.name)
     })();
     loadData()
   }, [])
@@ -246,7 +241,7 @@ const Units = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataByID}/>
+          <Table columns={columns} dataSource={dataWithIndex} loading={loading}/>
           <Modal
                 title='Unit Setup'
                 open={isModalOpen}

@@ -322,7 +322,8 @@ const MedicalEntries = () => {
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Comments</label>
-                      <input type="text" name="topic"  className="form-control form-control-solid"/>
+                      {/* <input type="text" name="topic"  className="form-control form-control-solid"/> */}
+                      <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea>
                     </div>
                   </div>
                   <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
@@ -334,13 +335,9 @@ const MedicalEntries = () => {
                       fileList={fileList}
                       onChange={onChange}
                       onPreview={onPreview}
-                      // className="upload-list-inline"
+                      
                     >                  
-                        {/* <Button 
-                          style={{padding: "10px 20px 30px 20px"}}  
-                          className='form-control btn btn-light-primary btn-sm' 
-                          icon={<UploadOutlined />}>
-                        </Button> */}
+                        
                         <UploadOutlined/>
                       </Upload>
                  

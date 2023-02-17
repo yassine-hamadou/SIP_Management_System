@@ -6,7 +6,8 @@ import { ENP_URL } from '../../../urls'
 import { Link } from 'react-router-dom'
 import { DIVISION } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchDivisions } from '../../../../../services/ApiCalls'
+import { useQuery } from 'react-query'
 
 const Divisions = () => {
   const [gridData, setGridData] = useState([])
@@ -101,7 +102,7 @@ const Divisions = () => {
 
 
 
-
+  const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
   const loadData = async () => {
     setLoading(true)
     try {

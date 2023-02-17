@@ -25,6 +25,8 @@ const CompensationBenefit = () => {
   const [radio2Value, setRadio2Value] = useState();
   const [radio3Value, setRadio3Value] = useState();
   const [radio4Value, setRadio4Value] = useState();
+  const [radio5Value, setRadio5Value] = useState();
+  const [radio6Value, setRadio6Value] = useState();
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
 
   const showModal = () => {
@@ -109,6 +111,14 @@ const CompensationBenefit = () => {
   const onRadio4Change = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
     setRadio4Value(e.target.value);
+  };
+  const onRadio5Change = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadio5Value(e.target.value);
+  };
+  const onRadio6Change = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadio6Value(e.target.value);
   };
 
   function handleDelete(element: any) {
@@ -592,7 +602,7 @@ const CompensationBenefit = () => {
                     </div>
                     <div className='col-6 mb-3'>
                       <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Professional Development </label>
-                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
+                      <Radio.Group onChange={onRadio5Change} value={radio5Value}>
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
                         
@@ -603,7 +613,7 @@ const CompensationBenefit = () => {
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                     <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Company Property</label>
-                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
+                      <Radio.Group onChange={onRadio6Change} value={radio6Value}>
                         <Radio value={1}>Yes</Radio>
                         <Radio value={2}>No</Radio>
                         

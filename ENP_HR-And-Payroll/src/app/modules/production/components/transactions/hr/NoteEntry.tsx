@@ -1,9 +1,11 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
+import {Button, Form, Input, InputNumber, Modal, Space, Table, Upload} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { employeedata, NOTES, period } from '../../../../../data/DummyData'
+import { UploadOutlined } from '@ant-design/icons';
+import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 
 const NoteEntry = () => {
   const [gridData, setGridData] = useState([])
@@ -12,7 +14,7 @@ const NoteEntry = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -40,6 +42,32 @@ const NoteEntry = () => {
     }
   }
 
+
+
+  const [fileList, setFileList] = useState<UploadFile[]>([
+    
+  ]);
+
+  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+
+// https://www.pngfind.com/pngs/m/110-1102775_download-empty-profile-hd-png-download.png
+  // to preview the uploaded file
+  const onPreview = async (file: UploadFile) => {
+    let src = file.url as string;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj as RcFile);
+        reader.onload = () => resolve(reader.result as string);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
+  };
   
 
   function handleDelete(element: any) {
@@ -317,6 +345,21 @@ const NoteEntry = () => {
                         {/* <input type="text" name="topic"  className="form-control form-control-solid"/> */}
                         <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea>
                       </div>
+                      <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Upload Document</label>
+                      <Upload
+                      
+                      listType="picture-card"
+                      // fileList={fileList}
+                      onChange={onChange}
+                      onPreview={onPreview}
+                      
+                    >                  
+                        
+                        <UploadOutlined/>
+                      </Upload>
+                 
+                    </div>
                     </div>
                 </Form>
             </Modal>

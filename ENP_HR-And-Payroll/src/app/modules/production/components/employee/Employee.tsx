@@ -13,7 +13,7 @@ const Employee = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  const [img, setImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false)
 
 
@@ -42,13 +42,25 @@ const Employee = () => {
     }
   }
 
+  const fetchImage = async () => {
+    const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
+    const imageBlob = await res.blob();
+    const imageObjectURL:any  = URL.createObjectURL(imageBlob);
+    setImg(imageObjectURL);
+  };
   
 
   function handleDelete(element: any) {
     deleteData(element)
   }
   const columns: any = [
-   
+   {
+      title: 'Profile',
+      dataIndex: 'name',
+      render: (a: any, b: any) => {
+        return  <img style={{borderRadius:"50%"}} src={img} width={50} height={50}></img>
+      }
+    },
     {
       title: 'EployeeID',
       dataIndex: 'empcode',
@@ -167,32 +179,6 @@ const Employee = () => {
         return 0
       },
     },
-    // {
-    //   title: 'Annual Salary',
-    //   dataIndex: 'annsal',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.annsal > b.annsal) {
-    //       return 1
-    //     }
-    //     if (b.annsal > a.annsal) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
-    // {
-    //   title: 'Basic Salary',
-    //   dataIndex: 'bsal',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.bsal > b.bsal) {
-    //       return 1
-    //     }
-    //     if (b.bsal > a.bsal) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
     {
       title: 'Phone',
       dataIndex: 'phone',
@@ -246,6 +232,7 @@ const Employee = () => {
 
   useEffect(() => {
     loadData()
+    fetchImage()
   }, [])
 
   const dataWithIndex = gridData.map((item: any, index) => ({

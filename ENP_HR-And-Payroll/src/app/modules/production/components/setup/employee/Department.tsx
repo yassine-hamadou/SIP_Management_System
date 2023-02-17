@@ -6,7 +6,7 @@ import { ENP_URL } from '../../../urls'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { DEPARTMENTS, DIVISION } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchDivisions } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchDepartments, fetchDivisions } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 
 const Department = () => {
@@ -112,7 +112,8 @@ const Department = () => {
     }
   }
 
-   const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
+  const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
+  const {data:allDepartments} = useQuery('departments', fetchDepartments, {cacheTime:5000})
   const getItemName= async (param:any) =>{
 
     let newName=null
@@ -165,9 +166,11 @@ console.log(dataByID)
   const OnSUbmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
-          code: values.code,
-          name: values.name,
-        }
+      code: values.code,
+      name: values.name,
+      divisionId: parseInt(param.id),
+    }
+    console.log(data)
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
