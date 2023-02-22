@@ -5,6 +5,8 @@ import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
 import { ENP_URL } from '../../urls'
 import { Link } from 'react-router-dom'
 import { employeedata } from '../../../../data/DummyData'
+import { useQuery } from 'react-query'
+import { fetchEmployees } from '../../../../services/ApiCalls'
 
 const Employee = () => {
   const [gridData, setGridData] = useState([])
@@ -58,7 +60,7 @@ const Employee = () => {
       title: 'Profile',
       dataIndex: 'name',
       render: (a: any, b: any) => {
-        return  <img style={{borderRadius:"50%"}} src={img} width={50} height={50}></img>
+        return  <img style={{borderRadius:"10px"}} src={img} width={50} height={50}></img>
       }
     },
     {
@@ -101,19 +103,7 @@ const Employee = () => {
         return 0
       },
     },
-    // {
-    //   title: 'DOB',
-    //   dataIndex: 'name',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.name > b.name) {
-    //       return 1
-    //     }
-    //     if (b.name > a.name) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
+
     {
       title: 'Gender',
       dataIndex: 'sex',
@@ -215,7 +205,7 @@ const Employee = () => {
     },
   ]
 
-
+  const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
  
     
 
@@ -323,7 +313,7 @@ const Employee = () => {
             </Space>
           </div>
           <Table columns={columns} dataSource={employeedata} />
-          <Modal
+          {/* <Modal
                 title='Add Employee'
                 open={isModalOpen}
                 onCancel={handleCancel}
@@ -354,16 +344,16 @@ const Employee = () => {
                     title='Add Service'
                     onFinish={onFinish}
                 >
-                    {/* <Form.Item
+                    <Form.Item
                         name='name'
                         label='Name'
                         
                         rules={[{required: true}]}
                     >
                         <Input />
-                    </Form.Item> */}
+                    </Form.Item>
                 </Form>
-            </Modal>
+            </Modal> */}
         </div>
       </KTCardBody>
     </div>

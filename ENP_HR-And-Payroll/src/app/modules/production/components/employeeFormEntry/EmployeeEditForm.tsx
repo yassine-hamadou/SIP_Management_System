@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
@@ -22,7 +22,7 @@ const EmployeeEditForm= () =>{
   const [appraisalOpen,setAppraisalOpen] = useState(false)
   const [noteOpen,setNoteOpen] = useState(false)
   // const [form] = Form.useForm()
-
+  const [img, setImg] = useState();
   // const { register, handleSubmit } = useForm();
   const param:any  = useParams();
 
@@ -559,14 +559,21 @@ const EmployeeEditForm= () =>{
     return employee.code.toString() ===param.id
   });
 
-  // console.log(dataByID)
-  // const handleTabChange = (newTab:any) => {
-  //   setActiveTab(newTab);
-  // }
+  const fetchImage = async () => {
+    const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
+    const imageBlob = await res.blob();
+    const imageObjectURL:any  = URL.createObjectURL(imageBlob);
+    setImg(imageObjectURL);
+  };
 
   const [fileList, setFileList] = useState<UploadFile[]>([
     
   ]);
+
+  useEffect(() => {
+    // loadData()
+    fetchImage()
+  }, [])
 
   const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -605,7 +612,7 @@ const EmployeeEditForm= () =>{
       <h3> You are updating <span style={{color:"#FF6363"}}>  {dataByID?.firstname} {dataByID?.lastname}</span></h3>
       <br></br>
       <Link to="/employee">
-        <a style={{fontSize:"16px", fontWeight: "500"}} className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>
+        <a style={{fontSize:"16px", fontWeight: "500"}} className='mb-7 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>
           Back to list
         </a>
       </Link>
@@ -691,16 +698,20 @@ const EmployeeEditForm= () =>{
           {activeTab === 'tab1' && 
           <div className='col-8'>
             <div className='row mb-0'>
+             
+                
+              
               <div className='col-6 mb-7'>
-                <Upload
+                <img style={{borderRadius:"10px"}} src={img} width={100} height={100}></img>
+                {/* <Upload
                       
                   listType="picture-card"
-                  fileList={fileList}
+                  // fileList={fileList}
                   onChange={onChange}
                   onPreview={onPreview}
                 > 
                   <UploadOutlined />
-                </Upload>
+                </Upload> */}
               </div>
               
             </div>

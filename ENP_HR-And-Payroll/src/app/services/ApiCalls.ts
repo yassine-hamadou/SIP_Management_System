@@ -19,4 +19,7 @@ export const fetchGrades= ()=>{
 export const fetchNotches= ()=>{
     return axios.get(`${Api_Endpoint}/Notches`)
 }
+export const fetchEmployees= ()=>{
+    return axios.get(`${Api_Endpoint}/Employees`)
+}
 

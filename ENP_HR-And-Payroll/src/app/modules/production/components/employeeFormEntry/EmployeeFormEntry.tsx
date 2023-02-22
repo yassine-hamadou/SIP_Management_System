@@ -6,25 +6,30 @@ import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Upload } from 'antd';
 import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, GRADES, NOTCHES, NOTES, PAYGROUP, UNITS } from '../../../../data/DummyData';
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
+import { Api_Endpoint } from '../../../../services/ApiCalls';
 
 const MultiTabForm= () =>{
   const [formData, setFormData] = useState({});
   const [activeTab, setActiveTab] = useState('tab1');
-
+  const {register, reset, handleSubmit} = useForm();
+  const [loading, setLoading] = useState(false)
+  const [submitLoading, setSubmitLoading] = useState(false)
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
   }
 
-  const handleChange = (event:any) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
-  }
+  // const handleChange = (event:any) => {
+  //   setFormData({ ...formData, [event.target.name]: event.target.value });
+  // }
 
-  const handleSubmit = (event:any) => {
-    event.preventDefault();
-    console.log(formData);
-    // Use the formData object to submit the data to your server
+  // const handleSubmit = (event:any) => {
+  //   event.preventDefault();
+  //   console.log(formData);
+  //   // Use the formData object to submit the data to your server
   
-  }
+  // }
 
   const handleTabChange = (newTab:any) => {
     setActiveTab(newTab);
@@ -53,6 +58,55 @@ const MultiTabForm= () =>{
       const imgWindow = window.open(src);
       imgWindow?.document.write(image.outerHTML);
     };
+
+    const url = `${Api_Endpoint}/Employees`
+    const OnSUbmit = handleSubmit( async (values, event)=> {
+      event?.preventDefault();
+      setLoading(true)
+      const data = {
+        firstName: values.firstName,
+        surname: values.surname,
+        otherName: values.otherName,
+        dob: values.dob,
+        gender: values.gender,
+        maritalStatus: values.maritalStatus,
+        nationality: values.nationalId,
+        nationalId: values.nationalId,
+        phone: values.phone,
+        alternativePhone: values.alternativePhone,
+        address: values.address,
+        residentialAddress: values.residentialAddress,
+        email: values.email,
+        personalEmail: values.personalEmail,
+        nextOfKin: values.nextOfKin,
+        guarantor: values.guarantor,
+        paygroupId: parseInt(values.paygroupId),
+        categoryId: parseInt(values.categoryId),
+        divisionId: parseInt(values.divisionId),
+        departmentId: parseInt(values.departmentId),
+        gradeId: parseInt(values.gradeId),
+        notchId: parseInt(values.notchId),
+        employmentDate: values.employmentDate,
+        payType: values.payType,
+        paymentMethod: values.paymentMethod,
+        bankId: parseInt(values.bankId),
+        account: values.account,
+        tin: values.tin,
+        ssf: values.ssf,
+          }
+      try {
+        console.log(data)
+        const response = await axios.post(url, data)
+        setSubmitLoading(false)
+        reset()
+        
+        // loadData()
+        return response.statusText
+      } catch (error: any) {
+        setSubmitLoading(false)
+        return error.statusText
+      }
+    })
   
 
   return (
@@ -70,11 +124,11 @@ const MultiTabForm= () =>{
 
       
       <Link to="/employee">
-        <a style={{fontSize:"16px", fontWeight: "500"}} className='btn btn-primary btn-sm mb-7'>
+        <a style={{fontSize:"16px", fontWeight: "500"}} className='mb-7 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>
           Back to list
         </a>
       </Link>
-      <form onSubmit={handleSubmit}>
+      
        
         <div className="tabs">
           
@@ -105,7 +159,7 @@ const MultiTabForm= () =>{
         
           
         </div>
-        
+        <form onSubmit={OnSUbmit}>
         <div className="tab-content">
         
           {/* Details */}
@@ -128,41 +182,41 @@ const MultiTabForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
               <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
-              <input type="text" name="fname" onChange={handleChange}  className="form-control form-control-solid" />
+              <input type="text"  {...register("firstName")}  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
               <label htmlFor="exampleFormControlInput1" className="required form-label">Surname</label>
-              <input type="text" name="mname" onChange={handleChange}  className="form-control form-control-solid" />
+              <input type="text" {...register("surname")}  className="form-control form-control-solid" />
               </div>
             </div>
 
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className="required form-label">Other Name</label>
-                <input type="text" name="lname" onChange={handleChange}  className="form-control form-control-solid" />
+                <input type="text" {...register("otherName")}  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
               <label htmlFor="exampleFormControlInput1" className="required form-label">Date of Birth</label>
-                <input type="date" name="dob" onChange={handleChange}  className="form-control form-control-solid" />
+                <input type="date" {...register("dob")}  className="form-control form-control-solid" />
               </div>
             </div>
             <div className='row mb-0'>
               
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("gender")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
-                  <option value="1">MALE</option>
-                  <option value="2">FEMALE</option>
+                  <option value="MALE">MALE</option>
+                  <option value="FEMALE">FEMALE</option>
                  
                 </select>
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Marital Status</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("maritalStatus")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
-                  <option value="1">SINGLE</option>
-                  <option value="2">MARRIED</option>
+                  <option value="SINGLE">SINGLE</option>
+                  <option value="MARRIED">MARRIED</option>
                  
                 </select>
               </div>
@@ -170,7 +224,7 @@ const MultiTabForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Nationality</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("nationality")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   <option value="1">GHANAIAN</option>
                   <option value="2">NIGERIAN</option>
@@ -181,15 +235,8 @@ const MultiTabForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">National ID</label>
-                <input type="text" name="dob" className="form-control form-control-solid" />
-                  {/* <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
-                  <option value="1">GHANAIAN</option>
-                  <option value="2">NIGERIAN</option>
-                  <option value="3">TOGOLESE</option>
-                  <option value="4">AMERICAN</option>
-                  <option value="5">CANADIAN</option>
-                </select> */}
+                <input type="text" {...register("nationalId")} className="form-control form-control-solid" />
+                  
               </div>
             </div>
 
@@ -203,41 +250,41 @@ const MultiTabForm= () =>{
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
-                  <input type="phone" name="phone" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="phone" {...register("phone")}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Alternative Phone number</label>
-                  <input type="phone" name="aphone" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="phone" {...register("alternativePhone")}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Address</label>
-                  <input type="text" name="address" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" {...register("address")}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Residential Address</label>
-                  <input type="text" name="raddress" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" {...register("residentialAddress")}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
-                  <input type="email" name="email" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="email" {...register("email")}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Personal Email</label>
-                  <input type="email" name="pemail" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="email" {...register("personalEmail")}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Next of kin</label>
-                  <input type="text" name="email" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" {...register("nextOfKin")}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Guarantor</label>
-                  <input type="text" name="guarantor" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" {...register("guarantor")}  className="form-control form-control-solid" />
                 </div>
               </div>
             </div>
@@ -248,27 +295,27 @@ const MultiTabForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Group</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("paygroupId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {PAYGROUP.map((item: any) => (
-                <option value={item.code}>{item.name}</option>
-              ))}
+                    <option value={item.code}>{item.name}</option>
+                  ))}
                 </select>
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("categoryId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
-                  {CATEGORY.map((item: any) => (
-                    <option value={item.code}>{item.name}</option>
-                  ))}
+                    {CATEGORY.map((item: any) => (
+                      <option value={item.code}>{item.name}</option>
+                    ))}
                 </select>
               </div>
             </div>
             <div className='row mb-0'>
             <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
+                <select {...register("divisionId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {DIVISION.map((item: any) => (
                     <option value={item.code}>{item.name}</option>
@@ -277,27 +324,19 @@ const MultiTabForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Salary Grade</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("gradeId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {GRADES.map((item: any) => (
                     <option value={item.code}>{item.name}</option>
                   ))}
                 </select>
               </div>
-              {/* <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
-                  <option value="1">Ghc100</option>
-                  <option value="2">Ghc400</option>
-                  <option value="3">Ghc3000</option>
-                </select>
-              </div> */}
+              
             </div>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("departmentId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {DEPARTMENTS.map((item: any) => (
                     <option value={item.code}>{item.name}</option>
@@ -306,7 +345,7 @@ const MultiTabForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Notch</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("notchId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {NOTCHES.map((item: any) => (
                     <option value={item.code}>{item.name}</option>
@@ -317,7 +356,7 @@ const MultiTabForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
+                <select {...register("unitId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {UNITS.map((item: any) => (
                     <option value={item.code}>{item.name}</option>
@@ -326,7 +365,7 @@ const MultiTabForm= () =>{
               </div>
               <div className='col-3 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Employment Date</label>
-                <input type="date" name="edate" onChange={handleChange}  className="form-control form-control-solid" />
+                <input type="date" {...register("employmentDate")}  className="form-control form-control-solid" />
 
               </div>
               {/* <div className='col-3 mb-7'>
@@ -346,19 +385,19 @@ const MultiTabForm= () =>{
             <div className='row mb-0'>
               <div  className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Type</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
+                <select {...register("payType")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
-                  <option value="1">MONTHLY</option>
-                  <option value="2">WEEKLY</option>
-                  <option value="3">HOURLY</option>
+                  <option value="MONTHLY">MONTHLY</option>
+                  <option value="WEEKLY">WEEKLY</option>
+                  <option value="HOURLY">HOURLY</option>
                 </select>
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Payment Method</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
+                <select {...register("paymentMethod")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
-                  <option value="1">BANK</option>
-                  <option value="2">CASH</option>
+                  <option value="BANK">BANK</option>
+                  <option value="CASH">CASH</option>
                   
                 </select>
 
@@ -369,7 +408,7 @@ const MultiTabForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Bank</label>
                 <br></br>
                 <span>(leave empty if you selected cash as payment method)</span>
-                <select className="form-select form-select-solid" aria-label="Select example">
+                <select {...register("bankId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {BANKS.map((item: any) => (
                     <option value={item.code}>{item.branch}</option>
@@ -380,17 +419,17 @@ const MultiTabForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Account  </label>
                 <br></br>
                 <span>(leave empty if you selected cash as payment method)</span>
-                <input type="text" name="account" onChange={handleChange}  className="form-control form-control-solid" />
+                <input type="text" {...register("account")}  className="form-control form-control-solid" />
               </div>
             </div>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">TIN </label>
-                <input type="text" name="tin" onChange={handleChange}  className="form-control form-control-solid" />
+                <input type="text" {...register("tin")}  className="form-control form-control-solid" />
               </div>
               <div  className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">SSF</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
+                <select {...register("ssf")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   <option value="1">One</option>
                   <option value="2">Two</option>
@@ -404,7 +443,7 @@ const MultiTabForm= () =>{
           }
           
         </div>
-        <button className='btn btn-primary' type="submit">Submit</button>
+        <button className='btn btn-primary' onClick={OnSUbmit} type="submit">Submit</button>
       </form>
     </div>
   );
