@@ -1,8 +1,14 @@
 import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import {useForm} from 'react-hook-form'
+
+
+type Fields={
+  name: string
+}
 
 const Benefit = () => {
   const [gridData, setGridData] = useState([])
@@ -10,10 +16,11 @@ const Benefit = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
+  
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const {register, reset, handleSubmit} = useForm()
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -23,8 +30,9 @@ const Benefit = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
+    
   }
 
   const deleteData = async (element: any) => {
@@ -47,7 +55,72 @@ const Benefit = () => {
   const columns: any = [
    
     {
+      title: 'Code',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Name',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Description',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Type of Amount',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Amount Number',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -82,6 +155,8 @@ const Benefit = () => {
       
     },
   ]
+
+  
 
   const loadData = async () => {
     setLoading(true)
@@ -120,6 +195,12 @@ const Benefit = () => {
     setGridData(filteredData)
   }
 
+  const OnSUbmit = handleSubmit((data)=>{
+    console.log(data)
+    reset()
+    setIsModalOpen(false)
+  })
+
   const url = `${ENP_URL}/ProductionActivity`
   const onFinish = async (values: any) => {
     setSubmitLoading(true)
@@ -132,7 +213,7 @@ const Benefit = () => {
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
-      form.resetFields()
+      
       setIsModalOpen(false)
       loadData()
       return response.statusText
@@ -180,10 +261,11 @@ const Benefit = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Benefit Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width={860}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -193,32 +275,128 @@ const Benefit = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
+                    onClick={OnSUbmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
+                <form
+                  onSubmit={OnSUbmit}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="code" className="required form-label">Code</label>
+                
+                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="name" className="required form-label">Name</label>
+                      <input {...register("name")} type="text"  className="form-control form-control-solid"/>
+                      
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Description</label>
+                      <input type="text" name="desc"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Amount</label>
+                      <input type="number" min={0} name="amount" defaultValue={0.00} className="form-control form-control-solid"/>
+                      
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Account No.</label>
+                      <input type="text" name="accno"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Period Type</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Monthly</option>
+                        <option value="2">Yearly</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Period Interval</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Weekly</option>
+                        <option value="2">Monthly</option>
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Currency</label>
+                      {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
+                      <select {...register("currency")} className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Cedis</option>
+                        <option value="2">Dollar</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Accrued</label>
+                      <select className="form-select form-select-solid" {...register("accrued")} aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select {...register("tax")} className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="test1">test1 </option>
+                        <option value="test2">test2 </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
+                      <input type="date" {...register("period")} className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">isTaxable</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select {...register("isTaxable")} className="form-select form-select-solid" aria-label="Select example">
+                        <option>select</option>
+                        <option  value="1">Yes </option>
+                        <option value="2">No </option>
+                      </select>
+                    </div>
+                  </div>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

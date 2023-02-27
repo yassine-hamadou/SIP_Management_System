@@ -3,6 +3,9 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { CATEGORY } from '../../../../../data/DummyData'
+import { useForm } from 'react-hook-form'
+import { Api_Endpoint } from '../../../../../services/ApiCalls'
 
 const Categories = () => {
   const [gridData, setGridData] = useState([])
@@ -10,7 +13,7 @@ const Categories = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
+  const {register, reset, handleSubmit} = useForm()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -23,13 +26,13 @@ const Categories = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
   }
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/Categories/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -46,6 +49,19 @@ const Categories = () => {
   }
   const columns: any = [
    
+    {
+      title: 'Code',
+      dataIndex: 'code',
+      sorter: (a: any, b: any) => {
+        if (a.code > b.code) {
+          return 1
+        }
+        if (b.code > a.code) {
+          return -1
+        }
+        return 0
+      },
+    },
     {
       title: 'Name',
       dataIndex: 'name',
@@ -66,10 +82,6 @@ const Categories = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -81,12 +93,12 @@ const Categories = () => {
       ),
       
     },
-  ]
+  ] 
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/Categories`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -120,19 +132,17 @@ const Categories = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
+  const url = `${Api_Endpoint}/Categories`
+  const OnSUbmit = handleSubmit( async (values)=> {
+    setLoading(true)
     const data = {
-      name: values.name,
-    }
-
-    console.log(data)
-
+          code: values.code,
+          name: values.name,
+        }
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
-      form.resetFields()
+      reset()
       setIsModalOpen(false)
       loadData()
       return response.statusText
@@ -140,7 +150,7 @@ const Categories = () => {
       setSubmitLoading(false)
       return error.statusText
     }
-  }
+  })
 
   return (
     <div
@@ -178,9 +188,9 @@ const Categories = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns}  dataSource={dataWithIndex} loading={loading}/>
           <Modal
-                title='Add Activity'
+                title='Category Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -193,32 +203,27 @@ const Categories = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
+                    onClick={OnSUbmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
+                <form
+                    onSubmit={OnSUbmit}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
+                    </div>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                      <input type="text" {...register("name")}  className="form-control form-control-solid"/>
+                    </div>
+                  </div>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

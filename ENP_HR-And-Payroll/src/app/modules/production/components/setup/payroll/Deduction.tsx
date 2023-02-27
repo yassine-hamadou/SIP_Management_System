@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { DEDUCTION } from '../../../../../data/DummyData'
 
 const Deduction = () => {
   const [gridData, setGridData] = useState([])
@@ -47,6 +48,19 @@ const Deduction = () => {
   const columns: any = [
    
     {
+      title: 'Code',
+      dataIndex: 'code',
+      sorter: (a: any, b: any) => {
+        if (a.code > b.code) {
+          return 1
+        }
+        if (b.code > a.code) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
@@ -54,6 +68,110 @@ const Deduction = () => {
           return 1
         }
         if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Description',
+      dataIndex: 'desc',
+      sorter: (a: any, b: any) => {
+        if (a.desc > b.desc) {
+          return 1
+        }
+        if (b.desc > a.desc) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Category',
+      dataIndex: 'cat',
+      sorter: (a: any, b: any) => {
+        if (a.cat > b.cat) {
+          return 1
+        }
+        if (b.cat > a.cat) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Type of Amount',
+      dataIndex: 'tamount',
+      sorter: (a: any, b: any) => {
+        if (a.tamount > b.tamount) {
+          return 1
+        }
+        if (b.tamount > a.tamount) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      sorter: (a: any, b: any) => {
+        if (a.amount > b.amount) {
+          return 1
+        }
+        if (b.amount > a.amount) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Account Number',
+      dataIndex: 'accnum',
+      sorter: (a: any, b: any) => {
+        if (a.accnum > b.accnum) {
+          return 1
+        }
+        if (b.accnum > a.accnum) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Currency',
+      dataIndex: 'currency',
+      sorter: (a: any, b: any) => {
+        if (a.currency > b.currency) {
+          return 1
+        }
+        if (b.currency > a.currency) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Tax Type',
+      dataIndex: 'taxtype',
+      sorter: (a: any, b: any) => {
+        if (a.taxtype > b.taxtype) {
+          return 1
+        }
+        if (b.taxtype > a.taxtype) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Accrued',
+      dataIndex: 'accrued',
+      sorter: (a: any, b: any) => {
+        if (a.accrued > b.accrued) {
+          return 1
+        }
+        if (b.accrued > a.accrued) {
           return -1
         }
         return 0
@@ -82,6 +200,9 @@ const Deduction = () => {
       
     },
   ]
+
+  
+   
 
   const loadData = async () => {
     setLoading(true)
@@ -178,12 +299,13 @@ const Deduction = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns}  dataSource={DEDUCTION}/>
           <Modal
-                title='Add Activity'
+                title='Deduction Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width={860}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -207,17 +329,119 @@ const Deduction = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Code</label>
+                      <input type="text" name="code"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                      <input type="text" name="name"  className="form-control form-control-solid"/>
+                      
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Description</label>
+                      <input type="text" name="desc"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Yes</option>
+                        <option value="2">No</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">FORMULA</option>
+                        <option value="2">PERCENTAGE OF GROSS</option>
+                        <option value="3">PERCENTAGE OF BASIC</option>
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Amount</label>
+                      <input type="number" min={0} name="amount" defaultValue={0.00} className="form-control form-control-solid"/>
+                      
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Account No.</label>
+                      <input type="text" name="accno"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Period Type</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Jan-23</option>
+                        <option value="2">Feb-23</option>
+                        <option value="3">Mar-23</option>
+                        <option value="4">Apr-23</option>
+                        <option value="5">May-23</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Period Interval</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Weekly</option>
+                        <option value="2">Monthly</option>
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Currency</label>
+                      {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">GHC</option>
+                        <option value="2">GBP</option>
+                        <option value="3">AUD</option>
+                        <option value="4">USD</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Accrued</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">YES</option>
+                        <option value="2">NO</option>
+                      </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
+                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">TAX TABLE </option>
+                        <option value="2">TAX FORMULA </option>
+                        <option value="3">NON TAXABLE </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
+                      <input type="date" name="period"  className="form-control form-control-solid"/>
+
+                    </div>
+                    
+                  </div>
                 </Form>
             </Modal>
         </div>

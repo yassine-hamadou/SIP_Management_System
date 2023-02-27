@@ -180,7 +180,7 @@ const SavingSchemes = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Add Saving Scheme'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -210,14 +210,13 @@ const SavingSchemes = () => {
                     title='Add Service'
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className=' mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                      <input type="text" name="topic"  className="form-control form-control-solid"/>
+                    </div>
+                  </div>
                 </Form>
             </Modal>
         </div>

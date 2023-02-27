@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
 
 
@@ -21,11 +22,11 @@ const AllReports = () => {
               </h2>
               <br />
               <ul>
-                <li><h4><a href="#">List</a></h4></li>
-                <li><h4><a href="#">Age Profile</a></h4></li>
-                <li><h4><a href="#">Staff Movement</a></h4></li>
-                <li><h4><a href="#">History</a></h4></li>
-                <li><h4><a href="#">Status</a></h4></li>
+                <li><h4><Link to="/report/payrollPAYEReport">List</Link></h4></li>
+                <li><h4><Link to="">Age Profile</Link></h4></li>
+                <li><h4><Link to="#">Staff Movement</Link></h4></li>
+                <li><h4><Link to="#">History</Link></h4></li>
+                <li><h4><Link to="#">Status</Link></h4></li>
               </ul>
             </div>
             <div className='col-4'>
@@ -34,13 +35,13 @@ const AllReports = () => {
               </h2>
               <br />
               <ul>
-                <li><h4><a href="#">Recruitment and Selection</a></h4></li>
-                <li><h4><a href="#">Compensations and Benefits</a></h4></li>
-                <li><h4><a href="#">Training and development</a></h4></li>
-                <li><h4><a href="#">Appraisal and Performance</a></h4></li>
-                <li><h4><a href="#">Disciplinary Actions</a></h4></li>
-                <li><h4><a href="#">Leave Planning</a></h4></li>
-                <li><h4><a href="#">Medical</a></h4></li>
+                <li><h4><Link to="#">Recruitment and Selection</Link></h4></li>
+                <li><h4><Link to="#">Compensations and Benefits</Link></h4></li>
+                <li><h4><Link to="#">Training and development</Link></h4></li>
+                <li><h4><Link to="#">Appraisal and Performance</Link></h4></li>
+                <li><h4><Link to="#">Disciplinary Actions</Link></h4></li>
+                <li><h4><Link to="#">Leave Planning</Link></h4></li>
+                <li><h4><Link to="#">Medical</Link></h4></li>
               </ul>
             </div>
             <div className='col-4'>
@@ -49,14 +50,14 @@ const AllReports = () => {
               </h2>
               <br />
               <ul>
-                <li><h4><a href="#">Transaction History</a></h4></li>
-                <li><h4><a href="#">Payslip</a></h4></li>
-                <li><h4><a href="#">Journal</a></h4></li>
-                <li><h4><a href="#">Basic Pay Reconciliation</a></h4></li>
-                <li><h4><a href="#">Bank Summary</a></h4></li>
-                <li><h4><a href="#">Analysis</a></h4></li>
-                <li><h4><a href="#">Statutory  Reports</a></h4></li>
-                <li><h4><a href="#">Loans</a></h4></li>
+                <li><h4><Link to="#">Transaction History</Link></h4></li>
+                <li><h4><Link to="#">Payslip</Link></h4></li>
+                <li><h4><Link to="#">Journal</Link></h4></li>
+                <li><h4><Link to="#">Basic Pay Reconciliation</Link></h4></li>
+                <li><h4><Link to="#">Bank Summary</Link></h4></li>
+                <li><h4><Link to="#">Analysis</Link></h4></li>
+                <li><h4><Link to="#">Statutory  Reports</Link></h4></li>
+                <li><h4><Link to="#">Loans</Link></h4></li>
               </ul>
             </div>
             

@@ -47,7 +47,33 @@ const UserManagement = () => {
   const columns: any = [
    
     {
+      title: 'Code',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Name',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Status',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
@@ -180,7 +206,7 @@ const UserManagement = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='User Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -207,7 +233,6 @@ const UserManagement = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                     <Form.Item

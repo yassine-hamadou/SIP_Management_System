@@ -180,7 +180,7 @@ const Configurations = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Configuration'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -207,7 +207,6 @@ const Configurations = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
                     <Form.Item

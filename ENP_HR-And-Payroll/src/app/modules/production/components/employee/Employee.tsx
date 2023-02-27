@@ -3,6 +3,10 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
 import { ENP_URL } from '../../urls'
+import { Link } from 'react-router-dom'
+import { employeedata } from '../../../../data/DummyData'
+import { useQuery } from 'react-query'
+import { fetchEmployees } from '../../../../services/ApiCalls'
 
 const Employee = () => {
   const [gridData, setGridData] = useState([])
@@ -11,8 +15,9 @@ const Employee = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  const [img, setImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false)
+
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -39,73 +44,87 @@ const Employee = () => {
     }
   }
 
+  const fetchImage = async () => {
+    const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
+    const imageBlob = await res.blob();
+    const imageObjectURL:any  = URL.createObjectURL(imageBlob);
+    setImg(imageObjectURL);
+  };
   
 
   function handleDelete(element: any) {
     deleteData(element)
   }
   const columns: any = [
-   
+   {
+      title: 'Profile',
+      dataIndex: 'name',
+      render: (a: any, b: any) => {
+        return  <img style={{borderRadius:"10px"}} src={img} width={50} height={50}></img>
+      }
+    },
+    {
+      title: 'EployeeID',
+      dataIndex: 'empcode',
+      sorter: (a: any, b: any) => {
+        if (a.empcode > b.empcode) {
+          return 1
+        }
+        if (b.empcode > a.empcode) {
+          return -1
+        }
+        return 0
+      },
+    },
     {
       title: 'First Name',
-      dataIndex: 'name',
+      dataIndex: 'firstname',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.firstname > b.firstname) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.firstname > a.firstname) {
           return -1
         }
         return 0
       },
     },
-    {
-      title: 'Middle Name',
-      dataIndex: 'name',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
+   
     {
       title: 'Surname',
-      dataIndex: 'name',
+      dataIndex: 'lastname',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.lastname > b.lastname) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.lastname > a.lastname) {
           return -1
         }
         return 0
       },
     },
-    {
-      title: 'DOB',
-      dataIndex: 'name',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
+
     {
       title: 'Gender',
-      dataIndex: 'name',
+      dataIndex: 'sex',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.sex > b.sex) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.sex > a.sex) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Paygroup',
+      dataIndex: 'paygroup',
+      sorter: (a: any, b: any) => {
+        if (a.paygroup > b.paygroup) {
+          return 1
+        }
+        if (b.paygroup > a.paygroup) {
           return -1
         }
         return 0
@@ -113,12 +132,25 @@ const Employee = () => {
     },
     {
       title: 'Salary Grade',
-      dataIndex: 'name',
+      dataIndex: 'grade',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.grade > b.grade) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.grade > a.grade) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Notch',
+      dataIndex: 'notch',
+      sorter: (a: any, b: any) => {
+        if (a.notch > b.notch) {
+          return 1
+        }
+        if (b.notch > a.notch) {
           return -1
         }
         return 0
@@ -126,25 +158,25 @@ const Employee = () => {
     },
     {
       title: 'Department',
-      dataIndex: 'name',
+      dataIndex: 'depart',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.depart > b.depart) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.depart > a.depart) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Basic Salary',
-      dataIndex: 'name',
+      title: 'Phone',
+      dataIndex: 'phone',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.phone > b.phone) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.phone > a.phone) {
           return -1
         }
         return 0
@@ -157,11 +189,14 @@ const Employee = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          {/* <a href='#' className='btn btn-light-warning btn-sm'>
             Update
-          </a>
+          </a> */}
+          <Link to={`/employee-edit-form/${record.code}`}>
+            <span className='btn btn-light-info btn-sm'>Update</span>
+          </Link>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
-            Delete
+            Details
           </a>
          
         </Space>
@@ -169,6 +204,10 @@ const Employee = () => {
       
     },
   ]
+
+  const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
+ 
+    
 
   const loadData = async () => {
     setLoading(true)
@@ -183,6 +222,7 @@ const Employee = () => {
 
   useEffect(() => {
     loadData()
+    fetchImage()
   }, [])
 
   const dataWithIndex = gridData.map((item: any, index) => ({
@@ -254,10 +294,17 @@ const Employee = () => {
               </Button>
             </Space>
             <Space style={{marginBottom: 16}}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+              {/* <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                Add
+              </button> */}
+              
+              <Link to='/employee-form'>
+              <button type='button' className='btn btn-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
+              </Link>
 
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
@@ -265,8 +312,8 @@ const Employee = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
-          <Modal
+          <Table columns={columns} dataSource={employeedata} />
+          {/* <Modal
                 title='Add Employee'
                 open={isModalOpen}
                 onCancel={handleCancel}
@@ -297,16 +344,16 @@ const Employee = () => {
                     title='Add Service'
                     onFinish={onFinish}
                 >
-                    {/* <Form.Item
+                    <Form.Item
                         name='name'
                         label='Name'
                         
                         rules={[{required: true}]}
                     >
                         <Input />
-                    </Form.Item> */}
+                    </Form.Item>
                 </Form>
-            </Modal>
+            </Modal> */}
         </div>
       </KTCardBody>
     </div>

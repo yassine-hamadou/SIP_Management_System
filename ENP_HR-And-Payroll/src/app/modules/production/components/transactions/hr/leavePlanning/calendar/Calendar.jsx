@@ -27,11 +27,10 @@ import {
   fetchSchedules,
   fetchServiceTypes,
   fetchVmequps,
-  localData,
   updateSchedule,
 } from './requests'
-import {message} from 'antd'
-import { useRef, useState } from "react";
+import {Input, message} from 'antd'
+import {employeedata, LEAVE} from "../../../../../../../data/DummyData";
 
 /**
  *  Schedule editor custom fields sample
@@ -125,15 +124,14 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
       })
       dropDownListObject.dataBind() // refresh the dropdown list
     }
-    function getFleetModel(e) {
+    function getEmployeeUnit(e) {
     if (e.itemData) {
-      const fleetModel = vmQuery.getQueryData('vmequps')?.data?.find((fleet) => fleet.fleetID.trimEnd() === e.itemData.value.trimEnd())?.modlName
-      const serviceTypesOfSelectedModel = serviceTypes?.data?.filter((service) => service.model.trimEnd() === fleetModel.trimEnd())
-      console.log('serviceTypesOfSelectedModel', serviceTypesOfSelectedModel)
-      dropDownListObject.dataSource = serviceTypesOfSelectedModel.map((service) => {
-        return { text: service.name, value: service.id }
-      })
-      dropDownListObject.dataBind() // refresh the dropdown list
+      console.log("e.itemData", e.itemData)
+      // udpate location dropdown component to automatically select the selected employee unit
+      const employeeDepart = employeedata.find((employee) => employee.code == e.itemData.value).depart
+      const unitInputField = document.getElementById("Location")
+      unitInputField.value = employeeDepart
+
     }
   }
     return props !== undefined ? (
@@ -148,35 +146,28 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
                 data-name='fleetId'
                 className='e-field'
                 style={{width: '100%'}}
-                // dataSource={vmequps?.data.map((Vmequp) => {
-                //   return {
-                //     text: `${Vmequp.fleetID}- ${Vmequp.modlName}- ${Vmequp.modlClass}`,
-                //     value: `${Vmequp.fleetID}`, //this is the value that will be sent to the backend
-                //   }
-                // })}
+                dataSource={employeedata.map((employee) => {
+                  return {
+                    text: `${employee.firstname} ${employee.lastname}`,
+                    value: `${employee.code}`, //this is the value that will be sent to the backend
+                  }
+                })}
                 fields={{text: 'text', value: 'value'}}
                 value={props && props.fleetId ? `${props.fleetId}` : null}
-                change={getFleetModel}
+                change={getEmployeeUnit}
               />
             </td>
           </tr>
           <tr>
-            <td className='e-textlabel'>Employee Unit</td>
+            <td className='e-textlabel'>Unit</td>
             <td colSpan={4}>
-              <DropDownListComponent
+              <Input
                 id='Location'
+                disabled
                 placeholder='Choose Employee Unit'
                 data-name='locationId'
                 className='e-field'
                 style={{width: '100%'}}
-                // dataSource={locationQuery?.data.map((location) => {
-                //   return {
-                //     text: `${location.locationCode} - ${location.locationDesc}`,
-                //     value: `${location.locationCode}`,
-                //   }
-                // })}
-                fields={{text: 'text', value: 'value'}}
-                value={props?.locationId}
               />
             </td>
           </tr>
@@ -190,6 +181,12 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
                 className='e-field'
                 ref={(scope) => (dropDownListObject = scope)}
                 style={{width: '100%'}}
+                dataSource={LEAVE.map((leave) => {
+                  return {
+                    text: `${leave.name}`,
+                    value: `${leave.code}`
+                  }
+                })}
                 fields={{text: 'text', value: 'value'}}
                 value={props?.serviceTypeId}
               />

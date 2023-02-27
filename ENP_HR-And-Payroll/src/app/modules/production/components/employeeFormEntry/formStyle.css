@@ -1,0 +1,84 @@
+
+
+.tabs{
+    /* border-bottom: 0.5px solid rgb(220, 220, 220); */
+    margin-bottom: 50px;
+}
+
+.tabs .tab {
+    background-color: white;
+    color: #000;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    padding: 8px;
+    margin-right: 10px;
+    /* margin-bottom: -20px; */
+    cursor: pointer;
+  }
+  
+  .tabs .tab.active {
+    /* background-color: #000; */
+    color: #009EF7;
+    border-bottom: 3px solid #009EF7;
+  }
+
+
+  .tab-content{
+    margin-bottom: 30px;
+  }
+  
+.tab1s{
+    /* border-bottom: 0.5px solid rgb(220, 220, 220); */
+    margin-bottom: 10px;
+}
+
+.tab1s .tab1 {
+    background-color: white;
+    color: #000;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    padding: 8px;
+    margin-right: 10px;
+    /* margin-bottom: -20px; */
+    cursor: pointer;
+  }
+  
+  .tab1s .tab1.active {
+    /* background-color: #000; */
+    color: #009EF7;
+    border-bottom: 3px solid #009EF7;
+  }
+
+
+  .tab1-content{
+    margin-bottom: 30px;
+  }
+.tab2s{
+    /* border-bottom: 0.5px solid rgb(220, 220, 220); */
+    margin-bottom: 10px;
+}
+
+.tab2s .tab2 {
+    background-color: white;
+    color: #000;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    padding: 8px;
+    margin-right: 10px;
+    /* margin-bottom: -20px; */
+    cursor: pointer;
+  }
+  
+  .tab2s .tab2.active {
+    /* background-color: #000; */
+    color: #009EF7;
+    border-bottom: 3px solid #009EF7;
+  }
+
+
+  .tab2-content{
+    margin-bottom: 30px;
+  }

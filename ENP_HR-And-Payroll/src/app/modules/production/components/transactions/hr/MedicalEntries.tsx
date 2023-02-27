@@ -1,8 +1,12 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
+import {Button, Form, Input, InputNumber, Modal, Space, Table, Upload} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { UploadOutlined } from '@ant-design/icons';
+import { employeedata, MEDICALS, period } from '../../../../../data/DummyData'
+import { useForm } from 'react-hook-form'
 
 const MedicalEntries = () => {
   const [gridData, setGridData] = useState([])
@@ -13,7 +17,7 @@ const MedicalEntries = () => {
   const [form] = Form.useForm()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const {register, reset, handleSubmit} = useForm()
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -21,6 +25,32 @@ const MedicalEntries = () => {
   const handleOk = () => {
     setIsModalOpen(false)
   }
+
+  const [fileList, setFileList] = useState<UploadFile[]>([
+    
+  ]);
+
+  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+
+
+  // to preview the uploaded file
+  const onPreview = async (file: UploadFile) => {
+    let src = file.url as string;
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj as RcFile);
+        reader.onload = () => resolve(reader.result as string);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
+  };
+
 
   const handleCancel = () => {
     form.resetFields()
@@ -47,13 +77,52 @@ const MedicalEntries = () => {
   const columns: any = [
    
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: 'Employee ID',
+      dataIndex: 'employee_id',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.employee_id > b.employee_id) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.employee_id > a.employee_id) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Medical Type',
+      dataIndex: 'medtype',
+      sorter: (a: any, b: any) => {
+        if (a.medtype > b.medtype) {
+          return 1
+        }
+        if (b.medtype > a.medtype) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      sorter: (a: any, b: any) => {
+        if (a.date > b.date) {
+          return 1
+        }
+        if (b.date > a.date) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Comments',
+      dataIndex: 'comments',
+      sorter: (a: any, b: any) => {
+        if (a.comments > b.comments) {
+          return 1
+        }
+        if (b.comments > a.comments) {
           return -1
         }
         return 0
@@ -120,6 +189,12 @@ const MedicalEntries = () => {
     setGridData(filteredData)
   }
 
+  const OnSUbmit = handleSubmit((data)=>{
+    console.log(data)
+    reset()
+    setIsModalOpen(false)
+  })
+
   const url = `${ENP_URL}/ProductionActivity`
   const onFinish = async (values: any) => {
     setSubmitLoading(true)
@@ -151,6 +226,20 @@ const MedicalEntries = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
+      <div style={{padding: "0px 0px 40px 0px"}}  className='col-12'>
+        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+          <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Period</label>
+            <select className="form-select form-select-solid" aria-label="Select example">
+              <option> select</option>
+              {period.map((item: any) => (
+                <option value={item.code}>{item.name}</option>
+              ))}
+            </select>
+          </div>
+
+        </div>
+      </div>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
@@ -180,10 +269,11 @@ const MedicalEntries = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Add Activity'
+                title='Medical Entry'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width="800px"
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -201,24 +291,59 @@ const MedicalEntries = () => {
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
+                <form
+                  onSubmit={OnSUbmit}  
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        {employeedata.map((item: any) => (
+                          <option value={item.code}>{item.empcode}-{item.lastname}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Medical Type</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        {MEDICALS.map((item: any) => (
+                          <option value={item.code}>{item.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
+                      <input type="date" name="date"  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Comments</label>
+                      {/* <input type="text" name="topic"  className="form-control form-control-solid"/> */}
+                      <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Upload Document</label>
+                      <Upload
+                      
+                      listType="picture-card"
+                      fileList={fileList}
+                      onChange={onChange}
+                      onPreview={onPreview}
+                      
+                    >                  
                         
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
+                        <UploadOutlined/>
+                      </Upload>
+                 
+                    </div>
+                  </div>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { LOANS } from '../../../../../data/DummyData'
 
 const Loan = () => {
   const [gridData, setGridData] = useState([])
@@ -47,13 +48,118 @@ const Loan = () => {
   const columns: any = [
    
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: 'Code',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Interest Rate',
+      dataIndex: 'interestRate',
+      sorter: (a: any, b: any) => {
+        if (a.interestRate > b.interestRate) {
+          return 1
+        }
+        if (b.interestRate > a.interestRate) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Interest Type',
+      dataIndex: 'interestType',
+      sorter: (a: any, b: any) => {
+        if (a.interestType > b.interestType) {
+          return 1
+        }
+        if (b.interestType > a.interestType) {
+          return -1
+        }
+        return 0
+      },
+    },
+    
+    {
+      title: 'Moratorium',
+      dataIndex: 'moratorium',
+      sorter: (a: any, b: any) => {
+        if (a.moratorium > b.moratorium) {
+          return 1
+        }
+        if (b.moratorium > a.moratorium) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Min Repay Period',
+      dataIndex: 'minrepay',
+      sorter: (a: any, b: any) => {
+        if (a.minrepay > b.minrepay) {
+          return 1
+        }
+        if (b.minrepay > a.minrepay) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Max Repay Period',
+      dataIndex: 'maxrepay',
+      sorter: (a: any, b: any) => {
+        if (a.maxrepay > b.maxrepay) {
+          return 1
+        }
+        if (b.maxrepay > a.maxrepay) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Repayment Percentage Ceiling',
+      dataIndex: 'ceiling',
+      sorter: (a: any, b: any) => {
+        if (a.ceiling > b.ceiling) {
+          return 1
+        }
+        if (b.ceiling > a.ceiling) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Interest on Cancellation',
+      dataIndex: 'cancellation',
+      sorter: (a: any, b: any) => {
+        if (a.cancellation > b.cancellation) {
+          return 1
+        }
+        if (b.cancellation > a.cancellation) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Deduction',
+      dataIndex: 'deduction',
+      sorter: (a: any, b: any) => {
+        if (a.deduction > b.deduction) {
+          return 1
+        }
+        if (b.deduction > a.deduction) {
           return -1
         }
         return 0
@@ -82,6 +188,8 @@ const Loan = () => {
       
     },
   ]
+
+  
 
   const loadData = async () => {
     setLoading(true)
@@ -178,12 +286,13 @@ const Loan = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}/>
+          <Table columns={columns}  dataSource={LOANS}/>
           <Modal
-                title='Add Activity'
+                title='Loan Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width={860}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -202,22 +311,79 @@ const Loan = () => {
                 ]}
             >
                 <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
+                    // labelCol={{span: 7}}
+                    // wrapperCol={{span: 14}}
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
+                    
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
+
+                <hr></hr>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                    <input type="text" name="name"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Interest Rate</label>
+                    <input type="text" name="interestR"  className="form-control form-control-solid"/>
+                    
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Interest Type</label>
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>select</option>
+                      <option value="1">FORMULA</option>
+                      <option value="2">PERCENTAGE OF GROSS</option>
+                      <option value="3">VARYING AMOUNT</option>
+                      <option value="3">PERCENTAGE OF BASIC</option>
+                    </select>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Moratorium</label>
+                  <input type="text" name="moratorium"  className="form-control form-control-solid"/>
+
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Min Repayment Period</label>
+                    <input type="text" name="repayMin"  className="form-control form-control-solid"/>
+
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Max Repayment Period</label>
+                  <input type="text" name="repayMax"  className="form-control form-control-solid"/>
+
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Repayment Percentage Ceiling</label>
+                    <input type="text" name="repayC"  className="form-control form-control-solid"/>
+
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Deduction</label>
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>select</option>
+                      <option value="1">MONTHLY</option>
+                      <option value="2">WEEKLY</option>
+                    </select>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Interest On Cancellation</label>
+                    <input type="text" name="interestC"  className="form-control form-control-solid"/>
+
+                  </div>
+                 
+                </div>
                 </Form>
             </Modal>
         </div>

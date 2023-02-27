@@ -3,6 +3,9 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { NOTCHES } from '../../../../../data/DummyData'
+import { useForm } from 'react-hook-form'
+import { Api_Endpoint } from '../../../../../services/ApiCalls'
 
 const Notches = () => {
   const [gridData, setGridData] = useState([])
@@ -10,7 +13,7 @@ const Notches = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
+  const {register, reset, handleSubmit} = useForm()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -23,14 +26,13 @@ const Notches = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
   }
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
+      const response = await axios.delete(`${Api_Endpoint}/Notches/${element.id}`)
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
       return response.status
@@ -47,13 +49,52 @@ const Notches = () => {
   const columns: any = [
    
     {
-      title: 'Name',
+      title: 'Code',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
         }
         if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Salary Upgrade',
+      dataIndex: 'salgrade',
+      sorter: (a: any, b: any) => {
+        if (a.salgrade > b.salgrade) {
+          return 1
+        }
+        if (b.salgrade > a.salgrade) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Currency',
+      dataIndex: 'currency',
+      sorter: (a: any, b: any) => {
+        if (a.currency > b.currency) {
+          return 1
+        }
+        if (b.currency > a.currency) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      sorter: (a: any, b: any) => {
+        if (a.amount > b.amount) {
+          return 1
+        }
+        if (b.amount > a.amount) {
           return -1
         }
         return 0
@@ -66,10 +107,6 @@ const Notches = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -83,10 +120,12 @@ const Notches = () => {
     },
   ]
 
+  
+
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/ProductionActivity`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -120,19 +159,17 @@ const Notches = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
+  const url = `${Api_Endpoint}/ProductionActivity`
+  const OnSUbmit = handleSubmit( async (values)=> {
+    setLoading(true)
     const data = {
-      name: values.name,
-    }
-
-    console.log(data)
-
+          code: values.code,
+          name: values.name,
+        }
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
-      form.resetFields()
+      reset()
       setIsModalOpen(false)
       loadData()
       return response.statusText
@@ -140,7 +177,7 @@ const Notches = () => {
       setSubmitLoading(false)
       return error.statusText
     }
-  }
+  })
 
   return (
     <div
@@ -178,9 +215,9 @@ const Notches = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} dataSource={NOTCHES}/>
           <Modal
-                title='Add Activity'
+                title='Notches Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -193,32 +230,35 @@ const Notches = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
+                    onClick={OnSUbmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
+                <form
+                    onSubmit={OnSUbmit}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
+                   <hr></hr>
+                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
+                    </div>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                      <input type="text" {...register("name")}  className="form-control form-control-solid"/>
+                    </div>
+                    {/* <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
+                      <select className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        <option value="1">Active </option>
+                        <option value="2">Not Active </option>
+                      </select>
+                    </div> */}
+                  </div>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

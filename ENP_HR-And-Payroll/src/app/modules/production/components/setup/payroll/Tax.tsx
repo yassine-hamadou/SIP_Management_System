@@ -47,8 +47,86 @@ const Tax = () => {
   const columns: any = [
    
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: 'Order',
+      dataIndex: 'order',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Chargeable Income',
+      dataIndex: 'chargeIncome',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Percentage',
+      dataIndex: 'percentage',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Tax Payable GH¢',
+      dataIndex: 'taxp',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Tax Formula',
+      dataIndex: 'taxf',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Cumulative Income GH¢',
+      dataIndex: 'cumIn',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Cumulative Tax GH¢',
+      dataIndex: 'cumTax',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -97,6 +175,61 @@ const Tax = () => {
   useEffect(() => {
     loadData()
   }, [])
+
+ const TAX =[
+    {
+     chargeIncome: 365,
+     percentage: 0,
+     order: "1",
+     taxf: "FIRST",
+     taxp: "0",
+     cumIn: "365",
+     cumTax: "0",
+    },
+    {
+     chargeIncome: 110,
+     percentage: 5,
+     taxp: "5.5",
+     cumIn: "475",
+     cumTax: "5.5",
+     order: "2",
+     taxf: "NEXT"
+    },
+    {
+     chargeIncome: 130,
+     percentage: 10,
+     taxp: "13",
+     cumIn: "605",
+     cumTax: "18.5",
+     order: "3",
+     taxf: "NEXT"
+    },
+    {
+     chargeIncome: "3,000",
+     percentage: 17.5,
+     order: "4",
+     taxp: "525",
+     cumIn: "3,650.00",
+     cumTax: "543.5",
+     taxf: "NEXT"
+    },
+    {
+     chargeIncome: "16,395",
+     percentage: 25,
+     order: "5",
+     taxp: "4098.75",
+     cumIn: "20,000",
+     cumTax: "4642.25",
+     taxf: "NEXT"
+    },
+    {
+      chargeIncome: "29,963",
+      taxp: "6,000",
+     percentage: 30,
+     order: "6",
+     taxf: "EXCEEDING"
+    }
+   ]
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
@@ -178,12 +311,13 @@ const Tax = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} />
+          <Table columns={columns} dataSource={TAX}/>
           <Modal
-                title='Add Activity'
+                title='Tax Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width={600}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -207,17 +341,30 @@ const Tax = () => {
                     layout='horizontal'
                     form={form}
                     name='control-hooks'
-                    title='Add Service'
                     onFinish={onFinish}
                 >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
+                   
+                    <hr></hr>
+                    <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Chargeable income</label>
+                        <input type="text" name="topic"  className="form-control form-control-solid"/>
+                      </div>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="required form-label">Percentage</label>
+                        <input type="text" name="trainDate"  className="form-control form-control-solid"/>
+                      </div>
+                    </div>
+                    <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Order </label>
+                        <input type="text" name="order"  className="form-control form-control-solid"/>
+                      </div>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Formula</label>
+                        <input type="text" name="tformula"  className="form-control form-control-solid"/>
+                      </div>
+                    </div>
                 </Form>
             </Modal>
         </div>

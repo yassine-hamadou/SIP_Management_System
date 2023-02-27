@@ -47,6 +47,19 @@ const SavingScheme = () => {
   const columns: any = [
    
     {
+      title: 'Code',
+      dataIndex: 'code',
+      sorter: (a: any, b: any) => {
+        if (a.code > b.code) {
+          return 1
+        }
+        if (b.code > a.code) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
@@ -59,6 +72,85 @@ const SavingScheme = () => {
         return 0
       },
     },
+    {
+      title: 'Description',
+      dataIndex: 'desc',
+      sorter: (a: any, b: any) => {
+        if (a.desc > b.desc) {
+          return 1
+        }
+        if (b.desc > a.desc) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Type',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    
+    {
+      title: 'Employer Account No.',
+      dataIndex: 'employerAcc',
+      sorter: (a: any, b: any) => {
+        if (a.employerAcc > b.employerAcc) {
+          return 1
+        }
+        if (b.employerAcc > a.employerAcc) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Employer Percentage',
+      dataIndex: 'employerAmount',
+      sorter: (a: any, b: any) => {
+        if (a.employerAmount > b.employerAmount) {
+          return 1
+        }
+        if (b.employerAmount > a.employerAmount) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Employee Account No.',
+      dataIndex: 'employeeAcc',
+      sorter: (a: any, b: any) => {
+        if (a.employeeAcc > b.employeeAcc) {
+          return 1
+        }
+        if (b.employeeAcc > a.employeeAcc) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Employee Percentage',
+      dataIndex: 'employeeAmount',
+      sorter: (a: any, b: any) => {
+        if (a.employeeAmount > b.employeeAmount) {
+          return 1
+        }
+        if (b.employeeAmount > a.employeeAmount) {
+          return -1
+        }
+        return 0
+      },
+    },
 
     {
       title: 'Action',
@@ -66,10 +158,6 @@ const SavingScheme = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -83,6 +171,34 @@ const SavingScheme = () => {
     },
   ]
 
+
+  const SAVINGS_SCHEME=[
+    {
+     code: "001",
+     name: "INTPF",
+     desc: "INTERNAL PROVIDENT FUND",
+     "Employer Type": "PERMANENT",
+     employerAcc: 238976,
+     employerAmount: 0.06,
+     "Employee Type": "PERMANENT",
+     employeeAcc: 774323,
+     employeeAmount: 0.04,
+     "Statutory": "YES"
+    },
+    {
+     code: "002",
+     name: "FUNF",
+     desc: "FUNERAL FUND",
+     "Employer Type": "PERMANENT",
+     employerAcc: 238976,
+     employerAmount: 0.1,
+     "Employee Type": "PERMANENT",
+     employeeAcc: 774323,
+     employeeAmount: 0.1,
+     "Statutory": "NO"
+    }
+    
+   ]
   const loadData = async () => {
     setLoading(true)
     try {
@@ -178,47 +294,105 @@ const SavingScheme = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns}  dataSource={SAVINGS_SCHEME}/>
           <Modal
-                title='Add Activity'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='SavingScheme Setup'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            width={860}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                  Cancel
+              </Button>,
+              <Button
+              key='submit'
+              type='primary'
+              htmlType='submit'
+              loading={submitLoading}
+              onClick={() => {
+                form.submit()
+              }}
+              >
+                  Submit
+              </Button>,
+            ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
-                >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
+              <Form
+                  labelCol={{span: 7}}
+                  wrapperCol={{span: 14}}
+                  layout='horizontal'
+                  form={form}
+                  name='control-hooks'
+                  onFinish={onFinish}
+              >
+                <hr></hr>
+                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Code</label>
+                    <input type="text" name="code"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                    <input type="text" name="name"  className="form-control form-control-solid"/>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Description</label>
+                    <input type="text" name="desc"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Employer Type</label>
+                    {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>select </option>
+                      <option value="1">PERMANENT</option>
+                     
+                    </select>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Employer Account No.</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Employer Amount</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Type</label>
+                    {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>select</option>
+                      <option value="1">PERMANENT</option>
+                      
+                    </select>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Account No.</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
+                </div>
+                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label">Employee Amount</label>
+                    <input type="text" name="field1"  className="form-control form-control-solid"/>
+                  </div>
+                  <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Statutory</label>
+                    {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                    <select className="form-select form-select-solid" aria-label="Select example">
+                      <option>select</option>
+                      <option value="1">YES</option>
+                      <option value="2">NO</option>
+                    </select>
+                  </div>
+                </div>
+              </Form>
             </Modal>
         </div>
       </KTCardBody>

@@ -17,11 +17,8 @@ import { JobTitle } from '../modules/production/components/setup/employee/JobTit
 import { Nationality } from '../modules/production/components/setup/employee/Nationality'
 import { Notches } from '../modules/production/components/setup/employee/Notches'
 import { Paygroups } from '../modules/production/components/setup/employee/Paygroups'
-import { SalaryUpgrade } from '../modules/production/components/setup/employee/SalaryUpgrade'
 import { Units } from '../modules/production/components/setup/employee/Units'
-import { Regions } from '../modules/production/components/setup/employee/Regions'
 import { Appraisals } from '../modules/production/components/setup/hr/Appraisals'
-import { DisciplinaryAction } from '../modules/production/components/setup/hr/DisciplinaryAction'
 import { Leaves } from '../modules/production/components/setup/hr/Leaves'
 import { Medicals } from '../modules/production/components/setup/hr/Medicals'
 import { Recruitments } from '../modules/production/components/setup/hr/Recruitment'
@@ -40,7 +37,6 @@ import { RecruitmentSelection } from '../modules/production/components/transacti
 import { CompensationBenefit } from '../modules/production/components/transactions/hr/CompensationBenefit'
 import { TrainingDevelopment } from '../modules/production/components/transactions/hr/TrainingDevelopment'
 import { AppraisalPerformance } from '../modules/production/components/transactions/hr/AppraisalPerformance'
-import { DisciplinaryActions } from '../modules/production/components/transactions/hr/DisciplinaryActions'
 import { MedicalEntries } from '../modules/production/components/transactions/hr/MedicalEntries'
 import { TimeSheet } from '../modules/production/components/transactions/payroll/TimeSheet'
 import { Recurrent } from '../modules/production/components/transactions/payroll/Recurrent'
@@ -55,7 +51,39 @@ import { ProjectSheets } from '../modules/production/components/processes/payrol
 import { Payrun } from '../modules/production/components/processes/payroll/Payrun'
 import { Employee } from '../modules/production/components/employee/Employee'
 import { AllReports } from '../modules/production/components/report/AllReports'
+import { Divisions } from '../modules/production/components/setup/employee/Divisions'
+import { CompanyAsset } from '../modules/production/components/setup/hr/CompanyAsset'
+
+import { HRDashboardWrapper } from '../pages/dashboard/HumanResourceDashBoard'
+import { PayrollDashboardWrapper } from '../pages/dashboard/PayrollDashBoard'
 import {LeavePlanning} from "../modules/production/components/transactions/hr/leavePlanning/EquipmentSchedule";
+import { Notes } from '../modules/production/components/setup/hr/Notes'
+import { NoteEntry } from '../modules/production/components/transactions/hr/NoteEntry'
+import FaultEntryReport from '../modules/production/components/report/PayrollPAYEReport'
+import PayrollPAYEReport from '../modules/production/components/report/PayrollPAYEReport'
+import BenefitTransactionInputReport from '../modules/production/components/report/BenefitTransactionInputReport'
+import DeductionTransactionInputReport from '../modules/production/components/report/DeductionTransactionInputReport'
+import EmployeeNotInDeductionInputReport from '../modules/production/components/report/EmployeeNotInDeductionInputReport'
+import EmployeeNotInBenefitInputReport from '../modules/production/components/report/EmployeeNotInBenefitInputReport'
+import EmployeeNotInSavSchemeInputReport from '../modules/production/components/report/EmployeeNotInSavSchemeInputReport'
+import HumanRessourceReport from '../modules/production/components/report/HumanRessourceReport'
+import PayrollAnalysisSheetByRegionReport from '../modules/production/components/report/PayrollAnalysisSheetByRegionReport'
+import PayrollBankSummaryReport from '../modules/production/components/report/PayrollBankSummaryReport'
+import PayrollBenefitDetailsReport from '../modules/production/components/report/PayrollBenefitDetailsReport'
+import PayrollBenefitIntegrityReport from '../modules/production/components/report/PayrollBenefitIntegrityReport'
+import PayrollDeductionsDetailsReport from '../modules/production/components/report/PayrollDeductionsDetailsReport'
+import PayrollDeductionsReport from '../modules/production/components/report/PayrollDeductionsReport'
+import PayrollJournalByDepartmentReport from '../modules/production/components/report/PayrollJournalByDepartmentReport'
+import PayrollLoansDetailsReport from '../modules/production/components/report/PayrollLoansDetailsReport'
+import PayrollSSNITReport from '../modules/production/components/report/PayrollSSNITReport'
+import SavSchemeTransactionInputReport from '../modules/production/components/report/SavSchemeTransactionInputReport'
+import { MultiTabForm } from '../modules/production/components/employeeFormEntry/EmployeeFormEntry'
+import { EmployeeEditForm } from '../modules/production/components/employeeFormEntry/EmployeeEditForm'
+import { SNNIT } from '../modules/production/components/setup/payroll/Snnit'
+import { EmployeeReportPage } from '../modules/production/components/report/EmployeeReportPage'
+import { PayrollReportPage } from '../modules/production/components/report/PayrollReportPage'
+import { HrReportPage } from '../modules/production/components/report/HrReportPage'
+
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -73,12 +101,13 @@ const PrivateRoutes = () => {
     <Routes>
       <Route element={<MasterLayout />}>
         {/* Redirect to Dashboard after success login/registartion */}
-        <Route path='auth/*' element={<Navigate to='/dashboard' />} />
+        <Route path='auth/*' element={<Navigate to='/hr-dashboard' />} />
         {/* Pages */}
         <Route path='dashboard' element={<DashboardWrapper />} />
-        {/* <Route path='production/*' element={<ProductionPage />} /> */}
-
-
+        {/* <Route path='dashboard' element={<DashboardWrapper />} /> */}
+        <Route path='payroll-dashboard' element={<PayrollDashboardWrapper />} />
+        <Route path='hr-dashboard' element={<HRDashboardWrapper />} />
+   
 
         {/* Employee  */}
 
@@ -89,6 +118,27 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>All Employees</PageTitle>
              <Employee />
+           </SuspensedView>
+         }
+        />
+
+        <Route
+         path='employee-form/*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Entries</PageTitle>
+             <MultiTabForm />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='employee-edit-form/:id'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Entries</PageTitle>
+             <EmployeeEditForm />
            </SuspensedView>
          }
         />
@@ -104,17 +154,44 @@ const PrivateRoutes = () => {
            </SuspensedView>
          }
         />
-
-
+        <Route
+         path='employee-report-page/*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Employee Reports</PageTitle>
+             <EmployeeReportPage />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='hr-report-page/*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Human Resource Reports</PageTitle>
+             <HrReportPage />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='payroll-report-page/*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Payroll Reports</PageTitle>
+             <PayrollReportPage />
+           </SuspensedView>
+         }
+        />
         {/* Transaction > HR Routes  */}
 
 
         <Route
          path='transaction/hr/recruitment-selection*'
          element={
-          
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Recruitment and Selection</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Recruitment and Selections</PageTitle>
              <RecruitmentSelection />
            </SuspensedView>
          }
@@ -122,7 +199,6 @@ const PrivateRoutes = () => {
         <Route
          path='transaction/hr/compensation-benefit*'
          element={
-          
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Compensation and Benefits</PageTitle>
              <CompensationBenefit />
@@ -132,9 +208,8 @@ const PrivateRoutes = () => {
         <Route
          path='transaction/hr/training-development*'
          element={
-          
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Training and Development</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Training and Developments</PageTitle>
              <TrainingDevelopment />
            </SuspensedView>
          }
@@ -142,30 +217,27 @@ const PrivateRoutes = () => {
         <Route
          path='transaction/hr/appraisal-performance*'
          element={
-          
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Appraisal and Performnance</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Appraisal and Performances</PageTitle>
              <AppraisalPerformance />
            </SuspensedView>
          }
         />
        
         <Route
-         path='transaction/hr/disciplinary-actions*'
+         path='transaction/hr/notes*'
          element={
-          
-           <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Disciplinary Actions</PageTitle>
-             <DisciplinaryActions />
+           <SuspensedView>  
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Notes Entries</PageTitle>
+             <NoteEntry />
            </SuspensedView>
          }
         />
         <Route
          path='transaction/hr/leave-planning*'
          element={
-          
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Leave Planning</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Leave Plannings</PageTitle>
              <LeavePlanning />
            </SuspensedView>
          }
@@ -190,7 +262,7 @@ const PrivateRoutes = () => {
          element={
           
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Timesheet</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Timesheets</PageTitle>
              <TimeSheet />
            </SuspensedView>
          }
@@ -200,7 +272,7 @@ const PrivateRoutes = () => {
          element={
           
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Recurrent</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Recurrents</PageTitle>
              <Recurrent />
            </SuspensedView>
          }
@@ -210,7 +282,7 @@ const PrivateRoutes = () => {
          element={
           
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Non-Recurrent</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Non-Recurrents</PageTitle>
              <NonRecurrent />
            </SuspensedView>
          }
@@ -226,11 +298,10 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='transaction/payroll/salary-upload*'
+         path='transaction/payroll/salary-upgrade*'
          element={
-          
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Salary Upload</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Salary Upgrade</PageTitle>
              <SalaryUploads />
            </SuspensedView>
          }
@@ -298,7 +369,7 @@ const PrivateRoutes = () => {
          element={
           
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Project Sheets and Input </PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Project Sheets and Inputs </PageTitle>
              <ProjectSheets />
            </SuspensedView>
          }
@@ -323,7 +394,7 @@ const PrivateRoutes = () => {
          element={
           
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Audit</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Audits</PageTitle>
              <Audit />
            </SuspensedView>
          }
@@ -372,10 +443,10 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='setup/employee/department*'
+         path='department/:id'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Department</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Departments</PageTitle>
              <Department />
            </SuspensedView>
          }
@@ -393,7 +464,7 @@ const PrivateRoutes = () => {
          path='setup/employee/jobtitle*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Job Title</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Job Titles</PageTitle>
              <JobTitle />
            </SuspensedView>
          }
@@ -402,13 +473,13 @@ const PrivateRoutes = () => {
          path='setup/employee/nationality*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Nationality</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Nationalities</PageTitle>
              <Nationality />
            </SuspensedView>
          }
         />
         <Route
-         path='setup/employee/notches*'
+         path='notches/:id*'
          element={
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Notches</PageTitle>
@@ -426,15 +497,15 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='setup/employee/regions*'
+         path='setup/employee/divisions*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Regions</PageTitle>
-             <Regions/>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Divisions</PageTitle>
+             <Divisions/>
            </SuspensedView>
          }
         />
-        <Route
+        {/* <Route
          path='setup/employee/salary-upgrade*'
          element={
            <SuspensedView>
@@ -442,9 +513,9 @@ const PrivateRoutes = () => {
              <SalaryUpgrade />
            </SuspensedView>
          }
-        />
+        /> */}
         <Route
-         path='setup/employee/units*'
+         path='units/:id'
          element={
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Units</PageTitle>
@@ -463,11 +534,11 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='setup/hr/disciplinary-action*'
+         path='setup/hr/notes*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Disciplinary Action</PageTitle>
-             <DisciplinaryAction />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Notes</PageTitle>
+             <Notes />
            </SuspensedView>
          }
         />
@@ -507,6 +578,15 @@ const PrivateRoutes = () => {
            </SuspensedView>
          }
         />
+        <Route
+         path='setup/hr/company-assets*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Company Assets </PageTitle>
+             <CompanyAsset />
+           </SuspensedView>
+         }
+        />
       
 
         {/* Payroll Routes  */}
@@ -515,7 +595,7 @@ const PrivateRoutes = () => {
          path='setup/payroll/approval-level*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Approval Level </PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Approval Levels </PageTitle>
              <ApprovalLevel />
            </SuspensedView>
          }
@@ -524,7 +604,7 @@ const PrivateRoutes = () => {
          path='setup/payroll/benefit*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Benefit</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Benefits</PageTitle>
              <Benefit />
            </SuspensedView>
          }
@@ -533,17 +613,8 @@ const PrivateRoutes = () => {
          path='setup/payroll/currency*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Currency</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Currencies</PageTitle>
              <Currency />
-           </SuspensedView>
-         }
-        />
-        <Route
-         path='setup/payroll/decustion*'
-         element={
-           <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Deduction</PageTitle>
-             <Deduction />
            </SuspensedView>
          }
         />
@@ -551,16 +622,25 @@ const PrivateRoutes = () => {
          path='setup/payroll/deduction*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Deduction</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Deductions</PageTitle>
              <Deduction />
            </SuspensedView>
          }
         />
+        {/* <Route
+         path='setup/payroll/deduction*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Deductions</PageTitle>
+             <Deduction />
+           </SuspensedView>
+         }
+        /> */}
         <Route
          path='setup/payroll/loan*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Loan</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Loans</PageTitle>
              <Loan />
            </SuspensedView>
          }
@@ -569,7 +649,7 @@ const PrivateRoutes = () => {
          path='setup/payroll/overtime*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Overtime</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Overtimes</PageTitle>
              <Overtime />
            </SuspensedView>
          }
@@ -578,7 +658,7 @@ const PrivateRoutes = () => {
          path='setup/payroll/period*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Period</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Periods</PageTitle>
              <Period />
            </SuspensedView>
          }
@@ -587,7 +667,7 @@ const PrivateRoutes = () => {
          path='setup/payroll/parameter*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Parameter</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Parameters</PageTitle>
              <Parameter />
            </SuspensedView>
          }
@@ -596,8 +676,17 @@ const PrivateRoutes = () => {
          path='setup/payroll/tax*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Tax</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Taxes</PageTitle>
              <Tax />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='setup/payroll/snnit*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>SNNITs</PageTitle>
+             <SNNIT />
            </SuspensedView>
          }
         />
@@ -605,8 +694,162 @@ const PrivateRoutes = () => {
          path='setup/payroll/saving-scheme*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Saving Scheme</PageTitle>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Saving Schemes</PageTitle>
              <SavingScheme />
+           </SuspensedView>
+         }
+        />
+        
+        <Route
+         path='report/payrollPAYEReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Payroll PAYE Reports</PageTitle>
+             <PayrollPAYEReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/BenefitTransactionInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>BenefitTransactionInputReport</PageTitle>
+             <BenefitTransactionInputReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/DeductionTransactionInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>DeductionTransactionInputReport</PageTitle>
+             <DeductionTransactionInputReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/EmployeeNotInBenefitInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeNotInBenefitInputReport</PageTitle>
+             <EmployeeNotInBenefitInputReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/EmployeeNotInDeductionInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeNotInDeductionInputReport</PageTitle>
+             <EmployeeNotInDeductionInputReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/EmployeeNotInSavSchemeInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeNotInSavSchemeInputReport</PageTitle>
+             <EmployeeNotInSavSchemeInputReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/HumanRessourceReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>HumanRessourceReport</PageTitle>
+             <HumanRessourceReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollAnalysisSheetByRegionReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollAnalysisSheetByRegionReport</PageTitle>
+             <PayrollAnalysisSheetByRegionReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollBankSummaryReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollBankSummaryReport</PageTitle>
+             <PayrollBankSummaryReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollBenefitDetailsReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollBenefitDetailsReport</PageTitle>
+             <PayrollBenefitDetailsReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollBenefitIntegrityReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollBenefitIntegrityReport</PageTitle>
+             <PayrollBenefitIntegrityReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollDeductionsDetailsReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollDeductionsDetailsReport</PageTitle>
+             <PayrollDeductionsDetailsReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollDeductionsReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollDeductionsReport</PageTitle>
+             <PayrollDeductionsReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollJournalByDepartmentReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollJournalByDepartmentReport</PageTitle>
+             <PayrollJournalByDepartmentReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollLoansDetailsReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollLoansDetailsReport</PageTitle>
+             <PayrollLoansDetailsReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/PayrollSSNITReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollSSNITReport</PageTitle>
+             <PayrollSSNITReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='report/SavSchemeTransactionInputReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>SavSchemeTransactionInputReport</PageTitle>
+             <SavSchemeTransactionInputReport />
            </SuspensedView>
          }
         />
