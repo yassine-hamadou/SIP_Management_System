@@ -80,20 +80,6 @@ const Units = () => {
         return 0
       },
     },
-    // {
-    //   title: 'Status',
-    //   dataIndex: 'status',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.status > b.status) {
-    //       return 1
-    //     }
-    //     if (b.status > a.status) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
-
     {
       title: 'Action',
       fixed: 'right',
@@ -123,7 +109,7 @@ const Units = () => {
       console.log(error)
     }
   }
-
+console.log(param.id)
   const {data:allDepartments} = useQuery('departments', fetchDepartments, {cacheTime:5000})
   const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
   const getItemName= async (param:any) =>{
@@ -186,7 +172,9 @@ const Units = () => {
     const data = {
           code: values.code,
           name: values.name,
+          departmentId: parseInt(param.id),
         }
+    console.log(data)
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
@@ -234,7 +222,6 @@ const Units = () => {
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
-
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export

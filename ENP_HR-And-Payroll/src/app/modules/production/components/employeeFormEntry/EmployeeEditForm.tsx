@@ -1850,7 +1850,18 @@ const EmployeeEditForm= () =>{
                         </div>
                         <div className='col-6 mb-7'>
                           <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                          <input type="text" {...register("firstName")}  className="form-control form-control-solid"/>
+                        </div>
+                        
+                      </div>
+                      <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
+                        <div className='col-6 mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">National ID</label>
                           <input type="text" name="name"  className="form-control form-control-solid"/>
+                        </div>
+                        <div className='col-6 mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                          <input type="text" {...register("firstName")}  className="form-control form-control-solid"/>
                         </div>
                         
                       </div>
@@ -1867,25 +1878,25 @@ const EmployeeEditForm= () =>{
                         </div>
                         <div className='col-6 mb-7'>
                           <label htmlFor="exampleFormControlInput1" className="form-label">Date od Birth</label>
-                          <input type="date" name="name"  className="form-control form-control-solid"/>
+                          <input type="date" {...register("dob")}  className="form-control form-control-solid"/>
                         </div>
                         
                       </div>
                       <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                         <div className='col-6 mb-7'>
                           <label htmlFor="exampleFormControlInput1" className="form-label">Address</label>
-                          <input type="text" name="name"  className="form-control form-control-solid"/>
+                          <input type="text" {...register("address")}  className="form-control form-control-solid"/>
                         </div>
                         <div className='col-6 mb-7'>
                           <label htmlFor="exampleFormControlInput1" className="form-label">Phone Number</label>
-                          <input type="text" name="name"  className="form-control form-control-solid"/>
+                          <input type="text" {...register("phone")}  className="form-control form-control-solid"/>
                         </div>
                         
                       </div>
                       <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                         <div className=' mb-7'>
                           <label htmlFor="exampleFormControlInput1" className="form-label">Notes</label>
-                          <textarea  name="note"  className="form-control form-control-solid"> </textarea>
+                          <textarea {...register("note")} className="form-control form-control-solid"> </textarea>
                           {/* <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid"  aria-label="With textarea"></textarea> */}
                         </div>
                       </div>
