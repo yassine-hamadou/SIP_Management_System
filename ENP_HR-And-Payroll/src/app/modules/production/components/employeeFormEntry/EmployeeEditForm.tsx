@@ -25,7 +25,7 @@ const EmployeeEditForm= () =>{
   const [leaveOpen,setLeaveOpen] = useState(false)
   const [appraisalOpen,setAppraisalOpen] = useState(false)
   const [noteOpen,setNoteOpen] = useState(false)
-  const [medicalData, setMedicalData] = useState([])
+  const [medicalEntryData, setMedicalEntryData] = useState([])
   const [familyData, setFamilyData] = useState([])
   const [experienceData, setExperienceData] = useState([])
   const [qualificationData, setQualificationData] = useState([])
@@ -80,6 +80,86 @@ const EmployeeEditForm= () =>{
     setNoteOpen(true)
   }
 
+  const deleteFamMem = async (element: any) => {
+    try {
+      const response = await axios.delete(`${Api_Endpoint}/FamilyMemners/${element.id}`)
+      // update the local state so that react can refecth and re-render the table with the new data
+      const newData = familyData.filter((item: any) => item.id !== element.id)
+      setFamilyData(newData)
+      return response.status
+    } catch (e) {
+      return e
+    }
+  }
+
+  const deleteSkill = async (element: any) => {
+    try {
+      const response = await axios.delete(`${Api_Endpoint}/Skills/${element.id}`)
+      // update the local state so that react can refecth and re-render the table with the new data
+      const newData = skillData.filter((item: any) => item.id !== element.id)
+      setSkillData(newData)
+      return response.status
+    } catch (e) {
+      return e
+    }
+  }
+
+  const deleteQualification = async (element: any) => {
+    try {
+      const response = await axios.delete(`${Api_Endpoint}/Qualifications/${element.id}`)
+      // update the local state so that react can refecth and re-render the table with the new data
+      const newData = qualificationData.filter((item: any) => item.id !== element.id)
+      setQualificationData(newData)
+      return response.status
+    } catch (e) {
+      return e
+    }
+  }
+  const deleteExperience = async (element: any) => {
+    try {
+      const response = await axios.delete(`${Api_Endpoint}/Experiences/${element.id}`)
+      // update the local state so that react can refecth and re-render the table with the new data
+      const newData = experienceData.filter((item: any) => item.id !== element.id)
+      setExperienceData(newData)
+      return response.status
+    } catch (e) {
+      return e
+    }
+  }
+
+  const deleteMedicalEntry = async (element: any) => {
+    try {
+      const response = await axios.delete(`${Api_Endpoint}/MedicalEntries/${element.id}`)
+      // update the local state so that react can refecth and re-render the table with the new data
+      const newData = medicalEntryData.filter((item: any) => item.id !== element.id)
+      setMedicalEntryData(newData)
+      return response.status
+    } catch (e) {
+      return e
+    }
+  }
+
+
+  function handleSkillDelete(element: any) {
+    deleteSkill(element)
+  }
+
+  function handleExperienceDelete(element: any) {
+    deleteExperience(element)
+  }
+
+  function handleQualificationDelete(element: any) {
+    deleteQualification(element)
+  }
+
+  function handleFamilyDelete(element: any) { 
+    deleteFamMem(element)
+  }
+  function handleMedicalEntryDelete(element: any) {
+    deleteMedicalEntry(element)
+    
+  }
+
   const handleCancel = () => {
     setSkillOpen(false)
     setQualificationOpen(false)
@@ -99,25 +179,51 @@ const EmployeeEditForm= () =>{
    
     {
       title: 'National ID',
-      dataIndex: 'code',
+      dataIndex: 'nationalId',
       sorter: (a: any, b: any) => {
-        if (a.code > b.code) {
+        if (a.nationalId > b.nationalId) {
           return 1
         }
-        if (b.code > a.code) {
+        if (b.nationalId > a.nationalId) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Full Name',
-      dataIndex: 'code',
+      title: 'First Name',
+      dataIndex: 'firstName',
       sorter: (a: any, b: any) => {
-        if (a.code > b.code) {
+        if (a.firstName > b.firstName) {
           return 1
         }
-        if (b.code > a.code) {
+        if (b.firstName > a.firstName) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Surname',
+      dataIndex: 'surname',
+      sorter: (a: any, b: any) => {
+        if (a.surname > b.surname) {
+          return 1
+        }
+        if (b.surname > a.surname) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Other Name',
+      dataIndex: 'otherName',
+      sorter: (a: any, b: any) => {
+        if (a.otherName > b.otherName) {
+          return 1
+        }
+        if (b.otherName > a.otherName) {
           return -1
         }
         return 0
@@ -125,12 +231,12 @@ const EmployeeEditForm= () =>{
     },
     {
       title: 'Relationship',
-      dataIndex: 'name',
+      dataIndex: 'relationship',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.relationship > b.relationship) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.relationship > a.relationship) {
           return -1
         }
         return 0
@@ -138,12 +244,12 @@ const EmployeeEditForm= () =>{
     },
     {
       title: 'Date of Birth',
-      dataIndex: 'name',
+      dataIndex: 'dob',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.dob > b.dob) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.dob > a.dob) {
           return -1
         }
         return 0
@@ -151,12 +257,12 @@ const EmployeeEditForm= () =>{
     },
     {
       title: 'Phone Number',
-      dataIndex: 'name',
+      dataIndex: 'phone',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.phone > b.phone) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.phone > a.phone) {
           return -1
         }
         return 0
@@ -164,12 +270,12 @@ const EmployeeEditForm= () =>{
     },
     {
       title: 'Address',
-      dataIndex: 'name',
+      dataIndex: 'address',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.address > b.address) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.address > a.address) {
           return -1
         }
         return 0
@@ -177,12 +283,12 @@ const EmployeeEditForm= () =>{
     },
     {
       title: 'Note',
-      dataIndex: 'name',
+      dataIndex: 'note',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.note > b.note) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.note > a.note) {
           return -1
         }
         return 0
@@ -195,9 +301,7 @@ const EmployeeEditForm= () =>{
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          
-          <a className='btn btn-light-danger btn-sm'>
+          <a onClick={() => handleFamilyDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
          
@@ -253,9 +357,96 @@ const EmployeeEditForm= () =>{
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          
-          <a className='btn btn-light-danger btn-sm'>
+          <a onClick={() => handleMedicalEntryDelete(record)} className='btn btn-light-danger btn-sm'>
+            Delete
+          </a>
+        </Space>
+      ),
+      
+    },
+  ]
+  const skillColumns: any = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+
+    {
+      title: 'Action',
+      fixed: 'right',
+      width: 100,
+      render: (_: any, record: any) => (
+        <Space size='middle'>
+          <a onClick={() => handleSkillDelete(record)} className='btn btn-light-danger btn-sm'>
+            Delete
+          </a>
+         
+        </Space>
+      ),
+      
+    },
+  ]
+  const experienceColumns: any = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+
+    {
+      title: 'Action',
+      fixed: 'right',
+      width: 100,
+      render: (_: any, record: any) => (
+        <Space size='middle'>
+          <a onClick={() => handleExperienceDelete(record)} className='btn btn-light-danger btn-sm'>
+            Delete
+          </a>
+         
+        </Space>
+      ),
+      
+    },
+  ]
+  const qualificationColumns: any = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+
+    {
+      title: 'Action',
+      fixed: 'right',
+      width: 100,
+      render: (_: any, record: any) => (
+        <Space size='middle'>
+          <a onClick={() => handleQualificationDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
          
@@ -633,11 +824,11 @@ const EmployeeEditForm= () =>{
       console.log(error)
     }
   }
-  const loadMedicals = async () => {
+  const loadMedicalEntry = async () => {
     setLoading(true)
     try {
       const response = await axios.get(`${Api_Endpoint}/Medicals`)
-      setMedicalData(response.data)
+      setMedicalEntryData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -645,9 +836,29 @@ const EmployeeEditForm= () =>{
   }
 
   useEffect(() => {
+    loadMedicalEntry()
+    loadQualifications()
+    loadFamilyMembers()
+    loadExperiences()
     loadSkills()
     fetchImage()
   }, [])
+
+  const skillByEmployee = skillData.filter((section:any) =>{
+    return section.employeeId.toString() ===param.id
+  })
+  const experienceByEmployee = experienceData.filter((exp:any) =>{
+    return exp.employeeId.toString() ===param.id
+  })
+  const qualificationByEmployee = qualificationData.filter((qualification:any) =>{
+    return qualification.employeeId.toString() ===param.id
+  })
+  // const medicalByEmployee = medicalData.filter((medical:any) =>{
+  //   return medical.employeeId.toString() ===param.id
+  // })
+  // const familyMemberByEmployee = familyData.filter((fam:any) =>{
+  //   return fam.employeeId.toString() ===param.id
+  // })
 
   const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -726,6 +937,26 @@ const EmployeeEditForm= () =>{
       reset()
       setQualificationOpen(false)
       loadQualifications()
+      return response.statusText
+    } catch (error: any) {
+      setSubmitLoading(false)
+      return error.statusText
+    }
+  })
+  const url3 = `${Api_Endpoint}/FamilyMembers`
+  const submitFamilys = handleSubmit( async (values:any)=> {
+    setLoading(true)
+    const data = {
+      name: values.name,
+      employeeId: parseInt(param.id),
+    }
+    console.log(data)
+    try {
+      const response = await axios.post(url3, data)
+      setSubmitLoading(false)
+      reset()
+      setFamilyOpen(false)
+      loadFamilyMembers()
       return response.statusText
     } catch (error: any) {
       setSubmitLoading(false)
@@ -1153,7 +1384,7 @@ const EmployeeEditForm= () =>{
                         Add Skill
                       </button>
               
-                      <Table columns={recruitColumns}  />
+                      <Table columns={skillColumns} dataSource={skillByEmployee} loading={loading} />
                       <Modal
                         title="Add skill"
                         open={skillOpen}
@@ -1195,7 +1426,7 @@ const EmployeeEditForm= () =>{
                         Add Qualification
                       </button>
               
-                      <Table columns={recruitColumns}  /> 
+                      <Table columns={qualificationColumns} dataSource={qualificationByEmployee} loading={loading} /> 
                       <Modal
                         title="Add Qualification"
                         open={qualificationOpen}
@@ -1237,7 +1468,7 @@ const EmployeeEditForm= () =>{
                         Add Experience
                       </button>
               
-                      <Table columns={recruitColumns}  /> 
+                      <Table columns={experienceColumns} dataSource={experienceByEmployee} loading={loading}/> 
                       <Modal
                         title="Add Experience"
                         open={experienceOpen}
@@ -1588,20 +1819,14 @@ const EmployeeEditForm= () =>{
                         type='primary'
                         htmlType='submit'
                         loading={submitLoading}
-                        onClick={() => {
-                          
-                        }}
+                        onClick={submitFamilys}
                         >
                             Submit
                         </Button>,
                     ]}
                   >
-                    <Form
-                        labelCol={{span: 7}}
-                        wrapperCol={{span: 14}}
-                        layout='horizontal'
-                        name='control-hooks'
-                        
+                    <form
+                      onSubmit={submitFamilys}
                     >
                       <hr></hr>
                       <div className='row mb-0'>
@@ -1634,10 +1859,10 @@ const EmployeeEditForm= () =>{
                           <label htmlFor="exampleFormControlInput1" className="form-label">Relationship</label>
                           <select className="form-select form-select-solid" aria-label="Select example">
                             <option>select </option>
-                            <option value="1">Spouse</option>
-                            <option value="2">Parent</option>
-                            <option value="3">Child</option>
-                            <option value="3">Sibling</option>
+                            <option value="1">SPOUSE</option>
+                            <option value="2">PARENT</option>
+                            <option value="3">CHILD</option>
+                            <option value="3">SIBLING</option>
                           </select>
                         </div>
                         <div className='col-6 mb-7'>
@@ -1663,10 +1888,8 @@ const EmployeeEditForm= () =>{
                           <textarea  name="note"  className="form-control form-control-solid"> </textarea>
                           {/* <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid"  aria-label="With textarea"></textarea> */}
                         </div>
-                        
-                        
                       </div>
-                    </Form>
+                    </form>
                   </Modal> 
                 </div>}
               </div>

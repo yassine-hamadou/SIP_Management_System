@@ -229,6 +229,7 @@ const MultiTabForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Nationality</label>
                   <select {...register("nationality")} className="form-select form-select-solid" aria-label="Select example">
+                    <option >select</option>
                     {allNations?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
                     ))}
@@ -291,7 +292,7 @@ const MultiTabForm= () =>{
           }
           {/* Administration */}
           {activeTab === 'tab3' && 
-          <div className='col-8'>
+          <div className='col-12'>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Group</label>
