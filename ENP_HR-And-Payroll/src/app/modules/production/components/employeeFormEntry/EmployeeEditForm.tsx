@@ -4,8 +4,12 @@ import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Form, Modal, Space, Table, Upload } from 'antd';
+import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchEmployees, fetchExperiences, fetchGrades, fetchNationalities, fetchNotches, fetchPaygroups, fetchQualifications, fetchSkills, fetchUnits } from '../../../../services/ApiCalls';
 import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, MEDICALS, NOTCHES, UNITS } from '../../../../data/DummyData';
 import { KTSVG } from '../../../../../_metronic/helpers';
+import { useQuery } from 'react-query';
+import axios from 'axios';
+import { useForm } from 'react-hook-form';
 
 const EmployeeEditForm= () =>{
   const [formData, setFormData] = useState({});
@@ -21,9 +25,14 @@ const EmployeeEditForm= () =>{
   const [leaveOpen,setLeaveOpen] = useState(false)
   const [appraisalOpen,setAppraisalOpen] = useState(false)
   const [noteOpen,setNoteOpen] = useState(false)
-  // const [form] = Form.useForm()
-  const [img, setImg] = useState();
-  // const { register, handleSubmit } = useForm();
+  const [medicalData, setMedicalData] = useState([])
+  const [familyData, setFamilyData] = useState([])
+  const [experienceData, setExperienceData] = useState([])
+  const [qualificationData, setQualificationData] = useState([])
+  const [skillData, setSkillData] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [img, setImg] = useState()
+  const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
 
   const handleTabClick = (tab:any) => {
@@ -539,12 +548,12 @@ const EmployeeEditForm= () =>{
 
 
 
-  const handleSubmit = (event:any) => {
-    event.preventDefault();
-    console.log(formData);
-    // Use the formData object to submit the data to your server
+  // const handleSubmit = (event:any) => {
+  //   event.preventDefault();
+  //   console.log(formData);
+  //   // Use the formData object to submit the data to your server
   
-  }
+  // }
 
 
   // validates input field to accept only numbers
@@ -554,9 +563,23 @@ const EmployeeEditForm= () =>{
     }
                   
   }
+  const {data:allEmployees} = useQuery('employees', fetchEmployees, {cacheTime:5000})
+  const {data:allDepartments} = useQuery('departments', fetchDepartments, {cacheTime:5000})
+  const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
+  const {data:allCategories} = useQuery('categories', fetchCategories, {cacheTime:5000})
+  const {data:allPaygroups} = useQuery('paygroups', fetchPaygroups, {cacheTime:5000})
+  const {data:allUnits} = useQuery('units', fetchUnits, {cacheTime:5000})
+  const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
+  const {data:allNotches} = useQuery('notches', fetchNotches, {cacheTime:5000})
+  const {data:allNations} = useQuery('nations', fetchNationalities, {cacheTime:5000})
+  const {data:allSkills} = useQuery('skill', fetchSkills, {cacheTime:5000})
+  const {data:allQualifications} = useQuery('qualifications', fetchQualifications, {cacheTime:5000})
+  const {data:allExperiences} = useQuery('experiences', fetchExperiences, {cacheTime:5000})
 
-  const dataByID = employeedata.find((employee:any) =>{
-    return employee.code.toString() ===param.id
+
+
+  const dataByID = allEmployees?.data.find((employee:any) =>{
+    return employee.id.toString() ===param.id
   });
 
   const fetchImage = async () => {
@@ -570,8 +593,59 @@ const EmployeeEditForm= () =>{
     
   ]);
 
+  const loadSkills = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${Api_Endpoint}/Skills`)
+      setSkillData(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const loadQualifications = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${Api_Endpoint}/Qualifications`)
+      setQualificationData(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const loadExperiences = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${Api_Endpoint}/Experiences`)
+      setExperienceData(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const loadFamilyMembers = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${Api_Endpoint}/FamilyMembers`)
+      setFamilyData(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const loadMedicals = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${Api_Endpoint}/Medicals`)
+      setMedicalData(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
-    // loadData()
+    loadSkills()
     fetchImage()
   }, [])
 
@@ -596,6 +670,69 @@ const EmployeeEditForm= () =>{
     };
   
 
+  const url = `${Api_Endpoint}/Skills`
+  const submitSkills = handleSubmit( async (values:any)=> {
+    setLoading(true)
+    const data = {
+      name: values.name,
+      employeeId: parseInt(param.id),
+    }
+    console.log(data)
+    try {
+      const response = await axios.post(url, data)
+      setSubmitLoading(false)
+      reset()
+      setSkillOpen(false)
+      loadSkills()
+      return response.statusText
+    } catch (error: any) {
+      setSubmitLoading(false)
+      return error.statusText
+    }
+  })
+
+  const url1 = `${Api_Endpoint}/Experiences`
+  const submitExperiences = handleSubmit( async (values:any)=> {
+    setLoading(true)
+    const data = {
+      name: values.name,
+      employeeId: parseInt(param.id),
+    }
+    console.log(data)
+    try {
+      const response = await axios.post(url1, data)
+      setSubmitLoading(false)
+      reset()
+      setExperienceOpen(false)
+      loadExperiences()
+      return response.statusText
+    } catch (error: any) {
+      setSubmitLoading(false)
+      return error.statusText
+    }
+  })
+
+  const url2 = `${Api_Endpoint}/Qualifications`
+  const submitQualifications = handleSubmit( async (values:any)=> {
+    setLoading(true)
+    const data = {
+      name: values.name,
+      employeeId: parseInt(param.id),
+    }
+    console.log(data)
+    try {
+      const response = await axios.post(url2, data)
+      setSubmitLoading(false)
+      reset()
+      setQualificationOpen(false)
+      loadQualifications()
+      return response.statusText
+    } catch (error: any) {
+      setSubmitLoading(false)
+      return error.statusText
+    }
+  })
+
   return (
     <div
     className="col-12"
@@ -607,16 +744,14 @@ const EmployeeEditForm= () =>{
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-
-
-      <h3> You are updating <span style={{color:"#FF6363"}}>  {dataByID?.firstname} {dataByID?.lastname}</span></h3>
+      <h3> You are updating <span style={{color:"#FF6363"}}>  {dataByID?.firstName} {dataByID?.surname}</span></h3>
       <br></br>
       <Link to="/employee">
         <a style={{fontSize:"16px", fontWeight: "500"}} className='mb-7 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>
           Back to list
         </a>
       </Link>
-      <form onSubmit={handleSubmit}>
+     
         
         <div className="tabs">
           
@@ -692,6 +827,7 @@ const EmployeeEditForm= () =>{
         </div>
         <hr></hr>
         <br></br>
+        <div className="FormClass" >
         <div className="tab-content">
         
           {/* Details */}
@@ -699,41 +835,30 @@ const EmployeeEditForm= () =>{
           <div className='col-8'>
             <div className='row mb-0'>
              
-                
-              
               <div className='col-6 mb-7'>
-                <img style={{borderRadius:"10px"}} src={img} width={100} height={100}></img>
-                {/* <Upload
-                      
-                  listType="picture-card"
-                  // fileList={fileList}
-                  onChange={onChange}
-                  onPreview={onPreview}
-                > 
-                  <UploadOutlined />
-                </Upload> */}
+             
               </div>
               
             </div>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
-                <input type="text" name="fname" value={dataByID?.firstname}  className="form-control form-control-solid" />
+                <input type="text" name="fname" value={dataByID?.firstName}  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className="required form-label">Surname</label>
-                <input type="text" name="mname" value={dataByID?.lastname} className="form-control form-control-solid" />
+                <input type="text" name="mname" value={dataByID?.surname} className="form-control form-control-solid" />
               </div>
             </div>
 
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className="required form-label">Other Name</label>
-                <input type="text" name="lname"  className="form-control form-control-solid" />
+                <input type="text" name="lname" value={dataByID?.surname} className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className="required form-label">Date of Birth</label>
-                <input type="date" name="dob"  className="form-control form-control-solid" />
+                <input type="text" name="dob" value={dataByID?.dob}   className="form-control form-control-solid" />
               </div>
             </div>
             <div className='row mb-0'>
@@ -741,15 +866,17 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
                 <select className="form-select form-select-solid" aria-label="Select example">
-                <option value={dataByID?.sex}>{dataByID?.sex}</option>
+                  <option >{dataByID?.gender}</option>
+                  <option value="MALE">MALE</option>
+                  <option value="FEMALE">FEMALE</option>
                 </select>
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Marital Status</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
-                  <option value="1">SINGLE</option>
-                  <option value="2">MARRIED</option>
+                  <option >{dataByID?.maritalStatus}</option>
+                  <option value="SINGLE">SINGLE</option>
+                  <option value="MARRIED">MARRIED</option>
                  
                 </select>
               </div>
@@ -758,17 +885,19 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Nationality</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
-                  <option value="1">GHANAIAN</option>
+                    {allNations?.data.map((item: any) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))}
+                  {/* <option value="1">GHANAIAN</option>
                   <option value="2">NIGERIAN</option>
                   <option value="3">TOGOLESE</option>
                   <option value="4">AMERICAN</option>
-                  <option value="5">CANADIAN</option>
+                  <option value="5">CANADIAN</option> */}
                 </select>
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">National ID</label>
-                <input type="text" name="dob" className="form-control form-control-solid" />
+                <input type="text" name="dob" value={dataByID?.nationalId} className="form-control form-control-solid" />
               </div>
             </div>
 
@@ -782,41 +911,41 @@ const EmployeeEditForm= () =>{
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
-                  <input type="phone" name="tel" pattern="[0-9]*" className="form-control form-control-solid" />
+                  <input type="phone" value={dataByID?.phone} name="tel" pattern="[0-9]*" className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Alternative Phone number</label>
-                  <input type="phone" name="tel" maxLength={15} onKeyPress={validatePhoneNumber} onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="phone" value={dataByID?.alternativePhone} name="tel" maxLength={15} onKeyPress={validatePhoneNumber} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Address</label>
-                  <input type="text" name="address" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" name="address" value={dataByID?.address} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Residential Address</label>
-                  <input type="text" name="raddress" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" name="raddress" value={dataByID?.residentialAddress} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
-                  <input type="email" name="email" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="email" name="email" value={dataByID?.email} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Personal Email</label>
-                  <input type="email" name="pemail" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="email" name="pemail" value={dataByID?.personalEmail} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Next of kin</label>
-                  <input type="text" name="email" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" name="email"  value={dataByID?.nextOfKin} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Guarantor</label>
-                  <input type="text" name="guarantor" onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" name="guarantor" value={dataByID?.guarantor} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
             </div>
@@ -1039,38 +1168,28 @@ const EmployeeEditForm= () =>{
                             type='primary'
                             htmlType='submit'
                             loading={submitLoading}
-                            onClick={() => {
-                             
-                            }}
+                            onClick={submitSkills}
                             >
                                 Submit
                             </Button>,
                         ]}
                       >
-                        <Form
-                            labelCol={{span: 7}}
-                            wrapperCol={{span: 14}}
-                            layout='horizontal'
-                            name='control-hooks'
-                            
+                        <form
+                          onSubmit={submitSkills}
                         >
                           <hr></hr>
                           <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                             <div className=' mb-7'>
                               <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                              <input type="text" name="name"  className="form-control form-control-solid"/>
+                              <input type="text" {...register("name")} className="form-control form-control-solid"/>
                             </div>
                             
                           </div>
-                        </Form>
+                        </form>
                       </Modal> 
                     </div>}
                   {activeTab1 === 'qual' && 
                     <div >
-                      
-
-                      
-
                       <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showQualificationModal}>
                         <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                         Add Qualification
@@ -1091,38 +1210,28 @@ const EmployeeEditForm= () =>{
                             type='primary'
                             htmlType='submit'
                             loading={submitLoading}
-                            onClick={() => {
-                              
-                            }}
+                            onClick={submitQualifications}
                             >
                                 Submit
                             </Button>,
                         ]}
                       >
-                        <Form
-                            labelCol={{span: 7}}
-                            wrapperCol={{span: 14}}
-                            layout='horizontal'
-                            name='control-hooks'
-                            
+                        <form
+                           onSubmit={submitQualifications}
                         >
                           <hr></hr>
                           <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                             <div className=' mb-7'>
                               <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                              <input type="text" name="name"  className="form-control form-control-solid"/>
+                              <input type="text" {...register("name")}  className="form-control form-control-solid"/>
                             </div>
                             
                           </div>
-                        </Form>
+                        </form>
                       </Modal>
                     </div>}
                   {activeTab1 === 'exper' && 
                     <div >
-                      
-
-                      
-
                       <button style={{margin:"0px 0px 20px 0"}} type='button' className='btn btn-primary me-3' onClick={showExperienceModal}>
                         <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                         Add Experience
@@ -1143,30 +1252,25 @@ const EmployeeEditForm= () =>{
                             type='primary'
                             htmlType='submit'
                             loading={submitLoading}
-                            onClick={() => {
-                              
-                            }}
+                            onClick={submitExperiences}
                             >
                                 Submit
                             </Button>,
                         ]}
                       >
-                        <Form
-                            labelCol={{span: 7}}
-                            wrapperCol={{span: 14}}
-                            layout='horizontal'
-                            name='control-hooks'
+                        <form
+                           onSubmit={submitExperiences}
                             
                         >
                           <hr></hr>
                           <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                             <div className=' mb-7'>
                               <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                              <input type="text" name="name"  className="form-control form-control-solid"/>
+                              <input type="text" {...register("name")}  className="form-control form-control-solid"/>
                             </div>
                             
                           </div>
-                        </Form>
+                        </form>
                       </Modal>
                     </div>}
                 </div>
@@ -1569,9 +1673,9 @@ const EmployeeEditForm= () =>{
               
             </div>}
         </div>
-
+        </div >
         <button className='btn btn-primary' disabled type="submit">Submit</button>
-      </form>
+      
     </div>
   );
 }

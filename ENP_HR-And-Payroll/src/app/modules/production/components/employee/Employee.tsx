@@ -6,7 +6,7 @@ import { ENP_URL } from '../../urls'
 import { Link } from 'react-router-dom'
 import { employeedata } from '../../../../data/DummyData'
 import { useQuery } from 'react-query'
-import { fetchEmployees } from '../../../../services/ApiCalls'
+import { Api_Endpoint, fetchDepartments, fetchEmployees, fetchGrades, fetchNotches, fetchPaygroups } from '../../../../services/ApiCalls'
 
 const Employee = () => {
   const [gridData, setGridData] = useState([])
@@ -65,12 +65,12 @@ const Employee = () => {
     },
     {
       title: 'EployeeID',
-      dataIndex: 'empcode',
+      dataIndex: 'id',
       sorter: (a: any, b: any) => {
-        if (a.empcode > b.empcode) {
+        if (a.id > b.id) {
           return 1
         }
-        if (b.empcode > a.empcode) {
+        if (b.id > a.id) {
           return -1
         }
         return 0
@@ -78,12 +78,12 @@ const Employee = () => {
     },
     {
       title: 'First Name',
-      dataIndex: 'firstname',
+      dataIndex: 'firstName',
       sorter: (a: any, b: any) => {
-        if (a.firstname > b.firstname) {
+        if (a.firstName > b.firstName) {
           return 1
         }
-        if (b.firstname > a.firstname) {
+        if (b.firstName > a.firstName) {
           return -1
         }
         return 0
@@ -92,12 +92,12 @@ const Employee = () => {
    
     {
       title: 'Surname',
-      dataIndex: 'lastname',
+      dataIndex: 'surname',
       sorter: (a: any, b: any) => {
-        if (a.lastname > b.lastname) {
+        if (a.surname > b.surname) {
           return 1
         }
-        if (b.lastname > a.lastname) {
+        if (b.surname > a.surname) {
           return -1
         }
         return 0
@@ -106,12 +106,12 @@ const Employee = () => {
 
     {
       title: 'Gender',
-      dataIndex: 'sex',
+      dataIndex: 'gender',
       sorter: (a: any, b: any) => {
-        if (a.sex > b.sex) {
+        if (a.gender > b.gender) {
           return 1
         }
-        if (b.sex > a.sex) {
+        if (b.gender > a.gender) {
           return -1
         }
         return 0
@@ -119,12 +119,15 @@ const Employee = () => {
     },
     {
       title: 'Paygroup',
-      dataIndex: 'paygroup',
+      key: 'paygroupId',
+      render: (row: any) => {
+        return getPaygroupName(row.paygroupId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.paygroup > b.paygroup) {
+        if (a.paygroupId > b.paygroupId) {
           return 1
         }
-        if (b.paygroup > a.paygroup) {
+        if (b.paygroupId > a.paygroupId) {
           return -1
         }
         return 0
@@ -132,12 +135,15 @@ const Employee = () => {
     },
     {
       title: 'Salary Grade',
-      dataIndex: 'grade',
+      key: 'gradeId',
+      render: (row: any) => {
+        return getGradeName(row.gradeId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.grade > b.grade) {
+        if (a.gradeId > b.gradeId) {
           return 1
         }
-        if (b.grade > a.grade) {
+        if (b.gradeId > a.gradeId) {
           return -1
         }
         return 0
@@ -145,12 +151,15 @@ const Employee = () => {
     },
     {
       title: 'Notch',
-      dataIndex: 'notch',
+      key: 'notchId',
+      render: (row: any) => {
+        return getNotchName(row.notchId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.notch > b.notch) {
+        if (a.notchId > b.notchId) {
           return 1
         }
-        if (b.notch > a.notch) {
+        if (b.notchId > a.notchId) {
           return -1
         }
         return 0
@@ -158,12 +167,16 @@ const Employee = () => {
     },
     {
       title: 'Department',
-      dataIndex: 'depart',
+      key: 'departmentId',
+      render: (row: any) => {
+        return getDepartmentName(row.departmentId)
+      },
+      
       sorter: (a: any, b: any) => {
-        if (a.depart > b.depart) {
+        if (a.departmentId > b.departmentId) {
           return 1
         }
-        if (b.depart > a.depart) {
+        if (b.departmentId > a.departmentId) {
           return -1
         }
         return 0
@@ -189,10 +202,8 @@ const Employee = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          {/* <a href='#' className='btn btn-light-warning btn-sm'>
-            Update
-          </a> */}
-          <Link to={`/employee-edit-form/${record.code}`}>
+          
+          <Link to={`/employee-edit-form/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Update</span>
           </Link>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
@@ -206,13 +217,52 @@ const Employee = () => {
   ]
 
   const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
+  const {data:allDepartments} = useQuery('department', fetchDepartments, {cacheTime:5000})
+  const {data:allPaygroups} = useQuery('paygroup', fetchPaygroups, {cacheTime:5000})
+  const {data:allNotches} = useQuery('notches', fetchNotches, {cacheTime:5000})
+  const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
  
-    
+  const getDepartmentName = (departmentId: any) => {
+    let departmentName = null
+    allDepartments?.data.map((item: any) => {
+      if (item.id === departmentId) {
+        departmentName=item.name
+      }
+    })
+    return departmentName
+  } 
+  const getGradeName = (gradeId: any) => {
+    let gradeName = null
+    allGrades?.data.map((item: any) => {
+      if (item.id === gradeId) {
+        gradeName=item.name
+      }
+    })
+    return gradeName
+  } 
+  const getPaygroupName = (paygroupId: any) => {
+    let paygroupName = null
+    allPaygroups?.data.map((item: any) => {
+      if (item.id === paygroupId) {
+        paygroupName=item.name
+      }
+    })
+    return paygroupName
+  } 
+  const getNotchName = (notchId: any) => {
+    let notchName = null
+    allNotches?.data.map((item: any) => {
+      if (item.id === notchId) {
+        notchName=item.name
+      }
+    })
+    return notchName
+  } 
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/Employees`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -294,11 +344,6 @@ const Employee = () => {
               </Button>
             </Space>
             <Space style={{marginBottom: 16}}>
-              {/* <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button> */}
-              
               <Link to='/employee-form'>
               <button type='button' className='btn btn-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
@@ -312,48 +357,8 @@ const Employee = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={employeedata} />
-          {/* <Modal
-                title='Add Employee'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
-            >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
-                >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
-            </Modal> */}
+          <Table columns={columns} dataSource={dataWithIndex}  loading={loading}/>
+          
         </div>
       </KTCardBody>
     </div>

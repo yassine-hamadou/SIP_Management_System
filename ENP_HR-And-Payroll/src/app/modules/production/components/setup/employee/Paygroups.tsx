@@ -6,6 +6,7 @@ import { ENP_URL } from '../../../urls'
 import { PAYGROUP } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
 import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { Link } from 'react-router-dom'
 
 const Paygroups = () => {
   const [gridData, setGridData] = useState([])
@@ -82,6 +83,9 @@ const Paygroups = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
+          <Link to={`/grades/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Grades</span>
+          </Link>
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>

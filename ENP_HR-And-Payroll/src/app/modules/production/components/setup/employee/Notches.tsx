@@ -3,18 +3,23 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
-import { NOTCHES } from '../../../../../data/DummyData'
+import { CURRENCY, NOTCHES } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchGrades, fetchPaygroups } from '../../../../../services/ApiCalls'
+import { useQuery } from 'react-query'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const Notches = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
+  let [paygroupName, setPaygroupName] = useState<any>("")
+  let [gradeName, setGradeName] = useState<any>("")
   const [submitLoading, setSubmitLoading] = useState(false)
   const {register, reset, handleSubmit} = useForm()
-
+  const param:any  = useParams();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -120,6 +125,8 @@ const Notches = () => {
     },
   ]
 
+ 
+
   
 
   const loadData = async () => {
@@ -132,15 +139,47 @@ const Notches = () => {
       console.log(error)
     }
   }
+  const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
+  const {data:allPaygroups} = useQuery('paygroups', fetchPaygroups, {cacheTime:5000})
+
+  const getItemName= async (param:any) =>{
+
+    let newName=null
+  
+     const   itemTest = await allGrades?.data.find((item:any) =>
+      item.id.toString()===param
+    )
+     newName = await itemTest
+    return newName
+ }
 
   useEffect(() => {
+    (async ()=>{
+      let res = await getItemName(param.id)
+      setPaygroupName(res?.name)
+    })();
+    (async ()=>{
+      let res = await getItemName(param.id)
+      let paygroupId = res?.paygroupId
+      let paygroupName = allPaygroups?.data.find((div:any)=>{
+        return div.id===paygroupId
+      })
+  
+      console.log("paygroup name obtained: " + paygroupName.name)
+      setGradeName(paygroupName.name)
+    })();
     loadData()
   }, [])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-  }))
+  // const dataWithIndex = gridData.map((item: any, index) => ({
+  //   ...item,
+  //   key: index,
+  // }))
+
+
+  const dataByID = gridData.filter((section:any) =>{
+    return section.gradeId.toString() === param.id
+  })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -190,6 +229,11 @@ const Notches = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <h3 style={{fontWeight:"bolder"}}>{paygroupName}<span style={{color: "blue", fontSize:"22px", fontWeight:"normal"}}> &gt; </span> {gradeName} </h3>
+
+        <br></br>
+        <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
               <Input
@@ -249,14 +293,21 @@ const Notches = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                       <input type="text" {...register("name")}  className="form-control form-control-solid"/>
                     </div>
-                    {/* <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">Active </option>
-                        <option value="2">Not Active </option>
-                      </select>
-                    </div> */}
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Currency</label>
+                      <select {...register("currencyId")} className="form-select form-select-solid" aria-label="Select example">
+                        <option>select </option>
+                        {CURRENCY.map((item: any) => (
+                          <option value={item.code}>{item.name}</option>
+                        ))}
+                    </select>
+                    </div>
+                    
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Amount</label>
+                      <input type="number" min={0} defaultValue={0} {...register("amount")}  className="form-control form-control-solid"/>
+                    </div>
+                   
                   </div>
                 </form>
             </Modal>

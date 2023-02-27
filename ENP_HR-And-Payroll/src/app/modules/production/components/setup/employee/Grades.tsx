@@ -3,10 +3,11 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { GRADES } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchPaygroups } from '../../../../../services/ApiCalls'
+import { useQuery } from 'react-query'
 
 const Grades = () => {
   const [gridData, setGridData] = useState([])
@@ -15,9 +16,10 @@ const Grades = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const {register, reset, handleSubmit} = useForm()
-
+  const param:any  = useParams();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  let [itemName, setItemName] = useState<any>("")
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -78,38 +80,25 @@ const Grades = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'desc',
+      dataIndex: 'description',
       sorter: (a: any, b: any) => {
-        if (a.desc > b.desc) {
+        if (a.description > b.description) {
           return 1
         }
-        if (b.desc > a.desc) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Paygroup',
-      dataIndex: 'payg',
-      sorter: (a: any, b: any) => {
-        if (a.payg > b.payg) {
-          return 1
-        }
-        if (b.payg > a.payg) {
+        if (b.description > a.description) {
           return -1
         }
         return 0
       },
     },
     // {
-    //   title: 'Status',
-    //   dataIndex: 'status',
+    //   title: 'Paygroup',
+    //   dataIndex: 'paygroupId',
     //   sorter: (a: any, b: any) => {
-    //     if (a.status > b.status) {
+    //     if (a.paygroupId > b.paygroupId) {
     //       return 1
     //     }
-    //     if (b.status > a.status) {
+    //     if (b.paygroupId > a.paygroupId) {
     //       return -1
     //     }
     //     return 0
@@ -140,6 +129,22 @@ const Grades = () => {
   ]
 
 
+  const {data:allPaygroups} = useQuery('paygroup', fetchPaygroups, {cacheTime:5000})
+  const getItemName= async (param:any) =>{
+
+    let newName=null
+  
+     const   itemTest = await allPaygroups?.data.find((item:any) =>
+      item.id.toString()===param
+    )
+     newName = await itemTest
+    return newName
+ }
+
+// this filters for only grades for the pARAM ID 
+const dataByID = gridData.filter((section:any) =>{
+  return section.paygroupId.toString() ===param.id
+})
 
   const loadData = async () => {
     setLoading(true)
@@ -153,6 +158,10 @@ const Grades = () => {
   }
 
   useEffect(() => {
+    (async ()=>{
+      let res = await getItemName(param.id)
+      setItemName(res?.name)
+    })();
     loadData()
   }, [])
 
@@ -184,6 +193,8 @@ const Grades = () => {
     const data = {
           code: values.code,
           name: values.name,
+          description: values.description,
+          paygroupId: parseInt(param.id),
         }
     try {
       const response = await axios.post(url, data)
@@ -209,6 +220,10 @@ const Grades = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <h3 style={{fontWeight:"bolder"}}>{itemName} </h3>
+        <br></br>
+        <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
               <Input
@@ -234,7 +249,7 @@ const Grades = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  dataSource={GRADES}/>
+          <Table columns={columns}  dataSource={dataByID} loading={loading}/>
           <Modal
                 title='Grade Setup'
                 open={isModalOpen}
@@ -267,6 +282,11 @@ const Grades = () => {
                     <div className=' mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                       <input type="text" {...register("name")} className="form-control form-control-solid"/>
+                    </div>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
+                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" aria-label="With textarea"></textarea>
+                      {/* <input type="text" {...register("description")} className="form-control form-control-solid"/> */}
                     </div>
                     {/* <div className=' mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>

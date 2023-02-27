@@ -111,6 +111,7 @@ const Department = () => {
       console.log(error)
     }
   }
+  
 
   const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
   const {data:allDepartments} = useQuery('departments', fetchDepartments, {cacheTime:5000})
@@ -126,11 +127,10 @@ const Department = () => {
  }
 
 
- const dataByID = gridData.filter((section:any) =>{
+const dataByID = gridData.filter((section:any) =>{
   return section.divisionId.toString() ===param.id
 })
 console.log(dataByID)
-
 
   useEffect(() => {
     (async ()=>{
@@ -140,6 +140,8 @@ console.log(dataByID)
     loadData()
   }, [])
 
+
+ 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
     key: index,

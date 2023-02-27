@@ -45,7 +45,7 @@ export function AsideMenuMain() {
           <AsideMenuItem to='setup/employee/divisions' hasBullet={true} title='Divisions' />
           <AsideMenuItem to='setup/employee/category' hasBullet={true} title='Categories' />
           <AsideMenuItem to='setup/employee/jobtitle' hasBullet={true} title='Job Titles' />
-          <AsideMenuItem to='setup/employee/grades' hasBullet={true} title='Grades' />
+          {/* <AsideMenuItem to='setup/employee/grades' hasBullet={true} title='Grades' /> */}
           <AsideMenuItem to='setup/employee/nationality' hasBullet={true} title='Nationalities' />
           
         </AsideMenuItemWithSub>
@@ -101,7 +101,7 @@ export function AsideMenuMain() {
           <AsideMenuItem to='transaction/payroll/non-recurrent' hasBullet={true} title='Non-recurrents' />
           <AsideMenuItem to='transaction/payroll/saving-schemes' hasBullet={true} title='Saving Schemes' />
           <AsideMenuItem to='transaction/payroll/salary-upgrade' hasBullet={true} title='Salary Upgrades' />
-          <AsideMenuItem to='transaction/payroll/relief-rebate' hasBullet={true} title='Reliefs and Rebate Inputs' />
+          <AsideMenuItem to='transaction/payroll/relief-rebate' hasBullet={true} title='Reliefs and Rebate Inputs'/>
         </AsideMenuItemWithSub>
         <AsideMenuItemWithSub to='#' title='Processes' icon='/media/icons/duotune/general/gen008.svg' hasBullet={false}>
           <AsideMenuItem to='processes/payroll/approval' hasBullet={true} title='Approvals' />

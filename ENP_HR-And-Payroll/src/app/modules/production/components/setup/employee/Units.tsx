@@ -275,7 +275,6 @@ const Units = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                       <input type="text" {...register("name")}  className="form-control form-control-solid"/>
                     </div>
-                    
                   </div>
                 </form>
             </Modal>
