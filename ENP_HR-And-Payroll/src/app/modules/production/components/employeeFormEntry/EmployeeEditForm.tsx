@@ -83,7 +83,7 @@ const EmployeeEditForm= () =>{
 
   const deleteFamMem = async (element: any) => {
     try {
-      const response = await axios.delete(`${Api_Endpoint}/FamilyMemners/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/FamilyMembers/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = familyData.filter((item: any) => item.id !== element.id)
       setFamilyData(newData)
@@ -769,10 +769,22 @@ const EmployeeEditForm= () =>{
   const {data:allExperiences} = useQuery('experiences', fetchExperiences, {cacheTime:5000})
 
 
-
   const dataByID = allEmployees?.data.find((employee:any) =>{
     return employee.id.toString() ===param.id
   });
+
+  let newId=dataByID?.gradeId
+
+
+  
+  // const gradeName =  allGrades?.data.find(async(grade:any) =>{
+  //   console.log(newId)
+  //   return await grade.id ===newId ? "Jack":null
+  // });
+
+  // console.log(dataByID?.gradeId +"Test now")
+
+  // console.log(gradeName?.name)
 
   const fetchImage = async () => {
     const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
@@ -854,12 +866,13 @@ const EmployeeEditForm= () =>{
   const qualificationByEmployee = qualificationData.filter((qualification:any) =>{
     return qualification.employeeId.toString() ===param.id
   })
+  const familyByEmployee = familyData.filter((qualification:any) =>{
+    return qualification.employeeId.toString() ===param.id
+  })
   // const medicalByEmployee = medicalData.filter((medical:any) =>{
   //   return medical.employeeId.toString() ===param.id
   // })
-  // const familyMemberByEmployee = familyData.filter((fam:any) =>{
-  //   return fam.employeeId.toString() ===param.id
-  // })
+
 
   const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -948,7 +961,15 @@ const EmployeeEditForm= () =>{
   const submitFamilys = handleSubmit( async (values:any)=> {
     setLoading(true)
     const data = {
-      name: values.name,
+      nationalId: values.nationalId,
+      firstName: values.firstName,
+      surname: values.surname,
+      otherName: values.otherName,
+      dob: values.dob,
+      relationship: values.relationship,
+      address: values.address,
+      phone: values.phone,
+      note: values.note,
       employeeId: parseInt(param.id),
     }
     console.log(data)
@@ -1163,7 +1184,7 @@ const EmployeeEditForm= () =>{
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Email</label>
-                  <input type="email" name="email" value={dataByID?.email} onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="email" name="email" value={dataByID?.email.toLowerCase()} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Personal Email</label>
@@ -1190,7 +1211,7 @@ const EmployeeEditForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Group</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
                   {allPaygroups?.data.map((item: any) => (
-                    <option value={item.id}>{item.name}</option>
+                    <option value={dataByID.paygroupId}>{item.name}</option>
                   ))}
                 </select>
               </div>
@@ -1218,7 +1239,7 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Salary Grade</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  {/* <option>{dataByID?.grade} </option> */}
+                  {/* <option>{gradeName.name} </option> */}
                   {allGrades?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1235,11 +1256,9 @@ const EmployeeEditForm= () =>{
               </div> */}
             </div>
             <div className='row mb-0'>
-              
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                 
                   {allDepartments?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1792,7 +1811,7 @@ const EmployeeEditForm= () =>{
                     Add New Family 
                   </button>
           
-                  <Table columns={familyColumns}  />
+                  <Table columns={familyColumns} dataSource={familyByEmployee} loading={loading} />
                   <Modal
                     title="Add Family Member"
                     open={familyOpen}
@@ -1835,7 +1854,7 @@ const EmployeeEditForm= () =>{
                       <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                         <div className='col-6 mb-7'>
                           <label htmlFor="exampleFormControlInput1" className="form-label">National ID</label>
-                          <input type="text" name="name"  className="form-control form-control-solid"/>
+                          <input type="text" {...register("nationalId")} className="form-control form-control-solid"/>
                         </div>
                         <div className='col-6 mb-7'>
                           <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
