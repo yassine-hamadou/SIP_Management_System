@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import "./formStyle.css"
@@ -1073,22 +1074,22 @@ const EmployeeEditForm= () =>{
             </div>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">First Name</label>
                 <input type="text" name="fname" value={dataByID?.firstName}  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className="required form-label">Surname</label>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
                 <input type="text" name="mname" value={dataByID?.surname} className="form-control form-control-solid" />
               </div>
             </div>
 
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className="required form-label">Other Name</label>
-                <input type="text" name="lname" value={dataByID?.surname} className="form-control form-control-solid" />
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Other Name</label>
+                <input type="text" name="lname" value={dataByID?.otherName} className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className="required form-label">Date of Birth</label>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Date of Birth</label>
                 <input type="text" name="dob" value={dataByID?.dob}   className="form-control form-control-solid" />
               </div>
             </div>
@@ -1105,7 +1106,7 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Marital Status</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  <option >{dataByID?.maritalStatus}</option>
+                  {/* <option >{dataByID?.maritalStatus}</option> */}
                   <option value="SINGLE">SINGLE</option>
                   <option value="MARRIED">MARRIED</option>
                  
@@ -1141,41 +1142,41 @@ const EmployeeEditForm= () =>{
             <div className='col-8'>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Phone Number</label>
                   <input type="phone" value={dataByID?.phone} name="tel" pattern="[0-9]*" className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Alternative Phone number</label>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Alternative Phone number</label>
                   <input type="phone" value={dataByID?.alternativePhone} name="tel" maxLength={15} onKeyPress={validatePhoneNumber} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Address</label>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Address</label>
                   <input type="text" name="address" value={dataByID?.address} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Residential Address</label>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Residential Address</label>
                   <input type="text" name="raddress" value={dataByID?.residentialAddress} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Email</label>
                   <input type="email" name="email" value={dataByID?.email} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Personal Email</label>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Personal Email</label>
                   <input type="email" name="pemail" value={dataByID?.personalEmail} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Next of kin</label>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Next of kin</label>
                   <input type="text" name="email"  value={dataByID?.nextOfKin} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Guarantor</label>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Guarantor</label>
                   <input type="text" name="guarantor" value={dataByID?.guarantor} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
@@ -1218,9 +1219,9 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Salary Grade</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>{dataByID?.grade} </option>
-                  {GRADES.map((item: any) => (
-                    <option value={item.code}>{item.name}</option>
+                  {/* <option>{dataByID?.grade} </option> */}
+                  {allGrades?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
                   ))}
                 </select>
               </div>
@@ -1239,7 +1240,7 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  {/* <option>{dataByID?.depart} </option> */}
+                 
                   {DEPARTMENTS.map((item: any) => (
                     <option value={item.code}>{item.name}</option>
                   ))}
@@ -1278,16 +1279,7 @@ const EmployeeEditForm= () =>{
               </div>
             </div>
             <div className='row mb-0'>
-              {/* <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Termination Date</label>
-                <input type="text" name="tdate" onChange={handleChange}  className="form-control form-control-solid" />
-
-              </div> */}
-              {/* <div className='col-6 mb-7'>
-                <br></br>
-             
-                <a href="#" className="btn btn-danger"> Terminate</a>
-              </div> */}
+              
             </div>
           </div>}
 
