@@ -23,3 +23,7 @@ export const fetchEmployees= ()=>{
     return axios.get(`${Api_Endpoint}/Employees`)
 }
 
+export const fetchLeaveTypes = () => {
+    return axios.get(`${Api_Endpoint}/Leaves`)
+}
+

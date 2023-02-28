@@ -9,7 +9,7 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 import {DateTimePickerComponent} from '@syncfusion/ej2-react-calendars'
 import {DropDownListComponent} from '@syncfusion/ej2-react-dropdowns'
-import {useMutation, useQuery, useQueryClient} from 'react-query'
+import {useQuery, useQueryClient} from 'react-query'
 import '@syncfusion/ej2-base/styles/material.css'
 import '@syncfusion/ej2-calendars/styles/material.css'
 import '@syncfusion/ej2-dropdowns/styles/material.css'
@@ -20,17 +20,8 @@ import '@syncfusion/ej2-popups/styles/material.css'
 import '@syncfusion/ej2-splitbuttons/styles/material.css'
 import '@syncfusion/ej2-react-schedule/styles/material.css'
 import '@syncfusion/ej2-buttons/styles/material.css'
-import {
-  addSchedule,
-  deleteSchedule,
-  fetchCustodians,
-  fetchSchedules,
-  fetchServiceTypes,
-  fetchVmequps,
-  updateSchedule,
-} from './requests'
 import {Input, message} from 'antd'
-import {employeedata, LEAVE} from "../../../../../../../data/DummyData";
+import {fetchDepartments, fetchEmployees, fetchLeaveTypes, fetchUnits} from "../../../../../../../services/ApiCalls";
 
 /**
  *  Schedule editor custom fields sample
@@ -51,87 +42,58 @@ L10n.load({
 const Calendar = ({chosenLocationIdFromDropdown}) => {
   // const [serviceTypeDropDownValues, setserviceTypeDropDownValues] = useState([])
   let scheduleObj
-  let scheduleQueryClient = useQueryClient() // for refetching the schedules
   // React Query
   //Get
-  const {data: schedulesData} = useQuery('schedules', fetchSchedules, {
+  const {data: employeeData} = useQuery('employeeData', fetchEmployees, {
     refetchOnWindowFocus: false,
     staleTime: 300000,
   })
-  const {data: vmequps} = useQuery('vmequps', fetchVmequps, {
+
+  const {data: leaveTypes} = useQuery('leaveTypes', fetchLeaveTypes, {
     refetchOnWindowFocus: false,
-    staleTime: Infinity,
-  })
-  const {data: custodiansData} = useQuery('custodians', fetchCustodians, {
-    refetchOnWindowFocus: false,
-    staleTime: Infinity,
-  })
-  const {data: serviceTypes} = useQuery('serviceTypes', fetchServiceTypes, {
-    refetchOnWindowFocus: false,
-    staleTime: Infinity,
+    staleTime: 300000,
   })
 
-  //Create
-  const {mutate: addScheduleMutation} = useMutation(addSchedule, {
-    onSuccess: () => {
-      scheduleQueryClient.invalidateQueries('schedules')
-      return message.success('Schedule added successfully')
-    },
-    onError: (error) => {
-      console.log('error adding schedule', error)
-      return message.error('Error adding schedule')
-    },
-  })
-  //delete
-  const {mutate: deleteScheduleMutation} = useMutation(deleteSchedule, {
-    onSuccess: () => {
-      scheduleQueryClient.invalidateQueries('schedules')
-      return message.success('Schedule deleted successfully')
-    },
-    onError: (error) => {
-      console.log('error deleting schedule', error)
-      return message.error('Error deleting schedule')
-    },
-  })
-  //put (update)
-  const {mutate: updateScheduleMutation} = useMutation(updateSchedule, {
-    onSuccess: () => {
-      scheduleQueryClient.invalidateQueries('schedules')
-      return message.success('Schedule updated successfully')
-    },
-    onError: (error) => {
-      console.log('error updating schedule', error)
-      return message.error('Error updating schedule')
-    },
-  })
   //Access the same location query from cycle details component
-  const locationQuery = useQueryClient().getQueryData('Locations')
+  console.log('employeeData', employeeData)
 
-    let dropDownListObject;
+    // let dropDownListObject;
 
-  let vmQuery = useQueryClient()
+  const employeesQueryData = useQueryClient()
+  const unitQuery = useQuery('unitData', fetchUnits)
 
+  console.log('employeesQueryData', employeesQueryData)
   function editorTemplate(props) {
     console.log('props', props)
-    if (props.serviceTypeId) {
-      const fleetModel = vmQuery.getQueryData('vmequps')?.data?.find((fleet) => fleet.fleetID.trimEnd() === props.fleetId.trimEnd())?.modlName
-      const serviceTypesOfSelectedModel = serviceTypes?.data?.filter((service) => service.model.trimEnd() === fleetModel.trimEnd())
-      console.log('fleetModel during props', fleetModel)
-      console.log('serviceTypesOfSelectedModel', serviceTypesOfSelectedModel)
-      // Setting Service Type dropdown values
-      dropDownListObject.dataSource = serviceTypesOfSelectedModel.map((service) => {
-        return { text: service.name, value: service.id }
-      })
-      dropDownListObject.dataBind() // refresh the dropdown list
-    }
+    // if (props.serviceTypeId) {
+    //   const fleetModel = vmQuery.getQueryData('vmequps')?.data?.find((fleet) => fleet.fleetID.trimEnd() === props.fleetId.trimEnd())?.modlName
+    //   // const serviceTypesOfSelectedModel = serviceTypes?.data?.filter((service) => service.model.trimEnd() === fleetModel.trimEnd())
+    //
+    //   // Setting Service Type dropdown values
+    //   // dropDownListObject.dataSource = serviceTypesOfSelectedModel.map((service) => {
+    //   //   return { text: service.name, value: service.id }
+    //   // })
+    //   // dropDownListObject.dataBind() // refresh the dropdown list
+    // }
     function getEmployeeUnit(e) {
+      console.log("e", e)
     if (e.itemData) {
       console.log("e.itemData", e.itemData)
       // udpate location dropdown component to automatically select the selected employee unit
-      const employeeDepart = employeedata.find((employee) => employee.code == e.itemData.value).depart
+      // console.log("employeeDatay", employeesQueryData.)
+      const employeeDepartId = employeesQueryData.getQueryData('employeeData')?.data?.find((employee) => employee.id === e.itemData.value).departmentId
       const unitInputField = document.getElementById("Location")
-      unitInputField.value = employeeDepart
+      console.log("unitInputField", unitInputField)
+      //get the unit of the selected employee
 
+      if (employeeDepartId === null || employeeDepartId === undefined) {
+        message.error("Employee does not have a department").then(r => r)
+      }
+      else {
+        unitInputField.value = unitQuery.data?.data?.find((unit) => unit.departmentId === employeeDepartId).name
+        console.log("unitInputField", unitInputField)
+      }
+      // console.log("employeeDepartId", employeeDepartId)
     }
   }
     return props !== undefined ? (
@@ -146,15 +108,15 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
                 data-name='fleetId'
                 className='e-field'
                 style={{width: '100%'}}
-                dataSource={employeedata.map((employee) => {
+                dataSource={employeeData?.data?.map((employee) => {
                   return {
-                    text: `${employee.firstname} ${employee.lastname}`,
-                    value: `${employee.code}`, //this is the value that will be sent to the backend
+                    text: `${employee.firstName} ${employee.surname}`,
+                    value: employee.id, //this is the value that will be sent to the backend
                   }
                 })}
                 fields={{text: 'text', value: 'value'}}
                 value={props && props.fleetId ? `${props.fleetId}` : null}
-                change={getEmployeeUnit}
+                change={(e) => getEmployeeUnit(e)}
               />
             </td>
           </tr>
@@ -163,11 +125,12 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
             <td colSpan={4}>
               <Input
                 id='Location'
-                disabled
+                readOnly
+                disabled={true}
                 placeholder='Choose Employee Unit'
                 data-name='locationId'
                 className='e-field'
-                style={{width: '100%'}}
+                style={{width: '100%', fontColor: 'black'}}
               />
             </td>
           </tr>
@@ -179,12 +142,12 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
                 placeholder='Choose Type of Leave'
                 data-name='serviceTypeId'
                 className='e-field'
-                ref={(scope) => (dropDownListObject = scope)}
+                // ref={(scope) => (dropDownListObject = scope)}
                 style={{width: '100%'}}
-                dataSource={LEAVE.map((leave) => {
+                dataSource={leaveTypes?.data?.map((leaveType) => {
                   return {
-                    text: `${leave.name}`,
-                    value: `${leave.code}`
+                    text: `${leaveType.name}`,
+                    value: `${leaveType.code}`
                   }
                 })}
                 fields={{text: 'text', value: 'value'}}
@@ -384,7 +347,7 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
               ref={t => scheduleObj = t}
               // eventSettings={{ dataSource: data }}
               // eventRendered={onEventRendered.bind(this)}
-              currentView='Week'
+              currentView='Month'
               id='schedule'
               editorTemplate={editorTemplate}
           >

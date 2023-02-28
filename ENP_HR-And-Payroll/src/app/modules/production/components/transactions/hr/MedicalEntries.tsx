@@ -8,7 +8,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { employeedata, MEDICALS, period } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
 
-const MedicalEntries = () => {
+const wMedicalEntries = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')

@@ -5,6 +5,7 @@ import { ENP_URL } from '../../../../../urls'
 export const fetchSchedules = () => {
   return axios.get(`${ENP_URL}/FleetSchedulesApi`)
 }
+
 export const fetchVmequps = () => {
   return axios.get(`${ENP_URL}/VmequpsApi`)
 }
