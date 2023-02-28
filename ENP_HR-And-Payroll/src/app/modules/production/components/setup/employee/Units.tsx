@@ -109,9 +109,10 @@ const Units = () => {
       console.log(error)
     }
   }
-console.log(param.id)
+
   const {data:allDepartments} = useQuery('departments', fetchDepartments, {cacheTime:5000})
   const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
+
   const getItemName= async (param:any) =>{
 
     let newName=null
@@ -122,6 +123,7 @@ console.log(param.id)
      newName = await itemTest
     return newName
  }
+
   useEffect(() => {
     (async ()=>{
       let res = await getItemName(param.id)
@@ -133,20 +135,20 @@ console.log(param.id)
       let divisionName = allDivisions?.data.find((div:any)=>{
         return div.id===divisionId
       })
-
-      console.log("division name obtained: " + divisionName.name)
       setDivisionName(divisionName.name)
     })();
     loadData()
   }, [])
+
+
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
     key: index,
   }))
 
-  const dataByID = UNITS.filter((section:any) =>{
-    return section.departmentID.toString() ===param.id
+  const dataByID = gridData.filter((section:any) =>{
+    return section.departmentId ===parseInt(param.id)
   })
 
   const handleInputChange = (e: any) => {
@@ -228,7 +230,7 @@ console.log(param.id)
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataWithIndex} loading={loading}/>
+          <Table columns={columns} dataSource={dataByID} loading={loading}/>
           <Modal
                 title='Unit Setup'
                 open={isModalOpen}

@@ -6,7 +6,7 @@ import { ENP_URL } from '../../../urls'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { GRADES } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchPaygroups } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchGrades, fetchPaygroups } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 
 const Grades = () => {
@@ -112,7 +112,7 @@ const Grades = () => {
       render: (_: any, record: any) => (
         <Space size='middle'>
           
-          <Link to={`/notches/${record.code}`}>
+          <Link to={`/notches/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Notches</span>
           </Link>
           <a href='#' className='btn btn-light-warning btn-sm'>
@@ -129,7 +129,8 @@ const Grades = () => {
   ]
 
 
-  const {data:allPaygroups} = useQuery('paygroup', fetchPaygroups, {cacheTime:5000})
+  const {data:allPaygroups} = useQuery('paygroups', fetchPaygroups, {cacheTime:5000})
+  const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
   const getItemName= async (param:any) =>{
 
     let newName=null

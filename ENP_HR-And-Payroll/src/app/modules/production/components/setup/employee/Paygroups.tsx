@@ -5,8 +5,9 @@ import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { PAYGROUP } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchPaygroups } from '../../../../../services/ApiCalls'
 import { Link } from 'react-router-dom'
+import { useQuery } from 'react-query'
 
 const Paygroups = () => {
   const [gridData, setGridData] = useState([])
@@ -100,7 +101,7 @@ const Paygroups = () => {
   ]
 
 
-
+  const {data:allPaygroups} = useQuery('paygroups', fetchPaygroups, {cacheTime:5000})
   const loadData = async () => {
     setLoading(true)
     try {

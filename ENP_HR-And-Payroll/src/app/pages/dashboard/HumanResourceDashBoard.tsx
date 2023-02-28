@@ -24,7 +24,7 @@ const dashboardColumns: any = [
     },
   },
   {
-    title: 'Dvision',
+    title: 'Division',
     dataIndex: 'name',
     sorter: (a: any, b: any) => {
       if (a.name > b.name) {
@@ -75,23 +75,6 @@ const dashboardColumns: any = [
       return 0
     },
   },
-
-  // {
-  //   title: 'Action',
-  //   fixed: 'right',
-  //   width: 100,
-  //   render: (_: any, record: any) => (
-  //     <Space size='middle'>
-        
-        
-  //       <a className='btn btn-light-danger btn-sm'>
-  //         Delete
-  //       </a>
-       
-  //     </Space>
-  //   ),
-    
-  // },
 ]
 
 
@@ -128,7 +111,7 @@ const HRDashboardPage: FC = () => (
                 Search
               </Button>
             </Space>
-      <Table columns={dashboardColumns}  />
+        <Table columns={dashboardColumns}  />
       </div>
     </div>
     {/* end::Row */}

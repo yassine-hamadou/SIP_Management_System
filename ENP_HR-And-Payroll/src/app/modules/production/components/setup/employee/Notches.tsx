@@ -55,25 +55,12 @@ const Notches = () => {
    
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Salary Upgrade',
-      dataIndex: 'salgrade',
-      sorter: (a: any, b: any) => {
-        if (a.salgrade > b.salgrade) {
-          return 1
-        }
-        if (b.salgrade > a.salgrade) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -156,7 +143,7 @@ const Notches = () => {
   useEffect(() => {
     (async ()=>{
       let res = await getItemName(param.id)
-      setPaygroupName(res?.name)
+      setGradeName(res?.name)
     })();
     (async ()=>{
       let res = await getItemName(param.id)
@@ -164,9 +151,7 @@ const Notches = () => {
       let paygroupName = allPaygroups?.data.find((div:any)=>{
         return div.id===paygroupId
       })
-  
-      console.log("paygroup name obtained: " + paygroupName.name)
-      setGradeName(paygroupName.name)
+      setPaygroupName(paygroupName.name)
     })();
     loadData()
   }, [])
@@ -259,7 +244,7 @@ const Notches = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={NOTCHES}/>
+          <Table columns={columns} dataSource={dataByID}  />
           <Modal
                 title='Notches Setup'
                 open={isModalOpen}
