@@ -1189,19 +1189,18 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Group</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  
-                  <option value="1">MANAGEMENT</option>
-                  <option value="2">CASUAL</option>
-                  <option value="3">GENERAL</option>
+                  {allPaygroups?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
                 </select>
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
                  
-                  {CATEGORY.map((item: any) => (
-                    <option value={item.code}>{item.name}</option>
-                  ))}
+                  {allCategories?.data.map((item: any) => (
+                      <option value={item.id}>{item.name}</option>
+                    ))}
                 </select>
               </div>
               
@@ -1211,8 +1210,8 @@ const EmployeeEditForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
                 <select className="form-select form-select-solid" aria-label="Select example">
                 {/* <option>{dataByID?.region} </option> */}
-                {DIVISION.map((item: any) => (
-                    <option value={item.code}>{item.name}</option>
+                {allDivisions?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
                   ))}
                 </select>
               </div>
@@ -1241,8 +1240,8 @@ const EmployeeEditForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
                  
-                  {DEPARTMENTS.map((item: any) => (
-                    <option value={item.code}>{item.name}</option>
+                  {allDepartments?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
                   ))}
                 </select>
               </div>
@@ -1250,9 +1249,8 @@ const EmployeeEditForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Notch</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
                   <option>{dataByID?.notch} </option>
-                 
-                  {NOTCHES.map((item: any) => (
-                    <option value={item.code}>{item.name}</option>
+                  {allNotches?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
                   ))}
                 </select>
               </div>
@@ -1262,8 +1260,8 @@ const EmployeeEditForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
                 <select className="form-select form-select-solid" aria-label="Select example">
                 <option>{dataByID?.unit} </option>
-                {UNITS.map((item: any) => (
-                    <option value={item.code}>{item.name}</option>
+                {allUnits?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
                   ))}
                 </select>
               </div>
@@ -1300,9 +1298,8 @@ const EmployeeEditForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Payment Method</label>
                 <select className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                  <option value="BANK">BANK</option>
+                  <option value="CASH">CASH</option>
                 </select>
 
               </div>
