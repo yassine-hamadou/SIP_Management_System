@@ -1090,7 +1090,7 @@ const EmployeeEditForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Date of Birth</label>
-                <input type="text" name="dob" value={dataByID?.dob}   className="form-control form-control-solid" />
+                <input type="text" name="dob" value={dataByID?.dob.substring(0,11)}   className="form-control form-control-solid" />
               </div>
             </div>
             <div className='row mb-0'>
@@ -1820,7 +1820,7 @@ const EmployeeEditForm= () =>{
                       <hr></hr>
                       <div className='row mb-0'>
                         <div className='col-6 mb-7'>
-                          <Upload
+                          {/* <Upload
                                 
                             listType="picture-card"
                             fileList={fileList}
@@ -1828,7 +1828,7 @@ const EmployeeEditForm= () =>{
                             onPreview={onPreview}
                           > 
                             <UploadOutlined />
-                          </Upload>
+                          </Upload> */}
                         </div>
                       
                       </div>
@@ -1838,31 +1838,31 @@ const EmployeeEditForm= () =>{
                           <input type="text" name="name"  className="form-control form-control-solid"/>
                         </div>
                         <div className='col-6 mb-7'>
-                          <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
                           <input type="text" {...register("firstName")}  className="form-control form-control-solid"/>
                         </div>
                         
                       </div>
                       <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                         <div className='col-6 mb-7'>
-                          <label htmlFor="exampleFormControlInput1" className="form-label">National ID</label>
-                          <input type="text" name="name"  className="form-control form-control-solid"/>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Surname</label>
+                          <input type="text" {...register("surname")}  className="form-control form-control-solid"/>
                         </div>
                         <div className='col-6 mb-7'>
-                          <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                          <input type="text" {...register("firstName")}  className="form-control form-control-solid"/>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Other Name</label>
+                          <input type="text" {...register("otherName")}  className="form-control form-control-solid"/>
                         </div>
                         
                       </div>
                       <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                         <div className='col-6 mb-7'>
                           <label htmlFor="exampleFormControlInput1" className="form-label">Relationship</label>
-                          <select className="form-select form-select-solid" aria-label="Select example">
+                          <select className="form-select form-select-solid" {...register("relationship")}  aria-label="Select example">
                             <option>select </option>
-                            <option value="1">SPOUSE</option>
-                            <option value="2">PARENT</option>
-                            <option value="3">CHILD</option>
-                            <option value="3">SIBLING</option>
+                            <option value="SPOUSE">SPOUSE</option>
+                            <option value="PARENT">PARENT</option>
+                            <option value="CHILD">CHILD</option>
+                            <option value="SIBLING">SIBLING</option>
                           </select>
                         </div>
                         <div className='col-6 mb-7'>
@@ -1897,7 +1897,7 @@ const EmployeeEditForm= () =>{
             </div>}
         </div>
         </div >
-        <button className='btn btn-primary' disabled type="submit">Submit</button>
+        {/* <button className='btn btn-primary' disabled type="submit">Submit</button> */}
       
     </div>
   );
