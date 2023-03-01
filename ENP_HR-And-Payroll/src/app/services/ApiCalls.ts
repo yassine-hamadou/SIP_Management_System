@@ -44,3 +44,7 @@ export const fetchQualifications= ()=>{
     return axios.get(`${Api_Endpoint}/Qualifications`)
 }
 
+export const fetchLeaveTypes = () => {
+    return axios.get(`${Api_Endpoint}/Leaves`)
+}
+
