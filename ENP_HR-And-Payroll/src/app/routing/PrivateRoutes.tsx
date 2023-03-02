@@ -1,5 +1,5 @@
 import {FC, Suspense} from 'react'
-import {Route, Routes, Navigate} from 'react-router-dom'
+import {Route, Routes, Navigate, Outlet} from 'react-router-dom'
 import {MasterLayout} from '../../_metronic/layout/MasterLayout'
 import TopBarProgress from 'react-topbar-progress-indicator'
 import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
@@ -56,10 +56,8 @@ import { CompanyAsset } from '../modules/production/components/setup/hr/CompanyA
 
 import { HRDashboardWrapper } from '../pages/dashboard/HumanResourceDashBoard'
 import { PayrollDashboardWrapper } from '../pages/dashboard/PayrollDashBoard'
-import {LeavePlanning} from "../modules/production/components/transactions/hr/leavePlanning/EquipmentSchedule";
 import { Notes } from '../modules/production/components/setup/hr/Notes'
 import { NoteEntry } from '../modules/production/components/transactions/hr/NoteEntry'
-import FaultEntryReport from '../modules/production/components/report/PayrollPAYEReport'
 import PayrollPAYEReport from '../modules/production/components/report/PayrollPAYEReport'
 import BenefitTransactionInputReport from '../modules/production/components/report/BenefitTransactionInputReport'
 import DeductionTransactionInputReport from '../modules/production/components/report/DeductionTransactionInputReport'
@@ -88,6 +86,10 @@ import EmployeeDivisionSummaryReport from '../modules/production/components/repo
 import LeaveEmployeeReport from '../modules/production/components/report/LeaveEmployeeReport'
 import LeaveSummaryReport from '../modules/production/components/report/LeaveSummaryReport'
 import NoteCategoryReport from '../modules/production/components/report/NoteCategoryReport'
+import {LeavePlanning} from "../modules/production/components/transactions/hr/leavePlanning/LeavePlanning";
+import {LeaveApproval} from "../modules/production/components/transactions/hr/leavePlanning/LeaveApproval";
+import { EmployeeDetail } from '../modules/production/components/transactions/hr/leavePlanning/EmployeeDetail'
+
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -239,14 +241,25 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='transaction/hr/leave-planning*'
+         path='transaction/hr/leave-planning/*'
          element={
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Leave Plannings</PageTitle>
-             <LeavePlanning />
+             <Outlet />
            </SuspensedView>
          }
-        />
+        >
+            <Route path='' element={<LeavePlanning />} />
+            <Route path='approval/*' element={
+                <SuspensedView>
+                    <PageTitle breadcrumbs={accountBreadCrumbs}>Leave Approval</PageTitle>
+                    <Outlet />
+                </SuspensedView>
+            }>
+                <Route path='' element={<LeaveApproval />} />
+                <Route path=':id' element={<EmployeeDetail />} />
+            </Route>
+        </Route>
         <Route
          path='transaction/hr/medical-entries*'
          element={

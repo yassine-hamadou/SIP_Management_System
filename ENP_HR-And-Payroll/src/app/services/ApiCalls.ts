@@ -51,3 +51,7 @@ export const fetchMedicals= ()=>{
 }
 
 
+export const fetchLeaveTypes = () => {
+    return axios.get(`${Api_Endpoint}/Leaves`)
+}
+
