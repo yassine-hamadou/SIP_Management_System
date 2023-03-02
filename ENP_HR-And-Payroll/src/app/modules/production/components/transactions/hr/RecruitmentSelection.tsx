@@ -1,12 +1,15 @@
-import {Button, Form, Input, InputNumber, Upload,Modal, Space, Table, Radio, RadioChangeEvent} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Form, Input, InputNumber, Upload, Modal, Space, Table, Radio, RadioChangeEvent } from 'antd'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
 import { CATEGORY, employeedata, JOBTITLE, PAYGROUP, UNITS } from '../../../../../data/DummyData'
+import { useForm } from 'react-hook-form'
+import { useQuery } from 'react-query'
+import { Api_Endpoint, fetchCategories, fetchJobTitles, fetchPaygroups, fetchUnits } from '../../../../../services/ApiCalls'
 
 const RecruitmentSelection = () => {
   const [gridData, setGridData] = useState([])
@@ -14,8 +17,8 @@ const RecruitmentSelection = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
-  
+  const { register, reset, handleSubmit } = useForm()
+
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isShortModalOpen, setIsShortModalOpen] = useState(false)
   const [radioValue, setRadioValue] = useState();
@@ -24,7 +27,7 @@ const RecruitmentSelection = () => {
   const [radio3Value, setRadio3Value] = useState();
   const [radio4Value, setRadio4Value] = useState();
 
-  const [employeeRecord, setEmployeeRecord]= useState<any>(null)
+  const [employeeRecord, setEmployeeRecord] = useState<any>(null)
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -34,12 +37,12 @@ const RecruitmentSelection = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    // form.resetFields()
     setIsModalOpen(false)
   }
-  const showShortModal = (record:any) => {
+  const showShortModal = (record: any) => {
     setIsShortModalOpen(true)
-    setEmployeeRecord({...record})
+    setEmployeeRecord({ ...record })
   }
 
   const handleShortOk = () => {
@@ -47,13 +50,13 @@ const RecruitmentSelection = () => {
   }
 
   const handleShortCancel = () => {
-    form.resetFields()
+    // form.resetFields()
     setIsShortModalOpen(false)
   }
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${ENP_URL}/RecruitmentTransactions/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -63,7 +66,7 @@ const RecruitmentSelection = () => {
     }
   }
   const [fileList, setFileList] = useState<UploadFile[]>([
-    
+
   ]);
 
   const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
@@ -112,29 +115,17 @@ const RecruitmentSelection = () => {
     deleteData(element)
   }
 
-  const columns:any = [
-   
-    // {
-    //   title: 'Employee ID',
-    //   dataIndex: 'empcode',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.empcode > b.empcode) {
-    //       return 1
-    //     }
-    //     if (b.empcode > a.empcode) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
+  const columns: any = [
+
+
     {
       title: 'First Name',
-      dataIndex: 'firstname',
+      dataIndex: 'firstName',
       sorter: (a: any, b: any) => {
-        if (a.firstname > b.firstname) {
+        if (a.firstName > b.firstName) {
           return 1
         }
-        if (b.firstname > a.firstname) {
+        if (b.firstName > a.firstName) {
           return -1
         }
         return 0
@@ -142,12 +133,12 @@ const RecruitmentSelection = () => {
     },
     {
       title: 'Last Name',
-      dataIndex: 'lastname',
+      dataIndex: 'lastName',
       sorter: (a: any, b: any) => {
-        if (a.lastname > b.lastname) {
+        if (a.lastName > b.lastName) {
           return 1
         }
-        if (b.lastname > a.lastname) {
+        if (b.lastName > a.lastName) {
           return -1
         }
         return 0
@@ -168,12 +159,12 @@ const RecruitmentSelection = () => {
     },
     {
       title: 'Gender',
-      dataIndex: 'sex',
+      dataIndex: 'gender',
       sorter: (a: any, b: any) => {
-        if (a.sex > b.sex) {
+        if (a.gender > b.gender) {
           return 1
         }
-        if (b.sex > a.sex) {
+        if (b.gender > a.gender) {
           return -1
         }
         return 0
@@ -183,10 +174,10 @@ const RecruitmentSelection = () => {
       title: 'Phone Number',
       dataIndex: 'phone',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.phone > b.phone) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.phone > a.phone) {
           return -1
         }
         return 0
@@ -212,22 +203,22 @@ const RecruitmentSelection = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a href='#' onClick={()=>{showShortModal(record)}} className=' btn btn-light-info btn-sm'>
+          <a href='#' onClick={() => { showShortModal(record) }} className=' btn btn-light-info btn-sm'>
             Shortlist
           </a>
-          <a href='#'  className='btn btn-light-primary btn-sm'>
+          <a href='#' className='btn btn-light-primary btn-sm'>
             Selection
           </a>
         </Space>
       ),
-      
+
     },
   ]
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/RecruitmentTransactions`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -242,7 +233,14 @@ const RecruitmentSelection = () => {
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
     key: index,
+    score: 0,
   }))
+
+
+  const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
+  const { data: allCategories } = useQuery('categories', fetchCategories, { cacheTime: 5000 })
+  const { data: allUnits } = useQuery('units', fetchUnits, { cacheTime: 5000 })
+  const { data: allJobTitles } = useQuery('jobtitles', fetchJobTitles, { cacheTime: 5000 })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -261,19 +259,31 @@ const RecruitmentSelection = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
+  const url = `${Api_Endpoint}/RecruitmentTransactions`
+  const OnSUbmit = handleSubmit(async (values) => {
+    setLoading(true)
     const data = {
-      name: values.name,
+      reference: values.reference,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      dob: values.dob,
+      gender: values.gender,
+      phone: values.phone,
+      email: values.email,
+      qualification: values.qualification,
+      description: values.description,
+      startDate: values.startDate,
+      endDate: values.endDate,
+      paygroupId: parseInt(values.paygroupId),
+      categoryId: parseInt(values.categoryId),
+      jobTitleId: parseInt(values.jobTitleId),
+      unitId: parseInt(values.unitId),
     }
-
     console.log(data)
-
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
-      form.resetFields()
+      reset()
       setIsModalOpen(false)
       loadData()
       return response.statusText
@@ -281,10 +291,10 @@ const RecruitmentSelection = () => {
       setSubmitLoading(false)
       return error.statusText
     }
-  }
+  })
 
   return (
-    
+
     <div
       style={{
         backgroundColor: 'white',
@@ -293,76 +303,154 @@ const RecruitmentSelection = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
+      <form onSubmit={OnSUbmit}>
+        <div style={{ padding: "0px 0px 0px 0px" }} className='col-12 row'>
+          <div style={{ padding: "20px 20px 0 20px" }} className='col-6 row mb-0'>
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Reference#</label>
+              <input type="text" {...register("reference")} className="form-control form-control-solid" />
+            </div>
 
-      <div style={{padding: "0px 0px 0px 0px"}}  className='col-12 row'>
-        <div style={{padding: "20px 20px 0 20px"}} className='col-6 row mb-0'>
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Reference#</label>
-            <input type="text" name="ref" className="form-control form-control-solid" />
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Description</label>
+              <input type="textarea" {...register("description")} className="form-control form-control-solid" />
+            </div>
           </div>
+          <div style={{ padding: "20px 0px 0 0px" }} className='col-6 row mb-0'>
+            <div className='col-6 mb-3'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Start date</label>
+              <input type="date" {...register("startDate")} className="form-control form-control-solid" />
+            </div>
 
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Description</label>
-            <input type="textarea" name="desc" className="form-control form-control-solid" />
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">End date</label>
+              <input type="date" {...register("endDate")} className="form-control form-control-solid" />
+            </div>
           </div>
-        </div>
-        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
-          <div className='col-6 mb-3'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Start date</label>
-            <input type="date" name="sdate" className="form-control form-control-solid" />
+          <div style={{ padding: "20px 20px 0 20px" }} className='col-6 row mb-0'>
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
+              <select className="form-select form-select-solid" {...register("paygroupId")} aria-label="Select example">
+                <option> select</option>
+                {allPaygroups?.data.map((item: any) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
+              <select className="form-select form-select-solid" {...register("categoryId")} aria-label="Select example">
+                <option> select</option>
+                {allCategories?.data.map((item: any) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
+          <div style={{ padding: "20px 0px 0 0px" }} className='col-6 row mb-0'>
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
+              <select className="form-select form-select-solid" {...register("jobTitleId")} aria-label="Select example">
+                <option> select</option>
 
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">End date</label>
-            <input type="date" name="edate" className="form-control form-control-solid" />
+                {allJobTitles?.data.map((item: any) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className='col-6 mb-7'>
+              <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
+              <select className="form-select form-select-solid" {...register("unitId")} aria-label="Select example">
+                <option> select</option>
+                {allUnits?.data.map((item: any) => (
+                  <option value={item.id}>{item.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
-        <div style={{padding: "20px 20px 0 20px"}} className='col-6 row mb-0'>
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
-            <select className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
-              {PAYGROUP.map((item: any) => (
-                <option value={item.code}>{item.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
-            <select className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
-              {CATEGORY.map((item: any) => (
-                <option value={item.code}>{item.name}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
-            <select className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
-              
-              {JOBTITLE.map((item: any) => (
-                <option value={item.code}>{item.desc}</option>
-              ))}
-            </select>
-          </div>
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
-            <select className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
-              {UNITS.map((item: any) => (
-                <option value={item.code}>{item.name}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
+        <Modal
+          title='New Applicant'
+          open={isModalOpen}
+          onCancel={handleCancel}
+          closable={true}
+          width="900px"
+          footer={[
+            <Button key='back' onClick={handleCancel}>
+              Cancel
+            </Button>,
+            <Button
+              key='submit'
+              type='primary'
+              htmlType='submit'
+              loading={submitLoading}
+              onClick={OnSUbmit}
+            >
+              Submit
+            </Button>,
+          ]}
+        >
+          <form
+            onSubmit={OnSUbmit}
+          >
+            <hr></hr>
+            <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+              <div className='col-6 mb-3'>
+                <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
+                <input type="text" {...register("firstName")} className="form-control form-control-solid" />
+              </div>
+              <div className='col-6 mb-3'>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Last Name</label>
+                <input type="text" {...register("lastName")} className="form-control form-control-solid" />
+              </div>
+            </div>
+            <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+              <div className='col-6 mb-3'>
+                <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
+                <input type="date" {...register("dob")} className="form-control form-control-solid" />
+              </div>
+              <div className='col-6 mb-3'>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Gender</label>
+                <input type="phone" {...register("gender")} className="form-control form-control-solid" />
+              </div>
+            </div>
+            <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+              <div className='col-6 mb-3'>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Phone Number</label>
+                <input type="text" {...register("phone")} className="form-control form-control-solid" />
+              </div>
+              <div className='col-6 mb-3'>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Email</label>
+                <input type="email" {...register("email")} className="form-control form-control-solid" />
+              </div>
+            </div>
+            <div style={{ padding: "20px 20px 0 20px" }} className='row mb-7 '>
+              <div className='col-6 mb-3'>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Qualification</label>
+                <input type="text" {...register("qualification")} className="form-control form-control-solid" />
+              </div>
+              <div className='col-6 mb-3' style={{ padding: "30px 20px 0 20px" }}>
+                <Upload
+                  // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  listType="picture"
+                  fileList={fileList}
+                  onChange={onChange}
+                  onPreview={onPreview}
+                  className="upload-list-inline"
+
+                >
+                  <Button style={{ padding: "10px 20px 30px 20px" }} className='form-control btn btn-light-primary btn-sm' icon={<UploadOutlined />}>Upload</Button>
+
+                </Upload>
+              </div>
+            </div>
+          </form>
+        </Modal>
+      </form>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
@@ -374,7 +462,7 @@ const RecruitmentSelection = () => {
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -383,231 +471,136 @@ const RecruitmentSelection = () => {
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-            </button>
+              </button>
             </Space>
           </div>
-          <Table columns={columns} rowKey={(record)=>record.code} dataSource={employeedata} />
+          <Table columns={columns} rowKey={(record) => record.id} dataSource={dataWithIndex} />
           {/* Add form */}
-          <Modal
-                title='New Applicant'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                width="900px"
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
-            >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                 
-                    onFinish={onFinish}
-                >
-                    <hr></hr>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
-                      <input type="text" name="code"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
-                      <input type="text" name="name"  className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">DOB</label>
-                      <input type="date" name="code"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
-                      <input type="phone" name="name"  className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
-                      <input type="text" name="code"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
-                      <input type="email" name="name"  className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Qualification</label>
-                      <input type="text" name="code"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3' style={{padding: "30px 20px 0 20px"}}>  
-                    <Upload
-                      // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      listType="picture"
-                      fileList={fileList}
-                      onChange={onChange}
-                      onPreview={onPreview}
-                      className="upload-list-inline"
-                    
-                    >                  
-                      {/* <a href='#' className='form-control btn btn-light-primary btn-sm'>
-                        Upload document
-                      </a> */}
-                      <Button style={{padding: "10px 20px 30px 20px"}}  className='form-control btn btn-light-primary btn-sm' icon={<UploadOutlined />}>Upload</Button>
-                     
-                      </Upload>
-                    </div>
-                  </div>
-                </Form>
-          </Modal>
 
-           {/* shortlist form */}
+
+          {/* shortlist form */}
           <Modal
-                title='Short List'
-                open={isShortModalOpen}
-                onCancel={handleShortCancel}
-                closable={true}
-                width="900px"
-                footer={[
-                    <Button key='back' onClick={handleShortCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
-            >
-              <Form
-                labelCol={{span: 7}}
-                wrapperCol={{span: 14}}
-                layout='horizontal'
-                form={form}
-                name='control-hooks'
-              
-                onFinish={onFinish}
+            title='Short List'
+            open={isShortModalOpen}
+            onCancel={handleShortCancel}
+            closable={true}
+            width="900px"
+            footer={[
+              <Button key='back' onClick={handleShortCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+
               >
-                  {/* <hr></hr> */}
-                <hr></hr>
-                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-3'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
-                    <input type="text" name="code" value={employeeRecord?.firstname} className="form-control form-control-solid"/>
-                  </div>
-                  <div className='col-6 mb-3'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
-                    <input type="text" name="name" value={employeeRecord?.lastname} className="form-control form-control-solid"/>
-                  </div>
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              
+            >
+              {/* <hr></hr> */}
+              <hr></hr>
+              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-3'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
+                  <input type="text" name="code" value={employeeRecord?.firstname} className="form-control form-control-solid" />
                 </div>
-                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-3'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">DOB</label>
-                    <input type="text" name="code" value={employeeRecord?.dob}  className="form-control form-control-solid"/>
-                  </div>
-                  <div className='col-6 mb-3'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
-                    <input type="text" name="name" value={employeeRecord?.sex} className="form-control form-control-solid"/>
-                  </div>
+                <div className='col-6 mb-3'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
+                  <input type="text" name="name" value={employeeRecord?.lastname} className="form-control form-control-solid" />
                 </div>
-                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-3'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
-                    <input type="phone" name="code" value={employeeRecord?.phone}  className="form-control form-control-solid"/>
-                  </div>
-                  <div className='col-6 mb-3'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
-                    <input type="email" name="name"  className="form-control form-control-solid"/>
-                  </div>
+              </div>
+              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-3'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">DOB</label>
+                  <input type="text" name="code" value={employeeRecord?.dob} className="form-control form-control-solid" />
                 </div>
-                <hr></hr>
-                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-3'>
-                  <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Qualification</label>
-                    <Radio.Group onChange={onRadioChange} value={radioValue}>
-                      <Radio value={1}>1</Radio>
-                      <Radio value={2}>2</Radio>
-                      <Radio value={3}>3</Radio>
-                      <Radio value={4}>4</Radio>
-                      <Radio value={5}>5</Radio>
-                    </Radio.Group>
-                    <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on qualification (optional)' aria-label="With textarea"></textarea>
-                  </div>
-                  <div className='col-6 mb-3'>
-                    <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Work Skills</label>
-                    <Radio.Group onChange={onRadio1Change} value={radio1Value}>
-                      <Radio value={1}>1</Radio>
-                      <Radio value={2}>2</Radio>
-                      <Radio value={3}>3</Radio>
-                      <Radio value={4}>4</Radio>
-                      <Radio value={5}>5</Radio>
-                    </Radio.Group>
-                    <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on work skills (optional)' aria-label="With textarea"></textarea>
-                  </div>
+                <div className='col-6 mb-3'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
+                  <input type="text" name="name" value={employeeRecord?.sex} className="form-control form-control-solid" />
                 </div>
-                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-3'>
-                  <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Experiences </label>
-                    <Radio.Group onChange={onRadio2Change} value={radio2Value}>
-                      <Radio value={1}>1</Radio>
-                      <Radio value={2}>2</Radio>
-                      <Radio value={3}>3</Radio>
-                      <Radio value={4}>4</Radio>
-                      <Radio value={5}>5</Radio>
-                    </Radio.Group>
-                    <br></br>
-                    <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on experiences (optional)' aria-label="With textarea"></textarea>
-                  </div>
-                  <div className='col-6 mb-3'>
-                  <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Reference</label>
-                    <Radio.Group onChange={onRadio3Change} value={radio3Value}>
-                      <Radio value={1}>1</Radio>
-                      <Radio value={2}>2</Radio>
-                      <Radio value={3}>3</Radio>
-                      <Radio value={4}>4</Radio>
-                      <Radio value={5}>5</Radio>
-                    </Radio.Group>
-                    <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on reference (optional)' aria-label="With textarea"></textarea>
-                  </div>
+              </div>
+              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-3'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Phone Number</label>
+                  <input type="phone" name="code" value={employeeRecord?.phone} className="form-control form-control-solid" />
                 </div>
-                <div style={{padding: "20px 20px 0 20px"}} className='row mb-7 '>
-                  <div className='col-6 mb-3'>
-                    <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Social Skills</label>
-                    <Radio.Group onChange={onRadio4Change} value={radio4Value}>
-                      <Radio value={1}>1</Radio>
-                      <Radio value={2}>2</Radio>
-                      <Radio value={3}>3</Radio>
-                      <Radio value={4}>4</Radio>
-                      <Radio value={5}>5</Radio>
-                    </Radio.Group>
-                   
-                    <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on social skills (optional)' aria-label="With textarea"></textarea>
-                  </div>
-                 
+                <div className='col-6 mb-3'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Email</label>
+                  <input type="email" name="name" className="form-control form-control-solid" />
                 </div>
-              </Form>
+              </div>
+              <hr></hr>
+              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-3'>
+                  <label style={{ padding: "0px 30px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Qualification</label>
+                  <Radio.Group onChange={onRadioChange} value={radioValue}>
+                    <Radio value={1}>1</Radio>
+                    <Radio value={2}>2</Radio>
+                    <Radio value={3}>3</Radio>
+                    <Radio value={4}>4</Radio>
+                    <Radio value={5}>5</Radio>
+                  </Radio.Group>
+                  <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on qualification (optional)' aria-label="With textarea"></textarea>
+                </div>
+                <div className='col-6 mb-3'>
+                  <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Work Skills</label>
+                  <Radio.Group onChange={onRadio1Change} value={radio1Value}>
+                    <Radio value={1}>1</Radio>
+                    <Radio value={2}>2</Radio>
+                    <Radio value={3}>3</Radio>
+                    <Radio value={4}>4</Radio>
+                    <Radio value={5}>5</Radio>
+                  </Radio.Group>
+                  <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on work skills (optional)' aria-label="With textarea"></textarea>
+                </div>
+              </div>
+              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-3'>
+                  <label style={{ padding: "0px 36px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Experiences </label>
+                  <Radio.Group onChange={onRadio2Change} value={radio2Value}>
+                    <Radio value={1}>1</Radio>
+                    <Radio value={2}>2</Radio>
+                    <Radio value={3}>3</Radio>
+                    <Radio value={4}>4</Radio>
+                    <Radio value={5}>5</Radio>
+                  </Radio.Group>
+                  <br></br>
+                  <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on experiences (optional)' aria-label="With textarea"></textarea>
+                </div>
+                <div className='col-6 mb-3'>
+                  <label style={{ padding: "0px 48px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Reference</label>
+                  <Radio.Group onChange={onRadio3Change} value={radio3Value}>
+                    <Radio value={1}>1</Radio>
+                    <Radio value={2}>2</Radio>
+                    <Radio value={3}>3</Radio>
+                    <Radio value={4}>4</Radio>
+                    <Radio value={5}>5</Radio>
+                  </Radio.Group>
+                  <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on reference (optional)' aria-label="With textarea"></textarea>
+                </div>
+              </div>
+              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-7 '>
+                <div className='col-6 mb-3'>
+                  <label style={{ padding: "0px 39px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Social Skills</label>
+                  <Radio.Group onChange={onRadio4Change} value={radio4Value}>
+                    <Radio value={1}>1</Radio>
+                    <Radio value={2}>2</Radio>
+                    <Radio value={3}>3</Radio>
+                    <Radio value={4}>4</Radio>
+                    <Radio value={5}>5</Radio>
+                  </Radio.Group>
+
+                  <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on social skills (optional)' aria-label="With textarea"></textarea>
+                </div>
+
+              </div>
+            </form>
           </Modal>
         </div>
       </KTCardBody>
@@ -615,4 +608,4 @@ const RecruitmentSelection = () => {
   )
 }
 
-export {RecruitmentSelection}
+export { RecruitmentSelection }

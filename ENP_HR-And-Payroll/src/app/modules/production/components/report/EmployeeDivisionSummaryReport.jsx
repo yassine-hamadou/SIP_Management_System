@@ -11,7 +11,7 @@ import "../../../../../../node_modules/@devexpress/analytics-core/dist/css/dx-an
 class ReportViewer extends React.Component {
 constructor(props) {
     super(props);
-    this.reportUrl = ko.observable("PayrollBenefitDetailsReport");
+    this.reportUrl = ko.observable("EmployeeDivisionSummaryReport");
     this.requestOptions = {
         host: "http://208.117.44.15/serverside/",
         invokeAction: "DXXRDV"
@@ -31,9 +31,9 @@ componentWillUnmount() {
 }
 };
 
-function PayrollBenefitDetailsReport() {
+function EmployeeDivisionSummaryReport() {
 return (<div style={{ width: "100%", height: "1000px" }}>
     <ReportViewer />
 </div>);
 }
-export default PayrollBenefitDetailsReport;
+export default EmployeeDivisionSummaryReport;

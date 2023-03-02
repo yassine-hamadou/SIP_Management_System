@@ -63,17 +63,8 @@ import FaultEntryReport from '../modules/production/components/report/PayrollPAY
 import PayrollPAYEReport from '../modules/production/components/report/PayrollPAYEReport'
 import BenefitTransactionInputReport from '../modules/production/components/report/BenefitTransactionInputReport'
 import DeductionTransactionInputReport from '../modules/production/components/report/DeductionTransactionInputReport'
-import EmployeeNotInDeductionInputReport from '../modules/production/components/report/EmployeeNotInDeductionInputReport'
-import EmployeeNotInBenefitInputReport from '../modules/production/components/report/EmployeeNotInBenefitInputReport'
-import EmployeeNotInSavSchemeInputReport from '../modules/production/components/report/EmployeeNotInSavSchemeInputReport'
+
 import HumanRessourceReport from '../modules/production/components/report/HumanRessourceReport'
-import PayrollAnalysisSheetByRegionReport from '../modules/production/components/report/PayrollAnalysisSheetByRegionReport'
-import PayrollBankSummaryReport from '../modules/production/components/report/PayrollBankSummaryReport'
-import PayrollBenefitDetailsReport from '../modules/production/components/report/PayrollBenefitDetailsReport'
-import PayrollBenefitIntegrityReport from '../modules/production/components/report/PayrollBenefitIntegrityReport'
-import PayrollDeductionsDetailsReport from '../modules/production/components/report/PayrollDeductionsDetailsReport'
-import PayrollDeductionsReport from '../modules/production/components/report/PayrollDeductionsReport'
-import PayrollJournalByDepartmentReport from '../modules/production/components/report/PayrollJournalByDepartmentReport'
 import PayrollLoansDetailsReport from '../modules/production/components/report/PayrollLoansDetailsReport'
 import PayrollSSNITReport from '../modules/production/components/report/PayrollSSNITReport'
 import SavSchemeTransactionInputReport from '../modules/production/components/report/SavSchemeTransactionInputReport'
@@ -83,6 +74,20 @@ import { SNNIT } from '../modules/production/components/setup/payroll/Snnit'
 import { EmployeeReportPage } from '../modules/production/components/report/EmployeeReportPage'
 import { PayrollReportPage } from '../modules/production/components/report/PayrollReportPage'
 import { HrReportPage } from '../modules/production/components/report/HrReportPage'
+import EmployeeAgeRangeReport from '../modules/production/components/report/EmployeeAgeRangeReport'
+import EmployeeListReport from '../modules/production/components/report/EmployeeListReport'
+import EmployeeAgeSummaryReport from '../modules/production/components/report/EmployeeAgeSummaryReport'
+import EmployeeFamilyReport from '../modules/production/components/report/EmployeeFamilyReport'
+import EmployeeFamilySummaryReport from '../modules/production/components/report/EmployeeFamilySummaryReport'
+import EmployeeDivisionReport from '../modules/production/components/report/EmployeeDivisionReport'
+import { Skill } from '../modules/production/components/setup/employee/Skill'
+import { Qualification } from '../modules/production/components/setup/employee/Qualification'
+import { JobTitleQualification } from '../modules/production/components/setup/employee/JobTitleQualification'
+import { JobTitleSkill } from '../modules/production/components/setup/employee/JobTitleSkill'
+import EmployeeDivisionSummaryReport from '../modules/production/components/report/EmployeeDivisionSummaryReport'
+import LeaveEmployeeReport from '../modules/production/components/report/LeaveEmployeeReport'
+import LeaveSummaryReport from '../modules/production/components/report/LeaveSummaryReport'
+import NoteCategoryReport from '../modules/production/components/report/NoteCategoryReport'
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -505,15 +510,43 @@ const PrivateRoutes = () => {
            </SuspensedView>
          }
         />
-        {/* <Route
-         path='setup/employee/salary-upgrade*'
+        <Route
+         path='setup/employee/skills*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Salary Upgrades</PageTitle>
-             <SalaryUpgrade />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Skills</PageTitle>
+             <Skill/>
            </SuspensedView>
          }
-        /> */}
+        />
+        <Route
+         path='setup/employee/qualification*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Qualifications</PageTitle>
+             <Qualification/>
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='jobtitle-qualification/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>JobTitle Qualification</PageTitle>
+             <JobTitleQualification/>
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='jobtitle-skill/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>JobTitle Skill</PageTitle>
+             <JobTitleSkill/>
+           </SuspensedView>
+         }
+        />
+        
         <Route
          path='units/:id'
          element={
@@ -627,15 +660,7 @@ const PrivateRoutes = () => {
            </SuspensedView>
          }
         />
-        {/* <Route
-         path='setup/payroll/deduction*'
-         element={
-           <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Deductions</PageTitle>
-             <Deduction />
-           </SuspensedView>
-         }
-        /> */}
+        
         <Route
          path='setup/payroll/loan*'
          element={
@@ -728,29 +753,29 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='report/EmployeeNotInBenefitInputReport*'
+         path='EmployeeAgeRangeReport*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeNotInBenefitInputReport</PageTitle>
-             <EmployeeNotInBenefitInputReport />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Age Range Report</PageTitle>
+             <EmployeeAgeRangeReport />
            </SuspensedView>
          }
         />
         <Route
-         path='report/EmployeeNotInDeductionInputReport*'
+         path='EmployeeListReport*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeNotInDeductionInputReport</PageTitle>
-             <EmployeeNotInDeductionInputReport />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeListReport</PageTitle>
+             <EmployeeListReport />
            </SuspensedView>
          }
         />
         <Route
-         path='report/EmployeeNotInSavSchemeInputReport*'
+         path='EmployeeAgeSummaryReport*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeNotInSavSchemeInputReport</PageTitle>
-             <EmployeeNotInSavSchemeInputReport />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeAgeSummaryReport</PageTitle>
+             <EmployeeAgeSummaryReport />
            </SuspensedView>
          }
         />
@@ -764,65 +789,65 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='report/PayrollAnalysisSheetByRegionReport*'
+         path='EmployeeFamilyReport*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollAnalysisSheetByRegionReport</PageTitle>
-             <PayrollAnalysisSheetByRegionReport />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>EmployeeFamilyReport</PageTitle>
+             <EmployeeFamilyReport />
            </SuspensedView>
          }
         />
         <Route
-         path='report/PayrollBankSummaryReport*'
+         path='EmployeeFamilySummaryReport*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollBankSummaryReport</PageTitle>
-             <PayrollBankSummaryReport />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Family Member Summary Report</PageTitle>
+             <EmployeeFamilySummaryReport />
            </SuspensedView>
          }
         />
         <Route
-         path='report/PayrollBenefitDetailsReport*'
+         path='EmployeeDivisionReport*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollBenefitDetailsReport</PageTitle>
-             <PayrollBenefitDetailsReport />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Division Report</PageTitle>
+             <EmployeeDivisionReport />
            </SuspensedView>
          }
         />
         <Route
-         path='report/PayrollBenefitIntegrityReport*'
+         path='EmployeeDivisionSummaryReport*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollBenefitIntegrityReport</PageTitle>
-             <PayrollBenefitIntegrityReport />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Division Summary Report</PageTitle>
+             <EmployeeDivisionSummaryReport />
            </SuspensedView>
          }
         />
         <Route
-         path='report/PayrollDeductionsDetailsReport*'
+         path='LeaveEmployeeReport*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollDeductionsDetailsReport</PageTitle>
-             <PayrollDeductionsDetailsReport />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>LeaveEmployeeReport</PageTitle>
+             <LeaveEmployeeReport />
            </SuspensedView>
          }
         />
         <Route
-         path='report/PayrollDeductionsReport*'
+         path='LeaveSummaryReport*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollDeductionsReport</PageTitle>
-             <PayrollDeductionsReport />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>LeaveSummaryReport</PageTitle>
+             <LeaveSummaryReport />
            </SuspensedView>
          }
         />
         <Route
-         path='report/PayrollJournalByDepartmentReport*'
+         path='NoteCategoryReport*'
          element={
            <SuspensedView>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>PayrollJournalByDepartmentReport</PageTitle>
-             <PayrollJournalByDepartmentReport />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>NoteCategoryReport</PageTitle>
+             <NoteCategoryReport />
            </SuspensedView>
          }
         />

@@ -289,35 +289,40 @@ const Employee = () => {
 
   const globalSearch = () => {
     // @ts-ignore
-    filteredData = dataWithVehicleNum.filter((value) => {
+    filteredData = dataWithIndex.filter((value) => {
       return (
-        value.name.toLowerCase().includes(searchText.toLowerCase())
+        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.departmentId.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.gradeId.toLowerCase().includes(searchText.toLowerCase())
+        
       )
     })
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
-    const data = {
-      name: values.name,
-    }
+  // const url = `${ENP_URL}/ProductionActivity`
+  // const onFinish = async (values: any) => {
+  //   setSubmitLoading(true)
+  //   const data = {
+  //     name: values.name,
+  //   }
 
-    console.log(data)
+  //   console.log(data)
 
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
-      form.resetFields()
-      setIsModalOpen(false)
-      loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
-    }
-  }
+  //   try {
+  //     const response = await axios.post(url, data)
+  //     setSubmitLoading(false)
+  //     form.resetFields()
+  //     setIsModalOpen(false)
+  //     loadData()
+  //     return response.statusText
+  //   } catch (error: any) {
+  //     setSubmitLoading(false)
+  //     return error.statusText
+  //   }
+  // }
 
   return (
     <div

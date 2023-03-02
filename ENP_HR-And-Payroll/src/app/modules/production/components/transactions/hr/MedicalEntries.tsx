@@ -7,6 +7,8 @@ import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { employeedata, MEDICALS, period } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
+import { fetchEmployees } from '../../../../../services/ApiCalls'
+import { useQuery } from 'react-query'
 
 const MedicalEntries = () => {
   const [gridData, setGridData] = useState([])
@@ -189,6 +191,8 @@ const MedicalEntries = () => {
     setGridData(filteredData)
   }
 
+  const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
+
   const OnSUbmit = handleSubmit((data)=>{
     console.log(data)
     reset()
@@ -297,11 +301,11 @@ const MedicalEntries = () => {
                   <hr></hr>
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Employee</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        {employeedata.map((item: any) => (
-                          <option value={item.code}>{item.empcode}-{item.lastname}</option>
+                        {allEmployee?.data.map((item: any) => (
+                          <option value={item.id}>{item.firstName}-{item.surname}</option>
                         ))}
                       </select>
                     </div>

@@ -115,6 +115,9 @@ const Grades = () => {
           <Link to={`/notches/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Notches</span>
           </Link>
+          <Link to={`/grades/${record.id}`}>
+            <span className='btn btn-light-primary btn-sm'>Leaves</span>
+          </Link>
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>

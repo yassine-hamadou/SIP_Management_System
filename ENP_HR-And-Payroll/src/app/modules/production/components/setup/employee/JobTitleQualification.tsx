@@ -2,23 +2,22 @@ import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
-import { JOBTITLE } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchJobTitles } from '../../../../../services/ApiCalls'
-import { Link } from 'react-router-dom'
+import { Api_Endpoint, fetchJobTitles, fetchQualifications, fetchSkills } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
+import { useNavigate, useParams } from 'react-router-dom'
 
-const JobTitle = () => {
+const JobTitleQualification = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const {register, reset, handleSubmit} = useForm()
-
+  const param:any  = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  let [itemName, setItemName] = useState<any>("")
+  const navigate = useNavigate();
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -34,7 +33,7 @@ const JobTitle = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${Api_Endpoint}/JobTitles/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/JobTitleQualifications/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -51,27 +50,30 @@ const JobTitle = () => {
   }
   const columns: any = [
    
+    // {
+    //   title: 'Code',
+    //   dataIndex: 'code',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.code > b.code) {
+    //       return 1
+    //     }
+    //     if (b.code > a.code) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
-      title: 'Code',
-      dataIndex: 'code',
-      sorter: (a: any, b: any) => {
-        if (a.code > b.code) {
-          return 1
-        }
-        if (b.code > a.code) {
-          return -1
-        }
-        return 0
+      title: 'Qualification Name',
+      key:'qualificationId',
+      render: (row: any) => {
+        return getQualificationName(row.qualificationId)
       },
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.qualificationId > b.qualificationId) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.qualificationId > a.qualificationId) {
           return -1
         }
         return 0
@@ -84,15 +86,9 @@ const JobTitle = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <Link to={`/jobtitle-skill/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Skills</span>
-          </Link>
-          <Link to={`/jobtitle-qualification/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Qualifications</span>
-          </Link>
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          {/* <a href='#' className='btn btn-light-warning btn-sm'>
             Update
-          </a>
+          </a> */}
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
@@ -102,18 +98,44 @@ const JobTitle = () => {
       
     },
   ]
+
+  const {data:allJobTitles} = useQuery('jobtitle', fetchJobTitles, {cacheTime:5000})
+  const {data:allQualifications} = useQuery('qualification', fetchQualifications, {cacheTime:5000})  
+
+  const getQualificationName = (qualificationId: any) => {
+    let qualificationName = null
+    allQualifications?.data.map((item: any) => {
+      if (item.id === qualificationId) {
+        qualificationName=item.name
+      }
+    })
+    return qualificationName
+  } 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/JobTitles`)
+      const response = await axios.get(`${Api_Endpoint}/JobTitleQualifications`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
     }
   }
+  const getItemName= async (param:any) =>{
 
+    let newName=null
+  
+     const   itemTest = await allJobTitles?.data.find((item:any) =>
+      item.id.toString()===param
+    )
+     newName = await itemTest
+    return newName
+ }
   useEffect(() => {
+    (async ()=>{
+        let res = await getItemName(param.id)
+        setItemName(res?.name)
+      })();
     loadData()
   }, [])
 
@@ -121,6 +143,10 @@ const JobTitle = () => {
     ...item,
     key: index,
   }))
+
+  const dataByID = gridData.filter((skill:any) =>{
+    return skill.jobTitleId.toString() ===param.id
+  })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -138,15 +164,15 @@ const JobTitle = () => {
     })
     setGridData(filteredData)
   }
-  const {data:allJobTitles} = useQuery('jobtitle', fetchJobTitles, {cacheTime:5000})
-  
-  const url = `${Api_Endpoint}/JobTitles`
+
+  const url = `${Api_Endpoint}/JobTitleQualifications`
   const OnSUbmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
-          code: values.code,
-          name: values.name,
+        jobTitleId: param.id,
+        qualificationId: values.qualificationId,
         }
+        console.log(data)
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
@@ -171,6 +197,10 @@ const JobTitle = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <h3 style={{fontWeight:"bolder"}}>{itemName} </h3>
+        <br></br>
+        <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
               <Input
@@ -196,9 +226,9 @@ const JobTitle = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  dataSource={dataWithIndex} loading={loading} />
+          <Table columns={columns}  dataSource={dataByID} loading={loading} />
           <Modal
-                title='Job Title Setup'
+                title='JobTitle Qualifications Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -223,14 +253,14 @@ const JobTitle = () => {
                   <hr></hr>
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                     <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Qualification</label>
+                      <select {...register("qualificationId")} className="form-select form-select-solid" aria-label="Select example">
+                        <option>select </option>
+                            {allQualifications?.data.map((item: any) => (
+                                <option value={item.id}>{item.name}</option>
+                            ))}
+                       </select>
                     </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" {...register("name")} className="form-control form-control-solid"/>
-                    </div>
-                    
                   </div>
                 </form>
             </Modal>
@@ -240,4 +270,4 @@ const JobTitle = () => {
   )
 }
 
-export {JobTitle}
+export {JobTitleQualification}
