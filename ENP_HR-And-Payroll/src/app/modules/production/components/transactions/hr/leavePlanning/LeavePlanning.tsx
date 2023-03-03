@@ -7,18 +7,14 @@ import {KTCard, KTCardBody, KTSVG} from "../../../../../../../_metronic/helpers"
 import {ENP_URL} from "../../../../urls";
 import {Space} from "antd";
 import {DropDownListComponent} from "@syncfusion/ej2-react-dropdowns";
+import {fetchDepartments, fetchLeaveTypes} from "../../../../../../services/ApiCalls";
 
 const LeavePlanning = () => {
   let dropDownListObj: any
-  const [chosenLocationIdFromDropdown, setChosenLocationIdFromDropdown] = useState(null)
+  const [chosenFilter, setChosenFilter] = useState(null)
   const navigate = useNavigate()
-  const {data: locations} = useQuery('Locations', () => axios.get(`${ENP_URL}/IclocsApi`), {
-    refetchOnWindowFocus: false,
-    staleTime: Infinity,
-  })
-  //set the data to dataSource property
 
-  console.log('chosenLocationIdFromDropdown', chosenLocationIdFromDropdown)
+
   return (
     <>
       <KTCard>
@@ -26,19 +22,48 @@ const LeavePlanning = () => {
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
               <DropDownListComponent
-                  placeholder='Filter'
+                    id='filterByLeaveType'
+                  placeholder='Filter by Leave type'
                   type='text'
-                  dataSource={
-                     [
-                        { text: 'All', value: 'All' },
-                        { text: 'Approved', value: 'Approved' },
-                        { text: 'Pending', value: 'Pending' },
-                        { text: 'Rejected', value: 'Rejected' },
-                         { text: 'Unit', value: 'unit' },
-
-                     ]
-                  }
+                  dataSource={useQuery('leaveTypeForFilter', fetchLeaveTypes)?.data?.data}
+                    fields={{text: 'name', value: 'id'}}
+                  change={(e: any) => {
+                    setChosenFilter(e.value)
+                    //reset above dropdown
+                    const filterByDep = (document.getElementById('filterByDep') as any)
+                    const filterByStatus = (document.getElementById('filterByStatus') as any)
+                    filterByDep.value = null
+                    filterByStatus.value = null
+                  }}
               />
+                <DropDownListComponent
+                  id='filterByDep'
+                  placeholder='Filter by Department'
+                  type='text'
+                  dataSource={useQuery('depForFilter', fetchDepartments)?.data?.data}
+                  fields={{text: 'name', value: 'id'}}
+                  change={(e: any) => {
+                      setChosenFilter(e.value)
+                      //reset above dropdown
+                      const filterByLeaveType = (document.getElementById('filterByLeaveType') as any)
+                      const filterByStatus = (document.getElementById('filterByStatus') as any)
+                      filterByLeaveType.value = null
+                      filterByStatus.value = null
+                  }}
+                />
+                <DropDownListComponent
+                  id='filterByStatus'
+                  placeholder='Filter by Status'
+                  type='text'
+                  dataSource={['Approved', 'Rejected', 'Pending']}
+                  change={(e: any) => {
+                      setChosenFilter(e.value)
+                      const filterByDep = (document.getElementById('filterByDep') as any)
+                      filterByDep.value = null
+                      const filterByLeaveType = (document.getElementById('filterByLeaveType') as any)
+                      filterByLeaveType.value = null
+                  }}
+                />
             </Space>
             <Space style={{marginBottom: 16}}>
                 <Link
@@ -51,7 +76,7 @@ const LeavePlanning = () => {
                 </Link>
             </Space>
           </div>
-          <Calendar chosenLocationIdFromDropdown={chosenLocationIdFromDropdown} />
+          <Calendar chosenFilter={chosenFilter} />
         </KTCardBody>
       </KTCard>
     </>

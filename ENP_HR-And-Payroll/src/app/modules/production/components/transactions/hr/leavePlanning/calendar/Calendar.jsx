@@ -5,7 +5,7 @@ import {
   Week,
   Month,
   Agenda,
-  Inject, DragAndDrop, Resize, WorkWeek,
+  Inject, DragAndDrop, Resize, WorkWeek, ViewsDirective, ViewDirective,
 } from "@syncfusion/ej2-react-schedule";
 import {DateTimePickerComponent} from '@syncfusion/ej2-react-calendars'
 import {DropDownListComponent} from '@syncfusion/ej2-react-dropdowns'
@@ -22,6 +22,7 @@ import '@syncfusion/ej2-react-schedule/styles/material.css'
 import '@syncfusion/ej2-buttons/styles/material.css'
 import {Input, message} from 'antd'
 import {fetchDepartments, fetchEmployees, fetchLeaveTypes, fetchUnits} from "../../../../../../../services/ApiCalls";
+import {fetchLeavePlannings} from "./requests";
 
 /**
  *  Schedule editor custom fields sample
@@ -39,7 +40,7 @@ L10n.load({
   },
 })
 
-const Calendar = ({chosenLocationIdFromDropdown}) => {
+const Calendar = ({chosenFilter}) => {
   // const [serviceTypeDropDownValues, setserviceTypeDropDownValues] = useState([])
   let scheduleObj
   // React Query
@@ -54,8 +55,14 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
     staleTime: 300000,
   })
 
+  const {data: leaveData} = useQuery('leavePlannings', fetchLeavePlannings, {
+    refetchOnWindowFocus: false,
+    staleTime: 300000,
+  });
+
   //Access the same location query from cycle details component
   console.log('employeeData', employeeData)
+  console.log('leaveData', leaveData)
 
     // let dropDownListObject;
 
@@ -121,13 +128,13 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
             </td>
           </tr>
           <tr>
-            <td className='e-textlabel'>Unit</td>
+            <td className='e-textlabel'>Department</td>
             <td colSpan={4}>
               <Input
                 id='Location'
                 readOnly
                 disabled={true}
-                placeholder='Choose Employee Unit'
+                placeholder='Choose Employee'
                 data-name='locationId'
                 className='e-field'
                 style={{width: '100%', fontColor: 'black'}}
@@ -345,12 +352,24 @@ const Calendar = ({chosenLocationIdFromDropdown}) => {
               width='100%'
               height='650px'
               ref={t => scheduleObj = t}
-              // eventSettings={{ dataSource: data }}
+              eventSettings={{ dataSource: leaveData?.data,
+                fields: {
+                  id: 'id',
+                  // subject: { name: 'Subject', default: 'Leave Request' },
+                  startTime: { name: 'fromDate' },
+                  endTime: { name: 'toDate' },
+              }
+              }}
               // eventRendered={onEventRendered.bind(this)}
               currentView='Month'
               id='schedule'
               editorTemplate={editorTemplate}
           >
+            <ViewsDirective>
+              {/*<ViewDirective option='Day' displayName='3 Days' interval={3} />*/}
+              <ViewDirective option='Week' isSelected={true} />
+              <ViewDirective option='Month' displayName='3 Months' interval={3} />
+            </ViewsDirective>
           <Inject services={[Day, Week, WorkWeek, Month, Agenda, Resize, DragAndDrop]} />
         </ScheduleComponent>
         </div>
