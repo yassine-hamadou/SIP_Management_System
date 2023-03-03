@@ -55,3 +55,7 @@ export const fetchLeaveTypes = () => {
     return axios.get(`${Api_Endpoint}/Leaves`)
 }
 
+export const fetchRecruitmentTransactions = () => {
+    return axios.get(`${Api_Endpoint}/RecruitmentTransactions`)
+}
+

@@ -2,12 +2,11 @@ import {Button, Form, Input, InputNumber, Modal, Space, Table, Upload} from 'ant
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { employeedata, MEDICALS, period } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { fetchEmployees } from '../../../../../services/ApiCalls'
+import {  Api_Endpoint, fetchEmployees, fetchMedicals } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 
 const MedicalEntries = () => {
@@ -55,13 +54,13 @@ const MedicalEntries = () => {
 
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
   }
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/MedicalTransactions/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -80,12 +79,15 @@ const MedicalEntries = () => {
    
     {
       title: 'Employee ID',
-      dataIndex: 'employee_id',
+      key: 'employeeId',
+      render: (row: any) => {
+        return getEmployeeName(row.employeeId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.employee_id > b.employee_id) {
+        if (a.employeeId > b.employeeId) {
           return 1
         }
-        if (b.employee_id > a.employee_id) {
+        if (b.employeeId > a.employeeId) {
           return -1
         }
         return 0
@@ -93,12 +95,15 @@ const MedicalEntries = () => {
     },
     {
       title: 'Medical Type',
-      dataIndex: 'medtype',
+      key:'medicalTypeId',
+      render: (row: any) => {
+        return getMedicalName(row.medicalTypeId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.medtype > b.medtype) {
+        if (a.medicalTypeId > b.medicalTypeId) {
           return 1
         }
-        if (b.medtype > a.medtype) {
+        if (b.medicalTypeId > a.medicalTypeId) {
           return -1
         }
         return 0
@@ -119,12 +124,12 @@ const MedicalEntries = () => {
     },
     {
       title: 'Comments',
-      dataIndex: 'comments',
+      dataIndex: 'comment',
       sorter: (a: any, b: any) => {
-        if (a.comments > b.comments) {
+        if (a.comment > b.comment) {
           return 1
         }
-        if (b.comments > a.comments) {
+        if (b.comment > a.comment) {
           return -1
         }
         return 0
@@ -137,10 +142,6 @@ const MedicalEntries = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -157,7 +158,7 @@ const MedicalEntries = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/MedicalTransactions`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -190,28 +191,42 @@ const MedicalEntries = () => {
     })
     setGridData(filteredData)
   }
+  const getEmployeeName = (employeeId: any) => {
+    let employeeName = null
+    allEmployee?.data.map((item: any) => {
+      if (item.id === employeeId) {
+        employeeName=item.firstName + " " + item.surname
+      }
+    })
+    return employeeName
+  } 
+  const getMedicalName = (medicalId: any) => {
+    let medicalName = null
+    allMedicals?.data.map((item: any) => {
+      if (item.id === medicalId) {
+        medicalName=item.name
+      }
+    })
+    return medicalName
+  } 
 
   const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
+  const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
 
-  const OnSUbmit = handleSubmit((data)=>{
-    console.log(data)
-    reset()
-    setIsModalOpen(false)
-  })
-
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
+  const url = `${Api_Endpoint}/MedicalTransactions`
+  const OnSubmit = handleSubmit( async (values)=> {
+    setLoading(true)
     const data = {
-      name: values.name,
-    }
-
-    console.log(data)
-
+          employeeId: values.employeeId,
+          medicalTypeId: values.medicalTypeId,
+          date: values.date,
+          comment: values.comment,
+        }
+        console.log(data)
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
-      form.resetFields()
+      reset()
       setIsModalOpen(false)
       loadData()
       return response.statusText
@@ -219,7 +234,7 @@ const MedicalEntries = () => {
       setSubmitLoading(false)
       return error.statusText
     }
-  }
+  })
 
   return (
     <div
@@ -237,7 +252,7 @@ const MedicalEntries = () => {
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
               {period.map((item: any) => (
-                <option value={item.code}>{item.name}</option>
+                <option value={item.id}>{item.name}</option>
               ))}
             </select>
           </div>
@@ -271,7 +286,7 @@ const MedicalEntries = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
           <Modal
                 title='Medical Entry'
                 open={isModalOpen}
@@ -287,22 +302,20 @@ const MedicalEntries = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
+                    onClick={OnSubmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
                 <form
-                  onSubmit={OnSUbmit}  
+                  onSubmit={OnSubmit}  
                 >
                   <hr></hr>
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
+                      <select {...register("employeeId")} className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
                         {allEmployee?.data.map((item: any) => (
                           <option value={item.id}>{item.firstName}-{item.surname}</option>
@@ -311,10 +324,10 @@ const MedicalEntries = () => {
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Medical Type</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
+                      <select {...register("medicalTypeId")} className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        {MEDICALS.map((item: any) => (
-                          <option value={item.code}>{item.name}</option>
+                        {allMedicals?.data.map((item: any) => (
+                          <option value={item.id}>{item.name}</option>
                         ))}
                       </select>
                     </div>
@@ -322,12 +335,12 @@ const MedicalEntries = () => {
                   <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
-                      <input type="date" name="date"  className="form-control form-control-solid"/>
+                      <input type="date" {...register("date")}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Comments</label>
-                      {/* <input type="text" name="topic"  className="form-control form-control-solid"/> */}
-                      <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea>
+                      
+                      <textarea {...register("comment")} className="form-control form-control-solid" aria-label="With textarea"></textarea>
                     </div>
                   </div>
                   <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
