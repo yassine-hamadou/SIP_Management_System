@@ -160,9 +160,9 @@ const LeaveApproval = () => {
             Update
           </a> */}
                         <span className='btn btn-light-info btn-sm' onClick={(record) => approveLeave(record)}>Approve</span>
-                    <a className='btn btn-light-danger btn-sm' onClick={() => employeeDetail(record)}>
-                        Details
-                    </a>
+                    {/*<a className='btn btn-light-danger btn-sm' onClick={() => employeeDetail(record)}>*/}
+                    {/*    Details*/}
+                    {/*</a>*/}
 
                 </Space>
             ),
