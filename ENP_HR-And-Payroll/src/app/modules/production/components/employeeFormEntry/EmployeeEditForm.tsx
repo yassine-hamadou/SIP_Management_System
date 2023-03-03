@@ -1096,22 +1096,22 @@ const EmployeeEditForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">First Name</label>
-                <input type="text" name="fname" value={dataByID?.firstName}  className="form-control form-control-solid" />
+                <input type="text" name="fname" defaultValue={dataByID?.firstName}  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
-                <input type="text" name="mname" value={dataByID?.surname} className="form-control form-control-solid" />
+                <input type="text" name="mname" defaultValue={dataByID?.surname} className="form-control form-control-solid" />
               </div>
             </div>
 
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Other Name</label>
-                <input type="text" name="lname" value={dataByID?.otherName} className="form-control form-control-solid" />
+                <input type="text" name="lname" defaultValue={dataByID?.otherName} className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Date of Birth</label>
-                <input type="text" name="dob" value={dataByID?.dob.substring(0,11)}   className="form-control form-control-solid" />
+                <input type="date" name="dob" defaultValue={"1990-07-27"}   className="form-control form-control-solid" />
               </div>
             </div>
             <div className='row mb-0'>
@@ -1141,16 +1141,12 @@ const EmployeeEditForm= () =>{
                     {allNations?.data.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
                       ))}
-                  {/* <option value="1">GHANAIAN</option>
-                  <option value="2">NIGERIAN</option>
-                  <option value="3">TOGOLESE</option>
-                  <option value="4">AMERICAN</option>
-                  <option value="5">CANADIAN</option> */}
+                 
                 </select>
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">National ID</label>
-                <input type="text" name="dob" value={dataByID?.nationalId} className="form-control form-control-solid" />
+                <input type="text" name="dob" defaultValue={dataByID?.nationalId} className="form-control form-control-solid" />
               </div>
             </div>
 
@@ -1245,15 +1241,7 @@ const EmployeeEditForm= () =>{
                   ))}
                 </select>
               </div>
-              {/* <div className='col-6 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
-                  <option value="1">Ghc100</option>
-                  <option value="2">Ghc400</option>
-                  <option value="3">Ghc3000</option>
-                </select>
-              </div> */}
+              
             </div>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
@@ -1286,13 +1274,13 @@ const EmployeeEditForm= () =>{
               </div>
               <div className='col-3 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Employment Date</label>
-                <input type="date" name="edate" onChange={handleChange}  className="form-control form-control-solid" />
+                <input type="date" name="edate" defaultValue={"1990-05-28"} onChange={handleChange}  className="form-control form-control-solid" />
 
               </div>
               <div className='col-3 mb-7'>
                 <br></br>
              
-                <a href="#" className="btn btn-danger"> Terminate</a>
+                <a href="#" className="btn btn-danger"> Status</a>
               </div>
             </div>
             <div className='row mb-0'>
@@ -1338,18 +1326,18 @@ const EmployeeEditForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Account </label>
-                <input type="text" name="account" value={dataByID?.accnum} className="form-control form-control-solid" />
+                <input type="text" name="account" value={dataByID?.account} className="form-control form-control-solid" />
               </div>
             </div>
             <div className='row mb-0'>
               
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">TIN </label>
-                <input type="text" name="tin" onChange={handleChange}  className="form-control form-control-solid" />
+                <input type="text" name="tin" defaultValue={dataByID.tin}  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">SSN </label>
-                <input type="text" name="ssn" onChange={handleChange}  className="form-control form-control-solid" />
+                <input type="text" name="ssn" defaultValue={dataByID.ssf}  className="form-control form-control-solid" />
               </div>
             </div>
             
@@ -1916,7 +1904,7 @@ const EmployeeEditForm= () =>{
             </div>}
         </div>
         </div >
-        {/* <button className='btn btn-primary' disabled type="submit">Submit</button> */}
+        <button className='btn btn-primary' disabled type="submit">Submit</button>
       
     </div>
   );

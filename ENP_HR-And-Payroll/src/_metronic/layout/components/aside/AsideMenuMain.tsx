@@ -45,8 +45,9 @@ export function AsideMenuMain() {
           <AsideMenuItem to='setup/employee/divisions' hasBullet={true} title='Divisions' />
           <AsideMenuItem to='setup/employee/category' hasBullet={true} title='Categories' />
           <AsideMenuItem to='setup/employee/jobtitle' hasBullet={true} title='Job Titles' />
-          {/* <AsideMenuItem to='setup/employee/grades' hasBullet={true} title='Grades' /> */}
           <AsideMenuItem to='setup/employee/nationality' hasBullet={true} title='Nationalities' />
+          <AsideMenuItem to='setup/employee/skills' hasBullet={true} title='Skills' />
+          <AsideMenuItem to='setup/employee/qualification' hasBullet={true} title='Qualifications' />  
           
         </AsideMenuItemWithSub>
         </AsideMenuItemWithSub>

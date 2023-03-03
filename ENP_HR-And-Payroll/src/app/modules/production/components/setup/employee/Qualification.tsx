@@ -2,14 +2,10 @@ import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
-import { JOBTITLE } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchJobTitles } from '../../../../../services/ApiCalls'
-import { Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { Api_Endpoint } from '../../../../../services/ApiCalls'
 
-const JobTitle = () => {
+const Qualification = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -34,7 +30,7 @@ const JobTitle = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${Api_Endpoint}/JobTitles/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/Qualifications/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -84,12 +80,6 @@ const JobTitle = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <Link to={`/jobtitle-skill/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Skills</span>
-          </Link>
-          <Link to={`/jobtitle-qualification/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Qualifications</span>
-          </Link>
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -105,7 +95,7 @@ const JobTitle = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/JobTitles`)
+      const response = await axios.get(`${Api_Endpoint}/Qualifications`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -138,9 +128,8 @@ const JobTitle = () => {
     })
     setGridData(filteredData)
   }
-  const {data:allJobTitles} = useQuery('jobtitle', fetchJobTitles, {cacheTime:5000})
-  
-  const url = `${Api_Endpoint}/JobTitles`
+
+  const url = `${Api_Endpoint}/Qualifications`
   const OnSUbmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
@@ -198,7 +187,7 @@ const JobTitle = () => {
           </div>
           <Table columns={columns}  dataSource={dataWithIndex} loading={loading} />
           <Modal
-                title='Job Title Setup'
+                title='Qualifications Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -240,4 +229,4 @@ const JobTitle = () => {
   )
 }
 
-export {JobTitle}
+export {Qualification}

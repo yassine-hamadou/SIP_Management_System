@@ -369,11 +369,7 @@ const MultiTabForm= () =>{
                 <input type="date" {...register("employmentDate")}  className="form-control form-control-solid" />
 
               </div>
-              {/* <div className='col-3 mb-7'>
-                <br></br>
-             
-                <a href="#" className="btn btn-danger"> Terminate</a>
-              </div> */}
+              
             </div>
             <div className='row mb-0'>
               

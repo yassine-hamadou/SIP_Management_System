@@ -19,8 +19,9 @@ const EmployeeReportPage = () => {
           <h2>List</h2>
           <hr></hr>
           <br></br>
-          <h2><span className="bullet me-5"></span><Link to="/report/payrollPAYEReport">Paygroup</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/report/payrollPAYEReport">Division</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/EmployeeListReport">Paygroup</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/EmployeeDivisionReport">Division</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/EmployeeDivisionSummaryReport">Summary</Link></h2>
         </div>
         <div className='col-3'
           style={{
@@ -34,8 +35,8 @@ const EmployeeReportPage = () => {
           <h2>Age Profile</h2>
           <hr></hr>
           <br></br>
-          <h2><span className="bullet me-5"></span><Link to="/report/payrollPAYEReport">Detail</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/report/payrollPAYEReport">Summary</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/EmployeeAgeRangeReport">Detail</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/EmployeeAgeSummaryReport">Summary</Link></h2>
          
         </div>
         <div className='col-3'
@@ -50,8 +51,8 @@ const EmployeeReportPage = () => {
           <h2>Family Profile</h2>
           <hr></hr>
           <br></br>
-          <h2><span className="bullet me-5"></span><Link to="/report/payrollPAYEReport">Employee</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/report/payrollPAYEReport">Summary</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/EmployeeFamilyReport">Employee</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/EmployeeFamilySummaryReport">Summary</Link></h2>
           
         </div>
         
