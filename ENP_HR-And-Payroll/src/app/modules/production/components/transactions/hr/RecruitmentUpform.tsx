@@ -3,7 +3,7 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchCategories, fetchJobTitles, fetchPaygroups, fetchUnits } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchCategories, fetchJobTitles, fetchPaygroups, fetchRecruitmentTransactions, fetchUnits } from '../../../../../services/ApiCalls'
 
 function RecruitmentUpform() {
     const { register, reset, handleSubmit } = useForm()
@@ -16,7 +16,12 @@ function RecruitmentUpform() {
     const [messageApi, contextHolder] = message.useMessage();
 
 
-
+    function refreshPage() {
+      setTimeout(()=>{
+          window.location.reload();
+      }, 500);
+      // console.log('page to reload')
+  }
 
     const warning = () => {
         messageApi.open({
@@ -33,10 +38,23 @@ function RecruitmentUpform() {
         });
       };
 
-      const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
-      const { data: allCategories } = useQuery('categories', fetchCategories, { cacheTime: 5000 })
-      const { data: allUnits } = useQuery('units', fetchUnits, { cacheTime: 5000 })
-      const { data: allJobTitles } = useQuery('jobtitles', fetchJobTitles, { cacheTime: 5000 })
+      const warnUser = () => {
+        messageApi.open({
+          type: 'error',
+          content: 'Can not submit without a reference number!',
+          className: 'custom-class',
+          style: {
+            marginTop: '10vh',
+            fontSize:"18px"
+          }
+        });
+      };
+
+    const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
+    const { data: allCategories } = useQuery('categories', fetchCategories, { cacheTime: 5000 })
+    const { data: allUnits } = useQuery('units', fetchUnits, { cacheTime: 5000 })
+    const { data: allJobTitles } = useQuery('jobtitles', fetchJobTitles, { cacheTime: 5000 })
+    const { data: allRecuitments } = useQuery('recruitments', fetchRecruitmentTransactions, { cacheTime: 5000 })
       
     const url = `${Api_Endpoint}/RecruitmentTransactions`
     const OnSUbmit = handleSubmit(async (values) => {
@@ -53,14 +71,17 @@ function RecruitmentUpform() {
       }
       console.log(data)
       try {
-        
-        const response = await axios.post(url, data)
-        success()
-        setSubmitLoading(false)
-        reset()
-        // setIsModalOpen(false)
-        // loadData()
-        return response.statusText
+        if(data.reference!==""){
+          const response = await axios.post(url, data)
+          setSubmitLoading(false)
+          reset()
+          // refreshPage();
+          success()
+          return response.statusText
+        }
+        else{
+          warnUser();
+        }
       } catch (error: any) {
         warning()
         setSubmitLoading(false)

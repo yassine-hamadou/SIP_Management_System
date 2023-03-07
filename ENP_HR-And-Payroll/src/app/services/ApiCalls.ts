@@ -54,6 +54,12 @@ export const fetchMedicals= ()=>{
 export const fetchLeaveTypes = () => {
     return axios.get(`${Api_Endpoint}/Leaves`)
 }
+export const fetchAppraisals = () => {
+    return axios.get(`${Api_Endpoint}/Appraisals`)
+}
+export const fetchPeriods = () => {
+    return axios.get(`${Api_Endpoint}/Periods`)
+}
 
 export const fetchRecruitmentTransactions = () => {
     return axios.get(`${Api_Endpoint}/RecruitmentTransactions`)

@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Upload, Modal, Space, Table, Radio, RadioChangeEvent, message } from 'antd'
+import { Button, Form, Input, InputNumber, Upload, Modal, Space, Table, Radio, RadioChangeEvent, message, Select } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
@@ -27,10 +27,16 @@ const RecruitmentSelection = () => {
   const [radio2Value, setRadio2Value] = useState();
   const [radio3Value, setRadio3Value] = useState();
   const [radio4Value, setRadio4Value] = useState();
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState<any>(null);
   const [employeeRecord, setEmployeeRecord] = useState<any>(null)
+  
   const showModal = () => {
-    setIsModalOpen(true)
+    if(selectedValue!==""){
+      setIsModalOpen(true)
+    }
+    else{
+      warnUser()
+    }
   }
 
   const handleOk = () => {
@@ -227,16 +233,21 @@ const RecruitmentSelection = () => {
       console.log(error)
     }
   }
+  
+  const dataByID:any = gridData.filter((refId:any) =>{
+    return  refId.recruitmentTransactionId===parseInt(selectedValue)
+  })
+
 
   useEffect(() => {
     loadData()
   }, [])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-    score: 0,
-  }))
+  // const dataWithIndex = gridData.map((item: any, index) => ({
+  //   ...item,
+  //   key: index,
+  //   score: 0,
+  // }))
 
 
   const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
@@ -262,11 +273,23 @@ const RecruitmentSelection = () => {
     setGridData(filteredData)
   }
 
+  const warnUser = () => {
+    messageApi.open({
+      type: 'error',
+      content: 'Select reference before adding!',
+      className: 'custom-class',
+      style: {
+        marginTop: '10vh',
+        fontSize:"18px"
+      }
+    });
+  };
+
   const url1 = `${Api_Endpoint}/RecruitmentApplicants`
   const submitApplicant = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
-      recruitmentTransactionId: selectedValue,
+      recruitmentTransactionId: parseInt(selectedValue),
       firstName: values.firstName,
       lastName: values.lastName,
       dob: values.dob,
@@ -276,22 +299,23 @@ const RecruitmentSelection = () => {
       qualification: values.qualification,
     }
     console.log(data)
-
-    
-      try {
-        const response = await axios.post(url1, data)
+      try { 
         
-        setSubmitLoading(false)
-        reset()
-        setIsModalOpen(false)
-        loadData()
-        return response.statusText
+          const response = await axios.post(url1, data)
+          setSubmitLoading(false)
+          reset()
+          setIsModalOpen(false)
+          loadData()
+          return response.statusText
+        
       } catch (error: any) {
         setSubmitLoading(false)
         return error.statusText
       } 
     
   })
+
+ 
 
   return (
 
@@ -315,7 +339,26 @@ const RecruitmentSelection = () => {
                   <option value={item.id}>{item.reference}</option>
                 ))}
               </select>
-              {/* <button  type='button' className='btn btn-info me-3'>Load</button> */}
+              {/* <Select
+              value={selectedValue} 
+              onChange={(e) => setSelectedValue(e.target.value)}
+                style={{
+                  // backgroundColor:"gray",
+                  width:"300px"
+                }}
+                showSearch
+                placeholder="select a reference"
+                optionFilterProp="children"
+              >
+                <option
+                  style={{
+                    backgroundColor:"#F5F8FA", 
+                  }}
+                >select</option>
+                {allRecuitments?.data.map((item: any) => (
+                  <option value={item.id}>{item.reference}</option>
+                ))}
+              </Select> */}
           </div>
                   {/* <div>
                     <h3> selected reference is {selectedValue}</h3>
@@ -334,6 +377,7 @@ const RecruitmentSelection = () => {
               </Button>
             </Space>
             <Space style={{ marginBottom: 16 }}>
+            {contextHolder}
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -345,7 +389,7 @@ const RecruitmentSelection = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns} rowKey={(record) => record.id} dataSource={dataWithIndex} loading={loading} />
+          <Table columns={columns} rowKey={(record) => record.id} dataSource={dataByID} loading={loading} />
           {/* Add form */}
 
           <Modal
