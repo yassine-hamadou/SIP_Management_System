@@ -358,8 +358,8 @@ const AppraisalPerformance = () => {
   const dataByID:any = gridData.filter((refId:any) =>{
     return  refId.appraisalTypeId===parseInt(selectedValue)
     })
-console.log(selectedValue)
-console.log(dataByID)
+// console.log(selectedValue)
+// console.log(dataByID)
   const getFirstName = (employeeId: any) => {
     let firstName = null
     alEmployees?.data.map((item: any) => {

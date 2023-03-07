@@ -6,6 +6,7 @@ import { ENP_URL } from '../../../urls'
 import { employeedata, NOTES, period } from '../../../../../data/DummyData'
 import { UploadOutlined } from '@ant-design/icons';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { useForm } from 'react-hook-form'
 
 const NoteEntry = () => {
   const [gridData, setGridData] = useState([])
@@ -14,7 +15,9 @@ const NoteEntry = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-  
+  const [selectedValue, setSelectedValue] = useState<any>(null);
+
+  const {register, reset, handleSubmit} = useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {

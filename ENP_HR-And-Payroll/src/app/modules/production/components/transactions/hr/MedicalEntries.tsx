@@ -1,4 +1,4 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table, Upload} from 'antd'
+import {Button, Form, Input, InputNumber, Modal, Select, Space, Table, Upload} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
@@ -6,7 +6,7 @@ import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { employeedata, MEDICALS, period } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import {  Api_Endpoint, fetchEmployees, fetchMedicals } from '../../../../../services/ApiCalls'
+import {  Api_Endpoint, fetchEmployees, fetchMedicals, fetchPeriods } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 
 const MedicalEntries = () => {
@@ -15,10 +15,10 @@ const MedicalEntries = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
-
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedValue, setSelectedValue] = useState<any>(null);
+  const [employeeRecord, setEmployeeRecord]= useState<any>([])
   const {register, reset, handleSubmit} = useForm()
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -142,9 +142,9 @@ const MedicalEntries = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          {/* <a href='#' className='btn btn-light-warning btn-sm'>
             Update
-          </a>
+          </a> */}
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
@@ -174,6 +174,10 @@ const MedicalEntries = () => {
     ...item,
     key: index,
   }))
+
+  const dataByID:any = gridData.filter((refId:any) =>{
+    return  refId.periodId===parseInt(selectedValue)
+  })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -209,16 +213,25 @@ const MedicalEntries = () => {
     })
     return medicalName
   } 
+  const onEmployeeChange = (objectId: any) => {
+    const newEmplo = allEmployee?.data.find((item:any)=>{
+      return item.id===parseInt(objectId)
+    }) // console.log(newEmplo)
+    setEmployeeRecord(newEmplo)
+  }
 
   const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
   const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
+  const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
 
+  console.log(selectedValue)
   const url = `${Api_Endpoint}/MedicalTransactions`
   const OnSubmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
-          employeeId: values.employeeId,
-          medicalTypeId: values.medicalTypeId,
+          employeeId: parseInt(values.employeeId),
+          periodId: parseInt(selectedValue),
+          medicalTypeId: parseInt(values.medicalTypeId),
           date: values.date,
           comment: values.comment,
         }
@@ -249,9 +262,9 @@ const MedicalEntries = () => {
         <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Period</label>
-            <select className="form-select form-select-solid" aria-label="Select example">
+            <select value={selectedValue} onChange={(e) => setSelectedValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              {period.map((item: any) => (
+              {allPeriods?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
               ))}
             </select>
@@ -286,7 +299,7 @@ const MedicalEntries = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
+          <Table columns={columns} dataSource={dataByID} loading={loading} />
           <Modal
                 title='Medical Entry'
                 open={isModalOpen}
@@ -315,12 +328,31 @@ const MedicalEntries = () => {
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee</label>
-                      <select {...register("employeeId")} className="form-select form-select-solid" aria-label="Select example">
+                      {/* <select {...register("employeeId")} className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
                         {allEmployee?.data.map((item: any) => (
                           <option value={item.id}>{item.firstName}-{item.surname}</option>
                         ))}
-                      </select>
+                      </select> */}
+                      <br></br>
+                      <Select
+                          // className="form-control form-control-solid"
+                          {...register("employeeId")}
+                          showSearch
+                          placeholder="select a reference"
+                          optionFilterProp="children"
+                          style={{width:"300px"}}
+                          value={employeeRecord.id}
+                          onChange={(e)=>{
+                            onEmployeeChange(e)
+                          }}
+                          
+                        >
+                          <option>select</option>
+                          {allEmployee?.data.map((item: any) => (
+                            <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
+                          ))}
+                        </Select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Medical Type</label>
