@@ -6,7 +6,7 @@ import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { employeedata, MEDICALS, period } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import {  Api_Endpoint, fetchEmployees, fetchMedicals, fetchPeriods } from '../../../../../services/ApiCalls'
+import {  Api_Endpoint, fetchEmployees, fetchMedicals, fetchPaygroups, fetchPeriods } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 
 const MedicalEntries = () => {
@@ -15,7 +15,8 @@ const MedicalEntries = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [selectedValue, setSelectedValue] = useState<any>(null);
+  const [selectedValue1, setSelectedValue1] = useState<any>(null);
+  const [selectedValue2, setSelectedValue2] = useState<any>(null);
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
   const {register, reset, handleSubmit} = useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -176,7 +177,7 @@ const MedicalEntries = () => {
   }))
 
   const dataByID:any = gridData.filter((refId:any) =>{
-    return  refId.periodId===parseInt(selectedValue)
+    return  refId.periodId===parseInt(selectedValue2)&&refId.medicalTypeId===11
   })
 
   const handleInputChange = (e: any) => {
@@ -223,14 +224,15 @@ const MedicalEntries = () => {
   const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
   const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
   const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
 
-  console.log(selectedValue)
+  console.log(selectedValue2)
   const url = `${Api_Endpoint}/MedicalTransactions`
   const OnSubmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
           employeeId: parseInt(values.employeeId),
-          periodId: parseInt(selectedValue),
+          periodId: parseInt(selectedValue1),
           medicalTypeId: parseInt(values.medicalTypeId),
           date: values.date,
           comment: values.comment,
@@ -261,9 +263,18 @@ const MedicalEntries = () => {
       <div style={{padding: "0px 0px 40px 0px"}}  className='col-12'>
         <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
           <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
+            <select value={selectedValue1} onChange={(e) => setSelectedValue1(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+              <option value="select paygroup" style={{color:"GrayText"}}> select paygroup</option>
+              {allPaygroups?.data.map((item: any) => (
+                <option value={item.id}>{item.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Period</label>
-            <select value={selectedValue} onChange={(e) => setSelectedValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
+            <select value={selectedValue2} onChange={(e) => setSelectedValue2(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+              <option value="select period">select period</option>
               {allPeriods?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
               ))}
@@ -272,7 +283,10 @@ const MedicalEntries = () => {
 
         </div>
       </div>
-      <KTCardBody className='py-4 '>
+      {
+        selectedValue1===null||selectedValue2===null||selectedValue1==="select paygroup"||selectedValue2==="select period"?"":
+
+        <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
@@ -357,7 +371,7 @@ const MedicalEntries = () => {
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Medical Type</label>
                       <select {...register("medicalTypeId")} className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
+                        <option> select </option>
                         {allMedicals?.data.map((item: any) => (
                           <option value={item.id}>{item.name}</option>
                         ))}
@@ -396,6 +410,8 @@ const MedicalEntries = () => {
             </Modal>
         </div>
       </KTCardBody>
+      }
+      
     </div>
   )
 }

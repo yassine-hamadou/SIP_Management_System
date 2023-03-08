@@ -25,13 +25,43 @@ const AppraisalPerformance = () => {
   const [tab3ModalOpen, setTab3ModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("tab1");
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
-  const [selectedValue, setSelectedValue] = useState<any>(null);
+  // const [selectedValue, setSelectedValue] = useState<any>(null);
+  const [selectedValue1, setSelectedValue1] = useState<any>(null);
+  const [selectedValue2, setSelectedValue2] = useState<any>(null);
+  const [selectedValue3, setSelectedValue3] = useState<any>(null);
+  const [selectedValue4, setSelectedValue4] = useState<any>(null);
+  const [radioValue, setRadioValue] = useState();
+  const [radio1Value, setRadio1Value] = useState();
+  const [radio2Value, setRadio2Value] = useState();
+  const [radio3Value, setRadio3Value] = useState();
+  const [radio4Value, setRadio4Value] = useState();
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
   };
   const showModal = () => {
     setIsModalOpen(true)
   }
+
+  const onRadioChange = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadioValue(e.target.value);
+  };
+  const onRadio1Change = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadio1Value(e.target.value);
+  };
+  const onRadio2Change = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadio2Value(e.target.value);
+  };
+  const onRadio3Change = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadio3Value(e.target.value);
+  };
+  const onRadio4Change = (e: RadioChangeEvent) => {
+    console.log('radio checked', e.target.value);
+    setRadio4Value(e.target.value);
+  };
 
   // const handleOk = () => {
   //   setIsModalOpen(false)
@@ -40,7 +70,7 @@ const AppraisalPerformance = () => {
   const handleCancel = () => {
     // form.resetFields()
     reset()
-    setSelectedValue(null)
+    // setSelectedValue(null)
     setEmployeeRecord([])
     setIsModalOpen(false)
     setUpdateModalOpen(false)
@@ -102,7 +132,7 @@ const AppraisalPerformance = () => {
   const { data: allAppraisals } = useQuery('appraisals', fetchAppraisals, { cacheTime: 5000 })
   const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
   const { data: allJobTitles } = useQuery('jobTitles', fetchJobTitles, { cacheTime: 5000 })
-  // const { data: allRecuitments } = useQuery('recruitments', fetchRecruitmentTransactions, { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('recruitments', fetchPaygroups, { cacheTime: 5000 })
 
   // to preview the uploaded file
   const onPreview = async (file: UploadFile) => {
@@ -308,58 +338,16 @@ const AppraisalPerformance = () => {
       console.log(error)
     }
   }
-
-  interface DataType {
-    key: React.Key;
-    fname:string, 
-      sname:string; 
-      dob:string; 
-      gender:string;
-      phone:string;
-      qualification: string;
-  }
-  const  data: DataType[] = [
-
-    {
-      key:'001',
-      fname:"Philip", 
-      sname:"Aherto", 
-      dob:"27-07-2000", 
-      gender:"Male", 
-      phone:"0249920482",
-      qualification: "Senior Manager"
-    },
-    {
-      key:'002',
-      fname:"Kwame", 
-      sname:"Kekeli", 
-      dob:"27-07-2002", 
-      gender:"Male", 
-      phone:"0249560482",
-      qualification: "Developer"
-    },
-    {
-      key:'003',
-      fname:"Nana", 
-      sname:"Phils", 
-      dob:"27-07-2006", 
-      gender:"Male", 
-      phone:"0249920122",
-      qualification: "Accountant"
-    }
-  ];
+  const dataByID:any = gridData.filter((refId:any) =>{
+    return  refId.appraisalTypeId===parseInt(selectedValue2)
+    })
 
   const onEmployeeChange = (objectId: any) => {
     const newEmplo = alEmployees?.data.find((item:any)=>{
       return item.id===parseInt(objectId)
-    }) // console.log(newEmplo)
+    })
     setEmployeeRecord(newEmplo)
   }
-  const dataByID:any = gridData.filter((refId:any) =>{
-    return  refId.appraisalTypeId===parseInt(selectedValue)
-    })
-// console.log(selectedValue)
-// console.log(dataByID)
   const getFirstName = (employeeId: any) => {
     let firstName = null
     alEmployees?.data.map((item: any) => {
@@ -445,17 +433,17 @@ const AppraisalPerformance = () => {
     setGridData(filteredData)
   }
 
-  const url1 = `${Api_Endpoint}/AppraisalPerfTransactions`
+  const url1 = `${Api_Endpoint}/AppraisalPerfTransactions1`
   const submitApplicant = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
-      // recruitmentTransactionId: parseInt(selectedValue),
-      appraisalTypeId: parseInt(selectedValue),
+      paygroupId: parseInt(selectedValue1),
+      appraisalTypeId: parseInt(selectedValue2),
       employeeId: employeeRecord.id,
-      startPeriod: values.startPeriod,
-      endPeriod: values.endPeriod,
-      
+      startPeriod: parseInt(selectedValue3),
+      endPeriod: parseInt(selectedValue4),
     }
+
     console.log(data)
       try { 
         
@@ -483,39 +471,56 @@ const AppraisalPerformance = () => {
       }}
     > 
     <form onSubmit={submitApplicant}>
-      <div style={{padding: "20px 0px 0 0px"}} className='col-8 row mb-0'>
-          <div className='col-4 mb-7'>
+      <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
+          <div className='col-3 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
+            <select value={selectedValue1} onChange={(e) => setSelectedValue1(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+              <option value="select paygroup">select paygroup</option>
+              {allPaygroups?.data.map((item: any) => (
+                <option value={item.id}>{item.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Appraisal Type</label>
-            <select value={selectedValue} onChange={(e) => setSelectedValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
+            <select value={selectedValue2} onChange={(e) => setSelectedValue2(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+              <option value="select appraisal type">select appraisal type</option>
               {allAppraisals?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
               ))}
             </select>
           </div>
-          <div className='col-4 mb-7'>
+          <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Start Period</label>
-            <select {...register("startPeriod")} className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
+            <select  value={selectedValue3} onChange={(e) => setSelectedValue3(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+              <option value="select start period">select start period</option>
               {allPeriods?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
               ))}
             </select>
           </div>
 
-          <div className='col-4 mb-7'>
+          <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">End Period</label>
-            <select {...register("endPeriod")} className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
+            <select  value={selectedValue4} onChange={(e) => setSelectedValue4(e.target.value)}  className="form-select form-select-solid" aria-label="Select example">
+              <option value="select end period"> select end period</option>
               {allPeriods?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
               ))}
             </select>
           </div>
         </div>
-        
-        </form>
-      <KTCardBody className='py-4 '>
+      </form>
+      {
+        selectedValue1===null
+        ||selectedValue2===null
+        ||selectedValue3===null
+        ||selectedValue4===null
+        ||selectedValue1==="select paygroup"
+        ||selectedValue2==="select appraisal type"
+        ||selectedValue3==="select start period"
+        ||selectedValue4==="select end period"?"":
+        <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
@@ -571,13 +576,7 @@ const AppraisalPerformance = () => {
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label ">Employee ID</label>
-                      {/* <select className="form-select form-select-solid" aria-label="Select example" onChange={(e)=>onEmployeeChange(e)}>
-                        <option> select</option>
-                        
-                        {gridData.map((item: any) => (
-                          <option value={item.id}> {item.firstName} - {item.surname}</option>
-                        ))}
-                      </select> */}
+                      
                       <br></br>
                       <Select
                           // className="form-control form-control-solid"
@@ -625,6 +624,69 @@ const AppraisalPerformance = () => {
 
                     </div>
                   </div>
+                  <form>
+                    <hr></hr>
+                 <div>
+                  <div style={{display:"flex", }} className="tabs">
+                    <div
+                      className={`tab ${activeTab === "tab1" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab1")}
+                    >
+                      Accomplishments
+                    </div>
+
+                    <div className={`tab ${activeTab === "tab2" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab2")}
+                    >
+                      Areas of Improvements
+                    </div>
+                    <div
+                      className={`tab ${activeTab === "tab3" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab3")}
+                    >
+                      Goals for Performance
+                    </div>
+                    <div
+                      className={`tab ${activeTab === "tab4" ? "active" : ""}`}
+                      onClick={() => handleTabClick("tab4")}
+                    >
+                      Supporting Documentation
+                    </div>
+                  </div>
+                  <div className="tab-content">
+                    {activeTab === "tab1" && 
+                    <div>
+                      <div className='col-6 mb-3'>
+                      <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Work Skills</label>
+                      <Radio.Group onChange={onRadio1Change} value={radio1Value}>
+                        <Radio value={1}>1</Radio>
+                        <Radio value={2}>2</Radio>
+                        <Radio value={3}>3</Radio>
+                        <Radio value={4}>4</Radio>
+                        <Radio value={5}>5</Radio>
+                      </Radio.Group>
+                      <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on work skills (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                      
+                    </div>}
+                    
+                    {activeTab === "tab2" && 
+                    <div>
+                      <h5>Improvements</h5>
+                    </div>}
+
+                    {activeTab === "tab3" && 
+                    <div>
+                      <h5>Goals</h5>
+                    </div>}
+
+                    {activeTab === "tab4" && 
+                    <div>
+                      <h5>Docs</h5>
+                    </div>}
+                  </div>
+                </div>
+                </form>
                 
                 </form>           
           </Modal>     
@@ -721,6 +783,8 @@ const AppraisalPerformance = () => {
           </Modal>
         </div>
       </KTCardBody>
+      }
+      
     </div>
   )
 }
