@@ -8,6 +8,7 @@ import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
 import { employeedata } from '../../../../../data/DummyData'
+import { useForm } from 'react-hook-form'
 
 const TrainingDevelopment = () => {
   const [gridData, setGridData] = useState([])
@@ -15,7 +16,9 @@ const TrainingDevelopment = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
+  const [selectedValue, setSelectedValue] = useState<any>(null);
+
+  const {register, reset, handleSubmit} = useForm()
   
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isShortModalOpen, setIsShortModalOpen] = useState(false)
@@ -34,7 +37,7 @@ const TrainingDevelopment = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    // form.resetFields()
     setIsModalOpen(false)
   }
   const showShortModal = () => {
@@ -46,7 +49,7 @@ const TrainingDevelopment = () => {
   }
 
   const handleShortCancel = () => {
-    form.resetFields()
+    // form.resetFields()
     setIsShortModalOpen(false)
   }
 
@@ -371,7 +374,7 @@ const TrainingDevelopment = () => {
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
-      form.resetFields()
+      // form.resetFields()
       setIsModalOpen(false)
       loadData()
       return response.statusText
@@ -499,7 +502,7 @@ const TrainingDevelopment = () => {
                   htmlType='submit'
                   loading={submitLoading}
                   onClick={() => {
-                    form.submit()
+                    // form.submit()
                   }}
                   >
                       Submit
@@ -510,7 +513,7 @@ const TrainingDevelopment = () => {
                     labelCol={{span: 7}}
                     wrapperCol={{span: 14}}
                     layout='horizontal'
-                    form={form}
+                    // form={form}
                     name='control-hooks'
                     onFinish={onFinish}
                 >
@@ -573,7 +576,7 @@ const TrainingDevelopment = () => {
                   htmlType='submit'
                   loading={submitLoading}
                   onClick={() => {
-                    form.submit()
+                    // form.submit()
                   }}
                   >
                       Submit
@@ -584,7 +587,7 @@ const TrainingDevelopment = () => {
                     labelCol={{span: 7}}
                     wrapperCol={{span: 14}}
                     layout='horizontal'
-                    form={form}
+                    // form={form}
                     name='control-hooks'
                     onFinish={onFinish}
                 >

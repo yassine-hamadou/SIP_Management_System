@@ -2,8 +2,9 @@ import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
 import { period } from '../../../../../data/DummyData'
+import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { useForm } from 'react-hook-form'
 
 const Period = () => {
   const [gridData, setGridData] = useState([])
@@ -12,7 +13,7 @@ const Period = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  const {register, reset, handleSubmit} = useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -30,7 +31,7 @@ const Period = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/Periods/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -75,12 +76,12 @@ const Period = () => {
     },
     {
       title: 'Start Date',
-      dataIndex: 'start_date',
+      dataIndex: 'startDate',
       sorter: (a: any, b: any) => {
-        if (a.start_date > b.start_date) {
+        if (a.startDate > b.startDate) {
           return 1
         }
-        if (b.start_date > a.start_date) {
+        if (b.startDate > a.startDate) {
           return -1
         }
         return 0
@@ -88,30 +89,30 @@ const Period = () => {
     },
     {
       title: 'End Date',
-      dataIndex: 'end_date',
+      dataIndex: 'endDate',
       sorter: (a: any, b: any) => {
-        if (a.end_date > b.end_date) {
+        if (a.endDate > b.endDate) {
           return 1
         }
-        if (b.end_date > a.end_date) {
+        if (b.endDate > a.endDate) {
           return -1
         }
         return 0
       },
     },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      sorter: (a: any, b: any) => {
-        if (a.status > b.status) {
-          return 1
-        }
-        if (b.status > a.status) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.status > b.status) {
+    //       return 1
+    //     }
+    //     if (b.status > a.status) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
 
     {
       title: 'Action',
@@ -132,685 +133,10 @@ const Period = () => {
     },
   ]
 
-  const PERIOD=[
-    {
-     code: "JAN23",
-     name: "JANUARY 2023",
-     start_date: "1\/1",
-     end_date: "31\/01",
-     status: "ACTIVE"
-    },
-    {
-     code: "FEB23",
-     name: "FEBRUARY 2023",
-     start_date: "2\/1",
-     end_date: "28\/02",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAR23",
-     name: "MARCH 2023",
-     start_date: "3\/1",
-     end_date: "31\/03",
-     status: "ACTIVE"
-    },
-    {
-     code: "APR23",
-     name: "APRIL 2023",
-     start_date: "4\/1",
-     end_date: "30\/04",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAY23",
-     name: "MAY 2023",
-     start_date: "5\/1",
-     end_date: "31\/05",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUN23",
-     name: "JUNE 2023",
-     start_date: "6\/1",
-     end_date: "30\/06",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUL23",
-     name: "JULY 2023",
-     start_date: "7\/1",
-     end_date: "31\/7",
-     status: "ACTIVE"
-    },
-    {
-     code: "AUG23",
-     name: "AUGUST 2023",
-     start_date: "8\/1",
-     end_date: "31\/8",
-     status: "ACTIVE"
-    },
-    {
-     code: "SEP23",
-     name: "SEPTEMBER 2023",
-     start_date: "9\/1",
-     end_date: "30\/9",
-     status: "ACTIVE"
-    },
-    {
-     code: "OCT23",
-     name: "OCTOBER 2023",
-     start_date: "10\/1",
-     end_date: "31\/10",
-     status: "ACTIVE"
-    },
-    {
-     code: "NOV23",
-     name: "NOVEMBER 2023",
-     start_date: "11\/1",
-     end_date: "30\/11",
-     status: "ACTIVE"
-    },
-    {
-     code: "DEC23",
-     name: "DECEMBER 2023",
-     start_date: "12\/1",
-     end_date: "31\/12",
-     status: "ACTIVE"
-    },
-    {
-     code: "JAN24",
-     name: "JANUARY 2024",
-     start_date: "1\/1",
-     end_date: "31\/01",
-     status: "ACTIVE"
-    },
-    {
-     code: "FEB24",
-     name: "FEBRUARY 2024",
-     start_date: "2\/1",
-     end_date: "28\/02",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAR24",
-     name: "MARCH 2024",
-     start_date: "3\/1",
-     end_date: "31\/03",
-     status: "ACTIVE"
-    },
-    {
-     code: "APR24",
-     name: "APRIL 2024",
-     start_date: "4\/1",
-     end_date: "30\/04",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAY24",
-     name: "MAY 2024",
-     start_date: "5\/1",
-     end_date: "31\/05",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUN24",
-     name: "JUNE 2024",
-     start_date: "6\/1",
-     end_date: "30\/06",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUL24",
-     name: "JULY 2024",
-     start_date: "7\/1",
-     end_date: "31\/7",
-     status: "ACTIVE"
-    },
-    {
-     code: "AUG24",
-     name: "AUGUST 2024",
-     start_date: "8\/1",
-     end_date: "31\/8",
-     status: "ACTIVE"
-    },
-    {
-     code: "SEP24",
-     name: "SEPTEMBER 2024",
-     start_date: "9\/1",
-     end_date: "30\/9",
-     status: "ACTIVE"
-    },
-    {
-     code: "OCT24",
-     name: "OCTOBER 2024",
-     start_date: "10\/1",
-     end_date: "31\/10",
-     status: "ACTIVE"
-    },
-    {
-     code: "NOV24",
-     name: "NOVEMBER 2024",
-     start_date: "11\/1",
-     end_date: "30\/11",
-     status: "ACTIVE"
-    },
-    {
-     code: "DEC24",
-     name: "DECEMBER 2024",
-     start_date: "12\/1",
-     end_date: "31\/12",
-     status: "ACTIVE"
-    },
-    {
-     code: "JAN25",
-     name: "JANUARY 2025",
-     start_date: "1\/1",
-     end_date: "31\/01",
-     status: "ACTIVE"
-    },
-    {
-     code: "FEB25",
-     name: "FEBRUARY 2025",
-     start_date: "2\/1",
-     end_date: "28\/02",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAR25",
-     name: "MARCH 2025",
-     start_date: "3\/1",
-     end_date: "31\/03",
-     status: "ACTIVE"
-    },
-    {
-     code: "APR25",
-     name: "APRIL 2025",
-     start_date: "4\/1",
-     end_date: "30\/04",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAY25",
-     name: "MAY 2025",
-     start_date: "5\/1",
-     end_date: "31\/05",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUN25",
-     name: "JUNE 2025",
-     start_date: "6\/1",
-     end_date: "30\/06",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUL25",
-     name: "JULY 2025",
-     start_date: "7\/1",
-     end_date: "31\/7",
-     status: "ACTIVE"
-    },
-    {
-     code: "AUG25",
-     name: "AUGUST 2025",
-     start_date: "8\/1",
-     end_date: "31\/8",
-     status: "ACTIVE"
-    },
-    {
-     code: "SEP25",
-     name: "SEPTEMBER 2025",
-     start_date: "9\/1",
-     end_date: "30\/9",
-     status: "ACTIVE"
-    },
-    {
-     code: "OCT25",
-     name: "OCTOBER 2025",
-     start_date: "10\/1",
-     end_date: "31\/10",
-     status: "ACTIVE"
-    },
-    {
-     code: "NOV25",
-     name: "NOVEMBER 2025",
-     start_date: "11\/1",
-     end_date: "30\/11",
-     status: "ACTIVE"
-    },
-    {
-     code: "DEC25",
-     name: "DECEMBER 2025",
-     start_date: "12\/1",
-     end_date: "31\/12",
-     status: "ACTIVE"
-    },
-    {
-     code: "JAN26",
-     name: "JANUARY 2026",
-     start_date: "1\/1",
-     end_date: "31\/01",
-     status: "ACTIVE"
-    },
-    {
-     code: "FEB26",
-     name: "FEBRUARY 2026",
-     start_date: "2\/1",
-     end_date: "28\/02",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAR26",
-     name: "MARCH 2026",
-     start_date: "3\/1",
-     end_date: "31\/03",
-     status: "ACTIVE"
-    },
-    {
-     code: "APR26",
-     name: "APRIL 2026",
-     start_date: "4\/1",
-     end_date: "30\/04",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAY26",
-     name: "MAY 2026",
-     start_date: "5\/1",
-     end_date: "31\/05",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUN26",
-     name: "JUNE 2026",
-     start_date: "6\/1",
-     end_date: "30\/06",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUL26",
-     name: "JULY 2026",
-     start_date: "7\/1",
-     end_date: "31\/7",
-     status: "ACTIVE"
-    },
-    {
-     code: "AUG26",
-     name: "AUGUST 2026",
-     start_date: "8\/1",
-     end_date: "31\/8",
-     status: "ACTIVE"
-    },
-    {
-     code: "SEP26",
-     name: "SEPTEMBER 2026",
-     start_date: "9\/1",
-     end_date: "30\/9",
-     status: "ACTIVE"
-    },
-    {
-     code: "OCT26",
-     name: "OCTOBER 2026",
-     start_date: "10\/1",
-     end_date: "31\/10",
-     status: "ACTIVE"
-    },
-    {
-     code: "NOV26",
-     name: "NOVEMBER 2026",
-     start_date: "11\/1",
-     end_date: "30\/11",
-     status: "ACTIVE"
-    },
-    {
-     code: "DEC26",
-     name: "DECEMBER 2026",
-     start_date: "12\/1",
-     end_date: "31\/12",
-     status: "ACTIVE"
-    },
-    {
-     code: "JAN27",
-     name: "JANUARY 2027",
-     start_date: "1\/1",
-     end_date: "31\/01",
-     status: "ACTIVE"
-    },
-    {
-     code: "FEB27",
-     name: "FEBRUARY 2027",
-     start_date: "2\/1",
-     end_date: "28\/02",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAR27",
-     name: "MARCH 2027",
-     start_date: "3\/1",
-     end_date: "31\/03",
-     status: "ACTIVE"
-    },
-    {
-     code: "APR27",
-     name: "APRIL 2027",
-     start_date: "4\/1",
-     end_date: "30\/04",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAY27",
-     name: "MAY 2027",
-     start_date: "5\/1",
-     end_date: "31\/05",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUN27",
-     name: "JUNE 2027",
-     start_date: "6\/1",
-     end_date: "30\/06",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUL27",
-     name: "JULY 2027",
-     start_date: "7\/1",
-     end_date: "31\/7",
-     status: "ACTIVE"
-    },
-    {
-     code: "AUG27",
-     name: "AUGUST 2027",
-     start_date: "8\/1",
-     end_date: "31\/8",
-     status: "ACTIVE"
-    },
-    {
-     code: "SEP27",
-     name: "SEPTEMBER 2027",
-     start_date: "9\/1",
-     end_date: "30\/9",
-     status: "ACTIVE"
-    },
-    {
-     code: "OCT27",
-     name: "OCTOBER 2027",
-     start_date: "10\/1",
-     end_date: "31\/10",
-     status: "ACTIVE"
-    },
-    {
-     code: "NOV27",
-     name: "NOVEMBER 2027",
-     start_date: "11\/1",
-     end_date: "30\/11",
-     status: "ACTIVE"
-    },
-    {
-     code: "DEC27",
-     name: "DECEMBER 2027",
-     start_date: "12\/1",
-     end_date: "31\/12",
-     status: "ACTIVE"
-    },
-    {
-     code: "JAN28",
-     name: "JANUARY 2028",
-     start_date: "1\/1",
-     end_date: "31\/01",
-     status: "ACTIVE"
-    },
-    {
-     code: "FEB28",
-     name: "FEBRUARY 2028",
-     start_date: "2\/1",
-     end_date: "28\/02",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAR28",
-     name: "MARCH 2028",
-     start_date: "3\/1",
-     end_date: "31\/03",
-     status: "ACTIVE"
-    },
-    {
-     code: "APR28",
-     name: "APRIL 2028",
-     start_date: "4\/1",
-     end_date: "30\/04",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAY28",
-     name: "MAY 2028",
-     start_date: "5\/1",
-     end_date: "31\/05",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUN28",
-     name: "JUNE 2028",
-     start_date: "6\/1",
-     end_date: "30\/06",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUL28",
-     name: "JULY 2028",
-     start_date: "7\/1",
-     end_date: "31\/7",
-     status: "ACTIVE"
-    },
-    {
-     code: "AUG28",
-     name: "AUGUST 2028",
-     start_date: "8\/1",
-     end_date: "31\/8",
-     status: "ACTIVE"
-    },
-    {
-     code: "SEP28",
-     name: "SEPTEMBER 2028",
-     start_date: "9\/1",
-     end_date: "30\/9",
-     status: "ACTIVE"
-    },
-    {
-     code: "OCT28",
-     name: "OCTOBER 2028",
-     start_date: "10\/1",
-     end_date: "31\/10",
-     status: "ACTIVE"
-    },
-    {
-     code: "NOV28",
-     name: "NOVEMBER 2028",
-     start_date: "11\/1",
-     end_date: "30\/11",
-     status: "ACTIVE"
-    },
-    {
-     code: "DEC28",
-     name: "DECEMBER 2028",
-     start_date: "12\/1",
-     end_date: "31\/12",
-     status: "ACTIVE"
-    },
-    {
-     code: "JAN29",
-     name: "JANUARY 2029",
-     start_date: "1\/1",
-     end_date: "31\/01",
-     status: "ACTIVE"
-    },
-    {
-     code: "FEB29",
-     name: "FEBRUARY 2029",
-     start_date: "2\/1",
-     end_date: "28\/02",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAR29",
-     name: "MARCH 2029",
-     start_date: "3\/1",
-     end_date: "31\/03",
-     status: "ACTIVE"
-    },
-    {
-     code: "APR29",
-     name: "APRIL 2029",
-     start_date: "4\/1",
-     end_date: "30\/04",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAY29",
-     name: "MAY 2029",
-     start_date: "5\/1",
-     end_date: "31\/05",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUN29",
-     name: "JUNE 2029",
-     start_date: "6\/1",
-     end_date: "30\/06",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUL29",
-     name: "JULY 2029",
-     start_date: "7\/1",
-     end_date: "31\/7",
-     status: "ACTIVE"
-    },
-    {
-     code: "AUG29",
-     name: "AUGUST 2029",
-     start_date: "8\/1",
-     end_date: "31\/8",
-     status: "ACTIVE"
-    },
-    {
-     code: "SEP29",
-     name: "SEPTEMBER 2029",
-     start_date: "9\/1",
-     end_date: "30\/9",
-     status: "ACTIVE"
-    },
-    {
-     code: "OCT29",
-     name: "OCTOBER 2029",
-     start_date: "10\/1",
-     end_date: "31\/10",
-     status: "ACTIVE"
-    },
-    {
-     code: "NOV29",
-     name: "NOVEMBER 2029",
-     start_date: "11\/1",
-     end_date: "30\/11",
-     status: "ACTIVE"
-    },
-    {
-     code: "DEC29",
-     name: "DECEMBER 2029",
-     start_date: "12\/1",
-     end_date: "31\/12",
-     status: "ACTIVE"
-    },
-    {
-     code: "JAN30",
-     name: "JANUARY 2030",
-     start_date: "1\/1",
-     end_date: "31\/01",
-     status: "ACTIVE"
-    },
-    {
-     code: "FEB30",
-     name: "FEBRUARY 2030",
-     start_date: "2\/1",
-     end_date: "28\/02",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAR30",
-     name: "MARCH 2030",
-     start_date: "3\/1",
-     end_date: "31\/03",
-     status: "ACTIVE"
-    },
-    {
-     code: "APR30",
-     name: "APRIL 2030",
-     start_date: "4\/1",
-     end_date: "30\/04",
-     status: "ACTIVE"
-    },
-    {
-     code: "MAY30",
-     name: "MAY 2030",
-     start_date: "5\/1",
-     end_date: "31\/05",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUN30",
-     name: "JUNE 2030",
-     start_date: "6\/1",
-     end_date: "30\/06",
-     status: "ACTIVE"
-    },
-    {
-     code: "JUL30",
-     name: "JULY 2030",
-     start_date: "7\/1",
-     end_date: "31\/7",
-     status: "ACTIVE"
-    },
-    {
-     code: "AUG30",
-     name: "AUGUST 2030",
-     start_date: "8\/1",
-     end_date: "31\/8",
-     status: "ACTIVE"
-    },
-    {
-     code: "SEP30",
-     name: "SEPTEMBER 2030",
-     start_date: "9\/1",
-     end_date: "30\/9",
-     status: "ACTIVE"
-    },
-    {
-     code: "OCT30",
-     name: "OCTOBER 2030",
-     start_date: "10\/1",
-     end_date: "31\/10",
-     status: "ACTIVE"
-    },
-    {
-     code: "NOV30",
-     name: "NOVEMBER 2030",
-     start_date: "11\/1",
-     end_date: "30\/11",
-     status: "ACTIVE"
-    },
-    {
-     code: "DEC30",
-     name: "DECEMBER 2030",
-     start_date: "12\/1",
-     end_date: "31\/12",
-     status: "ACTIVE"
-    }
-   ]
-
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/Periods`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -844,19 +170,20 @@ const Period = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
+  const url = `${Api_Endpoint}/Periods`
+  const OnSUbmit = handleSubmit( async (values)=> {
+    setLoading(true)
     const data = {
+      code: values.code,
       name: values.name,
+      startDate: values.startDate,
+      endDate: values.endDate,
     }
-
-    console.log(data)
-
+        console.log(data)
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
-      form.resetFields()
+      reset()
       setIsModalOpen(false)
       loadData()
       return response.statusText
@@ -864,7 +191,7 @@ const Period = () => {
       setSubmitLoading(false)
       return error.statusText
     }
-  }
+  })
 
   return (
     <div
@@ -902,10 +229,11 @@ const Period = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={period}/>
+          <Table columns={columns} dataSource={dataWithIndex} loading={loading}/>
           <Modal
                 title='Period Setup'
                 open={isModalOpen}
+                width="600px"
                 onCancel={handleCancel}
                 closable={true}
                 footer={[
@@ -917,42 +245,38 @@ const Period = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
+                    onClick={OnSUbmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
+                <form
+                   onSubmit={OnSUbmit}
                 >
                   <hr></hr>
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                     <div className=' mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                      <input type="text" name="code"  className="form-control form-control-solid"/>
+                      <input type="text" {...register("code")} className="form-control form-control-solid"/>
                     </div>
                     <div className=' mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" name="name"  className="form-control form-control-solid"/>
+                      <input type="text" {...register("name")} className="form-control form-control-solid"/>
                     </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">ACTIVE </option>
-                        <option value="2">INACTIVE</option>
-                      </select>
+                    <div className='row'>
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Start Date</label>
+                        <input type="date" {...register("startDate")} className="form-control form-control-solid"/>
+                      </div>
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">End Date</label>
+                        <input type="date" {...register("endDate")}  className="form-control form-control-solid"/>
+                      </div>
                     </div>
+                    
                   </div>
-                </Form>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

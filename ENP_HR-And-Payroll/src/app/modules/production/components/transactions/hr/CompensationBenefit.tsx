@@ -1,6 +1,6 @@
 
 
-import {Button, Form, Input, InputNumber, Upload,Modal, Space, Table, Radio, RadioChangeEvent} from 'antd'
+import {Button, Form, Input, InputNumber, Upload,Modal, Space, Table, Radio, RadioChangeEvent, Select} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
@@ -9,26 +9,30 @@ import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
 import { employeedata, JOBTITLE } from '../../../../../data/DummyData'
+import { useQuery } from 'react-query'
+import { Api_Endpoint, fetchEmployees, fetchJobTitles, fetchUnits } from '../../../../../services/ApiCalls'
+import { useForm } from 'react-hook-form'
 
 const CompensationBenefit = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
-  const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
-  
+  const [submitLoading, setSubmitLoading] = useState(false)  
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isShortModalOpen, setIsShortModalOpen] = useState(false)
-  const [radioValue, setRadioValue] = useState();
-  const [radio1Value, setRadio1Value] = useState();
-  const [radio2Value, setRadio2Value] = useState();
-  const [radio3Value, setRadio3Value] = useState();
-  const [radio4Value, setRadio4Value] = useState();
-  const [radio5Value, setRadio5Value] = useState();
-  const [radio6Value, setRadio6Value] = useState();
+  const [basicSalary, setRadioValue] = useState();
+  const [allowanceValue, setAllowanceValue] = useState();
+  const [bonusValue, setBonusValue] = useState();
+  const [healthInsurenaceValue, setHealthInsurenaceValue] = useState();
+  const [savingSchemeValue, setSavingSchemeValue] = useState();
+  const [profDevelopValue, setProfDevelopValue] = useState();
+  const [unitName, setunitName] = useState("");
+  const [companyPropertyValue, setCompanyPropertyValue] = useState();
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
+  const [selectedValue, setSelectedValue] = useState<any>(null);
 
+  const {register, reset, handleSubmit} = useForm()
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -38,7 +42,7 @@ const CompensationBenefit = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+   reset()
     setIsModalOpen(false)
     setEmployeeRecord(null)
   }
@@ -58,7 +62,7 @@ const CompensationBenefit = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/CompensationBenefitTransactions/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -92,33 +96,33 @@ const CompensationBenefit = () => {
     imgWindow?.document.write(image.outerHTML);
   };
 
-  const onRadioChange = (e: RadioChangeEvent) => {
+  const onBasicSalryChange = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
     setRadioValue(e.target.value);
   };
-  const onRadio1Change = (e: RadioChangeEvent) => {
+  const onAllowanceChange = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
-    setRadio1Value(e.target.value);
+    setAllowanceValue(e.target.value);
   };
-  const onRadio2Change = (e: RadioChangeEvent) => {
+  const onBonusChange = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
-    setRadio2Value(e.target.value);
+    setBonusValue(e.target.value);
   };
-  const onRadio3Change = (e: RadioChangeEvent) => {
+  const onHealthInsurenaceChange = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
-    setRadio3Value(e.target.value);
+    setHealthInsurenaceValue(e.target.value);
   };
-  const onRadio4Change = (e: RadioChangeEvent) => {
+  const onSavingSchemeChange = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
-    setRadio4Value(e.target.value);
+    setSavingSchemeValue(e.target.value);
   };
-  const onRadio5Change = (e: RadioChangeEvent) => {
+  const onProfDevelopChange = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
-    setRadio5Value(e.target.value);
+    setProfDevelopValue(e.target.value);
   };
-  const onRadio6Change = (e: RadioChangeEvent) => {
+  const onCompanyPropertyChange = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
-    setRadio6Value(e.target.value);
+    setCompanyPropertyValue(e.target.value);
   };
 
   function handleDelete(element: any) {
@@ -129,7 +133,9 @@ const CompensationBenefit = () => {
    
     {
       title: 'Employee ID',
-      dataIndex: 'empcode',
+      render: (row: any) => {
+        return getID(row.employeeId)
+      },
       sorter: (a: any, b: any) => {
         if (a.empl_code > b.empl_code) {
           return 1
@@ -142,7 +148,9 @@ const CompensationBenefit = () => {
     },
     {
       title: 'First Name',
-      dataIndex: 'firstname',
+      render: (row: any) => {
+        return getFirstName(row.employeeId)
+      }, 
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -155,7 +163,9 @@ const CompensationBenefit = () => {
     },
     {
       title: 'Last Name',
-      dataIndex: 'lastname',
+      render: (row: any) => {
+        return getSurname(row.employeeId)
+      }, 
       sorter: (a: any, b: any) => {
         if (a.lname > b.lname) {
           return 1
@@ -168,7 +178,9 @@ const CompensationBenefit = () => {
     },
     {
       title: 'DOB',
-      dataIndex: 'dob',
+      render: (row: any) => {
+        return getDOB(row.employeeId)
+      }, 
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -181,7 +193,9 @@ const CompensationBenefit = () => {
     },
     {
       title: 'Gender',
-      dataIndex: 'sex',
+      render: (row: any) => {
+        return getGender(row.employeeId)
+      }, 
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -194,7 +208,9 @@ const CompensationBenefit = () => {
     },
     {
       title: 'Phone Number',
-      dataIndex: 'phone',
+      render: (row: any) => {
+        return getPhone(row.employeeId)
+      }, 
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -207,7 +223,9 @@ const CompensationBenefit = () => {
     },
     {
       title: 'Unit',
-      dataIndex: 'unit',
+      render: (row: any) => {
+        return getUnit(row.employeeId)
+      }, 
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -238,123 +256,10 @@ const CompensationBenefit = () => {
     },
   ]
 
-  const COMPENSATIONANDBENEFITS=[
-     
-    {
-     empl_code: "001",
-     unit: "manager",
-     fname: "MICHAEL ",
-     lname: "ANANI",
-     dob: "12\/07\/1990",
-     gender: "MALE",
-     qyt: "YES",
-     wkskills: "YES ",
-     exp: "YES",
-     ref: "NO",
-     socskill: "YES"
-    },
-    {
-     empl_code: "002",
-     unit: "junior staff",
-     fname: "FRANCIS",
-     lname: "OFOSU",
-     dob: "07\/11\/1989",
-     gender: "MALE",
-     qyt: "YES",
-     wkskills: "YES ",
-     exp: "NO",
-     ref: "YES",
-     socskill: "YES"
-    },
-    {
-     empl_code: "003",
-     unit: "senior staff",
-     fname: "MABEL",
-     lname: "KOFFIE",
-     dob: "11\/11\/1993",
-     gender: "FEMALE",
-     qyt: "YES",
-     wkskills: "YES ",
-     exp: "YES",
-     ref: "YES",
-     phone:"0249923582",
-     socskill: "YES"
-    },
-    {
-     empl_code: "004",
-     unit: "junior staff",
-     fname: "FRANK",
-     lname: "KORAMKYI",
-     dob: "29\/06\/1991",
-     gender: "MALE",
-     qyt: "YES",
-     wkskills: "NO",
-     exp: "YES",
-     phone:"0249920434",
-     ref: "YES",
-     socskill: "NO"
-    },
-    {
-     empl_code: "005",
-     unit: "manager",
-     fname: "MARY",
-     lname: "BROWN",
-     dob: "13\/01\/1985",
-     gender: "FEMALE",
-     qyt: "YES",
-     wkskills: "YES ",
-     exp: "YES",
-     phone:"0249926782",
-     ref: "YES",
-     socskill: "YES"
-    },
-    {
-     empl_code: "006",
-     unit: "senior staff",
-     fname: "KEZIAH",
-     lname: "DOE",
-     dob: "09\/12\/1992",
-     gender: "FEMALE",
-     qyt: "YES",
-     wkskills: "YES ",
-     phone:"0249660482",
-     exp: "YES",
-     ref: "YES",
-     socskill: "YES"
-    },
-    {
-     empl_code: "007",
-     unit: "manager",
-     fname: "COMFORT",
-     lname: "BLESSING",
-     dob: "15\/09\/1985",
-     gender: "FEMALE",
-     qyt: "YES",
-     wkskills: "YES ",
-     phone:"0243420482",
-     exp: "YES",
-     ref: "YES"
-    },
-    {
-     empl_code: "008",
-     unit: "junior staff",
-     fname: "ESTHER",
-     lname: "ADJEI",
-     dob: "19\/02\/1983",
-     gender: "FEMALE",
-     qyt: "YES",
-     wkskills: "YES ",
-     phone:"0249920482",
-     exp: "YES",
-     ref: "YES",
-     socskill: "YES"
-    }
-   ]
-
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/CompensationBenefitTransactions`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -362,27 +267,111 @@ const CompensationBenefit = () => {
     }
   }
 
+  const { data: allJobTitles } = useQuery('jobTitles', fetchJobTitles, { cacheTime: 5000 })
+  const { data: allEmployees } = useQuery('employees', fetchEmployees, { cacheTime: 5000 })
+  const { data: allUnits } = useQuery('units', fetchUnits, { cacheTime: 5000 })
 
-
-
-  const onEmployeeChange = (e: any) => {
-    const objectId = e.target.value 
-    const newEmplo = employeedata.find((item:any)=>{
-      return item.code.toString()===objectId
+  const getFirstName = (employeeId: any) => {
+    let firstName = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === employeeId) {
+        firstName=item.firstName
+      }
     })
-  setEmployeeRecord(newEmplo)
-    
+    return firstName
+  } 
+  const getSurname = (employeeId: any) => {
+    let surname = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === employeeId) {
+        surname=item.surname
+      }
+    })
+    return surname
+  } 
+  const getID = (employeeId: any) => {
+    let Id = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === employeeId) {
+        Id=item.id
+      }
+    })
+    return Id
+  } 
+  const getGender= (employeeId: any) => {
+    let gender = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === employeeId) {
+        gender=item.gender
+      }
+    })
+    return gender
+  } 
+  const getDOB= (employeeId: any) => {
+    let surname = ""
+    allEmployees?.data.map((item: any) => {
+      if (item.id === employeeId) {
+        surname=item.dob
+      }
+    })
+    return surname
+  }
+  const getPhone= (employeeId: any) => {
+    let surname = ""
+    allEmployees?.data.map((item: any) => {
+      if (item.id === employeeId) {
+        surname=item.phone
+      }
+    })
+    return surname
+  }
+
+  const getUnit= (employeeId: any) => {
+    let unitId:any = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === employeeId) {
+        unitId=item.unitId
+      }
+    })
+    let unitName = null
+    allUnits?.data.map((item: any) => {
+        if (item.id === unitId) {
+            unitName=item.name
+        }
+    })
+    return unitName
+  } 
+
+  const onEmployeeChange = (objectId: any) => {
+    const newEmplo = allEmployees?.data.find((item:any)=>{
+      return item.id===parseInt(objectId)
+    }) // console.log(newEmplo)
+    setEmployeeRecord(newEmplo)
   }
 
 
   useEffect(() => {
+    const getUnitName = () => {
+      let unitName = ""
+      allUnits?.data.map((item: any) => {
+        if (item.id === employeeRecord?.unitId) {
+          unitName=item.name
+        }
+      })
+      setunitName(unitName)
+      return unitName
+    } 
+    getUnitName()
     loadData()
-  }, [])
+  }, [allUnits?.data, employeeRecord?.unitId])
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
     key: index,
   }))
+  const dataByID:any = gridData.filter((refId:any) =>{
+    return  refId.jobTitleId===parseInt(selectedValue)
+    })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -401,36 +390,45 @@ const CompensationBenefit = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
+
+  const url1 = `${Api_Endpoint}/CompensationBenefitTransactions`
+  const submitCompensation = handleSubmit(async (values) => {
+    setLoading(true)
     const data = {
-      name: values.name,
+      jobTitleId: parseInt(selectedValue),
+      employeeId: employeeRecord.id,
+      basicSalary: basicSalary,
+      basicSalaryComment: values.basicSalaryComment,
+      allowance: allowanceValue,
+      allowanceComment: values.allowanceComment,
+      bonus: bonusValue,
+      bonusComment: values.bonusComment,
+      savingScheme: savingSchemeValue,
+      savingSchemeComment: values.savingSchemeComment,
+      companyProperty: companyPropertyValue,
+      companyPropertyComment: values.companyPropertyComment,
+      healthInsurance: healthInsurenaceValue,
+      healthInsuranceComment: values.healthInsuranceComment,
+      profDevelopment: profDevelopValue,
+      profDevelopmentComment: values.profDevelopmentComment,
+      
     }
-
     console.log(data)
-
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
-      form.resetFields()
-      setIsModalOpen(false)
-      loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
-    }
-  }
-
-  // console.log(employeeRecord)
-
-  // const found = employeedata.find(obj => {
-  //   return obj.code === 3;
-  // });
-
-
-  // console.log(found)
+      try { 
+        
+          const response = await axios.post(url1, data)
+          setSubmitLoading(false)
+          reset()
+          setIsModalOpen(false)
+          loadData()
+          return response.statusText
+        
+      } catch (error: any) {
+        setSubmitLoading(false)
+        return error.statusText
+      } 
+    
+  })
 
   return (
     <div
@@ -446,10 +444,10 @@ const CompensationBenefit = () => {
         <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
-            <select className="form-select form-select-solid" aria-label="Select example">
+            <select value={selectedValue} onChange={(e) => setSelectedValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              {JOBTITLE.map((item: any) => (
-                <option value={item.code}>{item.desc}</option>
+              {allJobTitles?.data.map((item: any) => (
+                <option value={item.id}>{item.name}</option>
               ))}
             </select>
           </div>
@@ -483,7 +481,7 @@ const CompensationBenefit = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={employeedata} />
+          <Table columns={columns} dataSource={dataByID} loading={loading} />
           {/* Add form */}
           <Modal
                 title='Employee Details'
@@ -500,30 +498,47 @@ const CompensationBenefit = () => {
                   type='primary'
                   htmlType='submit'
                   loading={submitLoading}
-                  onClick={() => {
-                    form.submit()
-                  }}
+                  onClick={submitCompensation}
                   >
                       Submit
                   </Button>,
                 ]}
             >
-                <form >
+                <form onSubmit={submitCompensation} >
                     <hr></hr>
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                      <select className="form-select form-select-solid" aria-label="Select example" 
+                      {/* <select className="form-select form-select-solid" aria-label="Select example" 
                       onChange={(e)=>onEmployeeChange(e)}>
                         <option>select</option>
                         {employeedata.map((item: any) => (
                           <option value={item.code}> {item.empcode} - {item.lastname}</option>
                         ))}
-                      </select>
+                      </select> */}
+                      <br></br>
+                      <Select
+                          // className="form-control form-control-solid"
+                          {...register("employeeId")}
+                          showSearch
+                          placeholder="select a reference"
+                          optionFilterProp="children"
+                          style={{width:"300px"}}
+                          value={employeeRecord?.id}
+                          onChange={(e)=>{
+                            onEmployeeChange(e)
+                          }}
+                          
+                        >
+                          <option>select</option>
+                          {allEmployees?.data.map((item: any) => (
+                            <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
+                          ))}
+                        </Select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Unit</label>
-                      <input type="text" name="unit" value={employeeRecord?.unit} className="form-control form-control-solid"/>
+                      <input type="text" name="unitId" value={unitName} className="form-control form-control-solid"/>
 
               
                     </div>
@@ -531,11 +546,11 @@ const CompensationBenefit = () => {
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
-                      <input type="text" name="firstname" value={employeeRecord?.firstname}  className="form-control form-control-solid"/>
+                      <input type="text" name="firstName" value={employeeRecord?.firstName}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
-                      <input type="text" name="lastname" value={employeeRecord?.lastname}   className="form-control form-control-solid"/>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
+                      <input type="text" name="surname" value={employeeRecord?.surname}   className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
@@ -544,81 +559,73 @@ const CompensationBenefit = () => {
                       <input type="text" name="dob" value={employeeRecord?.dob}    className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
-                      <input type="text" name="sex" value={employeeRecord?.sex}   className="form-control form-control-solid"/>
-
-                     
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
+                      <input type="text" name="gender" value={employeeRecord?.gender}   className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <hr></hr>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
-                        <Radio.Group onChange={onRadioChange} value={radioValue}>
-                          <Radio value={1}>Yes</Radio>
-                          <Radio value={2}>No</Radio>
+                        <Radio.Group {...register("basicSalary")} onChange={onBasicSalryChange} value={basicSalary}>
+                          <Radio value="Yes">Yes</Radio>
+                          <Radio value="No">No</Radio>
                         </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on basic salary (optional)' aria-label="With textarea"></textarea>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("basicSalaryComment")} className="form-control form-control-solid" placeholder='comments on basic salary (optional)' aria-label="With textarea"></textarea>
                     </div>
                     <div className='col-6 mb-3'>
                       <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Allowance</label>
-                      <Radio.Group onChange={onRadio1Change} value={radio1Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
+                      <Radio.Group onChange={onAllowanceChange} value={allowanceValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
                       </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on allowance (optional)' aria-label="With textarea"></textarea>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("allowanceComment")} className="form-control form-control-solid" placeholder='comments on allowance (optional)' aria-label="With textarea"></textarea>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Bonus </label>
-                      <Radio.Group onChange={onRadio2Change} value={radio2Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
+                      <Radio.Group onChange={onBonusChange} value={bonusValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
                       </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on bonus (optional)' aria-label="With textarea"></textarea>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("bonusComment")} className="form-control form-control-solid" placeholder='comments on bonus (optional)' aria-label="With textarea"></textarea>
                     </div>
                     <div className='col-6 mb-3'>
                       <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Health Insurance</label>
-                      <Radio.Group onChange={onRadio3Change} value={radio3Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
+                      <Radio.Group onChange={onHealthInsurenaceChange} value={healthInsurenaceValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
                       </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on health insurance (optional)' aria-label="With textarea"></textarea>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("healthInsuranceComment")} className="form-control form-control-solid" placeholder='comments on health insurance (optional)' aria-label="With textarea"></textarea>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                        <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
-                      <Radio.Group onChange={onRadio4Change} value={radio4Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
+                      <Radio.Group onChange={onSavingSchemeChange} value={savingSchemeValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
                       </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on saving scheme (optional)' aria-label="With textarea"></textarea>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("savingSchemeComment")} className="form-control form-control-solid" placeholder='comments on saving scheme (optional)' aria-label="With textarea"></textarea>
                     </div>
                     <div className='col-6 mb-3'>
                       <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Professional Development </label>
-                      <Radio.Group onChange={onRadio5Change} value={radio5Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
+                      <Radio.Group onChange={onProfDevelopChange} value={profDevelopValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
                       </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on professional development (optional)' aria-label="With textarea"></textarea>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("profDevelopmentComment")} className="form-control form-control-solid" placeholder='comments on professional development (optional)' aria-label="With textarea"></textarea>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                     <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Company Property</label>
-                      <Radio.Group onChange={onRadio6Change} value={radio6Value}>
-                        <Radio value={1}>Yes</Radio>
-                        <Radio value={2}>No</Radio>
-                        
+                      <Radio.Group onChange={onCompanyPropertyChange} value={companyPropertyValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
                       </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} className="form-control form-control-solid" placeholder='comments on company property (optional)' aria-label="With textarea"></textarea>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("companyPropertyComment")} className="form-control form-control-solid" placeholder='comments on company property (optional)' aria-label="With textarea"></textarea>
                     </div>
                     
                   </div>

@@ -95,7 +95,7 @@ const EmployeeEditForm= () =>{
 
   const deleteSkill = async (element: any) => {
     try {
-      const response = await axios.delete(`${Api_Endpoint}/Skills/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/EmployeeSkills/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = skillData.filter((item: any) => item.id !== element.id)
       setSkillData(newData)
@@ -107,7 +107,7 @@ const EmployeeEditForm= () =>{
 
   const deleteQualification = async (element: any) => {
     try {
-      const response = await axios.delete(`${Api_Endpoint}/Qualifications/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/EmployeeQualifications/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = qualificationData.filter((item: any) => item.id !== element.id)
       setQualificationData(newData)
@@ -369,12 +369,15 @@ const EmployeeEditForm= () =>{
   const skillColumns: any = [
     {
       title: 'Name',
-      dataIndex: 'name',
+      key: 'skillId',
+      render: (row: any) => {
+        return getSkillName(row.skillId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.skillId > b.skillId) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.skillId > a.skillId) {
           return -1
         }
         return 0
@@ -429,12 +432,15 @@ const EmployeeEditForm= () =>{
   const qualificationColumns: any = [
     {
       title: 'Name',
-      dataIndex: 'name',
+      key: 'qualificationId',
+      render: (row: any) => {
+        return getQualificationName(row.qualificationId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.qualificationId > b.qualificationId) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.qualificationId > a.qualificationId) {
           return -1
         }
         return 0
@@ -747,7 +753,24 @@ const EmployeeEditForm= () =>{
   
   // }
 
-
+  const getSkillName = (skillId: any) => {
+    let skillName = null
+    allSkills?.data.map((item: any) => {
+      if (item.id === skillId) {
+        skillName=item.name
+      }
+    })
+    return skillName
+  } 
+  const getQualificationName = (qualificationId: any) => {
+    let qualificationName = null
+    allQualifications?.data.map((item: any) => {
+      if (item.id === qualificationId) {
+        qualificationName=item.name
+      }
+    })
+    return qualificationName
+  } 
   // validates input field to accept only numbers
   const validatePhoneNumber=(event:any)=>{
     if (!/[0-9]/.test(event.key)) {
@@ -800,7 +823,7 @@ const EmployeeEditForm= () =>{
   const loadSkills = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Skills`)
+      const response = await axios.get(`${Api_Endpoint}/EmployeeSkills`)
       setSkillData(response.data)
       setLoading(false)
     } catch (error) {
@@ -810,7 +833,7 @@ const EmployeeEditForm= () =>{
   const loadQualifications = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Qualifications`)
+      const response = await axios.get(`${Api_Endpoint}/EmployeeQualifications`)
       setQualificationData(response.data)
       setLoading(false)
     } catch (error) {
@@ -860,9 +883,9 @@ const EmployeeEditForm= () =>{
   const skillByEmployee = skillData.filter((section:any) =>{
     return section.employeeId.toString() ===param.id
   })
-  const experienceByEmployee = experienceData.filter((exp:any) =>{
-    return exp.employeeId.toString() ===param.id
-  })
+  // const experienceByEmployee = experienceData.filter((exp:any) =>{
+  //   return exp.employeeId.toString() ===param.id
+  // })
   const qualificationByEmployee = qualificationData.filter((qualification:any) =>{
     return qualification.employeeId.toString() ===param.id
   })
@@ -895,11 +918,11 @@ const EmployeeEditForm= () =>{
     };
   
 
-  const url = `${Api_Endpoint}/Skills`
+  const url = `${Api_Endpoint}/EmployeeSkills`
   const submitSkills = handleSubmit( async (values:any)=> {
     setLoading(true)
     const data = {
-      name: values.name,
+      skillId: values.skillId,
       employeeId: parseInt(param.id),
     }
     console.log(data)
@@ -937,11 +960,11 @@ const EmployeeEditForm= () =>{
     }
   })
 
-  const url2 = `${Api_Endpoint}/Qualifications`
+  const url2 = `${Api_Endpoint}/EmployeeQualifications`
   const submitQualifications = handleSubmit( async (values:any)=> {
     setLoading(true)
     const data = {
-      name: values.name,
+      qualificationId: values.qualificationId,
       employeeId: parseInt(param.id),
     }
     console.log(data)
@@ -1380,7 +1403,7 @@ const EmployeeEditForm= () =>{
                         Add Skill
                       </button>
               
-                      <Table columns={skillColumns} dataSource={skillByEmployee} loading={loading} />
+                      <Table columns={skillColumns} dataSource={skillByEmployee}loading={loading} />
                       <Modal
                         title="Add skill"
                         open={skillOpen}
@@ -1405,13 +1428,23 @@ const EmployeeEditForm= () =>{
                           onSubmit={submitSkills}
                         >
                           <hr></hr>
-                          <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                          {/* <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                             <div className=' mb-7'>
                               <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                               <input type="text" {...register("name")} className="form-control form-control-solid"/>
                             </div>
                             
-                          </div>
+                          </div> */}
+                          <div className=' mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Skill</label>
+                          {/* <input type="text" {...register("code")}  className="form-control form-control-solid"/> */}
+                          <select {...register("skillId")} className="form-select form-select-solid" aria-label="Select example">
+                            <option>select </option>
+                                {allSkills?.data.map((item: any) => (
+                                    <option value={item.id}>{item.name}</option>
+                                ))}
+                          </select>
+                        </div>
                         </form>
                       </Modal> 
                     </div>}
@@ -1422,7 +1455,7 @@ const EmployeeEditForm= () =>{
                         Add Qualification
                       </button>
               
-                      <Table columns={qualificationColumns} dataSource={qualificationByEmployee} loading={loading} /> 
+                      <Table columns={qualificationColumns} dataSource={qualificationData} /> 
                       <Modal
                         title="Add Qualification"
                         open={qualificationOpen}
@@ -1447,12 +1480,22 @@ const EmployeeEditForm= () =>{
                            onSubmit={submitQualifications}
                         >
                           <hr></hr>
-                          <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                          {/* <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                             <div className=' mb-7'>
                               <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                               <input type="text" {...register("name")}  className="form-control form-control-solid"/>
                             </div>
                             
+                          </div> */}
+                          <div className=' mb-7'>
+                            <label htmlFor="exampleFormControlInput1" className="form-label">Qualification</label>
+                            {/* <input type="text" {...register("code")}  className="form-control form-control-solid"/> */}
+                            <select {...register("qualificationId")} className="form-select form-select-solid" aria-label="Select example">
+                              <option>select </option>
+                                  {allQualifications?.data.map((item: any) => (
+                                      <option value={item.id}>{item.name}</option>
+                                  ))}
+                            </select>
                           </div>
                         </form>
                       </Modal>
@@ -1464,7 +1507,7 @@ const EmployeeEditForm= () =>{
                         Add Experience
                       </button>
               
-                      <Table columns={experienceColumns} dataSource={experienceByEmployee} loading={loading}/> 
+                      <Table columns={experienceColumns} /> 
                       <Modal
                         title="Add Experience"
                         open={experienceOpen}

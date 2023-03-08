@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Upload, Modal, Space, Table, Radio, RadioChangeEvent } from 'antd'
+import { Button, Form, Input, InputNumber, Upload, Modal, Space, Table, Radio, RadioChangeEvent, message, Select } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
@@ -9,7 +9,8 @@ import { ColumnsType } from 'antd/es/table'
 import { CATEGORY, employeedata, JOBTITLE, PAYGROUP, UNITS } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchCategories, fetchJobTitles, fetchPaygroups, fetchUnits } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchCategories, fetchJobTitles, fetchPaygroups, fetchRecruitmentTransactions, fetchUnits } from '../../../../../services/ApiCalls'
+import RecruitmentUpform from './RecruitmentUpform'
 
 const RecruitmentSelection = () => {
   const [gridData, setGridData] = useState([])
@@ -18,7 +19,7 @@ const RecruitmentSelection = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const { register, reset, handleSubmit } = useForm()
-
+  const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isShortModalOpen, setIsShortModalOpen] = useState(false)
   const [radioValue, setRadioValue] = useState();
@@ -26,10 +27,16 @@ const RecruitmentSelection = () => {
   const [radio2Value, setRadio2Value] = useState();
   const [radio3Value, setRadio3Value] = useState();
   const [radio4Value, setRadio4Value] = useState();
-
+  const [selectedValue, setSelectedValue] = useState<any>(null);
   const [employeeRecord, setEmployeeRecord] = useState<any>(null)
+  
   const showModal = () => {
-    setIsModalOpen(true)
+    if(selectedValue!==""){
+      setIsModalOpen(true)
+    }
+    else{
+      warnUser()
+    }
   }
 
   const handleOk = () => {
@@ -37,7 +44,7 @@ const RecruitmentSelection = () => {
   }
 
   const handleCancel = () => {
-    // form.resetFields()
+    reset()
     setIsModalOpen(false)
   }
   const showShortModal = (record: any) => {
@@ -50,13 +57,14 @@ const RecruitmentSelection = () => {
   }
 
   const handleShortCancel = () => {
-    // form.resetFields()
+    reset()
+    setIsModalOpen(false)
     setIsShortModalOpen(false)
   }
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/RecruitmentTransactions/${element.id}`)
+      const response = await axios.delete(`${ENP_URL}/RecruitmentApplicants/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -218,29 +226,35 @@ const RecruitmentSelection = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/RecruitmentTransactions`)
+      const response = await axios.get(`${Api_Endpoint}/RecruitmentApplicants`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
     }
   }
+  
+  const dataByID:any = gridData.filter((refId:any) =>{
+    return  refId.recruitmentTransactionId===parseInt(selectedValue)
+  })
+
 
   useEffect(() => {
     loadData()
   }, [])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-    score: 0,
-  }))
+  // const dataWithIndex = gridData.map((item: any, index) => ({
+  //   ...item,
+  //   key: index,
+  //   score: 0,
+  // }))
 
 
   const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
   const { data: allCategories } = useQuery('categories', fetchCategories, { cacheTime: 5000 })
   const { data: allUnits } = useQuery('units', fetchUnits, { cacheTime: 5000 })
   const { data: allJobTitles } = useQuery('jobtitles', fetchJobTitles, { cacheTime: 5000 })
+  const { data: allRecuitments } = useQuery('recruitments', fetchRecruitmentTransactions, { cacheTime: 5000 })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -259,11 +273,23 @@ const RecruitmentSelection = () => {
     setGridData(filteredData)
   }
 
-  const url = `${Api_Endpoint}/RecruitmentTransactions`
-  const OnSUbmit = handleSubmit(async (values) => {
+  const warnUser = () => {
+    messageApi.open({
+      type: 'error',
+      content: 'Select reference before adding!',
+      className: 'custom-class',
+      style: {
+        marginTop: '10vh',
+        fontSize:"18px"
+      }
+    });
+  };
+
+  const url1 = `${Api_Endpoint}/RecruitmentApplicants`
+  const submitApplicant = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
-      reference: values.reference,
+      recruitmentTransactionId: parseInt(selectedValue),
       firstName: values.firstName,
       lastName: values.lastName,
       dob: values.dob,
@@ -271,27 +297,25 @@ const RecruitmentSelection = () => {
       phone: values.phone,
       email: values.email,
       qualification: values.qualification,
-      description: values.description,
-      startDate: values.startDate,
-      endDate: values.endDate,
-      paygroupId: parseInt(values.paygroupId),
-      categoryId: parseInt(values.categoryId),
-      jobTitleId: parseInt(values.jobTitleId),
-      unitId: parseInt(values.unitId),
     }
     console.log(data)
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
-      reset()
-      setIsModalOpen(false)
-      loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
-    }
+      try { 
+        
+          const response = await axios.post(url1, data)
+          setSubmitLoading(false)
+          reset()
+          setIsModalOpen(false)
+          loadData()
+          return response.statusText
+        
+      } catch (error: any) {
+        setSubmitLoading(false)
+        return error.statusText
+      } 
+    
   })
+
+ 
 
   return (
 
@@ -303,73 +327,72 @@ const RecruitmentSelection = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-      <form onSubmit={OnSUbmit}>
-        <div style={{ padding: "0px 0px 0px 0px" }} className='col-12 row'>
-          <div style={{ padding: "20px 20px 0 20px" }} className='col-6 row mb-0'>
-            <div className='col-6 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className=" form-label">Reference#</label>
-              <input type="text" {...register("reference")} className="form-control form-control-solid" />
-            </div>
+      <RecruitmentUpform/>
+      <hr></hr>
+      <br></br>
+      <KTCardBody className='py-4 '>
+        <div className='table-responsive'>
+          <div style={{display:"flex", gap:"20px", marginBottom:"40px"}} className='col-4'>
+              <select value={selectedValue} onChange={(e) => setSelectedValue(e.target.value)} className="form-select form-select-solid"  aria-label="Select example">
+                <option>select</option>
+                {allRecuitments?.data.map((item: any) => (
+                  <option value={item.id}>{item.reference}</option>
+                ))}
+              </select>
+              {/* <Select
+              value={selectedValue} 
+              onChange={(e) => setSelectedValue(e.target.value)}
+                style={{
+                  // backgroundColor:"gray",
+                  width:"300px"
+                }}
+                showSearch
+                placeholder="select a reference"
+                optionFilterProp="children"
+              >
+                <option
+                  style={{
+                    backgroundColor:"#F5F8FA", 
+                  }}
+                >select</option>
+                {allRecuitments?.data.map((item: any) => (
+                  <option value={item.id}>{item.reference}</option>
+                ))}
+              </Select> */}
+          </div>
+                  {/* <div>
+                    <h3> selected reference is {selectedValue}</h3>
+                  </div> */}
+          <div className='d-flex justify-content-between'>
+            <Space style={{ marginBottom: 16 }}>
+              <Input
+                placeholder='Enter Search Text'
+                onChange={handleInputChange}
+                type='text'
+                allowClear
+                value={searchText}
+              />
+              <Button type='primary' onClick={globalSearch}>
+                Search
+              </Button>
+            </Space>
+            <Space style={{ marginBottom: 16 }}>
+            {contextHolder}
+              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                Add
+              </button>
 
-            <div className='col-6 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className=" form-label">Description</label>
-              <input type="textarea" {...register("description")} className="form-control form-control-solid" />
-            </div>
+              <button type='button' className='btn btn-light-primary me-3'>
+                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
+                Export
+              </button>
+            </Space>
           </div>
-          <div style={{ padding: "20px 0px 0 0px" }} className='col-6 row mb-0'>
-            <div className='col-6 mb-3'>
-              <label htmlFor="exampleFormControlInput1" className=" form-label">Start date</label>
-              <input type="date" {...register("startDate")} className="form-control form-control-solid" />
-            </div>
+          <Table columns={columns} rowKey={(record) => record.id} dataSource={dataByID} loading={loading} />
+          {/* Add form */}
 
-            <div className='col-6 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className=" form-label">End date</label>
-              <input type="date" {...register("endDate")} className="form-control form-control-solid" />
-            </div>
-          </div>
-          <div style={{ padding: "20px 20px 0 20px" }} className='col-6 row mb-0'>
-            <div className='col-6 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
-              <select className="form-select form-select-solid" {...register("paygroupId")} aria-label="Select example">
-                <option> select</option>
-                {allPaygroups?.data.map((item: any) => (
-                  <option value={item.id}>{item.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className='col-6 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
-              <select className="form-select form-select-solid" {...register("categoryId")} aria-label="Select example">
-                <option> select</option>
-                {allCategories?.data.map((item: any) => (
-                  <option value={item.id}>{item.name}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div style={{ padding: "20px 0px 0 0px" }} className='col-6 row mb-0'>
-            <div className='col-6 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
-              <select className="form-select form-select-solid" {...register("jobTitleId")} aria-label="Select example">
-                <option> select</option>
-
-                {allJobTitles?.data.map((item: any) => (
-                  <option value={item.id}>{item.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className='col-6 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
-              <select className="form-select form-select-solid" {...register("unitId")} aria-label="Select example">
-                <option> select</option>
-                {allUnits?.data.map((item: any) => (
-                  <option value={item.id}>{item.name}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-        <Modal
+          <Modal
           title='New Applicant'
           open={isModalOpen}
           onCancel={handleCancel}
@@ -384,14 +407,14 @@ const RecruitmentSelection = () => {
               type='primary'
               htmlType='submit'
               loading={submitLoading}
-              onClick={OnSUbmit}
+              onClick={submitApplicant}
             >
               Submit
             </Button>,
           ]}
         >
           <form
-            onSubmit={OnSUbmit}
+            onSubmit={submitApplicant}
           >
             <hr></hr>
             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
@@ -429,7 +452,7 @@ const RecruitmentSelection = () => {
                 <label htmlFor="exampleFormControlInput1" className="form-label">Qualification</label>
                 <input type="text" {...register("qualification")} className="form-control form-control-solid" />
               </div>
-              <div className='col-6 mb-3' style={{ padding: "30px 20px 0 20px" }}>
+              {/* <div className='col-6 mb-3' style={{ padding: "30px 20px 0 20px" }}>
                 <Upload
                   // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                   listType="picture"
@@ -442,42 +465,10 @@ const RecruitmentSelection = () => {
                   <Button style={{ padding: "10px 20px 30px 20px" }} className='form-control btn btn-light-primary btn-sm' icon={<UploadOutlined />}>Upload</Button>
 
                 </Upload>
-              </div>
+              </div> */}
             </div>
           </form>
         </Modal>
-      </form>
-      <KTCardBody className='py-4 '>
-        <div className='table-responsive'>
-          <div className='d-flex justify-content-between'>
-            <Space style={{ marginBottom: 16 }}>
-              <Input
-                placeholder='Enter Search Text'
-                onChange={handleInputChange}
-                type='text'
-                allowClear
-                value={searchText}
-              />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
-            </Space>
-            <Space style={{ marginBottom: 16 }}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
-
-              <button type='button' className='btn btn-light-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                Export
-              </button>
-            </Space>
-          </div>
-          <Table columns={columns} rowKey={(record) => record.id} dataSource={dataWithIndex} />
-          {/* Add form */}
-
-
           {/* shortlist form */}
           <Modal
             title='Short List'
@@ -494,7 +485,6 @@ const RecruitmentSelection = () => {
                 type='primary'
                 htmlType='submit'
                 loading={submitLoading}
-
               >
                 Submit
               </Button>,
@@ -595,7 +585,6 @@ const RecruitmentSelection = () => {
                     <Radio value={4}>4</Radio>
                     <Radio value={5}>5</Radio>
                   </Radio.Group>
-
                   <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on social skills (optional)' aria-label="With textarea"></textarea>
                 </div>
 
