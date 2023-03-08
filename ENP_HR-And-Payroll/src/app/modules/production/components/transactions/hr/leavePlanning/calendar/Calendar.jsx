@@ -391,7 +391,7 @@ const Calendar = ({chosenFilter}) => {
           >
             <ViewsDirective>
               {/*<ViewDirective option='Day' displayName='3 Days' interval={3} />*/}
-              <ViewDirective option='Week' isSelected={true} />
+              <ViewDirective option='Week' />
               <ViewDirective option='Month' displayName='3 Months' interval={3} />
             </ViewsDirective>
           <Inject services={[Day, Week, WorkWeek, Month, Agenda, Resize, DragAndDrop]} />
