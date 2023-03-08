@@ -7,15 +7,15 @@ export const fetchLeavePlannings = () => {
 }
 
 //Object to inject in the Calendar
-export const localData = (dataFromApi: any) => {
-  return {
-    dataSource: dataFromApi,
-    fields: {
-      id: 'entryId',
-      subject: {name: 'fleetId', default: 'No Employee ID'},
-      location: {name: 'locationId'},
-      startTime: {name: 'timeStart'},
-      endTime: {name: 'timeEnd'},
-    },
-  }
-}
+// export const localData = (dataFromApi: any) => {
+//   return {
+//     dataSource: dataFromApi,
+//     fields: {
+//       id: 'entryId',
+//       subject: {name: 'fleetId', default: 'No Employee ID'},
+//       location: {name: 'locationId'},
+//       startTime: {name: 'timeStart'},
+//       endTime: {name: 'timeEnd'},
+//     },
+//   }
+// }

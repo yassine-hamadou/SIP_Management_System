@@ -5,7 +5,7 @@ import {
   Week,
   Month,
   Agenda,
-  Inject, DragAndDrop, Resize, WorkWeek, ViewsDirective, ViewDirective,
+  Inject, DragAndDrop, Resize, WorkWeek, ViewsDirective, ViewDirective, EventSettingsModel
 } from "@syncfusion/ej2-react-schedule";
 import {DateTimePickerComponent} from '@syncfusion/ej2-react-calendars'
 import {DropDownListComponent} from '@syncfusion/ej2-react-dropdowns'
@@ -43,6 +43,7 @@ L10n.load({
 const Calendar = ({chosenFilter}) => {
   // const [serviceTypeDropDownValues, setserviceTypeDropDownValues] = useState([])
   let scheduleObj
+  let empDropDownObj
   // React Query
   //Get
   const {data: employeeData} = useQuery('employeeData', fetchEmployees, {
@@ -59,6 +60,25 @@ const Calendar = ({chosenFilter}) => {
     refetchOnWindowFocus: false,
     staleTime: 300000,
   });
+
+  const localData = {
+    dataSource: leaveData?.data?.map((leave) => {
+        return {
+            Id: leave.id,
+            StartTime: leave.fromDate,
+            EndTime: leave.toDate,
+            Subject: `${employeeData?.data?.find((employee) => {
+              return employee.id === leave.employeeId
+            }).surname}: ${leaveTypes?.data?.find((leaveType) => {
+              return leaveType.id === leave.leaveId
+            }).name}`,
+            EmployeeId: leave.employeeId,
+            LeaveId: leave.leaveId,
+        }
+    }),
+  }
+  console.log("dataSource", localData)
+
 
   //Access the same location query from cycle details component
   console.log('employeeData', employeeData)
@@ -82,27 +102,27 @@ const Calendar = ({chosenFilter}) => {
     //   // })
     //   // dropDownListObject.dataBind() // refresh the dropdown list
     // }
-    function getEmployeeUnit(e) {
+    function getEmployeeDeparment(e) {
       console.log("e", e)
-    if (e.itemData) {
-      console.log("e.itemData", e.itemData)
-      // udpate location dropdown component to automatically select the selected employee unit
-      // console.log("employeeDatay", employeesQueryData.)
-      const employeeDepartId = employeesQueryData.getQueryData('employeeData')?.data?.find((employee) => employee.id === e.itemData.value).departmentId
-      const unitInputField = document.getElementById("Location")
-      console.log("unitInputField", unitInputField)
-      //get the unit of the selected employee
-
-      if (employeeDepartId === null || employeeDepartId === undefined) {
-        message.error("Employee does not have a department").then(r => r)
-      }
-      else {
-        unitInputField.value = unitQuery.data?.data?.find((unit) => unit.departmentId === employeeDepartId).name
+      if (e.itemData) {
+        console.log("e.itemData", e.itemData)
+        // udpate location dropdown component to automatically select the selected employee unit
+        // console.log("employeeDatay", employeesQueryData.)
+        const employeeDepartId = employeesQueryData.getQueryData('employeeData')?.data?.find((employee) => employee.id === e.itemData.value).departmentId
+        const unitInputField = document.getElementById("Location")
         console.log("unitInputField", unitInputField)
+        //get the unit of the selected employee
+
+        if (employeeDepartId === null || employeeDepartId === undefined) {
+          message.error("Employee does not have a department").then(r => r)
+        }
+        else {
+          unitInputField.value = unitQuery.data?.data?.find((unit) => unit.departmentId === employeeDepartId).name
+          console.log("unitInputField", unitInputField)
+        }
+       // console.log("employeeDepartId", employeeDepartId)
       }
-      // console.log("employeeDepartId", employeeDepartId)
     }
-  }
     return props !== undefined ? (
       <table className='custom-event-editor' style={{width: '100%'}} cellPadding={5}>
         <tbody>
@@ -110,20 +130,22 @@ const Calendar = ({chosenFilter}) => {
             <td className='e-textlabel'>Employee Code</td>
             <td colSpan={4}>
               <DropDownListComponent
-                id='Summary'
+                id='empCode'
                 placeholder='Choose Employee Code'
-                data-name='fleetId'
+                ref={(scope) => {
+                  empDropDownObj = scope
+                }}
+                data-name='id'
                 className='e-field'
                 style={{width: '100%'}}
                 dataSource={employeeData?.data?.map((employee) => {
                   return {
-                    text: `${employee.firstName} ${employee.surname}`,
+                    text: `${employee.firstName} ${employee.surname} - Code: ${employee.id}`,
                     value: employee.id, //this is the value that will be sent to the backend
                   }
                 })}
-                fields={{text: 'text', value: 'value'}}
-                value={props && props.fleetId ? `${props.fleetId}` : null}
-                change={(e) => getEmployeeUnit(e)}
+                // value={props && props.EmployeeId? `${props.EmployeeId}` : null}
+                change={(e) => getEmployeeDeparment(e)}
               />
             </td>
           </tr>
@@ -145,20 +167,20 @@ const Calendar = ({chosenFilter}) => {
             <td className='e-textlabel'>Type of Leave</td>
             <td colSpan={4}>
               <DropDownListComponent
-                id='serviceTypeId'
+                id='LeaveType'
                 placeholder='Choose Type of Leave'
-                data-name='serviceTypeId'
+                data-name='LeaveType'
                 className='e-field'
                 // ref={(scope) => (dropDownListObject = scope)}
                 style={{width: '100%'}}
                 dataSource={leaveTypes?.data?.map((leaveType) => {
                   return {
                     text: `${leaveType.name}`,
-                    value: `${leaveType.code}`
+                    value: `${leaveType.id}`
                   }
                 })}
                 fields={{text: 'text', value: 'value'}}
-                value={props?.serviceTypeId}
+                value={props?.leaveId}
               />
             </td>
           </tr>
@@ -181,7 +203,7 @@ const Calendar = ({chosenFilter}) => {
                 id='EndTime'
                 format='dd/MM/yy hh:mm a'
                 data-name='timeEnd'
-                value={props && props.timeEnd ? new Date(props?.timeEnd) : props?.EndTime}
+                value={props && props.EndTime ? new Date(props?.EndTime) : props?.EndTime}
                 className='e-field'
               ></DateTimePickerComponent>
             </td>
@@ -316,6 +338,14 @@ const Calendar = ({chosenFilter}) => {
   //     );
   // }
 
+  const onPopupOpen = (props) => {
+    console.log('onPop Open props', props)
+    if (props?.type === 'Editor') {
+      console.log('empDropDownObj Open props', empDropDownObj)
+      empDropDownObj.value = props.data.EmployeeId
+      empDropDownObj.dataBind()
+    }
+  }
   return (
     <div className='schedule-control-section'>
       <div className='col-lg-12 control-section'>
@@ -352,18 +382,12 @@ const Calendar = ({chosenFilter}) => {
               width='100%'
               height='650px'
               ref={t => scheduleObj = t}
-              eventSettings={{ dataSource: leaveData?.data,
-                fields: {
-                  id: 'id',
-                  // subject: { name: 'Subject', default: 'Leave Request' },
-                  startTime: { name: 'fromDate' },
-                  endTime: { name: 'toDate' },
-              }
-              }}
+              eventSettings={localData}
               // eventRendered={onEventRendered.bind(this)}
               currentView='Month'
               id='schedule'
               editorTemplate={editorTemplate}
+              popupOpen={onPopupOpen}
           >
             <ViewsDirective>
               {/*<ViewDirective option='Day' displayName='3 Days' interval={3} />*/}
