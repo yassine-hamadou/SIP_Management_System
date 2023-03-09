@@ -460,7 +460,7 @@ const AppraisalPerformance = () => {
     setGridData(filteredData)
   }
 
-  const url1 = `${Api_Endpoint}/AppraisalPerfTransactions1`
+  const url1 = `${Api_Endpoint}/AppraisalPerfTransactions`
   const submitApplicant = handleSubmit(async (values) => {
     setLoading(true)
     const data = {

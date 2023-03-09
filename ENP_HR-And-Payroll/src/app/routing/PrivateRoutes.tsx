@@ -99,6 +99,12 @@ import AppraisalPerformanceByEmployeeReport from '../modules/production/componen
 import CompensationBenefitByEmployeeReport from '../modules/production/components/report/CompensationBenefitByEmployeeReport'
 import CompensationBenefitByDepartmentReport from '../modules/production/components/report/CompensationBenefitByDepartmentReport'
 import CompensationBenefitByJobTitleReport from '../modules/production/components/report/CompensationBenefitByJobTitleReport'
+import TrainingDevelopmentByReferenceReport from '../modules/production/components/report/TrainingDevelopmentByReferenceReport'
+import TrainingDevelopmentBySummaryReport from '../modules/production/components/report/TrainingDevelopmentBySummaryReport'
+import TrainingDevelopmentByTrainingTypeReport from '../modules/production/components/report/TrainingDevelopmentByTrainingTypeReport'
+import MedicalEmployeeReport from '../modules/production/components/report/MedicalEmployeeReport'
+import MedicalTypeReport from '../modules/production/components/report/MedicalTypeReport'
+import MedicalSummaryReport from '../modules/production/components/report/MedicalSummaryReport'
 
 
 
@@ -961,6 +967,60 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>CompensationBenefitByJobTitleReport</PageTitle>
              <CompensationBenefitByJobTitleReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='TrainingDevelopmentByReferenceReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>TrainingDevelopmentByReferenceReport</PageTitle>
+             <TrainingDevelopmentByReferenceReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='TrainingDevelopmentBySummaryReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>TrainingDevelopmentBySummaryReport</PageTitle>
+             <TrainingDevelopmentBySummaryReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='TrainingDevelopmentByTrainingTypeReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>TrainingDevelopmentByTrainingTypeReport</PageTitle>
+             <TrainingDevelopmentByTrainingTypeReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='MedicalEmployeeReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>MedicalEmployeeReport</PageTitle>
+             <MedicalEmployeeReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='MedicalTypeReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>MedicalTypeReport</PageTitle>
+             <MedicalTypeReport />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='MedicalSummaryReport*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>MedicalSummaryReport</PageTitle>
+             <MedicalSummaryReport />
            </SuspensedView>
          }
         />

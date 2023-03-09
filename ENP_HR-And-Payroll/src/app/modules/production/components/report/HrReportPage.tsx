@@ -55,9 +55,9 @@ const HrReportPage = () => {
           <h2 style={{color:"GrayText"}}>Training and Development</h2>
           <hr></hr>
          
-          <h3><span className="bullet me-5"></span><Link to="#">Reference #</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="#">Training Type</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="#">Summary</Link></h3>
+          <h3><span className="bullet me-5"></span><Link to="/TrainingDevelopmentByReferenceReport">Reference #</Link></h3>
+          <h3><span className="bullet me-5"></span><Link to="/TrainingDevelopmentByTrainingTypeReport">Training Type</Link></h3>
+          <h3><span className="bullet me-5"></span><Link to="/TrainingDevelopmentBySummaryReport">Summary</Link></h3>
           
         </div>
         <div
@@ -126,9 +126,9 @@ const HrReportPage = () => {
           <h2 style={{color:"GrayText"}}>Medical</h2>
           <hr></hr>
           
-          <h2><span className="bullet me-5"></span><Link to="#">Employee</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="#">Medical Type</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="#">Summary</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/MedicalEmployeeReport">Employee</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/MedicalTypeReport">Medical Type</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/MedicalSummaryReport">Summary</Link></h2>
           
         </div>
         

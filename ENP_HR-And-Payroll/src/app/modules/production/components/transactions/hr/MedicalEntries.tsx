@@ -185,8 +185,12 @@ const MedicalEntries = () => {
   }))
 
   const dataByID:any = gridData.filter((refId:any) =>{
-    return  refId.periodId===parseInt(selectedValue2)&&refId.medicalTypeId===11
+    return  refId.periodId===parseInt(selectedValue2)&&refId.paygroupId===parseInt(selectedValue1)
   })
+
+  console.log(dataByID)
+  console.log(dataByID)
+  console.log(dataByID)
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -247,8 +251,8 @@ const MedicalEntries = () => {
     //   }
     // };
 
-  console.log(selectedValue2)
-  const url = `${Api_Endpoint}/MedicalTransactions1`
+
+  const url = `${Api_Endpoint}/MedicalTransactions`
   const OnSubmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {

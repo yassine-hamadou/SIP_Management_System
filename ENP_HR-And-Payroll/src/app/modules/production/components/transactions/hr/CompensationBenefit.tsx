@@ -10,7 +10,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
 import { employeedata, JOBTITLE } from '../../../../../data/DummyData'
 import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchEmployees, fetchJobTitles, fetchUnits } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchEmployees, fetchJobTitles, fetchMedicals, fetchPaygroups, fetchPeriods, fetchUnits } from '../../../../../services/ApiCalls'
 import { useForm } from 'react-hook-form'
 
 const CompensationBenefit = () => {
@@ -31,6 +31,8 @@ const CompensationBenefit = () => {
   const [companyPropertyValue, setCompanyPropertyValue] = useState();
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
   const [selectedValue, setSelectedValue] = useState<any>(null);
+  const [selectedValue1, setSelectedValue1] = useState<any>(null);
+  const [selectedValue2, setSelectedValue2] = useState<any>(null);
 
   const {register, reset, handleSubmit} = useForm()
   const showModal = () => {
@@ -270,6 +272,10 @@ const CompensationBenefit = () => {
   const { data: allJobTitles } = useQuery('jobTitles', fetchJobTitles, { cacheTime: 5000 })
   const { data: allEmployees } = useQuery('employees', fetchEmployees, { cacheTime: 5000 })
   const { data: allUnits } = useQuery('units', fetchUnits, { cacheTime: 5000 })
+  // const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
+  // const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
+  // const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
 
   const getFirstName = (employeeId: any) => {
     let firstName = null
@@ -442,10 +448,19 @@ const CompensationBenefit = () => {
 
       <div style={{padding: "0px 0px 40px 0px"}}  className='col-12'>
         <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
+        <div className='col-6 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
+            <select value={selectedValue1} onChange={(e) => setSelectedValue1(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+              <option value="select paygroup" style={{color:"GrayText"}}> select paygroup</option>
+              {allPaygroups?.data.map((item: any) => (
+                <option value={item.id}>{item.name}</option>
+              ))}
+            </select>
+          </div>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
-            <select value={selectedValue} onChange={(e) => setSelectedValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
+            <select value={selectedValue2} onChange={(e) => setSelectedValue2(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+              <option value="select jobtitle">select jobtitle</option>
               {allJobTitles?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
               ))}
@@ -454,7 +469,9 @@ const CompensationBenefit = () => {
 
         </div>
       </div>
-      <KTCardBody className='py-4 '>
+      {
+        selectedValue1===null||selectedValue2===null||selectedValue1==="select paygroup"||selectedValue2==="select jobtitle"?"":
+        <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
@@ -636,6 +653,183 @@ const CompensationBenefit = () => {
           
         </div>
       </KTCardBody>
+      }
+      {/* <KTCardBody className='py-4 '>
+        <div className='table-responsive'>
+          <div className='d-flex justify-content-between'>
+            <Space style={{marginBottom: 16}}>
+              <Input
+                placeholder='Enter Search Text'
+                onChange={handleInputChange}
+                type='text'
+                allowClear
+                value={searchText}
+              />
+              <Button type='primary' onClick={globalSearch}>
+                Search
+              </Button>
+            </Space>
+            <Space style={{marginBottom: 16}}>
+              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                Add
+              </button>
+
+              <button type='button' className='btn btn-light-primary me-3'>
+                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
+                Export
+            </button>
+            </Space>
+          </div>
+          <Table columns={columns} dataSource={dataByID} loading={loading} />
+          
+          <Modal
+                title='Employee Details'
+                open={isModalOpen}
+                onCancel={handleCancel}
+                closable={true}
+                width="900px"
+                footer={[
+                  <Button key='back' onClick={handleCancel}>
+                      Cancel
+                  </Button>,
+                  <Button
+                  key='submit'
+                  type='primary'
+                  htmlType='submit'
+                  loading={submitLoading}
+                  onClick={submitCompensation}
+                  >
+                      Submit
+                  </Button>,
+                ]}
+            >
+                <form onSubmit={submitCompensation} >
+                    <hr></hr>
+                    <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
+                     
+                      <br></br>
+                      <Select
+                     
+                          {...register("employeeId")}
+                          showSearch
+                          placeholder="select a reference"
+                          optionFilterProp="children"
+                          style={{width:"300px"}}
+                          value={employeeRecord?.id}
+                          onChange={(e)=>{
+                            onEmployeeChange(e)
+                          }}
+                          
+                        >
+                          <option>select</option>
+                          {allEmployees?.data.map((item: any) => (
+                            <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
+                          ))}
+                        </Select>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Unit</label>
+                      <input type="text" name="unitId" value={unitName} className="form-control form-control-solid"/>
+
+              
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
+                      <input type="text" name="firstName" value={employeeRecord?.firstName}  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
+                      <input type="text" name="surname" value={employeeRecord?.surname}   className="form-control form-control-solid"/>
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
+                      <input type="text" name="dob" value={employeeRecord?.dob}    className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
+                      <input type="text" name="gender" value={employeeRecord?.gender}   className="form-control form-control-solid"/>
+                    </div>
+                  </div>
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
+                        <Radio.Group {...register("basicSalary")} onChange={onBasicSalryChange} value={basicSalary}>
+                          <Radio value="Yes">Yes</Radio>
+                          <Radio value="No">No</Radio>
+                        </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("basicSalaryComment")} className="form-control form-control-solid" placeholder='comments on basic salary (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Allowance</label>
+                      <Radio.Group onChange={onAllowanceChange} value={allowanceValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("allowanceComment")} className="form-control form-control-solid" placeholder='comments on allowance (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Bonus </label>
+                      <Radio.Group onChange={onBonusChange} value={bonusValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("bonusComment")} className="form-control form-control-solid" placeholder='comments on bonus (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Health Insurance</label>
+                      <Radio.Group onChange={onHealthInsurenaceChange} value={healthInsurenaceValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("healthInsuranceComment")} className="form-control form-control-solid" placeholder='comments on health insurance (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                       <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
+                      <Radio.Group onChange={onSavingSchemeChange} value={savingSchemeValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("savingSchemeComment")} className="form-control form-control-solid" placeholder='comments on saving scheme (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Professional Development </label>
+                      <Radio.Group onChange={onProfDevelopChange} value={profDevelopValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("profDevelopmentComment")} className="form-control form-control-solid" placeholder='comments on professional development (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                    <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Company Property</label>
+                      <Radio.Group onChange={onCompanyPropertyChange} value={companyPropertyValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("companyPropertyComment")} className="form-control form-control-solid" placeholder='comments on company property (optional)' aria-label="With textarea"></textarea>
+                    </div>
+                    
+                  </div>
+                  
+                </form>
+          </Modal>
+
+          
+        </div>
+      </KTCardBody> */}
     </div>
   )
 }
