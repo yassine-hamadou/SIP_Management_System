@@ -4,7 +4,7 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { Api_Endpoint, fetchAppraisals, fetchEmployees, fetchJobTitles, fetchPaygroups, fetchPeriods } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchAppraisals, fetchAppraisalTransactions, fetchEmployees, fetchJobTitles, fetchPaygroups, fetchPeriods } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 import "./cusStyle.css"
 import { useForm } from 'react-hook-form'
@@ -25,6 +25,7 @@ const AppraisalPerformance = () => {
   const [tab3ModalOpen, setTab3ModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("tab1");
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
+  const [employeeId, setEmployeeId]= useState<any>()
   const [jobTitleName, setjobTitleName] = useState<any>(null);
   const [selectedValue1, setSelectedValue1] = useState<any>(null);
   const [selectedValue2, setSelectedValue2] = useState<any>(null);
@@ -83,8 +84,10 @@ const AppraisalPerformance = () => {
     // form.resetFields()
     setUpdateModalOpen(false)
   }
-  const showUpdateModal = () => {
+  const showUpdateModal = (record: any) => {
+    console.log(record)
     setUpdateModalOpen(true)
+    setEmployeeId(record)
   }
 
   // const handleTabOk = () => {
@@ -133,6 +136,7 @@ const AppraisalPerformance = () => {
   const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
   const { data: allJobTitles } = useQuery('jobTitles', fetchJobTitles, { cacheTime: 5000 })
   const { data: allPaygroups } = useQuery('recruitments', fetchPaygroups, { cacheTime: 5000 })
+  const { data: allAppraisalTransactions } = useQuery('appraisalTransactions', fetchAppraisalTransactions, { cacheTime: 5000 })
 
   // to preview the uploaded file
   const onPreview = async (file: UploadFile) => {
@@ -251,8 +255,7 @@ const AppraisalPerformance = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          <a  className='btn btn-light-info btn-sm'>
+          <a onClick={() => showUpdateModal(record.id)} className='btn btn-light-info btn-sm'>
             Details
           </a>
          
@@ -343,6 +346,11 @@ const AppraisalPerformance = () => {
   const emplyeesByPaygroup:any = alEmployees?.data.filter((item:any) =>{
     return  item.paygroupId===parseInt(selectedValue1)
     })
+  const emplyeeDetails:any = allAppraisalTransactions?.data.find((item:any) =>{
+    return  item.id===employeeId
+    })
+
+    console.log(emplyeeDetails)
 
   const onEmployeeChange = (objectId: any) => {
     const newEmplo = alEmployees?.data.find((item:any)=>{
@@ -435,6 +443,12 @@ const AppraisalPerformance = () => {
       loadData()
     }
   }
+
+  useEffect(()=>{
+   const  getEmployeeFetails=(id:any)=>{
+
+    }
+  }, [])
 
   const globalSearch = () => {
     // @ts-ignore
@@ -570,7 +584,7 @@ const AppraisalPerformance = () => {
           {/* Add form */}
           
           <Modal
-                title='Employee Details'
+                title='Employee Details '
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -720,7 +734,8 @@ const AppraisalPerformance = () => {
                     {activeTab === "tab4" && 
                     <div>
                       <div className='col-12 mb-3'>
-                      <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>Upload Document</button>
+                        <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
+                      {/* <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>Upload Document</button> */}
                         {/* <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
                         <Radio.Group onChange={onRadio4Change} value={radio4Value}>
                           <Radio value={1}>1</Radio>
@@ -738,8 +753,8 @@ const AppraisalPerformance = () => {
                 
                 </form>           
           </Modal>     
-          {/* <Modal
-            title='Updating Employee...'
+          <Modal
+            title={"Details of ID "+ employeeId}
                 open={updateModalOpen}
                 onCancel={handleUpdateCancel}
                 closable={true}
@@ -759,7 +774,9 @@ const AppraisalPerformance = () => {
                   </Button>,
                 ]}
             >
-                <form>
+
+              <h3>Will be updated soon</h3>
+                {/* <form>
                     <hr></hr>
                  <div>
                   <div style={{display:"flex", }} className="tabs">
@@ -827,8 +844,8 @@ const AppraisalPerformance = () => {
                     </div>}
                   </div>
                 </div>
-                </form>
-          </Modal> */}
+                </form> */}
+          </Modal>
         </div>
       </KTCardBody>
       }

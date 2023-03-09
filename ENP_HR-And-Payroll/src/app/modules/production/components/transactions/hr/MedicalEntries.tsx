@@ -8,6 +8,7 @@ import { employeedata, MEDICALS, period } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
 import {  Api_Endpoint, fetchEmployees, fetchMedicals, fetchPaygroups, fetchPeriods } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
+import React from 'react';
 
 const MedicalEntries = () => {
   const [gridData, setGridData] = useState([])
@@ -20,6 +21,11 @@ const MedicalEntries = () => {
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
   const {register, reset, handleSubmit} = useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const handleFileSelection = (event:any) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const [selectedFile, setSelectedFile] = useState<any>(null);
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -36,6 +42,10 @@ const MedicalEntries = () => {
     setFileList(newFileList);
   };
 
+  const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
+  const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
+  const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
 
   // to preview the uploaded file
   const onPreview = async (file: UploadFile) => {
@@ -70,8 +80,6 @@ const MedicalEntries = () => {
       return e
     }
   }
-
-  
 
   function handleDelete(element: any) {
     deleteData(element)
@@ -220,19 +228,33 @@ const MedicalEntries = () => {
     }) // console.log(newEmplo)
     setEmployeeRecord(newEmplo)
   }
+  const emplyeesByPaygroup:any = allEmployee?.data.filter((item:any) =>{
+    return  item.paygroupId===parseInt(selectedValue1)
+    })
 
-  const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
-  const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
-  const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
+    // const handleFileUpload = async () => {
+    //   const formData = new FormData();
+    //   formData.append("file", selectedFile);
+    //   try {
+    //     const response = await axios.post("/api/upload", formData, {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data"
+    //       }
+    //     });
+    //     console.log(response.data);
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // };
 
   console.log(selectedValue2)
-  const url = `${Api_Endpoint}/MedicalTransactions`
+  const url = `${Api_Endpoint}/MedicalTransactions1`
   const OnSubmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
-          employeeId: parseInt(values.employeeId),
-          periodId: parseInt(selectedValue1),
+          employeeId: employeeRecord.id,
+          paygroupId: parseInt(selectedValue1),
+          periodId: parseInt(selectedValue2),
           medicalTypeId: parseInt(values.medicalTypeId),
           date: values.date,
           comment: values.comment,
@@ -363,7 +385,7 @@ const MedicalEntries = () => {
                           
                         >
                           <option>select</option>
-                          {allEmployee?.data.map((item: any) => (
+                          {emplyeesByPaygroup.map((item: any) => (
                             <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
                           ))}
                         </Select>
@@ -391,8 +413,20 @@ const MedicalEntries = () => {
                   </div>
                   <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Upload Document</label>
-                      <Upload
+                    {/* <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" style={{display:'none'}} /> */}
+
+
+                    <input type="file" className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onChange={handleFileSelection} />
+                      {selectedFile && (
+                        <div>
+                          <p>Name: {selectedFile.name}</p>
+                          <p>Type: {selectedFile.type}</p>
+                          <p>Size: {selectedFile.size} bytes</p>
+                          {/* <button onClick={handleFileUpload}>Upload</button> */}
+                        </div>
+                      )}
+                      {/* <label htmlFor="exampleFormControlInput1" className="form-label">Upload Document</label> */}
+                      {/* <Upload
                       
                       listType="picture-card"
                       fileList={fileList}
@@ -402,7 +436,7 @@ const MedicalEntries = () => {
                     >                  
                         
                         <UploadOutlined/>
-                      </Upload>
+                      </Upload> */}
                  
                     </div>
                   </div>

@@ -63,6 +63,9 @@ export const fetchPeriods = () => {
 export const fetchRecruitmentTransactions = () => {
     return axios.get(`${Api_Endpoint}/RecruitmentTransactions`)
 }
+export const fetchAppraisalTransactions = () => {
+    return axios.get(`${Api_Endpoint}/AppraisalPerfTransactions`)
+}
 
 export const postLeavePlanning = (data: any) => {
     return axios.post(`${Api_Endpoint}/LeavePlanings`, data)

@@ -21,8 +21,8 @@ const HrReportPage = () => {
           <h2 style={{color:"GrayText"}}>Recruitment and Selection</h2>
           <hr></hr>
        
-          <h3><span className="bullet me-5"></span><Link to="#">Reference #</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="#">Job Title</Link></h3>
+          <h3><span className="bullet me-5"></span><Link to="/RecruitmentSelectionReferenceReport">Reference #</Link></h3>
+          <h3><span className="bullet me-5"></span><Link to="/RecruitmentSelectJobTitleRepor">Job Title</Link></h3>
         </div>
         <div
           style={{
@@ -37,9 +37,9 @@ const HrReportPage = () => {
           <h2 style={{color:"GrayText"}}>Compensation and Benefit</h2>
           <hr></hr>
     
-          <h3><span className="bullet me-5"></span><Link to="#">Employee</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="#">Department</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="#">Job Title</Link></h3>
+          <h3><span className="bullet me-5"></span><Link to="/CompensationBenefitByEmployeeReport">Employee</Link></h3>
+          <h3><span className="bullet me-5"></span><Link to="/CompensationBenefitByDepartmentReport">Department</Link></h3>
+          <h3><span className="bullet me-5"></span><Link to="/CompensationBenefitByJobTitleReport">Job Title</Link></h3>
          
         </div>
         <div
@@ -72,8 +72,8 @@ const HrReportPage = () => {
         >
           <h2 style={{color:"GrayText"}}>Appraisal and Performance</h2>
           <hr></hr>
-          <h3><span className="bullet me-5"></span><Link to="#">Employee</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="#">Appraisal Type</Link></h3>
+          <h3><span className="bullet me-5"></span><Link to="/AppraisalPerformanceByEmployeeReport">Employee</Link></h3>
+          <h3><span className="bullet me-5"></span><Link to="/AppraisalPerformanceByAppraisalTypeReport">Appraisal Type</Link></h3>
         </div>
       </div>
 
@@ -91,9 +91,9 @@ const HrReportPage = () => {
           <h2 style={{color:"GrayText"}}>Notes</h2>
           <hr></hr>
           
-          <h2><span className="bullet me-5"></span><Link to="">Employee</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/NotesEmployeeReport">Employee</Link></h2>
           <h2><span className="bullet me-5"></span><Link to="/NoteCategoryReport">Note Category</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="#">Summary</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/NotesSummaryReport">Summary</Link></h2>
         </div>
         <div 
           style={{
@@ -109,8 +109,8 @@ const HrReportPage = () => {
           <hr></hr>
           
           <h2><span className="bullet me-5"></span><Link to="/LeaveEmployeeReport">Employee</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="#">Department</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="#">Summary</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/LeaveDepartmentReport">Department</Link></h2>
+          <h2><span className="bullet me-5"></span><Link to="/LeaveSummaryReport">Summary</Link></h2>
          
         </div>
         <div
