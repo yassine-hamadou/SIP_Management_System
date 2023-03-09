@@ -50,7 +50,6 @@ export const fetchMedicals= ()=>{
     return axios.get(`${Api_Endpoint}/Medicals`)
 }
 
-
 export const fetchLeaveTypes = () => {
     return axios.get(`${Api_Endpoint}/Leaves`)
 }

@@ -25,16 +25,16 @@ const AppraisalPerformance = () => {
   const [tab3ModalOpen, setTab3ModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("tab1");
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
-  // const [selectedValue, setSelectedValue] = useState<any>(null);
+  const [jobTitleName, setjobTitleName] = useState<any>(null);
   const [selectedValue1, setSelectedValue1] = useState<any>(null);
   const [selectedValue2, setSelectedValue2] = useState<any>(null);
   const [selectedValue3, setSelectedValue3] = useState<any>(null);
   const [selectedValue4, setSelectedValue4] = useState<any>(null);
-  const [radioValue, setRadioValue] = useState();
-  const [radio1Value, setRadio1Value] = useState();
-  const [radio2Value, setRadio2Value] = useState();
-  const [radio3Value, setRadio3Value] = useState();
-  const [radio4Value, setRadio4Value] = useState();
+  const [radioValue, setRadioValue] = useState(1);
+  const [radio1Value, setRadio1Value] = useState(1);
+  const [radio2Value, setRadio2Value] = useState(1);
+  const [radio3Value, setRadio3Value] = useState(1);
+  const [radio4Value, setRadio4Value] = useState(1);
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
   };
@@ -251,11 +251,9 @@ const AppraisalPerformance = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          {/* <a href='#' onClick={showShortModal} className='btn btn-light-primary btn-sm'>
-            Shortlist
-          </a> */}
-          <a onClick={showUpdateModal} className='btn btn-light-primary btn-sm'>
-            Update
+          
+          <a  className='btn btn-light-info btn-sm'>
+            Details
           </a>
          
         </Space>
@@ -342,6 +340,10 @@ const AppraisalPerformance = () => {
     return  refId.appraisalTypeId===parseInt(selectedValue2)
     })
 
+  const emplyeesByPaygroup:any = alEmployees?.data.filter((item:any) =>{
+    return  item.paygroupId===parseInt(selectedValue1)
+    })
+
   const onEmployeeChange = (objectId: any) => {
     const newEmplo = alEmployees?.data.find((item:any)=>{
       return item.id===parseInt(objectId)
@@ -413,8 +415,19 @@ const AppraisalPerformance = () => {
     
 
   useEffect(() => {
+    const getjobTitleName = () => {
+      let jobTitleName = ""
+      allJobTitles?.data.map((item: any) => {
+        if (item.id === employeeRecord?.jobTitleId) {
+          jobTitleName=item.name
+        }
+      })
+      setjobTitleName(jobTitleName)
+      return jobTitleName
+    } 
+    getjobTitleName()
     loadData()
-  }, [])
+  }, [allJobTitles?.data, employeeRecord?.jobTitleId])
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -442,6 +455,12 @@ const AppraisalPerformance = () => {
       employeeId: employeeRecord.id,
       startPeriod: parseInt(selectedValue3),
       endPeriod: parseInt(selectedValue4),
+      accomComment: values.accomComment,
+      accomScore: radio1Value,
+      improvComment: values.improvComment,
+      improvScore: radio2Value,
+      goalComment: values.goalComment,
+      goalScore: radio3Value,
     }
 
     console.log(data)
@@ -589,18 +608,16 @@ const AppraisalPerformance = () => {
                           onChange={(e)=>{
                             onEmployeeChange(e)
                           }}
-                          
                         >
                           <option>select</option>
-                          {alEmployees?.data.map((item: any) => (
+                          {emplyeesByPaygroup.map((item: any) => (
                             <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
                           ))}
                         </Select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
-                      <input type="text" name="code" value={employeeRecord?.jobt}  className="form-control form-control-solid"/>
-
+                      <input type="text" name="code" value={jobTitleName}  className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
@@ -609,7 +626,7 @@ const AppraisalPerformance = () => {
                       <input type="text" {...register("firstName")}  defaultValue={employeeRecord?.firstName}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Surname</label>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
                       <input type="text" {...register("surname")}  defaultValue={employeeRecord?.surname}  className="form-control form-control-solid"/>
                     </div>
                   </div>
@@ -619,7 +636,7 @@ const AppraisalPerformance = () => {
                       <input type="text" {...register("dob")}  defaultValue={employeeRecord?.dob}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
                       <input type="text" {...register("gender")} defaultValue={employeeRecord?.gender}  className="form-control form-control-solid"/>
 
                     </div>
@@ -656,33 +673,64 @@ const AppraisalPerformance = () => {
                   <div className="tab-content">
                     {activeTab === "tab1" && 
                     <div>
-                      <div className='col-6 mb-3'>
-                      <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Work Skills</label>
-                      <Radio.Group onChange={onRadio1Change} value={radio1Value}>
-                        <Radio value={1}>1</Radio>
-                        <Radio value={2}>2</Radio>
-                        <Radio value={3}>3</Radio>
-                        <Radio value={4}>4</Radio>
-                        <Radio value={5}>5</Radio>
-                      </Radio.Group>
-                      <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on work skills (optional)' aria-label="With textarea"></textarea>
-                    </div>
+                      <div className='col-12 mb-3'>
+                        <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
+                        <Radio.Group onChange={onRadio1Change} value={radio1Value}>
+                          <Radio value={1}>1</Radio>
+                          <Radio value={2}>2</Radio>
+                          <Radio value={3}>3</Radio>
+                          <Radio value={4}>4</Radio>
+                          <Radio value={5}>5</Radio>
+                        </Radio.Group>
+                        <textarea style={{ margin: "10px 0px 0 0px" }} {...register("accomComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
+                      </div>
                       
                     </div>}
                     
                     {activeTab === "tab2" && 
                     <div>
-                      <h5>Improvements</h5>
+                      <div className='col-12 mb-3'>
+                        <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
+                        <Radio.Group onChange={onRadio2Change} value={radio2Value}>
+                          <Radio value={1}>1</Radio>
+                          <Radio value={2}>2</Radio>
+                          <Radio value={3}>3</Radio>
+                          <Radio value={4}>4</Radio>
+                          <Radio value={5}>5</Radio>
+                        </Radio.Group>
+                        <textarea style={{ margin: "10px 0px 0 0px" }} {...register("improvComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
+                      </div>
                     </div>}
 
                     {activeTab === "tab3" && 
                     <div>
-                      <h5>Goals</h5>
+                      <div className='col-12 mb-3'>
+                        <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
+                        <Radio.Group onChange={onRadio3Change} value={radio3Value}>
+                          <Radio value={1}>1</Radio>
+                          <Radio value={2}>2</Radio>
+                          <Radio value={3}>3</Radio>
+                          <Radio value={4}>4</Radio>
+                          <Radio value={5}>5</Radio>
+                        </Radio.Group>
+                        <textarea style={{ margin: "10px 0px 0 0px" }} {...register("goalComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
+                      </div>
                     </div>}
 
                     {activeTab === "tab4" && 
                     <div>
-                      <h5>Docs</h5>
+                      <div className='col-12 mb-3'>
+                      <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>Upload Document</button>
+                        {/* <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
+                        <Radio.Group onChange={onRadio4Change} value={radio4Value}>
+                          <Radio value={1}>1</Radio>
+                          <Radio value={2}>2</Radio>
+                          <Radio value={3}>3</Radio>
+                          <Radio value={4}>4</Radio>
+                          <Radio value={5}>5</Radio>
+                        </Radio.Group> */}
+                        {/* <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea> */}
+                      </div>
                     </div>}
                   </div>
                 </div>
@@ -690,8 +738,8 @@ const AppraisalPerformance = () => {
                 
                 </form>           
           </Modal>     
-          <Modal
-          title='Updating Employee...'
+          {/* <Modal
+            title='Updating Employee...'
                 open={updateModalOpen}
                 onCancel={handleUpdateCancel}
                 closable={true}
@@ -780,7 +828,7 @@ const AppraisalPerformance = () => {
                   </div>
                 </div>
                 </form>
-          </Modal>
+          </Modal> */}
         </div>
       </KTCardBody>
       }
