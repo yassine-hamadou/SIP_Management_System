@@ -65,3 +65,15 @@ export const fetchRecruitmentTransactions = () => {
     return axios.get(`${Api_Endpoint}/RecruitmentTransactions`)
 }
 
+export const postLeavePlanning = (data: any) => {
+    return axios.post(`${Api_Endpoint}/LeavePlanings`, data)
+}
+
+export const deleteLeavePlanning = (id: any) => {
+    return axios.delete(`${Api_Endpoint}/LeavePlanings/${id}`)
+}
+
+export const updateLeavePlanning = (data: any) => {
+    return axios.put(`${Api_Endpoint}/LeavePlanings/${data.id}`, data)
+}
+

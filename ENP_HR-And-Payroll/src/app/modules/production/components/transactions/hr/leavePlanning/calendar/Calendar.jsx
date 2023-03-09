@@ -5,11 +5,11 @@ import {
   Week,
   Month,
   Agenda,
-  Inject, DragAndDrop, Resize, WorkWeek, ViewsDirective, ViewDirective,
+  Inject, DragAndDrop, Resize, WorkWeek, ViewsDirective, ViewDirective
 } from "@syncfusion/ej2-react-schedule";
 import {DateTimePickerComponent} from '@syncfusion/ej2-react-calendars'
 import {DropDownListComponent} from '@syncfusion/ej2-react-dropdowns'
-import {useQuery, useQueryClient} from 'react-query'
+import {useMutation, useQuery, useQueryClient} from 'react-query'
 import '@syncfusion/ej2-base/styles/material.css'
 import '@syncfusion/ej2-calendars/styles/material.css'
 import '@syncfusion/ej2-dropdowns/styles/material.css'
@@ -21,7 +21,14 @@ import '@syncfusion/ej2-splitbuttons/styles/material.css'
 import '@syncfusion/ej2-react-schedule/styles/material.css'
 import '@syncfusion/ej2-buttons/styles/material.css'
 import {Input, message} from 'antd'
-import {fetchDepartments, fetchEmployees, fetchLeaveTypes, fetchUnits} from "../../../../../../../services/ApiCalls";
+import {
+  deleteLeavePlanning,
+  fetchDepartments,
+  fetchEmployees,
+  fetchLeaveTypes,
+  fetchUnits,
+  postLeavePlanning, updateLeavePlanning
+} from "../../../../../../../services/ApiCalls";
 import {fetchLeavePlannings} from "./requests";
 
 /**
@@ -43,6 +50,8 @@ L10n.load({
 const Calendar = ({chosenFilter}) => {
   // const [serviceTypeDropDownValues, setserviceTypeDropDownValues] = useState([])
   let scheduleObj
+  let empDropDownObj
+  const queryClient = useQueryClient()
   // React Query
   //Get
   const {data: employeeData} = useQuery('employeeData', fetchEmployees, {
@@ -59,6 +68,60 @@ const Calendar = ({chosenFilter}) => {
     refetchOnWindowFocus: false,
     staleTime: 300000,
   });
+
+  // post leave planning with use mutation
+  const {mutate: addLeavePlanning} = useMutation('addLeavePlanning', postLeavePlanning, {
+    onSuccess: () => {
+        message.success('Leave Planning Added Successfully').then(r => r)
+        // refetch the leave planning data
+        queryClient.invalidateQueries('leavePlannings').then(r => r)
+    },
+    onError: (error) => {
+        message.error(error.message).then(r => r)
+    }
+  })
+
+  const {mutate: rmLeavePlanning} = useMutation('deleteLeavePlanning', deleteLeavePlanning, {
+    onSuccess: () => {
+        message.success('Leave Planning Removed Successfully').then(r => r)
+        // refetch the leave planning data
+        queryClient.invalidateQueries('leavePlannings').then(r => r)
+    },
+    onError: (error) => {
+        message.error(error.message).then(r => r)
+    }
+  })
+
+  const {mutate: updateLeave} = useMutation('updateLeavePlanning', updateLeavePlanning, {
+    onSuccess: () => {
+        message.success('Leave Planning Updated Successfully').then(r => r)
+        // refetch the leave planning data
+        queryClient.invalidateQueries('leavePlannings').then(r => r)
+    },
+    onError: (error) => {
+        message.error(error.message).then(r => r)
+    }
+  })
+
+
+  const localData = {
+    dataSource: leaveData?.data?.map((leave) => {
+        return {
+            Id: leave.id,
+            StartTime: leave.fromDate,
+            EndTime: leave.toDate,
+            Subject: `${employeeData?.data?.find((employee) => {
+              return employee.id === leave.employeeId
+            })?.surname}: ${leaveTypes?.data?.find((leaveType) => {
+              return leaveType.id === leave.leaveId
+            })?.name}`,
+            employeeId: leave.employeeId,
+            leaveType: leave.leaveId,
+        }
+    }),
+  }
+  console.log("dataSource", localData)
+
 
   //Access the same location query from cycle details component
   console.log('employeeData', employeeData)
@@ -82,27 +145,27 @@ const Calendar = ({chosenFilter}) => {
     //   // })
     //   // dropDownListObject.dataBind() // refresh the dropdown list
     // }
-    function getEmployeeUnit(e) {
+    function getEmployeeDeparment(e) {
       console.log("e", e)
-    if (e.itemData) {
-      console.log("e.itemData", e.itemData)
-      // udpate location dropdown component to automatically select the selected employee unit
-      // console.log("employeeDatay", employeesQueryData.)
-      const employeeDepartId = employeesQueryData.getQueryData('employeeData')?.data?.find((employee) => employee.id === e.itemData.value).departmentId
-      const unitInputField = document.getElementById("Location")
-      console.log("unitInputField", unitInputField)
-      //get the unit of the selected employee
-
-      if (employeeDepartId === null || employeeDepartId === undefined) {
-        message.error("Employee does not have a department").then(r => r)
-      }
-      else {
-        unitInputField.value = unitQuery.data?.data?.find((unit) => unit.departmentId === employeeDepartId).name
+      if (e.itemData) {
+        console.log("e.itemData", e.itemData)
+        // udpate location dropdown component to automatically select the selected employee unit
+        // console.log("employeeDatay", employeesQueryData.)
+        const employeeDepartId = employeesQueryData.getQueryData('employeeData')?.data?.find((employee) => employee.id === e.itemData.value).departmentId
+        const unitInputField = document.getElementById("Location")
         console.log("unitInputField", unitInputField)
+        //get the unit of the selected employee
+
+        if (employeeDepartId === null || employeeDepartId === undefined) {
+          message.error("Employee does not have a department").then(r => r)
+        }
+        else {
+          unitInputField.value = unitQuery.data?.data?.find((unit) => unit.departmentId === employeeDepartId).name
+          console.log("unitInputField", unitInputField)
+        }
+       // console.log("employeeDepartId", employeeDepartId)
       }
-      // console.log("employeeDepartId", employeeDepartId)
     }
-  }
     return props !== undefined ? (
       <table className='custom-event-editor' style={{width: '100%'}} cellPadding={5}>
         <tbody>
@@ -110,20 +173,23 @@ const Calendar = ({chosenFilter}) => {
             <td className='e-textlabel'>Employee Code</td>
             <td colSpan={4}>
               <DropDownListComponent
-                id='Summary'
+                id='empCode'
                 placeholder='Choose Employee Code'
-                data-name='fleetId'
+                ref={(scope) => {
+                  empDropDownObj = scope
+                }}
+                data-name='employeeId'
                 className='e-field'
                 style={{width: '100%'}}
                 dataSource={employeeData?.data?.map((employee) => {
                   return {
-                    text: `${employee.firstName} ${employee.surname}`,
+                    text: `${employee.firstName} ${employee.surname} - Code: ${employee.id}`,
                     value: employee.id, //this is the value that will be sent to the backend
                   }
                 })}
                 fields={{text: 'text', value: 'value'}}
-                value={props && props.fleetId ? `${props.fleetId}` : null}
-                change={(e) => getEmployeeUnit(e)}
+                // value={props && props.employeeId? `${props.employeeId}` : null}
+                change={(e) => getEmployeeDeparment(e)}
               />
             </td>
           </tr>
@@ -145,20 +211,20 @@ const Calendar = ({chosenFilter}) => {
             <td className='e-textlabel'>Type of Leave</td>
             <td colSpan={4}>
               <DropDownListComponent
-                id='serviceTypeId'
+                id='leaveType'
                 placeholder='Choose Type of Leave'
-                data-name='serviceTypeId'
+                data-name='leaveType'
                 className='e-field'
                 // ref={(scope) => (dropDownListObject = scope)}
                 style={{width: '100%'}}
                 dataSource={leaveTypes?.data?.map((leaveType) => {
                   return {
                     text: `${leaveType.name}`,
-                    value: `${leaveType.code}`
+                    value: leaveType.id
                   }
                 })}
                 fields={{text: 'text', value: 'value'}}
-                value={props?.serviceTypeId}
+                value={props?.leaveId}
               />
             </td>
           </tr>
@@ -181,7 +247,7 @@ const Calendar = ({chosenFilter}) => {
                 id='EndTime'
                 format='dd/MM/yy hh:mm a'
                 data-name='timeEnd'
-                value={props && props.timeEnd ? new Date(props?.timeEnd) : props?.EndTime}
+                value={props && props.EndTime ? new Date(props?.EndTime) : props?.EndTime}
                 className='e-field'
               ></DateTimePickerComponent>
             </td>
@@ -196,59 +262,52 @@ const Calendar = ({chosenFilter}) => {
   //on double click event
 
   // Fired before the editorTemplate closes.
-  // const onActionBegin = (args) => {
-  //   console.log('args in action begin', args)
-  //   let data = args.data instanceof Array ? args.data[0] : args.data
-  //   if (args.requestType === 'eventCreate') {
-  //     console.log(scheduleObj)
-  //     // make data in array so that I can map though it
-  //     const preparedData = [{...data}]
-  //     console.log('preparedData', preparedData)
-  //     // map through the array and set each field to what the calendar will understand
-  //     const formattedDataToPost = preparedData.map((schedule) => {
-  //       console.log('schedule', schedule)
-  //       return {
-  //         fleetId: schedule.fleetId,
-  //         locationId: schedule.locationId,
-  //         timeStart: schedule.StartTime,
-  //         timeEnd: schedule.EndTime,
-  //         entryId: 0,
-  //         vmModel: 'null',
-  //         vmClass: 'null',
-  //         serviceTypeId: schedule.serviceTypeId,
-  //         responsible: schedule.responsible,
-  //       }
-  //     })
-  //     //Since format is an array, I need to change it to the format that the API will understand which is an object
-  //     const dataToPost = formattedDataToPost[0]
-  //     addScheduleMutation(dataToPost)
-  //   }
-  //   if (args.requestType === 'eventRemove') {
-  //     args.cancel = true
-  //     deleteScheduleMutation(data)
-  //   }
-  //   if (args.requestType === 'eventChange') {
-  //     args.cancel = true
-  //     console.log('data', data)
-  //     console.log('args in eventChange', args)
-  //     const preparedData = [{...data}]
-  //     const formattedDataToPost = preparedData.map((schedule) => {
-  //       return {
-  //         fleetId: schedule.fleetId,
-  //         locationId: schedule.locationId,
-  //         timeStart: schedule.StartTime,
-  //         timeEnd: schedule.EndTime,
-  //         entryId: schedule.entryId,
-  //         vmModel: 'null',
-  //         vmClass: 'null',
-  //         serviceTypeId: schedule.serviceTypeId,
-  //         responsible: schedule.responsible,
-  //       }
-  //     })
-  //     const dataToPost = formattedDataToPost[0]
-  //     updateScheduleMutation(dataToPost)
-  //   }
-  // }
+  const onActionBegin = (args) => {
+    console.log('args in action begin', args)
+    let data = args.data instanceof Array ? args.data[0] : args.data
+    if (args.requestType === 'eventCreate') {
+      console.log(scheduleObj)
+      // make data in array so that I can map though it
+      const preparedData = [{...data}]
+      console.log('preparedData', preparedData)
+      // map through the array and set each field to what the calendar will understand
+      const formattedDataToPost = preparedData.map((schedule) => {
+        console.log('leavePlanning', schedule)
+        return {
+          employeeId: schedule.employeeId,
+          id: schedule.Id,
+          fromDate: schedule.StartTime,
+          toDate: schedule.EndTime,
+          leaveId: schedule.leaveType
+        }
+      })
+      //Since format is an array, I need to change it to the format that the API will understand which is an object
+      const dataToPost = formattedDataToPost[0]
+        console.log('dataToPost', dataToPost)
+      addLeavePlanning(dataToPost)
+    }
+    if (args.requestType === 'eventRemove') {
+      args.cancel = true
+      console.log('data to delete', data)
+      rmLeavePlanning(data.Id)
+    }
+    if (args.requestType === 'eventChange') {
+      args.cancel = true
+      console.log('data', data)
+      console.log('args in eventChange', args)
+      const preparedData = [{...data}]
+      const formattedDataToEdit = preparedData.map((schedule) => {
+        return {
+          employeeId: schedule.employeeId,
+          id: schedule.Id,
+          fromDate: schedule.StartTime,
+          toDate: schedule.EndTime,
+          leaveId: schedule.leaveType
+        }
+      })
+      updateLeave(formattedDataToEdit[0])
+    }
+  }
   // const headerTemplate = (props) => {
   //     return (
   //         <div>
@@ -316,6 +375,14 @@ const Calendar = ({chosenFilter}) => {
   //     );
   // }
 
+  const onPopupOpen = (props) => {
+    console.log('onPop Open props', props)
+    if (props?.type === 'Editor') {
+      console.log('empDropDownObj Open props', empDropDownObj)
+      empDropDownObj.value = props.data.employeeId
+      empDropDownObj.dataBind()
+    }
+  }
   return (
     <div className='schedule-control-section'>
       <div className='col-lg-12 control-section'>
@@ -352,22 +419,17 @@ const Calendar = ({chosenFilter}) => {
               width='100%'
               height='650px'
               ref={t => scheduleObj = t}
-              eventSettings={{ dataSource: leaveData?.data,
-                fields: {
-                  id: 'id',
-                  // subject: { name: 'Subject', default: 'Leave Request' },
-                  startTime: { name: 'fromDate' },
-                  endTime: { name: 'toDate' },
-              }
-              }}
+              eventSettings={localData}
               // eventRendered={onEventRendered.bind(this)}
               currentView='Month'
               id='schedule'
               editorTemplate={editorTemplate}
+              popupOpen={onPopupOpen}
+              actionBegin={onActionBegin}
           >
             <ViewsDirective>
               {/*<ViewDirective option='Day' displayName='3 Days' interval={3} />*/}
-              <ViewDirective option='Week' isSelected={true} />
+              <ViewDirective option='Week' />
               <ViewDirective option='Month' displayName='3 Months' interval={3} />
             </ViewsDirective>
           <Inject services={[Day, Week, WorkWeek, Month, Agenda, Resize, DragAndDrop]} />
