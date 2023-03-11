@@ -792,18 +792,7 @@ const AppraisalPerformance = () => {
                     >
                       Areas of Improvements
                     </div>
-                    <div
-                      className={`tab ${activeTab === "tab3" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab3")}
-                    >
-                      Goals for Performance
-                    </div>
-                    <div
-                      className={`tab ${activeTab === "tab4" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab4")}
-                    >
-                      Supporting Documentation
-                    </div>
+                    
                   </div>
                   <div className="tab-content">
                     {activeTab === "tab1" && 
