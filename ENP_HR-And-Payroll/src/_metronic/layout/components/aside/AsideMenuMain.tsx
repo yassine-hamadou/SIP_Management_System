@@ -87,7 +87,10 @@ export function AsideMenuMain() {
           <AsideMenuItem to='setup/hr/appraisals' hasBullet={true} title='Appraisals' />
           <AsideMenuItem to='setup/hr/leaves' hasBullet={true} title='Leaves' />
           <AsideMenuItem to='setup/hr/notes' hasBullet={true} title='Note Categories' />
-          <AsideMenuItem to='setup/hr/medical' hasBullet={true} title='Medicals' />
+          <AsideMenuItemWithSub to='#' title='Medicals'   hasBullet={true}>
+            <AsideMenuItem to='setup/hr/medical' hasBullet={true} title='Types' />
+            <AsideMenuItem to='setup/hr/service-provider' hasBullet={true} title='Service Providers' />
+          </AsideMenuItemWithSub>
         </AsideMenuItemWithSub>
       </AsideMenuItemWithSub>
       <AsideMenuItemWithSub

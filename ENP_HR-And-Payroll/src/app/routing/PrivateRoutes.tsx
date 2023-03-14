@@ -105,6 +105,8 @@ import TrainingDevelopmentByTrainingTypeReport from '../modules/production/compo
 import MedicalEmployeeReport from '../modules/production/components/report/MedicalEmployeeReport'
 import MedicalTypeReport from '../modules/production/components/report/MedicalTypeReport'
 import MedicalSummaryReport from '../modules/production/components/report/MedicalSummaryReport'
+import { Products } from '../modules/production/components/setup/hr/Produsts'
+import { ServiceProviders } from '../modules/production/components/setup/hr/ServiceProviders'
 
 
 
@@ -619,6 +621,24 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Medicals</PageTitle>
              <Medicals />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='setup/hr/service-provider*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Service Providers</PageTitle>
+             <ServiceProviders />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='products/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Products</PageTitle>
+             <Products />
            </SuspensedView>
          }
         />
