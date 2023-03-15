@@ -195,7 +195,7 @@ const HoursPage: React.FC = () => {
         console.log('Validate Failed:', errInfo);
       }
     };
-    
+
     let rowData:any =[...allHours?.data]
     const onDone = (values: any) => {
       
@@ -216,11 +216,17 @@ const HoursPage: React.FC = () => {
 
   const columns: any = [
     // {title: 'ID', dataIndex: 'id', key: 'id'},
-    {title: 'Manufacturer', dataIndex: 'txmanf', key: 'txmanf'},
-    {title: 'Model', dataIndex: 'txmodel', key: 'txmodel'},
+    {
+      title: 'Manufacturer',
+      dataIndex: 'txmanf',
+      key: 'txmanf',
+      sorter: (a: any, b: any) => a.txmanf.localeCompare(b.txmanf)
+    },
+    {title: 'Model', dataIndex: 'txmodel', key: 'txmodel', sorter: (a: any, b: any) => a.txmodel.localeCompare(b.txmodel)},
     {
       title: 'Number of vehicles',
-      key:'txmodel', 
+      key:'txmodel',
+      sorter: (a: any, b: any) => a.txmodel.localeCompare(b.txmodel),
       render: (row: any) => {
         return countNumberOfEquipment(row.txmodel)
       }
