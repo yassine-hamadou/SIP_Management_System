@@ -3,22 +3,23 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
-import { MEDICALS } from '../../../../../data/DummyData'
 import { useQuery } from 'react-query'
 import { Api_Endpoint, fetchMedicals } from '../../../../../services/ApiCalls'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
-const Medicals = () => {
+const Products = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  let [itemName, setItemName] = useState<any>("")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const {register, reset, handleSubmit} = useForm()
+  const param:any  = useParams();
+  const navigate = useNavigate();
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -34,7 +35,7 @@ const Medicals = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${Api_Endpoint}/Medicals/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/Products/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -51,19 +52,19 @@ const Medicals = () => {
   }
   const columns: any = [
    
-    {
-      title: 'Code',
-      dataIndex: 'code',
-      sorter: (a: any, b: any) => {
-        if (a.code > b.code) {
-          return 1
-        }
-        if (b.code > a.code) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Code',
+    //   dataIndex: 'code',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.code > b.code) {
+    //       return 1
+    //     }
+    //     if (b.code > a.code) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
       title: 'Name',
       dataIndex: 'name',
@@ -86,9 +87,9 @@ const Medicals = () => {
       render: (_: any, record: any) => (
         <Space size='middle'>
           
-          <Link to={`/products/${record.id}`}>
+          {/* <Link to={`/setup/sections/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Products</span>
-          </Link>
+          </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -101,12 +102,11 @@ const Medicals = () => {
       
     },
   ]
-
   const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get("http://208.117.44.15/hrwebapi/api/Medicals")
+      const response = await axios.get("http://208.117.44.15/hrwebapi/api/Products")
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -114,11 +114,22 @@ const Medicals = () => {
     }
   }
 
-  // const {isLoading, data}= useQuery('medicals', ()=>{
-  //   return axios.get(`${Api_Endpoint}/Medicals`)
-  // })
+  const getItemName= async (param:any) =>{
+
+    let newName=null
+  
+     const   itemTest = await allMedicals?.data.find((item:any) =>
+      item.id.toString()===param
+    )
+     newName = await itemTest
+    return newName
+ }
 
   useEffect(() => {
+    (async ()=>{
+        let res = await getItemName(param.id)
+        setItemName(res?.name)
+      })();
     loadData()
   }, [])
 
@@ -144,12 +155,13 @@ const Medicals = () => {
     setGridData(filteredData)
   }
 
-  const url = `${Api_Endpoint}/Medicals`
+  const url = `${Api_Endpoint}/Products`
   const OnSUbmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
           code: values.code,
           name: values.name,
+          medicalTypeId: parseInt(param.id),
         }
     try {
       const response = await axios.post(url, data)
@@ -175,6 +187,10 @@ const Medicals = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <h3 style={{fontWeight:"bolder"}}>{itemName} </h3>
+        <br></br>
+        <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
               <Input
@@ -200,9 +216,9 @@ const Medicals = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
+          <Table columns={columns} dataSource={dataWithIndex} />
           <Modal
-                title='Medical Setup'
+                title='Products Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -244,4 +260,4 @@ const Medicals = () => {
   )
 }
 
-export {Medicals}
+export {Products}

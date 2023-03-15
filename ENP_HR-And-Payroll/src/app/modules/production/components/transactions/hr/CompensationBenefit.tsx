@@ -33,11 +33,16 @@ const CompensationBenefit = () => {
   const [selectedValue, setSelectedValue] = useState<any>(null);
   const [selectedValue1, setSelectedValue1] = useState<any>(null);
   const [selectedValue2, setSelectedValue2] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("tab1");
 
   const {register, reset, handleSubmit} = useForm()
   const showModal = () => {
     setIsModalOpen(true)
   }
+  
+  const handleTabClick = (tab:any) => {
+    setActiveTab(tab);
+  };
 
   const handleOk = () => {
     setIsModalOpen(false)

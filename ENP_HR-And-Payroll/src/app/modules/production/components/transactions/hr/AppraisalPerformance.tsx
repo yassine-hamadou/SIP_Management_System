@@ -444,11 +444,11 @@ const AppraisalPerformance = () => {
     }
   }
 
-  useEffect(()=>{
-   const  getEmployeeFetails=(id:any)=>{
+  // useEffect(()=>{
+  //  const  getEmployeeFetails=(id:any)=>{
 
-    }
-  }, [])
+  //   }
+  // }, [])
 
   const globalSearch = () => {
     // @ts-ignore
@@ -460,27 +460,27 @@ const AppraisalPerformance = () => {
     setGridData(filteredData)
   }
 
-  const url1 = `${Api_Endpoint}/AppraisalPerfTransactions`
+  const endpoint = `${Api_Endpoint}/AppraisalPerfTransactions`
   const submitApplicant = handleSubmit(async (values) => {
     setLoading(true)
-    const data = {
-      paygroupId: parseInt(selectedValue1),
-      appraisalTypeId: parseInt(selectedValue2),
-      employeeId: employeeRecord.id,
-      startPeriod: parseInt(selectedValue3),
-      endPeriod: parseInt(selectedValue4),
-      accomComment: values.accomComment,
-      accomScore: radio1Value,
-      improvComment: values.improvComment,
-      improvScore: radio2Value,
-      goalComment: values.goalComment,
-      goalScore: radio3Value,
-    }
-
-    console.log(data)
+      const data = {
+        paygroupId: parseInt(selectedValue1),
+        appraisalTypeId: parseInt(selectedValue2),
+        employeeId: employeeRecord.id,
+        startPeriod: selectedValue3,
+        endPeriod: selectedValue4,
+        accomComment: values.accomComment,
+        accomScore: radio1Value.toString(),
+        improvComment: values.improvComment,
+        improvScore: radio2Value.toString(),
+        goalComment: values.goalComment,
+        goalScore: radio3Value.toString(),
+        // nonApplicable:selectedValue1
+      }
+      console.log(data)
       try { 
         
-          const response = await axios.post(url1, data)
+          const response = await axios.post(endpoint, data)
           setSubmitLoading(false)
           reset()
           setIsModalOpen(false)
@@ -489,8 +489,8 @@ const AppraisalPerformance = () => {
         
       } catch (error: any) {
         setSubmitLoading(false)
-        return error.statusText
-      } 
+        return error.message
+      }
     
   })
 
@@ -657,98 +657,89 @@ const AppraisalPerformance = () => {
                   </div>
                   <form>
                     <hr></hr>
-                 <div>
-                  <div style={{display:"flex", }} className="tabs">
-                    <div
-                      className={`tab ${activeTab === "tab1" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab1")}
-                    >
-                      Accomplishments
-                    </div>
-
-                    <div className={`tab ${activeTab === "tab2" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab2")}
-                    >
-                      Areas of Improvements
-                    </div>
-                    <div
-                      className={`tab ${activeTab === "tab3" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab3")}
-                    >
-                      Goals for Performance
-                    </div>
-                    <div
-                      className={`tab ${activeTab === "tab4" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab4")}
-                    >
-                      Supporting Documentation
-                    </div>
-                  </div>
-                  <div className="tab-content">
-                    {activeTab === "tab1" && 
-                    <div>
-                      <div className='col-12 mb-3'>
-                        <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
-                        <Radio.Group onChange={onRadio1Change} value={radio1Value}>
-                          <Radio value={1}>1</Radio>
-                          <Radio value={2}>2</Radio>
-                          <Radio value={3}>3</Radio>
-                          <Radio value={4}>4</Radio>
-                          <Radio value={5}>5</Radio>
-                        </Radio.Group>
-                        <textarea style={{ margin: "10px 0px 0 0px" }} {...register("accomComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
+                  <div>
+                    <div style={{display:"flex", }} className="tabs">
+                      <div
+                        className={`tab ${activeTab === "tab1" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab1")}
+                      >
+                        Accomplishments
                       </div>
+
+                      <div className={`tab ${activeTab === "tab2" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab2")}
+                      >
+                        Areas of Improvements
+                      </div>
+                      <div
+                        className={`tab ${activeTab === "tab3" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab3")}
+                      >
+                        Goals for Performance
+                      </div>
+                      <div
+                        className={`tab ${activeTab === "tab4" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab4")}
+                      >
+                        Supporting Documentation
+                      </div>
+                    </div>
+                    <div className="tab-content">
+                      {activeTab === "tab1" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                          <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
+                          <Radio.Group onChange={onRadio1Change} value={radio1Value}>
+                            <Radio value={1}>1</Radio>
+                            <Radio value={2}>2</Radio>
+                            <Radio value={3}>3</Radio>
+                            <Radio value={4}>4</Radio>
+                            <Radio value={5}>5</Radio>
+                          </Radio.Group>
+                          <textarea style={{ margin: "10px 0px 0 0px" }} {...register("accomComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
+                        </div>
+                        
+                      </div>}
                       
-                    </div>}
-                    
-                    {activeTab === "tab2" && 
-                    <div>
-                      <div className='col-12 mb-3'>
-                        <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
-                        <Radio.Group onChange={onRadio2Change} value={radio2Value}>
-                          <Radio value={1}>1</Radio>
-                          <Radio value={2}>2</Radio>
-                          <Radio value={3}>3</Radio>
-                          <Radio value={4}>4</Radio>
-                          <Radio value={5}>5</Radio>
-                        </Radio.Group>
-                        <textarea style={{ margin: "10px 0px 0 0px" }} {...register("improvComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
-                      </div>
-                    </div>}
+                      {activeTab === "tab2" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                          <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
+                          <Radio.Group onChange={onRadio2Change} value={radio2Value}>
+                            <Radio value={1}>1</Radio>
+                            <Radio value={2}>2</Radio>
+                            <Radio value={3}>3</Radio>
+                            <Radio value={4}>4</Radio>
+                            <Radio value={5}>5</Radio>
+                          </Radio.Group>
+                          <textarea style={{ margin: "10px 0px 0 0px" }} {...register("improvComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
+                        </div>
+                      </div>}
 
-                    {activeTab === "tab3" && 
-                    <div>
-                      <div className='col-12 mb-3'>
-                        <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
-                        <Radio.Group onChange={onRadio3Change} value={radio3Value}>
-                          <Radio value={1}>1</Radio>
-                          <Radio value={2}>2</Radio>
-                          <Radio value={3}>3</Radio>
-                          <Radio value={4}>4</Radio>
-                          <Radio value={5}>5</Radio>
-                        </Radio.Group>
-                        <textarea style={{ margin: "10px 0px 0 0px" }} {...register("goalComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
-                      </div>
-                    </div>}
+                      {activeTab === "tab3" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                          <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
+                          <Radio.Group onChange={onRadio3Change} value={radio3Value}>
+                            <Radio value={1}>1</Radio>
+                            <Radio value={2}>2</Radio>
+                            <Radio value={3}>3</Radio>
+                            <Radio value={4}>4</Radio>
+                            <Radio value={5}>5</Radio>
+                          </Radio.Group>
+                          <textarea style={{ margin: "10px 0px 0 0px" }} {...register("goalComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
+                        </div>
+                      </div>}
 
-                    {activeTab === "tab4" && 
-                    <div>
-                      <div className='col-12 mb-3'>
-                        <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
-                      {/* <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>Upload Document</button> */}
-                        {/* <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
-                        <Radio.Group onChange={onRadio4Change} value={radio4Value}>
-                          <Radio value={1}>1</Radio>
-                          <Radio value={2}>2</Radio>
-                          <Radio value={3}>3</Radio>
-                          <Radio value={4}>4</Radio>
-                          <Radio value={5}>5</Radio>
-                        </Radio.Group> */}
-                        {/* <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea> */}
-                      </div>
-                    </div>}
+                      {activeTab === "tab4" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                          <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
+                        
+                        </div>
+                      </div>}
+                    </div>
                   </div>
-                </div>
                 </form>
                 
                 </form>           
@@ -776,64 +767,7 @@ const AppraisalPerformance = () => {
             >
 
               <h3>Will be updated soon</h3>
-                {/* <form>
-                    <hr></hr>
-                 <div>
-                  <div style={{display:"flex", }} className="tabs">
-                    <div
-                      className={`tab ${activeTab === "tab1" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab1")}
-                    >
-                      Accomplishments
-                    </div>
-
-                    <div className={`tab ${activeTab === "tab2" ? "active" : ""}`}
-                      onClick={() => handleTabClick("tab2")}
-                    >
-                      Areas of Improvements
-                    </div>
-                    
-                  </div>
-                  <div className="tab-content">
-                    {activeTab === "tab1" && 
-                    <div>
-                      <button type='button' className='btn btn-primary me-3 mb-7' onClick={showTabModal}>
-                      <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                      Add
-                    </button>
-                      <Table columns={columnTab1}  />
-                      
-                    </div>}
-                    
-                    {activeTab === "tab2" && 
-                    <div>
-                      <button type='button' className='btn btn-primary me-3 mb-7' onClick={showTabModal}>
-                      <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                      Add
-                    </button>
-                      <Table columns={columnTab1}  />
-                    </div>}
-
-                    {activeTab === "tab3" && 
-                    <div>
-                      <button type='button' className='btn btn-primary me-3 mb-7' onClick={showTabModal}>
-                      <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                      Add
-                    </button>
-                      <Table columns={columnTab1}  />
-                    </div>}
-
-                    {activeTab === "tab4" && 
-                    <div>
-                      <button type='button' className='btn btn-primary me-3 mb-7'>
-                      <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                      Add
-                    </button>
-                      <Table columns={columnTab1}  />
-                    </div>}
-                  </div>
-                </div>
-                </form> */}
+               
           </Modal>
         </div>
       </KTCardBody>

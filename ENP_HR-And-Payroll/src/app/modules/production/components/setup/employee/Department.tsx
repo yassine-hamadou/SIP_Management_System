@@ -128,7 +128,6 @@ const Department = () => {
 const dataByID = gridData.filter((section:any) =>{
   return section.divisionId.toString() ===param.id
 })
-console.log(dataByID)
 
   useEffect(() => {
     (async ()=>{

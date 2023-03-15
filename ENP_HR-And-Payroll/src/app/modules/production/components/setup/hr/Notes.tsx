@@ -155,6 +155,7 @@ const Notes = () => {
           code: values.code,
           name: values.name,
           type: values.type,
+          diaryEvent: parseInt(values.diaryEvent),
     }
     console.log(data)
     try {
@@ -212,6 +213,7 @@ const Notes = () => {
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
+                width={700}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -241,26 +243,48 @@ const Notes = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                       <input type="text" {...register("name")}  className="form-control form-control-solid"/>
                     </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Type</label>
-                      <br></br>
-                      <br></br>
-
-                      <input className="form-check-input" {...register("type")}  type="radio" value="Disciplinary"/>
-                        <span style={{marginRight:"20px"}} className="form-check-label">
-                            Disciplinary
-                        </span>
-                      <input className="form-check-input" {...register("type")} type="radio" value="Grievances"/>
-                        <span className="form-check-label">
-                            Grievances
-                        </span>
-                      {/* <br></br> */}
-                      {/* <Radio.Group {...register("type")} >
-                        <Radio  value={1}>Disciplinary Action</Radio>
-                        <Radio value={2}>Grievances</Radio>
-                      </Radio.Group> */}
-                    </div>
                     
+                    <div className='row col-12'>
+
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Type</label>
+                        <br></br>
+                        <br></br>
+
+                        <input className="form-check-input" {...register("type")}  type="radio" value="Disciplinary"/>
+                          <span style={{marginRight:"20px"}} className="form-check-label">
+                              Disciplinary
+                          </span>
+                        <input className="form-check-input" {...register("type")} type="radio" value="Grievances"/>
+                          <span className="form-check-label">
+                              Grievances
+                          </span>
+                        {/* <br></br> */}
+                        {/* <Radio.Group {...register("type")} >
+                          <Radio  value={1}>Disciplinary Action</Radio>
+                          <Radio value={2}>Grievances</Radio>
+                        </Radio.Group> */}
+                      </div>
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">isDiary Event</label>
+                        <br></br>
+                        <br></br>
+
+                        <input className="form-check-input" {...register("diaryEvent")}  type="radio" value="1"/>
+                          <span style={{marginRight:"20px"}} className="form-check-label">
+                              Yes
+                          </span>
+                        <input className="form-check-input" {...register("diaryEvent")} type="radio" value="0"/>
+                          <span className="form-check-label">
+                              No
+                          </span>
+                        {/* <br></br> */}
+                        {/* <Radio.Group {...register("type")} >
+                          <Radio  value={1}>Disciplinary Action</Radio>
+                          <Radio value={2}>Grievances</Radio>
+                        </Radio.Group> */}
+                      </div>
+                    </div>
                   </div>
                 </form>
             </Modal>
