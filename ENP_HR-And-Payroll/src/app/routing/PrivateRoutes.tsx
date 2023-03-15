@@ -54,7 +54,7 @@ import { AllReports } from '../modules/production/components/report/AllReports'
 import { Divisions } from '../modules/production/components/setup/employee/Divisions'
 import { CompanyAsset } from '../modules/production/components/setup/hr/CompanyAsset'
 
-import { HRDashboardWrapper } from '../pages/dashboard/HumanResourceDashBoard'
+import { HRDashboardPage } from '../pages/dashboard/HumanResourceDashBoard'
 import { PayrollDashboardWrapper } from '../pages/dashboard/PayrollDashBoard'
 import { Notes } from '../modules/production/components/setup/hr/Notes'
 import { NoteEntry } from '../modules/production/components/transactions/hr/NoteEntry'
@@ -68,6 +68,7 @@ import PayrollSSNITReport from '../modules/production/components/report/PayrollS
 import SavSchemeTransactionInputReport from '../modules/production/components/report/SavSchemeTransactionInputReport'
 import { MultiTabForm } from '../modules/production/components/employeeFormEntry/EmployeeFormEntry'
 import { EmployeeEditForm } from '../modules/production/components/employeeFormEntry/EmployeeEditForm'
+import { EmplyeeDetails } from '../modules/production/components/employeeFormEntry/EmployeeDetails'
 import { SNNIT } from '../modules/production/components/setup/payroll/Snnit'
 import { EmployeeReportPage } from '../modules/production/components/report/EmployeeReportPage'
 import { PayrollReportPage } from '../modules/production/components/report/PayrollReportPage'
@@ -131,7 +132,7 @@ const PrivateRoutes = () => {
         <Route path='dashboard' element={<DashboardWrapper />} />
         {/* <Route path='dashboard' element={<DashboardWrapper />} /> */}
         <Route path='payroll-dashboard' element={<PayrollDashboardWrapper />} />
-        <Route path='hr-dashboard' element={<HRDashboardWrapper />} />
+        <Route path='hr-dashboard' element={<HRDashboardPage />} />
    
 
         {/* Employee  */}
@@ -164,6 +165,16 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Entries</PageTitle>
              <EmployeeEditForm />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='employee-details/:id'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Details</PageTitle>
+             <EmplyeeDetails />
            </SuspensedView>
          }
         />

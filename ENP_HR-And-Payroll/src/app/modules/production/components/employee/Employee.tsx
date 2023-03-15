@@ -206,9 +206,12 @@ const Employee = () => {
           <Link to={`/employee-edit-form/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Update</span>
           </Link>
-          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
+          <Link to={`/employee-details/${record.id}`}>
+            <span className='btn btn-light-success btn-sm'>Details</span>
+          </Link>
+          {/* <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Details
-          </a>
+          </a> */}
          
         </Space>
       ),

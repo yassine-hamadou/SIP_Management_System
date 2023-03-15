@@ -5,6 +5,8 @@ import {useIntl} from 'react-intl'
 import {PageTitle} from '../../../_metronic/layout/core'
 import { HRChart } from './charts/HRChart'
 import { TestChart } from './charts/TestChart'
+import { useQuery } from 'react-query'
+import { fetchDashBoardData } from '../../services/ApiCalls'
 
 
 
@@ -77,12 +79,12 @@ const dashboardColumns: any = [
   },
 ]
 
-
-const HRDashboardPage: FC = () => (
-
-
+const HRDashboardPage = () => {
+  const { data: dashboardData } = useQuery('dashboarddata', fetchDashBoardData, { cacheTime: 5000 })
   
-  <>
+
+  return(
+    <div>
     {/* begin::Row */}
     <div className='row gy-5 g-xl-8 mb-7'>
       
@@ -98,35 +100,39 @@ const HRDashboardPage: FC = () => (
       </div>
 
       <div className='col-12 row mt-7'>
-      <Space style={{marginBottom: 16}}>
-              <Input
-                placeholder='Enter Search Text'
-                // onChange={handleInputChange}
-                type='text'
-                allowClear
-                // value={searchText}
-              />
-              <Button type='primary' >
-              {/* <Button type='primary' onClick={globalSearch}> */}
-                Search
-              </Button>
-            </Space>
-        <Table columns={dashboardColumns}  />
+          <Space style={{marginBottom: 16}}>
+            <Input
+              placeholder='Enter Search Text'
+              // onChange={handleInputChange}
+              type='text'
+              allowClear
+              // value={searchText}
+            />
+            {/* <Button type='primary' >
+            
+              Search
+            </Button> */}
+          </Space>
+        <Table columns={dashboardColumns} dataSource={dashboardData} />
       </div>
     </div>
-    {/* end::Row */}
-  </>
-)
 
-const HRDashboardWrapper: FC = () => {
-  const intl = useIntl()
-  return (
-    <>
-      <PageTitle breadcrumbs={[]}>{"Human Resource Dashboard"}</PageTitle>
-      <HRDashboardPage />
-      
-    </>
+  </div>
   )
 }
 
-export {HRDashboardWrapper}
+
+export {HRDashboardPage}
+
+// const HRDashboardWrapper = () => {
+//   // const intl = useIntl()
+//   return (
+//     <>
+//       <PageTitle breadcrumbs={[]}>{"Human Resource Dashboard"}</PageTitle>
+//       <HRDashboardPage />
+      
+//     </>
+//   )
+// }
+
+// export {HRDashboardWrapper}

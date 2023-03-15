@@ -66,6 +66,9 @@ export const fetchRecruitmentTransactions = () => {
 export const fetchAppraisalTransactions = () => {
     return axios.get(`${Api_Endpoint}/AppraisalPerfTransactions`)
 }
+export const fetchDashBoardData = () => {
+    return axios.get(`${Api_Endpoint}/SortedData`)
+}
 
 export const postLeavePlanning = (data: any) => {
     return axios.post(`${Api_Endpoint}/LeavePlanings`, data)

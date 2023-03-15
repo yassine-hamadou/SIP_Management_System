@@ -560,7 +560,7 @@ const CompensationBenefit = () => {
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Unit</label>
-                      <input type="text" name="unitId" value={unitName} className="form-control form-control-solid"/>
+                      <input type="text" name="unitId" value={unitName} readOnly className="form-control form-control-solid"/>
 
               
                     </div>
@@ -568,25 +568,159 @@ const CompensationBenefit = () => {
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
-                      <input type="text" name="firstName" value={employeeRecord?.firstName}  className="form-control form-control-solid"/>
+                      <input type="text" name="firstName" value={employeeRecord?.firstName} readOnly  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
-                      <input type="text" name="surname" value={employeeRecord?.surname}   className="form-control form-control-solid"/>
+                      <input type="text" name="surname" value={employeeRecord?.surname} readOnly  className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="text" name="dob" value={employeeRecord?.dob}    className="form-control form-control-solid"/>
+                      <input type="text" name="dob" value={employeeRecord?.dob}  readOnly  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
-                      <input type="text" name="gender" value={employeeRecord?.gender}   className="form-control form-control-solid"/>
+                      <input type="text" name="gender" value={employeeRecord?.gender} readOnly  className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <hr></hr>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <div>
+                    <div style={{display:"flex", }} className="tabs">
+                      <div
+                        className={`tab ${activeTab === "tab1" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab1")}
+                      >
+                        Bsc Salary
+                      </div>
+
+                      <div className={`tab ${activeTab === "tab2" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab2")}
+                      >
+                        Allowance
+                      </div>
+                      <div
+                        className={`tab ${activeTab === "tab3" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab3")}
+                      >
+                        Bonus
+                      </div>
+                      <div
+                        className={`tab ${activeTab === "tab4" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab4")}
+                      >
+                        Health Insur.
+                      </div>
+                      <div
+                        className={`tab ${activeTab === "tab5" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab5")}
+                      >
+                        Sav. Sch
+                      </div>
+                      <div
+                        className={`tab ${activeTab === "tab6" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab6")}
+                      >
+                        Prof. Dev
+                      </div>
+                      <div
+                        className={`tab ${activeTab === "tab7" ? "active" : ""}`}
+                        onClick={() => handleTabClick("tab7")}
+                      >
+                        Comp. Property
+                      </div>
+                    </div>
+                    <div className="tab-content">
+                      {activeTab === "tab1" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                          <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
+                          <Radio.Group {...register("basicSalary")} onChange={onBasicSalryChange} value={basicSalary}>
+                            <Radio value="Yes">Yes</Radio>
+                            <Radio value="No">No</Radio>
+                          </Radio.Group>
+                          <textarea style={{margin: "10px 0px 0 0px"}} {...register("basicSalaryComment")} className="form-control form-control-solid" placeholder='comments on basic salary (optional)' aria-label="With textarea"></textarea>
+                        </div>
+                        
+                      </div>}
+                      
+                      {activeTab === "tab2" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                          <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Allowance</label>
+                          <Radio.Group onChange={onAllowanceChange} value={allowanceValue}>
+                            <Radio value="Yes">Yes</Radio>
+                            <Radio value="No">No</Radio>
+                          </Radio.Group>
+                          <textarea style={{margin: "10px 0px 0 0px"}} {...register("allowanceComment")} className="form-control form-control-solid" placeholder='comments on allowance (optional)' aria-label="With textarea"></textarea>
+                        </div>
+                      </div>}
+
+                      {activeTab === "tab3" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                          <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Bonus </label>
+                          <Radio.Group onChange={onBonusChange} value={bonusValue}>
+                            <Radio value="Yes">Yes</Radio>
+                            <Radio value="No">No</Radio>
+                          </Radio.Group>
+                          <textarea style={{margin: "10px 0px 0 0px"}} {...register("bonusComment")} className="form-control form-control-solid" placeholder='comments on bonus (optional)' aria-label="With textarea"></textarea>
+                        </div>
+                      </div>}
+
+                      {activeTab === "tab4" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                        <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Health Insurance</label>
+                      <Radio.Group onChange={onHealthInsurenaceChange} value={healthInsurenaceValue}>
+                        <Radio value="Yes">Yes</Radio>
+                        <Radio value="No">No</Radio>
+                      </Radio.Group>
+                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("healthInsuranceComment")} className="form-control form-control-solid" placeholder='comments on health insurance (optional)' aria-label="With textarea"></textarea>
+                        
+                        </div>
+                      </div>}
+
+                      {activeTab === "tab5" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                          <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
+                          <Radio.Group onChange={onSavingSchemeChange} value={savingSchemeValue}>
+                            <Radio value="Yes">Yes</Radio>
+                            <Radio value="No">No</Radio>
+                          </Radio.Group>
+                          <textarea style={{margin: "10px 0px 0 0px"}} {...register("savingSchemeComment")} className="form-control form-control-solid" placeholder='comments on saving scheme (optional)' aria-label="With textarea"></textarea>
+                        
+                        </div>
+                      </div>}
+                      {activeTab === "tab6" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                          <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Professional Development </label>
+                          <Radio.Group onChange={onProfDevelopChange} value={profDevelopValue}>
+                            <Radio value="Yes">Yes</Radio>
+                            <Radio value="No">No</Radio>
+                          </Radio.Group>
+                          <textarea style={{margin: "10px 0px 0 0px"}} {...register("profDevelopmentComment")} className="form-control form-control-solid" placeholder='comments on professional development (optional)' aria-label="With textarea"></textarea>
+                        
+                        </div>
+                      </div>}
+                      {activeTab === "tab7" && 
+                      <div>
+                        <div className='col-12 mb-3'>
+                          <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Company Property</label>
+                          <Radio.Group onChange={onCompanyPropertyChange} value={companyPropertyValue}>
+                            <Radio value="Yes">Yes</Radio>
+                            <Radio value="No">No</Radio>
+                          </Radio.Group>
+                          <textarea style={{margin: "10px 0px 0 0px"}} {...register("companyPropertyComment")} className="form-control form-control-solid" placeholder='comments on company property (optional)' aria-label="With textarea"></textarea>
+                        
+                        </div>
+                      </div>}
+                    </div>
+                  </div>
+                  {/* <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
                         <Radio.Group {...register("basicSalary")} onChange={onBasicSalryChange} value={basicSalary}>
@@ -624,7 +758,7 @@ const CompensationBenefit = () => {
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
-                       <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
+                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
                       <Radio.Group onChange={onSavingSchemeChange} value={savingSchemeValue}>
                         <Radio value="Yes">Yes</Radio>
                         <Radio value="No">No</Radio>
@@ -650,7 +784,7 @@ const CompensationBenefit = () => {
                       <textarea style={{margin: "10px 0px 0 0px"}} {...register("companyPropertyComment")} className="form-control form-control-solid" placeholder='comments on company property (optional)' aria-label="With textarea"></textarea>
                     </div>
                     
-                  </div>
+                  </div> */}
                   
                 </form>
           </Modal>
@@ -659,182 +793,7 @@ const CompensationBenefit = () => {
         </div>
       </KTCardBody>
       }
-      {/* <KTCardBody className='py-4 '>
-        <div className='table-responsive'>
-          <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
-              <Input
-                placeholder='Enter Search Text'
-                onChange={handleInputChange}
-                type='text'
-                allowClear
-                value={searchText}
-              />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
-            </Space>
-            <Space style={{marginBottom: 16}}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
-
-              <button type='button' className='btn btn-light-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                Export
-            </button>
-            </Space>
-          </div>
-          <Table columns={columns} dataSource={dataByID} loading={loading} />
-          
-          <Modal
-                title='Employee Details'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                width="900px"
-                footer={[
-                  <Button key='back' onClick={handleCancel}>
-                      Cancel
-                  </Button>,
-                  <Button
-                  key='submit'
-                  type='primary'
-                  htmlType='submit'
-                  loading={submitLoading}
-                  onClick={submitCompensation}
-                  >
-                      Submit
-                  </Button>,
-                ]}
-            >
-                <form onSubmit={submitCompensation} >
-                    <hr></hr>
-                    <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                     
-                      <br></br>
-                      <Select
-                     
-                          {...register("employeeId")}
-                          showSearch
-                          placeholder="select a reference"
-                          optionFilterProp="children"
-                          style={{width:"300px"}}
-                          value={employeeRecord?.id}
-                          onChange={(e)=>{
-                            onEmployeeChange(e)
-                          }}
-                          
-                        >
-                          <option>select</option>
-                          {allEmployees?.data.map((item: any) => (
-                            <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
-                          ))}
-                        </Select>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Unit</label>
-                      <input type="text" name="unitId" value={unitName} className="form-control form-control-solid"/>
-
-              
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
-                      <input type="text" name="firstName" value={employeeRecord?.firstName}  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
-                      <input type="text" name="surname" value={employeeRecord?.surname}   className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="text" name="dob" value={employeeRecord?.dob}    className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
-                      <input type="text" name="gender" value={employeeRecord?.gender}   className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                  <hr></hr>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
-                        <Radio.Group {...register("basicSalary")} onChange={onBasicSalryChange} value={basicSalary}>
-                          <Radio value="Yes">Yes</Radio>
-                          <Radio value="No">No</Radio>
-                        </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("basicSalaryComment")} className="form-control form-control-solid" placeholder='comments on basic salary (optional)' aria-label="With textarea"></textarea>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label style={{padding: "0px 40px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Allowance</label>
-                      <Radio.Group onChange={onAllowanceChange} value={allowanceValue}>
-                        <Radio value="Yes">Yes</Radio>
-                        <Radio value="No">No</Radio>
-                      </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("allowanceComment")} className="form-control form-control-solid" placeholder='comments on allowance (optional)' aria-label="With textarea"></textarea>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Bonus </label>
-                      <Radio.Group onChange={onBonusChange} value={bonusValue}>
-                        <Radio value="Yes">Yes</Radio>
-                        <Radio value="No">No</Radio>
-                      </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("bonusComment")} className="form-control form-control-solid" placeholder='comments on bonus (optional)' aria-label="With textarea"></textarea>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Health Insurance</label>
-                      <Radio.Group onChange={onHealthInsurenaceChange} value={healthInsurenaceValue}>
-                        <Radio value="Yes">Yes</Radio>
-                        <Radio value="No">No</Radio>
-                      </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("healthInsuranceComment")} className="form-control form-control-solid" placeholder='comments on health insurance (optional)' aria-label="With textarea"></textarea>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                       <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Saving Scheme</label>
-                      <Radio.Group onChange={onSavingSchemeChange} value={savingSchemeValue}>
-                        <Radio value="Yes">Yes</Radio>
-                        <Radio value="No">No</Radio>
-                      </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("savingSchemeComment")} className="form-control form-control-solid" placeholder='comments on saving scheme (optional)' aria-label="With textarea"></textarea>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Professional Development </label>
-                      <Radio.Group onChange={onProfDevelopChange} value={profDevelopValue}>
-                        <Radio value="Yes">Yes</Radio>
-                        <Radio value="No">No</Radio>
-                      </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("profDevelopmentComment")} className="form-control form-control-solid" placeholder='comments on professional development (optional)' aria-label="With textarea"></textarea>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                    <label style={{padding: "0px 39px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Company Property</label>
-                      <Radio.Group onChange={onCompanyPropertyChange} value={companyPropertyValue}>
-                        <Radio value="Yes">Yes</Radio>
-                        <Radio value="No">No</Radio>
-                      </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("companyPropertyComment")} className="form-control form-control-solid" placeholder='comments on company property (optional)' aria-label="With textarea"></textarea>
-                    </div>
-                    
-                  </div>
-                  
-                </form>
-          </Modal>
-
-          
-        </div>
-      </KTCardBody> */}
+      
     </div>
   )
 }
