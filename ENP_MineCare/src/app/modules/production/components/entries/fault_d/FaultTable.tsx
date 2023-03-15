@@ -18,7 +18,6 @@ import React, {useEffect, useState} from 'react'
 import {v4 as uuidv4} from 'uuid'
 import {KTSVG} from '../../../../../../_metronic/helpers'
 import {ENP_URL} from '../../../../../urls'
-import {disableCursor, enableCursor} from '@fullcalendar/react'
 import {useMutation, useQuery, useQueryClient} from 'react-query'
 import {ResolutionTable} from '../resolution/ResolutionTable'
 
