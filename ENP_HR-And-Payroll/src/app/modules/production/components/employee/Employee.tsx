@@ -65,12 +65,12 @@ const Employee = () => {
     },
     {
       title: 'EmployeeID',
-      dataIndex: 'id',
+      dataIndex: 'employeeId',
       sorter: (a: any, b: any) => {
-        if (a.id > b.id) {
+        if (a.employeeId > b.employeeId) {
           return 1
         }
-        if (b.id > a.id) {
+        if (b.employeeId > a.employeeId) {
           return -1
         }
         return 0

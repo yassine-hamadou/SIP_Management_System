@@ -136,7 +136,7 @@ const HRDashboardPage = () => {
           boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
         }} 
       >
-          <Space style={{marginBottom: 16}}>
+          {/* <Space style={{marginBottom: 16}}>
             <Input
               placeholder='Enter Search Text'
               // onChange={handleInputChange}
@@ -148,7 +148,7 @@ const HRDashboardPage = () => {
             
               Search
             </Button>
-          </Space>
+          </Space> */}
         <Table columns={columns} dataSource={dashboardData?.data} />
       </div>
     </div>
