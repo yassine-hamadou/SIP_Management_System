@@ -3678,46 +3678,46 @@ export const employeedata=[
  ]
 
  export const BANKS = [
-  {
-   "code": 10101,
-   "name": "BANK OF GHANA",
-   "branch": "BANK OF GHANA ACCRA BRANCH"
-  },
-  {
-   "code": 10303,
-   "name": "BANK OF GHANA",
-   "branch": "BANK OF GHANA -AGONA SWEDRU BRANCH"
-  },
-  {
-   "code": 10401,
-   "name": "BANK OF GHANA",
-   "branch": "BANK OF GHANA -TAKORADI BRANCH"
-  },
-  {
-   "code": 10402,
-   "name": "BANK OF GHANA",
-   "branch": "BANK OF GHANA -SEFWI BOAKO BRANCH"
-  },
-  {
-   "code": 10601,
-   "name": "BANK OF GHANA",
-   "branch": "BANK OF GHANA -KUMASI BRANCH"
-  },
-  {
-   "code": 10701,
-   "name": "BANK OF GHANA",
-   "branch": "BANK OF GHANA -SUNYANI BRANCH"
-  },
-  {
-   "code": 10801,
-   "name": "BANK OF GHANA",
-   "branch": "BANK OF GHANA -TAMALE BRANCH"
-  },
-  {
-   "code": 11101,
-   "name": "BANK OF GHANA",
-   "branch": "BANK OF GHANA - HOHOE BRANCH"
-  },
+  // {
+  //  "code": 10101,
+  //  "name": "BANK OF GHANA",
+  //  "branch": "BANK OF GHANA ACCRA BRANCH"
+  // },
+  // {
+  //  "code": 10303,
+  //  "name": "BANK OF GHANA",
+  //  "branch": "BANK OF GHANA -AGONA SWEDRU BRANCH"
+  // },
+  // {
+  //  "code": 10401,
+  //  "name": "BANK OF GHANA",
+  //  "branch": "BANK OF GHANA -TAKORADI BRANCH"
+  // },
+  // {
+  //  "code": 10402,
+  //  "name": "BANK OF GHANA",
+  //  "branch": "BANK OF GHANA -SEFWI BOAKO BRANCH"
+  // },
+  // {
+  //  "code": 10601,
+  //  "name": "BANK OF GHANA",
+  //  "branch": "BANK OF GHANA -KUMASI BRANCH"
+  // },
+  // {
+  //  "code": 10701,
+  //  "name": "BANK OF GHANA",
+  //  "branch": "BANK OF GHANA -SUNYANI BRANCH"
+  // },
+  // {
+  //  "code": 10801,
+  //  "name": "BANK OF GHANA",
+  //  "branch": "BANK OF GHANA -TAMALE BRANCH"
+  // },
+  // {
+  //  "code": 11101,
+  //  "name": "BANK OF GHANA",
+  //  "branch": "BANK OF GHANA - HOHOE BRANCH"
+  // },
   {
    "code": 20101,
    "name": "STANDARD CHARTERED BANK",

@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import { Button, Input, Space, Table } from 'antd'
+
 import react, {FC} from 'react'
 import {useIntl} from 'react-intl'
 import {PageTitle} from '../../../_metronic/layout/core'
@@ -7,19 +6,20 @@ import { HRChart } from './charts/HRChart'
 import { TestChart } from './charts/TestChart'
 import { useQuery } from 'react-query'
 import { fetchDashBoardData } from '../../services/ApiCalls'
+import { Button, Input, Space, Table } from 'antd'
 
 
 
-const dashboardColumns: any = [
+const columns: any = [
    
   {
     title: 'Paygroup',
-    dataIndex: 'code',
+    dataIndex: 'paygroupName',
     sorter: (a: any, b: any) => {
-      if (a.code > b.code) {
+      if (a.paygroupName > b.paygroupName) {
         return 1
       }
-      if (b.code > a.code) {
+      if (b.paygroupName > a.paygroupName) {
         return -1
       }
       return 0
@@ -27,12 +27,12 @@ const dashboardColumns: any = [
   },
   {
     title: 'Division',
-    dataIndex: 'name',
+    dataIndex: 'divisionName',
     sorter: (a: any, b: any) => {
-      if (a.name > b.name) {
+      if (a.divisionName > b.divisionName) {
         return 1
       }
-      if (b.name > a.name) {
+      if (b.divisionName > a.divisionName) {
         return -1
       }
       return 0
@@ -40,12 +40,12 @@ const dashboardColumns: any = [
   },
   {
     title: 'Department',
-    dataIndex: 'name',
+    dataIndex: 'departmentName',
     sorter: (a: any, b: any) => {
-      if (a.name > b.name) {
+      if (a.departmentName > b.departmentName) {
         return 1
       }
-      if (b.name > a.name) {
+      if (b.departmentName > a.departmentName) {
         return -1
       }
       return 0
@@ -53,12 +53,12 @@ const dashboardColumns: any = [
   },
   {
     title: 'Unit',
-    dataIndex: 'name',
+    dataIndex: 'unitName',
     sorter: (a: any, b: any) => {
-      if (a.name > b.name) {
+      if (a.unitName > b.unitName) {
         return 1
       }
-      if (b.name > a.name) {
+      if (b.unitName > a.unitName) {
         return -1
       }
       return 0
@@ -66,12 +66,38 @@ const dashboardColumns: any = [
   },
   {
     title: 'Number of Employees',
-    dataIndex: 'name',
+    dataIndex: 'employeeCount',
     sorter: (a: any, b: any) => {
-      if (a.name > b.name) {
+      if (a.employeeCount > b.employeeCount) {
         return 1
       }
-      if (b.name > a.name) {
+      if (b.employeeCount > a.employeeCount) {
+        return -1
+      }
+      return 0
+    },
+  },
+  {
+    title: 'Male Count',
+    dataIndex: 'countMale',
+    sorter: (a: any, b: any) => {
+      if (a.countMale > b.countMale) {
+        return 1
+      }
+      if (b.countMale > a.countMale) {
+        return -1
+      }
+      return 0
+    },
+  },
+  {
+    title: 'Female Count',
+    dataIndex: 'countFemale',
+    sorter: (a: any, b: any) => {
+      if (a.countFemale > b.countFemale) {
+        return 1
+      }
+      if (b.countFemale > a.countFemale) {
         return -1
       }
       return 0
@@ -84,7 +110,9 @@ const HRDashboardPage = () => {
   
 
   return(
-    <div>
+    <div
+      
+    >
     {/* begin::Row */}
     <div className='row gy-5 g-xl-8 mb-7'>
       
@@ -99,7 +127,15 @@ const HRDashboardPage = () => {
           chartHeight='350px'/>
       </div>
 
-      <div className='col-12 row mt-7'>
+      <div className='col-12 row mt-7'
+        style={{
+          backgroundColor: 'white',
+          padding: '20px',
+          borderRadius: '5px',
+          margin:"5px",
+          boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
+        }} 
+      >
           <Space style={{marginBottom: 16}}>
             <Input
               placeholder='Enter Search Text'
@@ -108,12 +144,12 @@ const HRDashboardPage = () => {
               allowClear
               // value={searchText}
             />
-            {/* <Button type='primary' >
+            <Button type='primary' >
             
               Search
-            </Button> */}
+            </Button>
           </Space>
-        <Table columns={dashboardColumns} dataSource={dashboardData} />
+        <Table columns={columns} dataSource={dashboardData?.data} />
       </div>
     </div>
 
@@ -124,15 +160,15 @@ const HRDashboardPage = () => {
 
 export {HRDashboardPage}
 
-// const HRDashboardWrapper = () => {
-//   // const intl = useIntl()
-//   return (
-//     <>
-//       <PageTitle breadcrumbs={[]}>{"Human Resource Dashboard"}</PageTitle>
-//       <HRDashboardPage />
+const HRDashboardWrapper = () => {
+  // const intl = useIntl()
+  return (
+    <>
+      <PageTitle breadcrumbs={[]}>{"Human Resource Dashboard"}</PageTitle>
+      <HRDashboardPage />
       
-//     </>
-//   )
-// }
+    </>
+  )
+}
 
-// export {HRDashboardWrapper}
+export {HRDashboardWrapper}

@@ -406,6 +406,7 @@ const CompensationBenefit = () => {
   const submitCompensation = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
+      paygroupId: parseInt(selectedValue1),
       jobTitleId: parseInt(selectedValue),
       employeeId: employeeRecord.id,
       basicSalary: basicSalary,
@@ -456,7 +457,7 @@ const CompensationBenefit = () => {
         <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
             <select value={selectedValue1} onChange={(e) => setSelectedValue1(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
-              <option value="select paygroup" style={{color:"GrayText"}}> select paygroup</option>
+              <option value="select paygroup" style={{color:"GrayText"}}> Select paygroup</option>
               {allPaygroups?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
               ))}
@@ -465,7 +466,7 @@ const CompensationBenefit = () => {
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
             <select value={selectedValue2} onChange={(e) => setSelectedValue2(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
-              <option value="select jobtitle">select jobtitle</option>
+              <option value="select jobtitle">Select jobtitle</option>
               {allJobTitles?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
               ))}

@@ -55,6 +55,7 @@ import { Divisions } from '../modules/production/components/setup/employee/Divis
 import { CompanyAsset } from '../modules/production/components/setup/hr/CompanyAsset'
 
 import { HRDashboardPage } from '../pages/dashboard/HumanResourceDashBoard'
+import { HRDashboardWrapper } from '../pages/dashboard/HumanResourceDashBoard'
 import { PayrollDashboardWrapper } from '../pages/dashboard/PayrollDashBoard'
 import { Notes } from '../modules/production/components/setup/hr/Notes'
 import { NoteEntry } from '../modules/production/components/transactions/hr/NoteEntry'
@@ -108,6 +109,7 @@ import MedicalTypeReport from '../modules/production/components/report/MedicalTy
 import MedicalSummaryReport from '../modules/production/components/report/MedicalSummaryReport'
 import { Products } from '../modules/production/components/setup/hr/Produsts'
 import { ServiceProviders } from '../modules/production/components/setup/hr/ServiceProviders'
+import { ServiceCost } from '../modules/production/components/setup/hr/ServiceCost'
 
 
 
@@ -132,7 +134,7 @@ const PrivateRoutes = () => {
         <Route path='dashboard' element={<DashboardWrapper />} />
         {/* <Route path='dashboard' element={<DashboardWrapper />} /> */}
         <Route path='payroll-dashboard' element={<PayrollDashboardWrapper />} />
-        <Route path='hr-dashboard' element={<HRDashboardPage />} />
+        <Route path='hr-dashboard' element={<HRDashboardWrapper />} />
    
 
         {/* Employee  */}
@@ -650,6 +652,15 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Products</PageTitle>
              <Products />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='service-cost/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Service Cost</PageTitle>
+             <ServiceCost />
            </SuspensedView>
          }
         />

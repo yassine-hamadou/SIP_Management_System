@@ -9,7 +9,7 @@ import { useQuery } from 'react-query'
 import { Api_Endpoint, fetchDepartments, fetchEmployees, fetchGrades, fetchNotches, fetchPaygroups } from '../../../../services/ApiCalls'
 
 const Employee = () => {
-  const [gridData, setGridData] = useState([])
+  const [gridData, setGridData] = useState<any>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
@@ -278,7 +278,43 @@ const Employee = () => {
     fetchImage()
   }, [])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
+
+
+  // const sortedEmployees = gridData.sort((a:any, b:any) => a?.departmentId.localeCompare(b?.departmentId));
+  // const females = sortedEmployees.filter((employee:any) => employee.gender === 'female');
+  
+  
+  var out_data:any = {};
+  
+  gridData.forEach(function(row:any) {
+    if (out_data[row.departmentId]) {
+      out_data[row.departmentId].push(row);
+    } else {
+      out_data[row.departmentId] = [row];
+    }
+  });
+  
+  // const males = out_data.filter((employee:any) => employee.gender === 'MALE');
+  // const result = gridData.group(( departmentId:any ) => departmentId);
+// var newData:any = {}
+// out_data.forEach(function(row:any){
+//   if (newData[row.gender]) {
+//     newData[row.gender].push(row);
+// } else {
+//     newData[row.gender] = [row];
+// }
+
+// })
+// console.log(out_data)
+// console.log(out_data[25])
+// console.log(result)
+
+
+
+  // console.log(sortedEmployees + " All")
+  // console.log(males + " Males")
+  // console.log(females + " females")
+  const dataWithIndex = gridData.map((item: any, index:any) => ({
     ...item,
     key: index,
   }))

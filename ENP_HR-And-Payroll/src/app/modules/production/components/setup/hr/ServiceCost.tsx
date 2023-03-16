@@ -4,20 +4,23 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchServiceProviders } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchMedicals, fetchProducts, fetchServiceProviders } from '../../../../../services/ApiCalls'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
-const ServiceProviders = () => {
+const ServiceCost = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  let [itemName, setItemName] = useState<any>("")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const {register, reset, handleSubmit} = useForm()
+  const [selectedValue, setSelectedValue] = useState<any>(null);
+  const param:any  = useParams();
+  const navigate = useNavigate();
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -33,7 +36,7 @@ const ServiceProviders = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${Api_Endpoint}/ServiceProviders/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/ServiceCosts/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -50,84 +53,38 @@ const ServiceProviders = () => {
   }
   const columns: any = [
    
-    {
-      title: 'Code',
-      dataIndex: 'code',
-      sorter: (a: any, b: any) => {
-        if (a.code > b.code) {
-          return 1
-        }
-        if (b.code > a.code) {
-          return -1
-        }
-        return 0
-      },
-    },
+    
     {
       title: 'Name',
-      dataIndex: 'name',
+      key: 'medicalServiceId',
+      render: (row: any) => {
+        return getServiceName(row.medicalServiceId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.medicalServiceId > b.medicalServiceId) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.medicalServiceId > a.medicalServiceId) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Phone',
-      dataIndex: 'phone',
+      title: 'Cost',
+      dataIndex: 'cost',
       sorter: (a: any, b: any) => {
-        if (a.phone > b.phone) {
+        if (a.cost > b.cost) {
           return 1
         }
-        if (b.phone > a.phone) {
+        if (b.cost > a.cost) {
           return -1
         }
         return 0
       },
     },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      sorter: (a: any, b: any) => {
-        if (a.email > b.email) {
-          return 1
-        }
-        if (b.email > a.email) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      sorter: (a: any, b: any) => {
-        if (a.address > b.address) {
-          return 1
-        }
-        if (b.address > a.address) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Contact Person',
-      dataIndex: 'contactPerson',
-      sorter: (a: any, b: any) => {
-        if (a.contactPerson > b.contactPerson) {
-          return 1
-        }
-        if (b.contactPerson > a.contactPerson) {
-          return -1
-        }
-        return 0
-      },
-    },
+    
+
     {
       title: 'Action',
       fixed: 'right',
@@ -135,9 +92,9 @@ const ServiceProviders = () => {
       render: (_: any, record: any) => (
         <Space size='middle'>
           
-          <Link to={`/service-cost/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Cost</span>
-          </Link>
+          {/* <Link to={`/setup/sections/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>ServiceCost</span>
+          </Link> */}
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -150,14 +107,13 @@ const ServiceProviders = () => {
       
     },
   ]
+  const {data:allProducts} = useQuery('products', fetchProducts, {cacheTime:5000})
+  const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProviders, {cacheTime:5000})
 
-//   const {data:allServiceProviders} = useQuery('ServiceProviders', fetchServiceProviders, {cacheTime:5000})
-
-const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProviders, {cacheTime:5000})
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get("http://208.117.44.15/hrwebapi/api/ServiceProviders")
+      const response = await axios.get("http://208.117.44.15/hrwebapi/api/ServiceCosts")
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -165,19 +121,43 @@ const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProv
     }
   }
 
-  // const {isLoading, data}= useQuery('ServiceProviders', ()=>{
-  //   return axios.get(`${Api_Endpoint}/ServiceProviders`)
-  // })
+  const getServiceName = (proId:any) => {
+    let productName = null
+    allProducts?.data.map((item: any) => {
+      if (item.id === proId) {
+        productName=item.name
+      }
+    })
+    return productName
+  }
+  const getItemName= async (param:any) =>{
+
+    let newName=null
+  
+     const   itemTest = await allServiceProviders?.data.find((item:any) =>
+      item.id.toString()===param
+    )
+     newName = await itemTest
+    return newName
+ }
 
   useEffect(() => {
+    (async ()=>{
+        let res = await getItemName(param.id)
+        setItemName(res?.name)
+      })();
     loadData()
   }, [])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-  }))
+  // const dataWithIndex = gridData.map((item: any, index) => ({
+  //   ...item,
+  //   key: index,
+  // }))
+  const dataByID = gridData.filter((section:any) =>{
+    return section.serviceProviderId.toString() ===param.id
+  })
 
+  console.log(dataByID)
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
@@ -195,16 +175,13 @@ const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProv
     setGridData(filteredData)
   }
 
-  const url = `${Api_Endpoint}/ServiceProviders`
+  const url = `${Api_Endpoint}/ServiceCosts`
   const OnSUbmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
-          code: values.code,
-          name: values.name,
-          address: values.address,
-          email: values.email,
-          phone: values.phone,
-          contactPerson: values.contactPerson,
+          serviceProviderId: parseInt(param.id),
+          medicalServiceId: parseInt(selectedValue),
+          cost: parseFloat(values.cost).toFixed(2)
         }
         console.log(data)
     try {
@@ -231,6 +208,10 @@ const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProv
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <h3 style={{fontWeight:"bolder"}}>{itemName} </h3>
+        <br></br>
+        <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
               <Input
@@ -256,13 +237,12 @@ const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProv
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataWithIndex}  />
+          <Table columns={columns} dataSource={dataByID} />
           <Modal
-                title='Service Providers Setup'
+                title='ServiceCost Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
-                width={800}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
                         Cancel
@@ -282,37 +262,30 @@ const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProv
                     onSubmit={OnSUbmit}  
                 >
                   <hr></hr>
-                 
-                    <div style={{padding: "20px 0px 20px 20px"}} className='row mb-0 '>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                            <input type="text" {...register("code")}  className="form-control form-control-solid"/>
-                        </div>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                            <input type="text" {...register("name")}  className="form-control form-control-solid"/>
-                        </div>
+                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Product/Service</label>
+                      {/* <input type="text" {...register("code")}  className="form-control form-control-solid"/> */}
+                      <select value={selectedValue} onChange={(e) => setSelectedValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+                        <option value="select paygroup" style={{color:"GrayText"}}> Select </option>
+                        {allProducts?.data.map((item: any) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
                     </div>
-                    <div style={{padding: "0px 20px 0px 20px"}} className='row mb-0 '>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Address</label>
-                            <input type="text" {...register("address")}  className="form-control form-control-solid"/>
-                        </div>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Phone</label>
-                            <input type="tel" {...register("phone")}  className="form-control form-control-solid"/>
-                        </div>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Cost</label>
+                      <input
+                        min={0}
+                        max={10}
+                        step={0.01}
+                        
+                        type="number" {...register("cost")}  className="form-control form-control-solid"/>
+                      
                     </div>
-                    <div style={{padding: "0px 20px 0px 20px"}} className='row mb-0 col-12'>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Email</label>
-                            <input type="email" {...register("email")}  className="form-control form-control-solid"/>
-                        </div>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Contact Person</label>
-                            <input type="text" {...register("contactPerson")} placeholder="e.g Dr. Mensah Anang" className="form-control form-control-solid"/>
-                        </div>
-                    </div>
+                    
+                    
+                  </div>
                 </form>
             </Modal>
         </div>
@@ -321,4 +294,4 @@ const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProv
   )
 }
 
-export {ServiceProviders}
+export {ServiceCost}

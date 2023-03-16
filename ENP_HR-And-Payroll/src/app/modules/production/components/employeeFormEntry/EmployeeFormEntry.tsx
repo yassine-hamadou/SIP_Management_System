@@ -408,8 +408,7 @@ const MultiTabForm= () =>{
                 <select {...register("bankId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {BANKS.map((item: any) => (
-                    <option value={item.code}>{item.branch}</option>
-                  ))}
+                    <option value={item.code}>{item.branch}</option>                 ))}
                 </select>
               </div>
               <div className='col-6 mb-7'>

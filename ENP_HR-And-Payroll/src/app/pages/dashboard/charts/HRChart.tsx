@@ -57,11 +57,11 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
     series: [
       {
         name: 'MALE',
-        data: [40, 60, 50, 20, 200, 160, 180, 60,380],
+        data: [53, 24, 130, 78, 289, 262,836],
       },
       {
         name: 'FEMALE',
-        data: [20, 50, 70, 40, 120, 130, 140, 20,360],
+        data: [45, 21, 51, 101, 201, 190 ,508],
       },
     ],
     chart: {
@@ -93,7 +93,7 @@ const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
       colors: ['transparent'],
     },
     xaxis: {
-      categories: ['Finance','HR', 'IT', 'Corporate', 'Mining', 'Engineering', 'Transport', 'Security', 'Total'],
+      categories: ['CORPORATE', 'FINANCE', 'HUMAN RESOURCE', 'MAINTENANCE', 'PRODUCTION', 'TRANSPORT', 'TOTAL'],
       axisBorder: {
         show: false,
       },
