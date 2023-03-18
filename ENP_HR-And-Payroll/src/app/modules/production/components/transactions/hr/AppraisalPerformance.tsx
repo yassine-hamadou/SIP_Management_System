@@ -157,19 +157,19 @@ const AppraisalPerformance = () => {
 
   const columns: any = [
    
-    {
-      title: 'Employee ID',
-      dataIndex: 'id',
-      sorter: (a: any, b: any) => {
-        if (a.id > b.id) {
-          return 1
-        }
-        if (b.id > a.id) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Employee ID',
+    //   dataIndex: 'employeeId',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.employeeId > b.employeeId) {
+    //       return 1
+    //     }
+    //     if (b.employeeId > a.employeeId) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
       title: 'First Name',
       key: 'employeeId',
@@ -346,11 +346,12 @@ const AppraisalPerformance = () => {
   const emplyeesByPaygroup:any = alEmployees?.data.filter((item:any) =>{
     return  item.paygroupId===parseInt(selectedValue1)
     })
+
   const emplyeeDetails:any = allAppraisalTransactions?.data.find((item:any) =>{
     return  item.id===employeeId
-    })
+  })
 
-    console.log(emplyeeDetails)
+    // console.log(emplyeeDetails)
 
   const onEmployeeChange = (objectId: any) => {
     const newEmplo = alEmployees?.data.find((item:any)=>{
@@ -444,11 +445,6 @@ const AppraisalPerformance = () => {
     }
   }
 
-  // useEffect(()=>{
-  //  const  getEmployeeFetails=(id:any)=>{
-
-  //   }
-  // }, [])
 
   const globalSearch = () => {
     // @ts-ignore

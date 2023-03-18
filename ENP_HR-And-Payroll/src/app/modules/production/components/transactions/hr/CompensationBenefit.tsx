@@ -30,7 +30,7 @@ const CompensationBenefit = () => {
   const [unitName, setunitName] = useState("");
   const [companyPropertyValue, setCompanyPropertyValue] = useState();
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
-  const [selectedValue, setSelectedValue] = useState<any>(null);
+  // const [selectedValue, setSelectedValue] = useState<any>(null);
   const [selectedValue1, setSelectedValue1] = useState<any>(null);
   const [selectedValue2, setSelectedValue2] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("tab1");
@@ -360,6 +360,9 @@ const CompensationBenefit = () => {
     setEmployeeRecord(newEmplo)
   }
 
+  const emplyeesByPaygroup:any = allEmployees?.data.filter((item:any) =>{
+    return  item.paygroupId===parseInt(selectedValue1)
+    })
 
   useEffect(() => {
     const getUnitName = () => {
@@ -381,8 +384,9 @@ const CompensationBenefit = () => {
     key: index,
   }))
   const dataByID:any = gridData.filter((refId:any) =>{
-    return  refId.jobTitleId===parseInt(selectedValue)
-    })
+
+    return  (refId.paygroupId===parseInt(selectedValue1))&&(refId.jobTitleId===parseInt(selectedValue2))
+ })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -407,7 +411,7 @@ const CompensationBenefit = () => {
     setLoading(true)
     const data = {
       paygroupId: parseInt(selectedValue1),
-      jobTitleId: parseInt(selectedValue),
+      jobTitleId: parseInt(selectedValue2),
       employeeId: employeeRecord.id,
       basicSalary: basicSalary,
       basicSalaryComment: values.basicSalaryComment,
@@ -504,7 +508,7 @@ const CompensationBenefit = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataByID} loading={loading} />
+          <Table columns={columns} key={dataByID.id} dataSource={dataByID} loading={loading} />
           {/* Add form */}
           <Modal
                 title='Employee Details'
@@ -554,7 +558,7 @@ const CompensationBenefit = () => {
                           
                         >
                           <option>select</option>
-                          {allEmployees?.data.map((item: any) => (
+                          {emplyeesByPaygroup.map((item: any) => (
                             <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
                           ))}
                         </Select>

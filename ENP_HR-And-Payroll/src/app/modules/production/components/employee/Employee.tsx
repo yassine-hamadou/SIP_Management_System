@@ -212,7 +212,7 @@ const Employee = () => {
           {/* <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Details
           </a> */}
-         
+         MEdi
         </Space>
       ),
       
