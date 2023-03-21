@@ -574,18 +574,7 @@ const OnSUbmit = handleSubmit(async (values) => {
               </div>
               <div className='col-6 mb-3' style={{ padding: "30px 20px 0 20px" }}>
                 <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
-                {/* <Upload
-                  // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  listType="picture"
-                  fileList={fileList}
-                  onChange={onChange}
-                  onPreview={onPreview}
-                  className="upload-list-inline"
-
-                >
-                  <Button style={{ padding: "10px 20px 30px 20px" }} className='form-control btn btn-light-primary btn-sm' icon={<UploadOutlined />}>Upload</Button>
-
-                </Upload> */}
+                
               </div>
             </div>
           </form>

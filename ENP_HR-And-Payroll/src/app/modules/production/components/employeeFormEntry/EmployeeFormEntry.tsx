@@ -18,6 +18,7 @@ const MultiTabForm= () =>{
   const {register, reset, handleSubmit} = useForm();
   const [loading, setLoading] = useState(false)
   const [submitLoading, setSubmitLoading] = useState(false)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<any>(null);
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
   }
@@ -61,7 +62,7 @@ const MultiTabForm= () =>{
       imgWindow?.document.write(image.outerHTML);
     };
 
-    const url = `${Api_Endpoint}/Employees`
+    const url = `${Api_Endpoint}/Employees1`
     const OnSUbmit = handleSubmit( async (values, event)=> {
       event?.preventDefault();
       setLoading(true)
@@ -90,7 +91,7 @@ const MultiTabForm= () =>{
         notchId: parseInt(values.notchId),
         employmentDate: values.employmentDate,
         payType: values.payType,
-        paymentMethod: values.paymentMethod,
+        paymentMethod: selectedPaymentMethod,
         bankId: parseInt(values.bankId),
         account: values.account,
         tin: values.tin,
@@ -372,7 +373,11 @@ const MultiTabForm= () =>{
               
             </div>
             <div className='row mb-0'>
-              
+              <div className='col-12 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Job Roles</label>
+                <textarea style={{margin: "10px 0px 0 0px"}} {...register("jobRole")} className="form-control form-control-solid" placeholder='list job roles (seperate each role with a comma)' aria-label="With textarea"></textarea>
+
+              </div>
             </div>
           </div>}
 
@@ -391,7 +396,7 @@ const MultiTabForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Payment Method</label>
-                <select {...register("paymentMethod")} className="form-select form-select-solid" aria-label="Select example">
+                <select value={selectedPaymentMethod} onChange={(e) => setSelectedPaymentMethod(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   <option value="BANK">BANK</option>
                   <option value="CASH">CASH</option>
@@ -400,11 +405,13 @@ const MultiTabForm= () =>{
 
               </div>
             </div>
-            <div className='row mb-0'>
+            {
+              selectedPaymentMethod==="BANK"?
+              <div className='row mb-0'>
               <div  className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Bank</label>
                 <br></br>
-                <span>(leave empty if you selected cash as payment method)</span>
+                {/* <span>(leave empty if you selected cash as payment method)</span> */}
                 <select {...register("bankId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {BANKS.map((item: any) => (
@@ -414,10 +421,13 @@ const MultiTabForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Account  </label>
                 <br></br>
-                <span>(leave empty if you selected cash as payment method)</span>
+                {/* <span>(leave empty if you selected cash as payment method)</span> */}
                 <input type="text" {...register("account")}  className="form-control form-control-solid" />
               </div>
-            </div>
+            </div>:
+              ""
+            }
+            
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">TIN </label>

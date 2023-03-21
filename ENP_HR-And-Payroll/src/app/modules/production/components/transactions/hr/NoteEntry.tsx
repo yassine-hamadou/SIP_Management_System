@@ -1,4 +1,4 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table, Upload} from 'antd'
+import {Button, Form, Input, InputNumber, Modal, Select, Space, Table, Upload} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
@@ -8,7 +8,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
-import { fetchEmployees, fetchMedicals, fetchPaygroups, fetchPeriods } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchEmployees, fetchMedicals, fetchNoteCategories, fetchPaygroups, fetchPeriods } from '../../../../../services/ApiCalls'
 
 const NoteEntry = () => {
   const [gridData, setGridData] = useState([])
@@ -20,7 +20,9 @@ const NoteEntry = () => {
   const [selectedValue, setSelectedValue] = useState<any>(null);
   const [selectedValue1, setSelectedValue1] = useState<any>(null);
   const [selectedValue2, setSelectedValue2] = useState<any>(null);
+  const [selectedType, setSelectedType] = useState<any>(null);
   const {register, reset, handleSubmit} = useForm()
+  const [employeeRecord, setEmployeeRecord]= useState<any>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -32,9 +34,11 @@ const NoteEntry = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
-    setIsModalOpen(false)
-  }
+      reset()
+     setIsModalOpen(false)
+     setEmployeeRecord(null)
+     setSelectedType("select")
+   }
 
   const deleteData = async (element: any) => {
     try {
@@ -48,8 +52,9 @@ const NoteEntry = () => {
     }
   }
 
-  const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
+  const { data: allEmployees } = useQuery('employees', fetchEmployees, { cacheTime: 5000 })
   const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
+  const {data:allNoteCategories} = useQuery('noteCategories', fetchNoteCategories, {cacheTime:5000})
   const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
   const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
 
@@ -175,6 +180,8 @@ const NoteEntry = () => {
     },
   ]
 
+ 
+
   const loadData = async () => {
     setLoading(true)
     try {
@@ -190,16 +197,26 @@ const NoteEntry = () => {
     loadData()
   }, [])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-  }))
+
+  const emplyeesByPaygroup:any = allEmployees?.data.filter((item:any) =>{
+    return  item.paygroupId===parseInt(selectedValue1)
+    })
+  const noteCategoriesByType:any = allNoteCategories?.data.filter((item:any) =>{
+    return  item.type===selectedType
+    })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
       loadData()
     }
+  }
+
+  const onEmployeeChange = (objectId: any) => {
+    const newEmplo = allEmployees?.data.find((item:any)=>{
+      return item.id===parseInt(objectId)
+    }) // console.log(newEmplo)
+    setEmployeeRecord(newEmplo)
   }
 
   const globalSearch = () => {
@@ -212,27 +229,33 @@ const NoteEntry = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
+  const url1 = `${Api_Endpoint}/NoteEntries1`
+  const submitNoteEntry = handleSubmit(async (values) => {
+    setLoading(true)
     const data = {
-      name: values.name,
+      paygroupId: parseInt(selectedValue1),
+      periodId: parseInt(selectedValue2),
+      reference: values.reference,
+      employeeId: employeeRecord?.id,
+      comment: values.comment,
+      noteCategoryId: parseInt(values.noteCategoryId),
     }
-
     console.log(data)
-
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
-      form.resetFields()
-      setIsModalOpen(false)
-      loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
-    }
-  }
+      try { 
+        
+          const response = await axios.post(url1, data)
+          setSubmitLoading(false)
+          reset()
+          setIsModalOpen(false)
+          loadData()
+          return response.statusText
+        
+      } catch (error: any) {
+        setSubmitLoading(false)
+        return error.statusText
+      } 
+    
+  })
 
   return (
     <div
@@ -312,198 +335,94 @@ const NoteEntry = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
+                    onClick={submitNoteEntry}
                     >
                         Submit
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
+                <form
+                    onSubmit={submitNoteEntry}
                 >
                     <hr></hr>
-                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                      <div className='col-6 mb-3'>
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Reference #</label>
-                        <input type="text" name="ref"  className="form-control form-control-solid"/>
-                      </div>
-                      
-                      <div className='col-6 mb-3'>
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Note Type</label>
-                        <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                          <option value="1">DISCIPLINARY ACTION</option>
-                          <option value="2">GRIEVANCE </option>
-                        </select>
-                      </div>
+                    <div style={{padding: "20px 20px 0px 20px"}} className='row mb-0 '>
                       <div className='col-6 mb-3'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                        <select className="form-select form-select-solid" aria-label="Select example">
+                        <br></br>
+                        <Select
+                            
+                            {...register("employeeId")}
+                            showSearch
+                            placeholder="select a reference"
+                            optionFilterProp="children"
+                            style={{width:"300px"}}
+                            value={employeeRecord?.id}
+                            onChange={(e)=>{
+                              onEmployeeChange(e)
+                            }}
+                            
+                          >
+                            <option>select</option>
+                            {emplyeesByPaygroup?.map((item: any) => (
+                              <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
+                            ))}
+                          </Select>
+                      </div>
+                    </div>
+                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                    
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Reference #</label>
+                        <input type="text" {...register("reference")}  className="form-control form-control-solid"/>
+                      </div>
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Note Type</label>
+                        <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        {employeedata.map((item: any) => (
-                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
-                        ))}
+                          <option value="Disciplinary">DISCIPLINARY ACTION</option>
+                          <option value="Grievances">GRIEVANCES </option>
                         </select>
                       </div>
-                      <div className='col-6 mb-3'>
+                      
+                      <div className='col-6 mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Note Category</label>
-                        <select className="form-select form-select-solid" aria-label="Select example">
+                        <select {...register("noteCategoryId")} className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        {NOTES.map((item: any) => (
-                          <option value={item.code}>{item.name}</option>
+                        {noteCategoriesByType?.map((item: any) => (
+                          <option value={item.id}>{item.name}</option>
                         ))}
                         </select>
                       </div>
-                      <div className='col-6 mb-3'>
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Comments</label>
-                        {/* <input type="text" name="topic"  className="form-control form-control-solid"/> */}
-                        <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea>
-                      </div>
-                      <div className='col-6 mb-3'>
+                      
+                      <div className='col-6 mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Upload Document</label>
+                        <input style={{ padding:"10px 10px 10px 10px" }} className=' btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
+                        
+                      </div>
+                      <div className='col-12 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Comments</label>
+                        <textarea {...register("comment")} className="form-control form-control-solid" aria-label="With textarea"></textarea>
+                      </div>
+                      {/* <div className='col-6 mb-3'>
                       <Upload
                       
-                      listType="picture-card"
-                      // fileList={fileList}
-                      onChange={onChange}
-                      onPreview={onPreview}
-                      
-                    >                  
+                        listType="picture-card"
+                        onChange={onChange}
+                        onPreview={onPreview}
+                        
+                      >                  
                         
                         <UploadOutlined/>
                       </Upload>
                  
+                    </div> */}
                     </div>
-                    </div>
-                </Form>
+                </form>
             </Modal>
         </div>
       </KTCardBody>
       }
-      {/* <KTCardBody className='py-4 '>
-        <div className='table-responsive'>
-          <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
-              <Input
-                placeholder='Enter Search Text'
-                onChange={handleInputChange}
-                type='text'
-                allowClear
-                value={searchText}
-              />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
-            </Space>
-            <Space style={{marginBottom: 16}}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
-
-              <button type='button' className='btn btn-light-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                Export
-            </button>
-            </Space>
-          </div>
-          <Table columns={columns}  />
-          <Modal
-                title='Note Entry'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                width="700px"
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
-            >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
-                >
-                    <hr></hr>
-                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                      <div className='col-6 mb-3'>
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Reference #</label>
-                        <input type="text" name="ref"  className="form-control form-control-solid"/>
-                      </div>
-                      
-                      <div className='col-6 mb-3'>
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Note Type</label>
-                        <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                          <option value="1">DISCIPLINARY ACTION</option>
-                          <option value="2">GRIEVANCE </option>
-                        </select>
-                      </div>
-                      <div className='col-6 mb-3'>
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                        <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        {employeedata.map((item: any) => (
-                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
-                        ))}
-                        </select>
-                      </div>
-                      <div className='col-6 mb-3'>
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Note Category</label>
-                        <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        {NOTES.map((item: any) => (
-                          <option value={item.code}>{item.name}</option>
-                        ))}
-                        </select>
-                      </div>
-                      <div className='col-6 mb-3'>
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Comments</label>
-                       
-                        <textarea className="form-control form-control-solid" aria-label="With textarea"></textarea>
-                      </div>
-                      <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Upload Document</label>
-                      <Upload
-                      
-                      listType="picture-card"
-                     
-                      onChange={onChange}
-                      onPreview={onPreview}
-                      
-                    >                  
-                        
-                        <UploadOutlined/>
-                      </Upload>
-                 
-                    </div>
-                    </div>
-                </Form>
-            </Modal>
-        </div>
-      </KTCardBody> */}
+      
     </div>
   )
 }

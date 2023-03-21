@@ -138,21 +138,21 @@ const CompensationBenefit = () => {
 
   const columns: any = [
    
-    {
-      title: 'Employee ID',
-      render: (row: any) => {
-        return getID(row.employeeId)
-      },
-      sorter: (a: any, b: any) => {
-        if (a.empl_code > b.empl_code) {
-          return 1
-        }
-        if (b.empl_code > a.empl_code) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Employee ID',
+    //   render: (row: any) => {
+    //     return getID(row.employeeId)
+    //   },
+    //   sorter: (a: any, b: any) => {
+    //     if (a.empl_code > b.empl_code) {
+    //       return 1
+    //     }
+    //     if (b.empl_code > a.empl_code) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
       title: 'First Name',
       render: (row: any) => {
@@ -379,10 +379,10 @@ const CompensationBenefit = () => {
     loadData()
   }, [allUnits?.data, employeeRecord?.unitId])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-  }))
+  // const dataWithIndex = gridData.map((item: any, index) => ({
+  //   ...item,
+  //   key: index,
+  // }))
   const dataByID:any = gridData.filter((refId:any) =>{
 
     return  (refId.paygroupId===parseInt(selectedValue1))&&(refId.jobTitleId===parseInt(selectedValue2))
@@ -536,16 +536,9 @@ const CompensationBenefit = () => {
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                      {/* <select className="form-select form-select-solid" aria-label="Select example" 
-                      onChange={(e)=>onEmployeeChange(e)}>
-                        <option>select</option>
-                        {employeedata.map((item: any) => (
-                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
-                        ))}
-                      </select> */}
                       <br></br>
                       <Select
-                          // className="form-control form-control-solid"
+                          
                           {...register("employeeId")}
                           showSearch
                           placeholder="select a reference"

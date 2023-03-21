@@ -601,8 +601,8 @@ const AppraisalPerformance = () => {
                 ]}
             >
                 <form onSubmit={submitApplicant}>
-                    <hr></hr>
-                    <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label ">Employee ID</label>
                       
@@ -625,29 +625,61 @@ const AppraisalPerformance = () => {
                           ))}
                         </Select>
                     </div>
-                    <div className='col-6 mb-3'>
+                    {/* <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
                       <input type="text" name="code" value={jobTitleName}  className="form-control form-control-solid"/>
+                    </div> */}
+                  </div>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    {/* <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label ">Employee ID</label>
+                      
+                      <br></br>
+                      <Select
+                          // className="form-control form-control-solid"
+                          {...register("employeeId")}
+                          showSearch
+                          placeholder="select a reference"
+                          optionFilterProp="children"
+                          style={{width:"300px"}}
+                          value={employeeRecord.id}
+                          onChange={(e)=>{
+                            onEmployeeChange(e)
+                          }}
+                        >
+                          <option>select</option>
+                          {emplyeesByPaygroup.map((item: any) => (
+                            <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
+                          ))}
+                        </Select>
+                    </div> */}
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
+                      <input type="text" name="code" readOnly value={jobTitleName}  className="form-control form-control-solid"/>
+                    </div>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Job Role</label>
+                      <input type="text" name="code" readOnly  className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
-                      <input type="text" {...register("firstName")}  defaultValue={employeeRecord?.firstName}  className="form-control form-control-solid"/>
+                      <input type="text" {...register("firstName")} readOnly  defaultValue={employeeRecord?.firstName}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
-                      <input type="text" {...register("surname")}  defaultValue={employeeRecord?.surname}  className="form-control form-control-solid"/>
+                      <input type="text" {...register("surname")} readOnly  defaultValue={employeeRecord?.surname}  className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="text" {...register("dob")}  defaultValue={employeeRecord?.dob}  className="form-control form-control-solid"/>
+                      <input type="text" {...register("dob")} readOnly  defaultValue={employeeRecord?.dob}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
-                      <input type="text" {...register("gender")} defaultValue={employeeRecord?.gender}  className="form-control form-control-solid"/>
+                      <input type="text" {...register("gender")} readOnly defaultValue={employeeRecord?.gender}  className="form-control form-control-solid"/>
 
                     </div>
                   </div>

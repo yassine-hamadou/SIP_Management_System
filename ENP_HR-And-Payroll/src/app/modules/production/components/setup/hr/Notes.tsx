@@ -252,37 +252,29 @@ const Notes = () => {
                         <br></br>
 
                         <input className="form-check-input" {...register("type")}  type="radio" value="Disciplinary"/>
-                          <span style={{marginRight:"20px"}} className="form-check-label">
+                          <span style={{marginLeft:"10px"}} className="form-check-label">
                               Disciplinary
                           </span>
-                        <input className="form-check-input" {...register("type")} type="radio" value="Grievances"/>
-                          <span className="form-check-label">
+                        <input style={{marginLeft:"15px"}} className="form-check-input" {...register("type")} type="radio" value="Grievances"/>
+                          <span style={{marginLeft:"10px"}} className="form-check-label">
                               Grievances
                           </span>
-                        {/* <br></br> */}
-                        {/* <Radio.Group {...register("type")} >
-                          <Radio  value={1}>Disciplinary Action</Radio>
-                          <Radio value={2}>Grievances</Radio>
-                        </Radio.Group> */}
+                      
                       </div>
                       <div className='col-6 mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">isDiary Event</label>
                         <br></br>
                         <br></br>
 
-                        <input className="form-check-input" {...register("diaryEvent")}  type="radio" value="1"/>
-                          <span style={{marginRight:"20px"}} className="form-check-label">
+                        <input className="form-check-input" {...register("diaryEvent")}  type="radio" value="Yes"/>
+                          <span style={{marginLeft:"10px"}} className="form-check-label">
                               Yes
                           </span>
-                        <input className="form-check-input" {...register("diaryEvent")} type="radio" value="0"/>
-                          <span className="form-check-label">
+                        <input style={{marginLeft:"15px"}} className="form-check-input" {...register("diaryEvent")} type="radio" value="No"/>
+                          <span style={{marginLeft:"10px"}} className="form-check-label">
                               No
                           </span>
-                        {/* <br></br> */}
-                        {/* <Radio.Group {...register("type")} >
-                          <Radio  value={1}>Disciplinary Action</Radio>
-                          <Radio value={2}>Grievances</Radio>
-                        </Radio.Group> */}
+                        
                       </div>
                     </div>
                   </div>
