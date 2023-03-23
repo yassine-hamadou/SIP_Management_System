@@ -202,17 +202,12 @@ const Employee = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
           <Link to={`/employee-edit-form/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Update</span>
           </Link>
           <Link to={`/employee-details/${record.id}`}>
             <span className='btn btn-light-success btn-sm'>Details</span>
           </Link>
-          {/* <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
-            Details
-          </a> */}
-         MEdi
         </Space>
       ),
       
@@ -313,9 +308,7 @@ const Employee = () => {
         value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
         value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
         value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.departmentId.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.gradeId.toLowerCase().includes(searchText.toLowerCase())
-        
+        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
       )
     })
     setGridData(filteredData)

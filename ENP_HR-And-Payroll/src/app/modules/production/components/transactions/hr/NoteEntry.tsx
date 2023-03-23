@@ -272,7 +272,8 @@ const NoteEntry = () => {
         <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
             <select value={selectedValue1} onChange={(e) => setSelectedValue1(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
-              <option value="select paygroup" style={{color:"GrayText"}}> select paygroup</option>
+              <option value="select paygroup" > Select paygroup</option>
+              <option value="N/A">N/A</option>
               {allPaygroups?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
               ))}
@@ -281,7 +282,8 @@ const NoteEntry = () => {
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Period</label>
             <select className="form-select form-select-solid" value={selectedValue2} onChange={(e) => setSelectedValue2(e.target.value)} aria-label="Select example">
-              <option value="select period"> select period</option>
+              <option value="select period"> Select period</option>
+              <option value="N/A">N/A</option>
               {allPeriods?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
               ))}

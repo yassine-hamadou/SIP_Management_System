@@ -115,7 +115,7 @@ const Grades = () => {
           <Link to={`/notches/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Notches</span>
           </Link>
-          <Link to={`/grades/${record.id}`}>
+          <Link to={`/testgradeleaves/${record.id}`}>
             <span className='btn btn-light-primary btn-sm'>Leaves</span>
           </Link>
           <a href='#' className='btn btn-light-warning btn-sm'>
@@ -139,7 +139,7 @@ const Grades = () => {
     let newName=null
   
      const   itemTest = await allPaygroups?.data.find((item:any) =>
-      item.id.toString()===param
+      item.id?.toString()===param
     )
      newName = await itemTest
     return newName

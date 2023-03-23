@@ -8,7 +8,7 @@ import { Button, Upload } from 'antd';
 import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, GRADES, NOTCHES, NOTES, PAYGROUP, UNITS } from '../../../../data/DummyData';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchGrades, fetchNationalities, fetchNotches, fetchPaygroups, fetchUnits } from '../../../../services/ApiCalls';
+import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchGrades, fetchJobTitles, fetchNationalities, fetchNotches, fetchPaygroups, fetchUnits } from '../../../../services/ApiCalls';
 import { useQuery } from 'react-query';
 import {useNavigate, Navigate } from 'react-router-dom';
 
@@ -33,6 +33,7 @@ const MultiTabForm= () =>{
   const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
   const {data:allNotches} = useQuery('notches', fetchNotches, {cacheTime:5000})
   const {data:allNations} = useQuery('nations', fetchNationalities, {cacheTime:5000})
+  const {data:allJobTitles} = useQuery('jobtitle', fetchJobTitles, {cacheTime:5000})
 
   const handleTabChange = (newTab:any) => {
     setActiveTab(newTab);
@@ -359,23 +360,33 @@ const MultiTabForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
                 <select {...register("unitId")} className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
+                  <option>Select </option>
                   {allUnits?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
                 </select>
               </div>
-              <div className='col-3 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Employment Date</label>
-                <input type="date" {...register("employmentDate")}  className="form-control form-control-solid" />
-
+              <div className='col-6 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
+                <select {...register("jobTitleId")} className="form-select form-select-solid" aria-label="Select example">
+                  <option>Select </option>
+                  {allJobTitles?.data.map((item: any) => (
+                      <option value={item.id}>{item.name}</option>
+                    ))}
+                </select>
               </div>
+              
               
             </div>
             <div className='row mb-0'>
-              <div className='col-12 mb-7'>
+              <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Job Roles</label>
-                <textarea style={{margin: "10px 0px 0 0px"}} {...register("jobRole")} className="form-control form-control-solid" placeholder='list job roles (seperate each role with a comma)' aria-label="With textarea"></textarea>
+                <textarea  {...register("jobRole")} className="form-control form-control-solid" placeholder='list job roles (seperate each role with a comma)' aria-label="With textarea"></textarea>
+
+              </div>
+              <div className='col-3 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Employment Date</label>
+                <input type="date" {...register("employmentDate")}  className="form-control form-control-solid" />
 
               </div>
             </div>

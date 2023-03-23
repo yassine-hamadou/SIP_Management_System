@@ -77,6 +77,19 @@ const Paygroups = () => {
         return 0
       },
     },
+    {
+      title: 'Nunber of Hours',
+      dataIndex: 'numberOfHours',
+      sorter: (a: any, b: any) => {
+        if (a.numberOfHours > b.numberOfHours) {
+          return 1
+        }
+        if (b.numberOfHours > a.numberOfHours) {
+          return -1
+        }
+        return 0
+      },
+    },
 
     {
       title: 'Action',
@@ -120,6 +133,7 @@ const Paygroups = () => {
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
     key: index,
+    numberOfHours: item.numberOfHours===null?"---":item.numberOfHours,
   }))
 
   const handleInputChange = (e: any) => {
@@ -145,6 +159,7 @@ const Paygroups = () => {
     const data = {
           code: values.code,
           name: values.name,
+          numberOfHours: values.numberOfHours,
         }
     try {
       const response = await axios.post(url, data)
@@ -229,7 +244,10 @@ const Paygroups = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                       <input type="text" {...register("name")}  className="form-control form-control-solid"/>
                     </div>
-                    
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Number of Hours</label>
+                      <input type="number" min={0} {...register("numberOfHours")}  className="form-control form-control-solid"/>
+                    </div>
                   </div>
                 </form>
             </Modal>

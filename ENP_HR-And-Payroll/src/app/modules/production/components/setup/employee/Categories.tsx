@@ -75,6 +75,7 @@ const Categories = () => {
         return 0
       },
     },
+    
 
     {
       title: 'Action',

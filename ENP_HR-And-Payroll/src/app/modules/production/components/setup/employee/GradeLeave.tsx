@@ -3,25 +3,23 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
-import { CURRENCY, NOTCHES } from '../../../../../data/DummyData'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchCurrencies, fetchGrades, fetchPaygroups } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchGradeLeaves, fetchGrades, fetchLeaveTypes, fetchPaygroups } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
 
-const Notches = () => {
+const GradeLeaves = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
-  let [paygroupName, setPaygroupName] = useState<any>("")
-  let [gradeName, setGradeName] = useState<any>("")
   const [submitLoading, setSubmitLoading] = useState(false)
   const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  let [paygroupName, setPaygroupName] = useState<any>("")
+  let [gradeName, setGradeName] = useState<any>("")
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -37,7 +35,8 @@ const Notches = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${Api_Endpoint}/Notches/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/GradeLeaves/${element.id}`)
+      // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
       return response.status
@@ -53,56 +52,30 @@ const Notches = () => {
   }
   const columns: any = [
    
-    // {
-    //   title: 'Code',
-    //   dataIndex: 'code',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.code > b.code) {
-    //       return 1
-    //     }
-    //     if (b.code > a.code) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Currency',
-      key: 'currencyId',
+      title: 'Leave',
+      key: 'leaveId',
       render: (row: any) => {
-        return getCurrencyName(row.currencyId)
+        return getLeaveName(row.leaveId)
       },
       sorter: (a: any, b: any) => {
-        if (a.currencyId > b.currencyId) {
+        if (a.leaveId > b.leaveId) {
           return 1
         }
-        if (b.currencyId > a.currencyId) {
+        if (b.leaveId > a.leaveId) {
           return -1
         }
         return 0
       },
     },
     {
-      title: 'Amount',
-      dataIndex: 'amount',
+      title: 'Number of Days',
+      dataIndex: 'numberOfDays',
       sorter: (a: any, b: any) => {
-        if (a.amount > b.amount) {
+        if (a.numberOfDays > b.numberOfDays) {
           return 1
         }
-        if (b.amount > a.amount) {
+        if (b.numberOfDays > a.numberOfDays) {
           return -1
         }
         return 0
@@ -115,6 +88,7 @@ const Notches = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
+         
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -128,34 +102,27 @@ const Notches = () => {
     },
   ]
 
- 
 
-  
-
-  const loadData = async () => {
-    setLoading(true)
-    try {
-      const response = await axios.get(`${Api_Endpoint}/Notches`)
-      setGridData(response.data)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
   const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
   const {data:allPaygroups} = useQuery('paygroups', fetchPaygroups, {cacheTime:5000})
-  const {data:allCurrencies} = useQuery('currencies', fetchCurrencies, {cacheTime:5000})
+  const {data:allLeaves} = useQuery('leaveTypes', fetchLeaveTypes, {cacheTime:5000})
+
+  const dataByID = gridData.filter((section:any) =>{
+    return section.gradeId.toString() === param.id
+  })
 
 
-  const getCurrencyName = (id: any) => {
-    let CurrencyName = null
-    allCurrencies?.data.map((item: any) => {
+
+  const getLeaveName = (id: any) => {
+    let leaveName = null
+    allLeaves?.data.map((item: any) => {
       if (item.id=== id) {
-        CurrencyName=item.name
+        leaveName=item.name
       }
     })
-    return CurrencyName
+    return leaveName
   } 
+
   const getItemName= async (param:any) =>{
 
     let newName=null
@@ -167,25 +134,40 @@ const Notches = () => {
     return newName
  }
 
+// this filters for only gradeLeaves for the pARAM ID 
+
+
+  const loadData = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${Api_Endpoint}/GradeLeaves`)
+      setGridData(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     (async ()=>{
-      let res = await getItemName(param.id)
-      setGradeName(res?.name)
-    })();
-    (async ()=>{
-      let res = await getItemName(param.id)
-      let paygroupId = res?.paygroupId
-      let paygroupName = allPaygroups?.data.find((div:any)=>{
-        return div.id===paygroupId
-      })
-      setPaygroupName(paygroupName.name)
-    })();
+        let res = await getItemName(param.id)
+        setGradeName(res?.name)
+      })();
+      (async ()=>{
+        let res = await getItemName(param.id)
+        let paygroupId = res?.paygroupId
+        let paygroupName = allPaygroups?.data.find((div:any)=>{
+          return div.id===paygroupId
+        })
+        setPaygroupName(paygroupName.name)
+      })();
     loadData()
   }, [])
 
-  const dataByID = gridData.filter((section:any) =>{
-    return section.gradeId.toString() === param.id
-  })
+  const dataWithIndex = gridData.map((item: any, index) => ({
+    ...item,
+    key: index,
+  }))
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -204,16 +186,16 @@ const Notches = () => {
     setGridData(filteredData)
   }
 
-  const url = `${Api_Endpoint}/Notches`
+  const url = `${Api_Endpoint}/GradeLeaves`
   const OnSUbmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
           gradeId: parseInt(param.id),
-          name: values.name,
-          currencyId: parseInt(values.currencyId),
-          amount: parseFloat(values.amount).toFixed(2),
+          leaveId: parseInt(values.leaveId),
+          numberOfDays: parseInt(values.numberOfDays),
+         
         }
-    console.log(data)
+        console.log(data)
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
@@ -239,7 +221,6 @@ const Notches = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
         <h3 style={{fontWeight:"bolder"}}>{paygroupName}<span style={{color: "blue", fontSize:"22px", fontWeight:"normal"}}> &gt; </span> {gradeName} </h3>
-
         <br></br>
         <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
         <br></br>
@@ -268,9 +249,9 @@ const Notches = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataByID}  />
+          <Table columns={columns}  dataSource={dataByID} loading={loading}/>
           <Modal
-                title='Notches Setup'
+                title='Add Grade Leave'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -292,35 +273,21 @@ const Notches = () => {
                 <form
                     onSubmit={OnSUbmit}
                 >
-                   <hr></hr>
-                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                    {/* <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
-                    </div> */}
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                     <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" {...register("name")}  className="form-control form-control-solid"/>
-                    </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Currency</label>
-                      <select {...register("currencyId")} className="form-select form-select-solid" aria-label="Select example">
-                        <option>select </option>
-                        {allCurrencies?.data.map((item: any) => (
-                          <option value={item.id}>{item.name}</option>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Leave</label>
+                      <select {...register("leaveId")} className="form-select form-select-solid" aria-label="Select example">
+                        <option >select</option>
+                        {allLeaves?.data.map((item: any) => (
+                        <option value={item.id}>{item.name}</option>
                         ))}
                     </select>
                     </div>
-                    
                     <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Amount</label>
-                      <input type="number" 
-                      min={0}
-                      max={10}
-                      step={0.01}
-                      {...register("amount")}  className="form-control form-control-solid"/>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Number of Days</label>
+                      <input type="Number" {...register("numberOfDays")} className="form-control form-control-solid"/>
                     </div>
-                   
                   </div>
                 </form>
             </Modal>
@@ -330,4 +297,4 @@ const Notches = () => {
   )
 }
 
-export {Notches}
+export {GradeLeaves}

@@ -110,6 +110,7 @@ import MedicalSummaryReport from '../modules/production/components/report/Medica
 import { Products } from '../modules/production/components/setup/hr/Produsts'
 import { ServiceProviders } from '../modules/production/components/setup/hr/ServiceProviders'
 import { ServiceCost } from '../modules/production/components/setup/hr/ServiceCost'
+import { GradeLeaves } from '../modules/production/components/setup/employee/GradeLeave'
 
 
 
@@ -506,6 +507,15 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Grades</PageTitle>
              <Grades />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='testgradeleaves/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Grade Leaves</PageTitle>
+             <GradeLeaves />
            </SuspensedView>
          }
         />

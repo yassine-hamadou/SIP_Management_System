@@ -21,14 +21,14 @@ const CompensationBenefit = () => {
   const [submitLoading, setSubmitLoading] = useState(false)  
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isShortModalOpen, setIsShortModalOpen] = useState(false)
-  const [basicSalary, setRadioValue] = useState();
-  const [allowanceValue, setAllowanceValue] = useState();
-  const [bonusValue, setBonusValue] = useState();
-  const [healthInsurenaceValue, setHealthInsurenaceValue] = useState();
-  const [savingSchemeValue, setSavingSchemeValue] = useState();
-  const [profDevelopValue, setProfDevelopValue] = useState();
+  const [basicSalary, setRadioValue] = useState("");
+  const [allowanceValue, setAllowanceValue] = useState("");
+  const [bonusValue, setBonusValue] = useState("");
+  const [healthInsurenaceValue, setHealthInsurenaceValue] = useState("");
+  const [savingSchemeValue, setSavingSchemeValue] = useState("");
+  const [profDevelopValue, setProfDevelopValue] = useState("");
   const [unitName, setunitName] = useState("");
-  const [companyPropertyValue, setCompanyPropertyValue] = useState();
+  const [companyPropertyValue, setCompanyPropertyValue] = useState("");
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
   // const [selectedValue, setSelectedValue] = useState<any>(null);
   const [selectedValue1, setSelectedValue1] = useState<any>(null);
@@ -53,24 +53,10 @@ const CompensationBenefit = () => {
     setIsModalOpen(false)
     setEmployeeRecord(null)
   }
-  // const showShortModal = () => {
-  //   setIsShortModalOpen(true)
-  // }
-
-  // const handleShortOk = () => {
-  //   setIsShortModalOpen(false)
-  // }
-
-  // const handleShortCancel = () => {
-  //   form.resetFields()
-    
-  //   setIsShortModalOpen(false)
-  // }
 
   const deleteData = async (element: any) => {
     try {
       const response = await axios.delete(`${Api_Endpoint}/CompensationBenefitTransactions/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
       return response.status
@@ -429,7 +415,6 @@ const CompensationBenefit = () => {
       profDevelopmentComment: values.profDevelopmentComment,
       
     }
-    console.log(data)
       try { 
         
           const response = await axios.post(url1, data)
@@ -671,11 +656,11 @@ const CompensationBenefit = () => {
                       <div>
                         <div className='col-12 mb-3'>
                         <label style={{padding: "0px 48px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Health Insurance</label>
-                      <Radio.Group onChange={onHealthInsurenaceChange} value={healthInsurenaceValue}>
-                        <Radio value="Yes">Yes</Radio>
-                        <Radio value="No">No</Radio>
-                      </Radio.Group>
-                      <textarea style={{margin: "10px 0px 0 0px"}} {...register("healthInsuranceComment")} className="form-control form-control-solid" placeholder='comments on health insurance (optional)' aria-label="With textarea"></textarea>
+                        <Radio.Group onChange={onHealthInsurenaceChange} value={healthInsurenaceValue}>
+                          <Radio value="Yes">Yes</Radio>
+                          <Radio value="No">No</Radio>
+                        </Radio.Group>
+                        <textarea style={{margin: "10px 0px 0 0px"}} {...register("healthInsuranceComment")} className="form-control form-control-solid" placeholder='comments on health insurance (optional)' aria-label="With textarea"></textarea>
                         
                         </div>
                       </div>}

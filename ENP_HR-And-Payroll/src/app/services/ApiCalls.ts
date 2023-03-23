@@ -52,6 +52,12 @@ export const fetchMedicals= ()=>{
 export const fetchNoteCategories= ()=>{
     return axios.get(`${Api_Endpoint}/NoteCategories`)
 }
+export const fetchGradeLeaves= ()=>{
+    return axios.get(`${Api_Endpoint}/GradeLeaves`)
+}
+export const fetchCurrencies= ()=>{
+    return axios.get(`${Api_Endpoint}/Currencies`)
+}
 
 export const fetchLeaveTypes = () => {
     return axios.get(`${Api_Endpoint}/Leaves`)
@@ -65,12 +71,24 @@ export const fetchPeriods = () => {
 export const fetchProducts = () => {
     return axios.get(`${Api_Endpoint}/Products`)
 }
+export const fetchTrainees = () => {
+    return axios.get(`${Api_Endpoint}/Trainees`)
+}
+export const fetchTrainings = () => {
+    return axios.get(`${Api_Endpoint}/trainings`)
+}
+export const fetchTrainingSchedules = () => {
+    return axios.get(`${Api_Endpoint}/TrainingSchedules`)
+}
 export const fetchServiceProviders = () => {
     return axios.get(`${Api_Endpoint}/ServiceProviders`)
 }
 
 export const fetchRecruitmentTransactions = () => {
     return axios.get(`${Api_Endpoint}/RecruitmentTransactions`)
+}
+export const fetchTrainingDevTransactions = () => {
+    return axios.get(`${Api_Endpoint}/TrainingDevTransactions`)
 }
 export const fetchAppraisalTransactions = () => {
     return axios.get(`${Api_Endpoint}/AppraisalPerfTransactions`)

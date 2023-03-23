@@ -41,12 +41,7 @@ const RecruitmentSelection = () => {
     // }
   }
   const showRefModal = () => {
-    // if(selectedValue!==""){
       setIsRefModalOpen(true)
-    // }
-    // else{
-    //   warnUser()
-    // }
   }
 
   function refreshPage() {
@@ -275,7 +270,7 @@ const RecruitmentSelection = () => {
   const { data: allCategories } = useQuery('categories', fetchCategories, { cacheTime: 5000 })
   const { data: allUnits } = useQuery('units', fetchUnits, { cacheTime: 5000 })
   const { data: allJobTitles } = useQuery('jobtitles', fetchJobTitles, { cacheTime: 5000 })
-  const { data: allRecuitments } = useQuery('recruitments', fetchRecruitmentTransactions, { cacheTime: 5000 })
+  const { data: allRecuitmentTransactions } = useQuery('recruitmentTransactions', fetchRecruitmentTransactions, { cacheTime: 5000 })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -321,17 +316,6 @@ const RecruitmentSelection = () => {
     });
   };
 
-  // const warnUser = () => {
-  //   messageApi.open({
-  //     type: 'error',
-  //     content: 'Can not submit without a reference number!',
-  //     className: 'custom-class',
-  //     style: {
-  //       marginTop: '10vh',
-  //       fontSize:"18px"
-  //     }
-  //   });
-  // };
   
 const url = `${Api_Endpoint}/RecruitmentTransactions`
 const OnSUbmit = handleSubmit(async (values) => {
@@ -346,7 +330,6 @@ const OnSUbmit = handleSubmit(async (values) => {
     jobTitleId: parseInt(values.jobTitleId),
     unitId: parseInt(values.unitId),
   }
-  console.log(data)
   try {
    
       const response = await axios.post(url, data)
@@ -376,7 +359,6 @@ const OnSUbmit = handleSubmit(async (values) => {
       email: values.email,
       qualification: values.qualification,
     }
-    console.log(data)
       try { 
         
           const response = await axios.post(url1, data)
@@ -414,16 +396,13 @@ const OnSUbmit = handleSubmit(async (values) => {
         <div className='col-6'>
             <select value={selectedValue} onChange={(e) => setSelectedValue(e.target.value)} className="form-select form-select-solid"  aria-label="Select example">
               <option value="Select">Select</option>
-              {allRecuitments?.data.map((item: any) => (
+              {allRecuitmentTransactions?.data.map((item: any) => (
                 <option value={item.id}>{item.reference}</option>
               ))}
             </select>
         </div>
         <div className='col-4'>
-          {/* <button type='button' className='btn btn-info me-3' onClick={showRefModal}>
-            <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-            Add New Opening
-          </button> */}
+         
           {
             selectedValue===""||
             selectedValue==="Select"?

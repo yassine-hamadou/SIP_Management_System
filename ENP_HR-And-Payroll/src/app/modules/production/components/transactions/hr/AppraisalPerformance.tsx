@@ -69,9 +69,7 @@ const AppraisalPerformance = () => {
   // }
 
   const handleCancel = () => {
-    // form.resetFields()
     reset()
-    // setSelectedValue(null)
     setEmployeeRecord([])
     setIsModalOpen(false)
     setUpdateModalOpen(false)
@@ -81,7 +79,6 @@ const AppraisalPerformance = () => {
     setTabModalOpen(true)
   }
   const handleUpdateCancel = () => {
-    // form.resetFields()
     setUpdateModalOpen(false)
   }
   const showUpdateModal = (record: any) => {
@@ -89,27 +86,6 @@ const AppraisalPerformance = () => {
     setUpdateModalOpen(true)
     setEmployeeId(record)
   }
-
-  // const handleTabOk = () => {
-  //   setTabModalOpen(false)
-  // }
-
-  // const handleTabCancel = () => {
-  //   form.resetFields()
-  //   setTabModalOpen(false)
-  // }
-  // const showTab1Modal = () => {
-  //   setTabModalOpen(true)
-  // }
-
-  // const handleTa1bOk = () => {
-  //   setTabModalOpen(false)
-  // }
-
-  // const handleTab1Cancel = () => {
-  //   form.resetFields()
-  //   setTabModalOpen(false)
-  // }
 
   const deleteData = async (element: any) => {
     try {
@@ -156,20 +132,6 @@ const AppraisalPerformance = () => {
 
 
   const columns: any = [
-   
-    // {
-    //   title: 'Employee ID',
-    //   dataIndex: 'employeeId',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.employeeId > b.employeeId) {
-    //       return 1
-    //     }
-    //     if (b.employeeId > a.employeeId) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
     {
       title: 'First Name',
       key: 'employeeId',
@@ -471,7 +433,6 @@ const AppraisalPerformance = () => {
         improvScore: radio2Value.toString(),
         goalComment: values.goalComment,
         goalScore: radio3Value.toString(),
-        // nonApplicable:selectedValue1
       }
       console.log(data)
       try { 
@@ -577,8 +538,6 @@ const AppraisalPerformance = () => {
             </Space>
           </div>
           <Table columns={columns} key={dataByID.id} dataSource={dataByID} />
-          {/* Add form */}
-          
           <Modal
                 title='Employee Details '
                 open={isModalOpen}
@@ -608,7 +567,6 @@ const AppraisalPerformance = () => {
                       
                       <br></br>
                       <Select
-                          // className="form-control form-control-solid"
                           {...register("employeeId")}
                           showSearch
                           placeholder="select a reference"
@@ -625,34 +583,9 @@ const AppraisalPerformance = () => {
                           ))}
                         </Select>
                     </div>
-                    {/* <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
-                      <input type="text" name="code" value={jobTitleName}  className="form-control form-control-solid"/>
-                    </div> */}
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    {/* <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label ">Employee ID</label>
-                      
-                      <br></br>
-                      <Select
-                          // className="form-control form-control-solid"
-                          {...register("employeeId")}
-                          showSearch
-                          placeholder="select a reference"
-                          optionFilterProp="children"
-                          style={{width:"300px"}}
-                          value={employeeRecord.id}
-                          onChange={(e)=>{
-                            onEmployeeChange(e)
-                          }}
-                        >
-                          <option>select</option>
-                          {emplyeesByPaygroup.map((item: any) => (
-                            <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
-                          ))}
-                        </Select>
-                    </div> */}
+                    
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
                       <input type="text" name="code" readOnly value={jobTitleName}  className="form-control form-control-solid"/>
@@ -762,15 +695,14 @@ const AppraisalPerformance = () => {
                       {activeTab === "tab4" && 
                       <div>
                         <div className='col-12 mb-3'>
-                          <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
+                          <input {...register("documentUrl")}  className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
                         
                         </div>
                       </div>}
                     </div>
                   </div>
                 </form>
-                
-                </form>           
+              </form>           
           </Modal>     
           <Modal
             title={"Details of ID "+ employeeId}

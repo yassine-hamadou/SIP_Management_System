@@ -368,15 +368,10 @@ const MedicalEntries = () => {
                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee</label>
-                      {/* <select {...register("employeeId")} className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        {allEmployee?.data.map((item: any) => (
-                          <option value={item.id}>{item.firstName}-{item.surname}</option>
-                        ))}
-                      </select> */}
+                      
                       <br></br>
                       <Select
-                          // className="form-control form-control-solid"
+                         
                           {...register("employeeId")}
                           showSearch
                           placeholder="select a reference"
@@ -389,7 +384,7 @@ const MedicalEntries = () => {
                           
                         >
                           <option>select</option>
-                          {emplyeesByPaygroup.map((item: any) => (
+                          {emplyeesByPaygroup?.map((item: any) => (
                             <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
                           ))}
                         </Select>
@@ -429,19 +424,7 @@ const MedicalEntries = () => {
                           {/* <button onClick={handleFileUpload}>Upload</button> */}
                         </div>
                       )}
-                      {/* <label htmlFor="exampleFormControlInput1" className="form-label">Upload Document</label> */}
-                      {/* <Upload
                       
-                      listType="picture-card"
-                      fileList={fileList}
-                      onChange={onChange}
-                      onPreview={onPreview}
-                      
-                    >                  
-                        
-                        <UploadOutlined/>
-                      </Upload> */}
-                 
                     </div>
                   </div>
                 </form>

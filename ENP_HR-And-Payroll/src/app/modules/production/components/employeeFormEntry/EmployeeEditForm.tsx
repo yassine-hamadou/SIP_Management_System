@@ -5,7 +5,7 @@ import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Form, Modal, Space, Table, Upload } from 'antd';
-import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchEmployees, fetchExperiences, fetchGrades, fetchNationalities, fetchNotches, fetchPaygroups, fetchQualifications, fetchSkills, fetchUnits } from '../../../../services/ApiCalls';
+import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchEmployees, fetchExperiences, fetchGrades, fetchJobTitles, fetchNationalities, fetchNotches, fetchPaygroups, fetchQualifications, fetchSkills, fetchUnits } from '../../../../services/ApiCalls';
 import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, MEDICALS, NOTCHES, UNITS } from '../../../../data/DummyData';
 import { KTSVG } from '../../../../../_metronic/helpers';
 import { useQuery } from 'react-query';
@@ -790,7 +790,7 @@ const EmployeeEditForm= () =>{
   const {data:allSkills} = useQuery('skill', fetchSkills, {cacheTime:5000})
   const {data:allQualifications} = useQuery('qualifications', fetchQualifications, {cacheTime:5000})
   const {data:allExperiences} = useQuery('experiences', fetchExperiences, {cacheTime:5000})
-
+  const {data:allJobTitles} = useQuery('jobtitle', fetchJobTitles, {cacheTime:5000})
 
   const dataByID = allEmployees?.data.find((employee:any) =>{
     return employee.id.toString() ===param.id
@@ -1150,7 +1150,7 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Marital Status</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  {/* <option >{dataByID?.maritalStatus}</option> */}
+                  
                   <option value="SINGLE">SINGLE</option>
                   <option value="MARRIED">MARRIED</option>
                  
@@ -1249,7 +1249,7 @@ const EmployeeEditForm= () =>{
             <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
                 <select className="form-select form-select-solid" aria-label="Select example">
-                {/* <option>{dataByID?.region} </option> */}
+                
                 {allDivisions?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1258,7 +1258,7 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Salary Grade</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  {/* <option>{gradeName.name} </option> */}
+                 
                   {allGrades?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1278,7 +1278,7 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Notch</label>
                   <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>{dataByID?.notch} </option>
+                  <option>{dataByID?.notchId} </option>
                   {allNotches?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1289,11 +1289,28 @@ const EmployeeEditForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
                 <select className="form-select form-select-solid" aria-label="Select example">
-                <option>{dataByID?.unit} </option>
+                <option>{dataByID?.unitId} </option>
                 {allUnits?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
                 </select>
+              </div>
+              <div className='col-6 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
+                <select className="form-select form-select-solid" aria-label="Select example">
+                <option>{dataByID?.jobTitleId} </option>
+                {allJobTitles?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
+              
+            </div>
+            <div className='row mb-0'>
+              <div className='col-6 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Job Roles</label>
+                <textarea {...register("jobRole")} className="form-control form-control-solid" placeholder='list job roles (seperate each role with a comma)' aria-label="With textarea"></textarea>
+
               </div>
               <div className='col-3 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Employment Date</label>
@@ -1302,12 +1319,8 @@ const EmployeeEditForm= () =>{
               </div>
               <div className='col-3 mb-7'>
                 <br></br>
-             
                 <a href="#" className="btn btn-danger"> Status</a>
               </div>
-            </div>
-            <div className='row mb-0'>
-              
             </div>
           </div>}
 
@@ -1339,7 +1352,7 @@ const EmployeeEditForm= () =>{
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Bank</label>
                 
                 <br></br>
-                <span>(leave empty if you selected cash as payment method)</span>
+                
                 <select className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {BANKS.map((item: any) => (

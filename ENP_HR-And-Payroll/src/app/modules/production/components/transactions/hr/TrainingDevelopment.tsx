@@ -1,5 +1,5 @@
 
-import {Button, Form, Input, InputNumber, Upload,Modal, Space, Table, Radio, RadioChangeEvent} from 'antd'
+import {Button, Form, Input, InputNumber, Upload,Modal, Space, Table, Radio, RadioChangeEvent, Select} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
@@ -9,19 +9,25 @@ import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
 import { employeedata } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
+import { Api_Endpoint, fetchEmployees, fetchJobTitles, fetchTrainees, fetchTrainingDevTransactions, fetchTrainings, fetchTrainingSchedules } from '../../../../../services/ApiCalls'
+import { useQuery } from 'react-query'
 
 const TrainingDevelopment = () => {
   const [gridData, setGridData] = useState([])
+  const [trainingScheduleData, setTrainingScheduleData] = useState([])
+  const [traineeData, setTraineeData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [selectedValue, setSelectedValue] = useState<any>(null);
+  const [selectedRef, setSelectedRef] = useState<any>("");
+  const [jobtitleName, setJobtitleName] = useState("");
 
   const {register, reset, handleSubmit} = useForm()
   
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isShortModalOpen, setIsShortModalOpen] = useState(false)
+  const [isTraDevModalOpen, setIsTraDevModalOpen] = useState(false)
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
   const [radioValue, setRadioValue] = useState();
   const [radio1Value, setRadio1Value] = useState();
   const [radio2Value, setRadio2Value] = useState();
@@ -32,33 +38,54 @@ const TrainingDevelopment = () => {
     setIsModalOpen(true)
   }
 
+  const showTranDevModal = () => {
+    setIsTraDevModalOpen(true)
+}
   const handleOk = () => {
     setIsModalOpen(false)
   }
 
   const handleCancel = () => {
-    // form.resetFields()
+    reset()
     setIsModalOpen(false)
+    setEmployeeRecord(null)
+    console.log(employeeRecord)
+  }
+  const handleTranDevCancel = () => {
+    reset()
+    setIsTraDevModalOpen(false)
   }
   const showShortModal = () => {
-    setIsShortModalOpen(true)
+    setIsScheduleModalOpen(true)
   }
 
-  const handleShortOk = () => {
-    setIsShortModalOpen(false)
-  }
+  // const handleShortOk = () => {
+  //   setIsShortModalOpen(false)
+  // }
 
   const handleShortCancel = () => {
-    // form.resetFields()
-    setIsShortModalOpen(false)
+    reset()
+    setIsScheduleModalOpen(false)
   }
 
-  const deleteData = async (element: any) => {
+  const deleteScheduleData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/TrainingSchedules/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
+      const newData = trainingScheduleData.filter((item: any) => item.id !== element.id)
+      setTrainingScheduleData(newData)
+      return response.status
+    } catch (e) {
+      return e
+    }
+  }
+
+  const deleteTraineeData = async (element: any) => {
+    try {
+      const response = await axios.delete(`${Api_Endpoint}/Trainees/${element.id}`)
+      // update the local state so that react can refecth and re-render the table with the new data
+      const newData = traineeData.filter((item: any) => item.id !== element.id)
+      setTraineeData(newData)
       return response.status
     } catch (e) {
       return e
@@ -110,15 +137,20 @@ const TrainingDevelopment = () => {
     setRadio4Value(e.target.value);
   };
 
-  function handleDelete(element: any) {
-    deleteData(element)
+  function handleScheduleDelete(element: any) {
+    deleteScheduleData(element)
+  }
+  function handleTraineeDelete(element: any) {
+    deleteTraineeData(element)
   }
 
   const columns: any = [
-   
     {
       title: 'Employee ID',
-      dataIndex: 'empcode',
+      key: 'employeeId',
+      render: (record:any )=>{
+        return getEmID(record.employeeId)
+      },
       sorter: (a: any, b: any) => {
         if (a.empcode > b.empcode) {
           return 1
@@ -131,7 +163,10 @@ const TrainingDevelopment = () => {
     },
     {
       title: 'First Name',
-      dataIndex: 'firstname',
+      key: 'employeeId',
+      render: (record:any )=>{
+        return getFirstName(record.employeeId)
+      },
       sorter: (a: any, b: any) => {
         if (a.firstname > b.firstname) {
           return 1
@@ -143,13 +178,16 @@ const TrainingDevelopment = () => {
       },
     },
     {
-      title: 'Last Name',
-      dataIndex: 'lastname',
+      title: 'Surname',
+      key: 'employeeId',
+      render: (record:any )=>{
+        return getSurname(record.employeeId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.lastname > b.lastname) {
+        if (a.surname > b.surname) {
           return 1
         }
-        if (b.lastname > a.lastname) {
+        if (b.surname > a.surname) {
           return -1
         }
         return 0
@@ -157,7 +195,10 @@ const TrainingDevelopment = () => {
     },
     {
       title: 'DOB',
-      dataIndex: 'dob',
+      key: 'employeeId',
+      render: (record:any )=>{
+        return getDOB(record.employeeId)
+      },
       sorter: (a: any, b: any) => {
         if (a.dob > b.dob) {
           return 1
@@ -170,7 +211,10 @@ const TrainingDevelopment = () => {
     },
     {
       title: 'Gender',
-      dataIndex: 'sex',
+      key: 'employeeId',
+      render: (record:any )=>{
+        return getGender(record.employeeId)
+      },
       sorter: (a: any, b: any) => {
         if (a.sex > b.sex) {
           return 1
@@ -183,7 +227,10 @@ const TrainingDevelopment = () => {
     },
     {
       title: 'Phone Number',
-      dataIndex: 'phone',
+      key: 'employeeId',
+      render: (record:any )=>{
+        return getPhone(record.employeeId)
+      },
       sorter: (a: any, b: any) => {
         if (a.phone > b.phone) {
           return 1
@@ -194,32 +241,19 @@ const TrainingDevelopment = () => {
         return 0
       },
     },
-    // {
-    //   title: 'Unit',
-    //   dataIndex: 'unit',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.name > b.name) {
-    //       return 1
-    //     }
-    //     if (b.name > a.name) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
-
     {
       title: 'Action',
       fixed: 'right',
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          {/* <a href='#' onClick={showShortModal} className='btn btn-light-primary btn-sm'>
-            Shortlist
-          </a> */}
-          <a  className='btn btn-light-primary btn-sm'>
-            Remove
+          
+          <a onClick={() => handleTraineeDelete(record)} className='btn btn-light-danger btn-sm'>
+          Remove
           </a>
+          {/* <a  className='btn btn-light-primary btn-sm'>
+            Remove
+          </a> */}
          
         </Space>
       ),
@@ -233,10 +267,10 @@ const TrainingDevelopment = () => {
       title: '#',
       dataIndex: 'id',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.id > b.id) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.id > a.id) {
           return -1
         }
         return 0
@@ -244,12 +278,12 @@ const TrainingDevelopment = () => {
     },
     {
       title: 'Day',
-      dataIndex: 'date',
+      dataIndex: 'day',
       sorter: (a: any, b: any) => {
-        if (a.date > b.date) {
+        if (a.day > b.day) {
           return 1
         }
-        if (b.date > a.date) {
+        if (b.day > a.day) {
           return -1
         }
         return 0
@@ -259,10 +293,10 @@ const TrainingDevelopment = () => {
       title: 'Topic',
       dataIndex: 'topic',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.topic > b.topic) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.topic > a.topic) {
           return -1
         }
         return 0
@@ -278,8 +312,11 @@ const TrainingDevelopment = () => {
           {/* <a href='#' onClick={showShortModal} className='btn btn-light-primary btn-sm'>
             Shortlist
           </a> */}
-          <a  className='btn btn-light-primary btn-sm'>
-            delete
+          {/* <a  className='btn btn-light-primary btn-sm'>
+            Delete
+          </a> */}
+          <a onClick={() => handleScheduleDelete(record)} className='btn btn-light-danger btn-sm'>
+            Delete
           </a>
          
         </Space>
@@ -288,15 +325,90 @@ const TrainingDevelopment = () => {
     },
   ]
 
-  const loadData = async () => {
+  const loadTraineeData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
-      setGridData(response.data)
+      const response = await axios.get(`${Api_Endpoint}/Trainees`)
+      setTraineeData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
     }
+  }
+
+  // console.log(traineeData)
+  const loadTrainingScheduleData = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${Api_Endpoint}/TrainingSchedules`)
+      setTrainingScheduleData(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const { data: allTrainingDevTransactions } = useQuery('trainingDevTransactions', fetchTrainingDevTransactions, { cacheTime: 5000 })
+  const { data: allTrainingSchedules } = useQuery('trainingSchedules', fetchTrainingSchedules, { cacheTime: 5000 })
+  const { data: allTraininees } = useQuery('trainees', fetchTrainees, { cacheTime: 5000 })
+  const { data: allTraininings } = useQuery('trainings', fetchTrainings, { cacheTime: 5000 })
+  const { data: allEmployees } = useQuery('employees', fetchEmployees, { cacheTime: 5000 })
+  const { data: allJobTitles } = useQuery('jobTitles', fetchJobTitles, { cacheTime: 5000 })
+
+
+  const getFirstName = (emId: any) => {
+    let firstName = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === emId) {
+        firstName=item.firstName
+      }
+    })
+    return firstName
+  }
+  const getEmID = (emId: any) => {
+    let emID = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === emId) {
+        emID=item.employeeId
+      }
+    })
+    return emID
+  }
+  const getSurname = (emId: any) => {
+    let firstName = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === emId) {
+        firstName=item.surname
+      }
+    })
+    return firstName
+  }
+  const getDOB = (emId: any) => {
+    let firstName = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === emId) {
+        firstName=item.dob
+      }
+    })
+    return firstName
+  }
+  const getGender = (emId: any) => {
+    let gender = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === emId) {
+        gender=item.gender
+      }
+    })
+    return gender
+  }
+  const getPhone = (emId: any) => {
+    let phone = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === emId) {
+        phone=item.phone
+      }
+    })
+    return phone
   }
 
 
@@ -326,18 +438,39 @@ const TrainingDevelopment = () => {
     }
   ];
 
+  const dataByID:any = allTrainingDevTransactions?.data.find((refId:any) =>{
+    return  (refId.id===parseInt(selectedRef))
+ })
 
-  const onEmployeeChange = (e: any) => {
-    const objectId = e.target.value 
-    const newEmplo = employeedata.find((item:any)=>{
-      return item.code.toString()===objectId
-    })
+  const trainSchData:any = trainingScheduleData.filter((refId:any) =>{
+    return  (refId.trainingDevTransactionId===parseInt(selectedRef))
+ })
+
+  const traineeEmployeeData:any = traineeData.filter((refId:any) =>{
+    return  (refId.trainingDevTransactionId===parseInt(selectedRef))
+ })
+
+
+ const onEmployeeChange = (objectId: any) => {
+  const newEmplo = allEmployees?.data.find((item:any)=>{
+    return item.id===parseInt(objectId)
+  }) // console.log(newEmplo)
   setEmployeeRecord(newEmplo)
-    
-  }
-
+}
   useEffect(() => {
-    loadData()
+    const getUnitName = () => {
+      let jobtitleName = ""
+      allJobTitles?.data.map((item: any) => {
+        if (item.id === employeeRecord?.jobTitleId) {
+          jobtitleName=item.name
+        }
+      })
+      setJobtitleName(jobtitleName)
+      return jobtitleName
+    } 
+    getUnitName()
+    loadTrainingScheduleData()
+    loadTraineeData()
   }, [])
 
   const dataWithIndex = gridData.map((item: any, index) => ({
@@ -348,7 +481,7 @@ const TrainingDevelopment = () => {
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
-      loadData()
+      loadTraineeData()
     }
   }
 
@@ -362,27 +495,79 @@ const TrainingDevelopment = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
+  const url1 = `${Api_Endpoint}/TrainingDevTransactions`
+  const submitTrainingDevTransaction = handleSubmit(async (values) => {
+    setLoading(true)
     const data = {
-      name: values.name,
-    }
+      reference: values.reference,
+      trainingId: parseInt(values.trainingId),
+      startDate: values.startDate,
+      endDtae: values.endDate,
+      venue: values.venue,
+      facilitator: values.facilitator
 
+    }
+      try { 
+        
+          const response = await axios.post(url1, data)
+          setSubmitLoading(false)
+          reset()
+          setIsModalOpen(false)
+          loadTraineeData()
+          return response.statusText
+        
+      } catch (error: any) {
+        setSubmitLoading(false)
+        return error.statusText
+      } 
+    
+  })
+  const url3 = `${Api_Endpoint}/TrainingSchedules`
+  const submitTrainingSchedule = handleSubmit(async (values) => {
+    setLoading(true)
+    const data = {
+      topic: values.topic,
+      day: values.day,
+      trainingDevTransactionId: parseInt(selectedRef),
+    }
+      try { 
+        
+          const response = await axios.post(url3, data)
+          setSubmitLoading(false)
+          reset()
+          setIsScheduleModalOpen(false)
+          loadTrainingScheduleData()
+          return response.statusText
+        
+      } catch (error: any) {
+        setSubmitLoading(false)
+        return error.statusText
+      } 
+    
+  })
+  const url2 = `${Api_Endpoint}/Trainees`
+  const submitTrainee= handleSubmit(async (values) => {
+    setLoading(true)
+    const data = {
+      employeeId: employeeRecord.id,
+      trainingDevTransactionId: parseInt(selectedRef),
+    }
     console.log(data)
-
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
-      // form.resetFields()
-      setIsModalOpen(false)
-      loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
-    }
-  }
+      try { 
+        
+          const response = await axios.post(url2, data)
+          setSubmitLoading(false)
+          reset()
+          setIsModalOpen(false)
+          loadTraineeData()
+          return response.statusText
+        
+      } catch (error: any) {
+        setSubmitLoading(false)
+        return error.statusText
+      } 
+    
+  })
 
   return (
     <div
@@ -393,50 +578,68 @@ const TrainingDevelopment = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-
       {/* Top part of the page */}
 
-      <div style={{padding: "0px 0px 0px 0px"}} className='col-12 row'>
-        <div style={{padding: "0px 0px 0px 20px"}}  className='col-6'>
+        <div style={{padding: "40px 0px 40px 10px"}}  className='col-12 row'>
+          <div className='col-4' style={{padding: "0px 40px 0px 0px"}}>
+            <select value={selectedRef} onChange={(e) => setSelectedRef(e.target.value)} className="form-select form-select-solid"  aria-label="Select example">
+              <option value="Select">Select</option>
+              {/* <option value="N/A">N/A</option> */}
+              {allTrainingDevTransactions?.data.map((item: any) => (
+                <option value={item.id}>{item.reference}</option>
+              ))}
+            </select>
+          </div>
+          <div className='col-6'>
+            {
+              selectedRef===""||
+              selectedRef==="Select"?
+              
+                <button type='button' className='btn btn-info me-3' onClick={showTranDevModal}>
+                  <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                  Add New Training
+                </button>
+              :
+              ""
+            }
+            </div>
+        </div>
+       
+      {
+        selectedRef===""||
+        selectedRef==="Select"?"":
+        <div className='col-12 row'>
+        <div className='col-6'>
           <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
             <div className='col-6 mb-7'>
               <label htmlFor="exampleFormControlInput1" className=" form-label">Reference#</label>
-              <input type="text" name="ref" className="form-control form-control-solid" />
+              <input type="text" readOnly defaultValue={dataByID.reference} className="form-control form-control-solid" />
             </div>
 
             <div className='col-6 mb-7'>
               <label htmlFor="exampleFormControlInput1" className=" form-label">Training Type</label>
-              <select className="form-select form-select-solid" aria-label="Select example">
-                <option> select</option>
-                <option value="1">IN-HOUSE </option>
-                <option value="2">PROFESSIONAL DEVELOPMENT </option>
-                <option value="3">EXTERNAL </option>
-                <option value="4">CERTIFICATION</option>
-              </select>
+              <input type="text" readOnly value={dataByID.trainingId} className="form-control form-control-solid" />
             </div>
           </div>
           <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
             <div className='col-6 mb-3'>
               <label htmlFor="exampleFormControlInput1" className=" form-label">Start date</label>
-              <input type="date" name="sdate" className="form-control form-control-solid" />
+              <input type="text" readOnly value={dataByID.startDate} className="form-control form-control-solid" />
             </div>
 
             <div className='col-6 mb-7'>
               <label htmlFor="exampleFormControlInput1" className=" form-label">End date</label>
-              <input type="date" name="edate" className="form-control form-control-solid" />
+              <input type="text" readOnly value={dataByID.startDate} className="form-control form-control-solid" />
             </div>
           </div>
           <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
             <div className='col-6 mb-7'>
               <label htmlFor="exampleFormControlInput1" className=" form-label">Facilitator</label>
-              <input type="text" name="fac" className="form-control form-control-solid" />
-
+              <input type="text" readOnly value={dataByID.facilitator} className="form-control form-control-solid" />
             </div>
             <div className='col-6 mb-7'>
               <label htmlFor="exampleFormControlInput1" className=" form-label">Venue</label>
-              <input type="text" name="venue" className="form-control form-control-solid" />
-
-              
+              <input type="text" readOnly value={dataByID.venue} className="form-control form-control-solid" />
             </div>
           </div>
         </div>
@@ -452,10 +655,20 @@ const TrainingDevelopment = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columnSchedules} dataSource={data} />
+          <div 
+            style={{
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '5px',
+              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
+            }}
+          >
+
+          <Table columns={columnSchedules} dataSource={trainSchData} />
+          </div>
         </div>
-      </div>
-      <hr></hr>
+        <div>
+        <hr></hr>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
             <br></br>
@@ -484,8 +697,9 @@ const TrainingDevelopment = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={employeedata} />
-          {/* Add form */}
+          <Table columns={columns} dataSource={traineeEmployeeData} />
+
+          {/* Modal for adding Employeee to trainingRef*/}
           <Modal
                 title='Employee Details'
                 open={isModalOpen}
@@ -501,68 +715,73 @@ const TrainingDevelopment = () => {
                   type='primary'
                   htmlType='submit'
                   loading={submitLoading}
-                  onClick={() => {
-                    // form.submit()
-                  }}
+                  onClick={submitTrainee}
                   >
                       Submit
                   </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    // form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
+                <form
+                    onSubmit={submitTrainee}
                 >
-                    <hr></hr>
-                    <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  <hr></hr>
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                      <select className="form-select form-select-solid" aria-label="Select example" onChange={(e)=>onEmployeeChange(e)}>
-                       <option>select</option>
-                        {employeedata.map((item: any) => (
-                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
-                        ))}
-                      </select>
+                      <br></br>
+                      <Select
+                          
+                          {...register("employeeId")}
+                          showSearch
+                          placeholder="select a reference"
+                          optionFilterProp="children"
+                          style={{width:"300px"}}
+                          value={employeeRecord?.id}
+                          onChange={(e)=>{
+                            onEmployeeChange(e)
+                          }}
+                          
+                        >
+                          <option>select</option>
+                          {allEmployees?.data.map((item: any) => (
+                            <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
+                          ))}
+                        </Select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
-                      <input type="text" name="code" value={employeeRecord?.jobt} className="form-control form-control-solid"/>
+                      <input type="text" readOnly value={jobtitleName} className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
-                      <input type="text" name="fname" value={employeeRecord?.firstname} className="form-control form-control-solid"/>
+                      <input type="text" readOnly value={employeeRecord?.firstName} className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
-                      <input type="text" name="lname" value={employeeRecord?.lastname} className="form-control form-control-solid"/>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Last Name</label>
+                      <input type="text" readOnly value={employeeRecord?.surname} className="form-control form-control-solid"/>
                     </div>
                   </div>
                   <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="text" name="code" value={employeeRecord?.dob} className="form-control form-control-solid"/>
+                      <input type="text" readOnly value={employeeRecord?.dob} className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
-                      <input type="text" name="code" value={employeeRecord?.sex} className="form-control form-control-solid"/>
+                      <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
+                      <input type="text" readOnly value={employeeRecord?.gender} className="form-control form-control-solid"/>
                     </div>
                   </div>
                   
-                </Form>
+                </form>
           </Modal>
 
-
-          {/* Modal for the  */}
+          {/* Modal for the schedule */}
 
           <Modal
                 title='Training Schedule'
-                open={isShortModalOpen}
+                open={isScheduleModalOpen}
                 onCancel={handleShortCancel}
                 closable={true}
                 width="600px"
@@ -575,40 +794,108 @@ const TrainingDevelopment = () => {
                   type='primary'
                   htmlType='submit'
                   loading={submitLoading}
-                  onClick={() => {
-                    // form.submit()
-                  }}
+                  onClick={submitTrainingSchedule}
                   >
                       Submit
                   </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    // form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
+                <form
+                    onSubmit={submitTrainingSchedule}
                 >
                     <hr></hr>
                     
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Topic</label>
-                      <input type="text" name="topic"  className="form-control form-control-solid"/>
+                      <input type="text" {...register("topic")} className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className=" form-label">Day</label>
-                      <input type="text" name="trainDate"  className="form-control form-control-solid"/>
+                      <input type="text" {...register("day")} className="form-control form-control-solid"/>
                     </div>
                   </div>
-                </Form>
+                </form>
           </Modal>
-
-          
         </div>
-      </KTCardBody>
+          </KTCardBody>
+        </div>
+      </div>
+    
+      }
+      
+        {/* Modal for the trainingTransaction*/}
+
+        <Modal
+                title='Add New Training '
+                open={isTraDevModalOpen}
+                onCancel={handleTranDevCancel}
+                closable={true}
+                width="600px"
+                footer={[
+                  <Button key='back' onClick={handleTranDevCancel}>
+                      Cancel
+                  </Button>,
+                  <Button
+                  key='submit'
+                  type='primary'
+                  htmlType='submit'
+                  loading={submitLoading}
+                  onClick={submitTrainingDevTransaction}
+                  >
+                      Submit
+                  </Button>,
+                ]}
+            >
+                <form
+                    onSubmit={submitTrainingDevTransaction}
+                >
+                    <hr></hr>
+                    
+                    <div style={{padding: "0px 0px 0px 20px"}}  className='col-12'>
+                    
+                    <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className=" form-label">Reference#</label>
+                        <input type="text" {...register("reference")}  className="form-control form-control-solid" />
+                      </div>
+
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className=" form-label">Training Type</label>
+                        <select {...register("trainingId")} className="form-select form-select-solid" aria-label="Select example">
+                          <option> select</option>
+                          {
+                            allTraininings?.data.map((item:any)=>(
+                              <option  key={item.id} value={item.id}>{item.name}</option>
+                            ))
+                          }
+                        </select>
+                      </div>
+                    </div>
+                    <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
+                      <div className='col-6 mb-3'>
+                        <label htmlFor="exampleFormControlInput1" className=" form-label">Start date</label>
+                        <input {...register("startDate")} type="date" className="form-control form-control-solid" />
+                      </div>
+
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className=" form-label">End date</label>
+                        <input {...register("endDate")} type="date"  className="form-control form-control-solid" />
+                      </div>
+                    </div>
+                    <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className=" form-label">Facilitator</label>
+                        <input {...register("facilitator")} type="text"  className="form-control form-control-solid" />
+                      </div>
+                      <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className=" form-label">Venue</label>
+                        <input {...register("venue")} type="text" className="form-control form-control-solid" />
+                      </div>
+                    </div>
+                  </div>
+                </form>
+          </Modal>
     </div>
   )
 }
