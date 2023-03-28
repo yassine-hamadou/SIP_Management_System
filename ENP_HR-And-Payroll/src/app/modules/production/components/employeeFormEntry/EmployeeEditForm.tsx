@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Form, Modal, Space, Table, Upload } from 'antd';
-import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchEmployees, fetchExperiences, fetchGrades, fetchJobTitles, fetchNationalities, fetchNotches, fetchPaygroups, fetchQualifications, fetchSkills, fetchUnits } from '../../../../services/ApiCalls';
+import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchEmployees, fetchExperiences, fetchGrades, fetchJobTitles, fetchNationalities, fetchNotches, fetchPaygroups, fetchQualifications, fetchSkills, fetchUnits, updateEmployee } from '../../../../services/ApiCalls';
 import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, MEDICALS, NOTCHES, UNITS } from '../../../../data/DummyData';
 import { KTSVG } from '../../../../../_metronic/helpers';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 
@@ -35,6 +35,17 @@ const EmployeeEditForm= () =>{
   const [img, setImg] = useState()
   const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
+  const [tempData, setTempData]= useState<any>()
+  const [graName, setGraName] = useState<any>()
+  const [depName, setDepName] = useState<any>()
+  const [divName, setDivName] = useState<any>()
+  const [jobTName, setJobTName] = useState<any>()
+  const [uniName, setUniName] = useState<any>()
+  const [paygName, setPaygName] = useState<any>()
+  const [catName, setCatName] = useState<any>()
+  const [notchName, setNotchName] = useState<any>()
+  
+  const navigate = useNavigate(); 
 
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
@@ -47,9 +58,12 @@ const EmployeeEditForm= () =>{
   }
 
   const handleChange = (event:any) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
+// console.log(tempData)
+  
   const showSkillModal = () => {
     setSkillOpen(true)
   }
@@ -792,22 +806,9 @@ const EmployeeEditForm= () =>{
   const {data:allExperiences} = useQuery('experiences', fetchExperiences, {cacheTime:5000})
   const {data:allJobTitles} = useQuery('jobtitle', fetchJobTitles, {cacheTime:5000})
 
-  const dataByID = allEmployees?.data.find((employee:any) =>{
-    return employee.id.toString() ===param.id
-  });
-
-  let newId=dataByID?.gradeId
-
-
-  
-  // const gradeName =  allGrades?.data.find(async(grade:any) =>{
-  //   console.log(newId)
-  //   return await grade.id ===newId ? "Jack":null
+  // const dataByID = allEmployees?.data.find((employee:any) =>{
+  //   return employee.id.toString() ===param.id
   // });
-
-  // console.log(dataByID?.gradeId +"Test now")
-
-  // console.log(gradeName?.name)
 
   const fetchImage = async () => {
     const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
@@ -871,14 +872,113 @@ const EmployeeEditForm= () =>{
     }
   }
 
+
+
+  useEffect(()=>{
+
+    const getDepartmentName = () => {
+      let departmentName = null
+      allDepartments?.data.map((item: any) => {
+        if (item.id === tempData?.departmentId) {
+          departmentName=item.name
+        }
+      })
+      return setDepName(departmentName)
+    } 
+    const getGradeName = () => {
+      let gradeName = ""
+      allGrades?.data.map((item: any) => {
+        if (item.id === tempData?.gradeId) {
+          gradeName=item.name
+        }
+      })
+      return setGraName(gradeName)
+    } 
+
+    const getUnitName = () => {
+      let unitName = ""
+      allUnits?.data.map((item: any) => {
+        if (item.id === tempData?.unitId) {
+          unitName=item.name
+        }
+      })
+      return setUniName(unitName)
+    } 
+    const getJobTName = () => {
+      let jobTitleName = ""
+      allJobTitles?.data.map((item: any) => {
+        if (item.id === tempData?.jobTitleId) {
+          jobTitleName=item.name
+        }
+      })
+      return setJobTName(jobTitleName)
+    } 
+
+    const getCatName = () => {
+      let categoryName = ""
+      allCategories?.data.map((item: any) => {
+        if (item.id === tempData?.categoryId) {
+          categoryName=item.name
+        }
+      })
+      return setCatName(categoryName)
+    } 
+
+    const getDivisionName = () => {
+      let divisionName = ""
+      allDivisions?.data.map((item: any) => {
+        if (item.id === tempData?.divisionId) {
+          divisionName=item.name
+        }
+      })
+      return setDivName(divisionName)
+    } 
+    const getPaygroupName = () => {
+      let paygroupName = null
+      allPaygroups?.data.map((item: any) => {
+        if (item.id === tempData?.paygroupId) {
+          paygroupName=item.name
+        }
+      })
+      return setPaygName(paygroupName)
+    } 
+    const getNotchName = () => {
+      let notchName = null
+      allNotches?.data.map((item: any) => {
+        if (item.id === tempData?.notchId) {
+          notchName=item.name
+        }
+      })
+      return setNotchName(notchName)
+    }
+    getCatName()
+    getJobTName()
+    getUnitName()
+    getDivisionName()
+    getDepartmentName()
+    getPaygroupName()
+    getNotchName()
+    getGradeName()
+  })
+
   useEffect(() => {
+
+    
+    const dataByID = allEmployees?.data.find((employee:any) =>{
+      return employee.id.toString() ===param.id
+    })
+    const getEmployeeById = ()=>{
+      setTempData(dataByID)
+    }
+
+    getEmployeeById()
     loadMedicalEntry()
     loadQualifications()
     loadFamilyMembers()
     loadExperiences()
     loadSkills()
     fetchImage()
-  }, [])
+  }, [param.id, allEmployees])
 
   const skillByEmployee = skillData.filter((section:any) =>{
     return section.employeeId.toString() ===param.id
@@ -896,6 +996,11 @@ const EmployeeEditForm= () =>{
   //   return medical.employeeId.toString() ===param.id
   // })
 
+
+  //increase counter
+  // const increase = () => {
+  //   setCounter(count => count + 1);
+  // };
 
   const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -916,7 +1021,21 @@ const EmployeeEditForm= () =>{
       const imgWindow = window.open(src);
       imgWindow?.document.write(image.outerHTML);
     };
-  
+  const queryClient = useQueryClient()
+const {isLoading, mutate}= useMutation(updateEmployee, {
+  onSuccess:(data)=>{
+    queryClient.setQueryData(['employees', tempData.id], data);
+    navigate('/employee', {replace: true})
+    // queryClient.invalidateQueries(['employees', tempData.id]);
+  }
+})
+
+const handleUpdate = (e:any)=>{
+  e.preventDefault()
+  mutate(tempData)
+}
+
+console.log( tempData)
 
   const url = `${Api_Endpoint}/EmployeeSkills`
   const submitSkills = handleSubmit( async (values:any)=> {
@@ -1020,7 +1139,7 @@ const EmployeeEditForm= () =>{
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-      <h3> You are updating <span style={{color:"#FF6363"}}>  {dataByID?.firstName} {dataByID?.surname}</span></h3>
+      <h3> You are updating <span style={{color:"#FF6363"}}>  {tempData?.firstName} {tempData?.surname}</span></h3>
       <br></br>
       <Link to="/employee">
         <a style={{fontSize:"16px", fontWeight: "500"}} className='mb-7 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>
@@ -1119,38 +1238,63 @@ const EmployeeEditForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">First Name</label>
-                <input type="text" name="fname" defaultValue={dataByID?.firstName}  className="form-control form-control-solid" />
+                <input type="text"
+                name="firstName"
+                onChange={handleChange}
+                // onChange={(e)=>{
+                //   setTempData({...tempData, firstName: e.target.value})
+                // }}
+                value={tempData?.firstName}  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
-                <input type="text" name="mname" defaultValue={dataByID?.surname} className="form-control form-control-solid" />
+                <input type="text" 
+                name="surname"
+                onChange={handleChange} 
+                value={tempData?.surname} className="form-control form-control-solid" />
               </div>
             </div>
 
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Other Name</label>
-                <input type="text" name="lname" defaultValue={dataByID?.otherName} className="form-control form-control-solid" />
+                <input type="text"
+                name="otherName"
+                onChange={handleChange} 
+                value={tempData?.otherName} className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Date of Birth</label>
-                <input type="date" name="dob" defaultValue={"1990-07-27"}   className="form-control form-control-solid" />
+                <input type="date" 
+                name="dob"
+                onChange={handleChange}
+                value={tempData?.dob}   className="form-control form-control-solid" />
               </div>
             </div>
             <div className='row mb-0'>
               
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
-                  <option >{dataByID?.gender}</option>
+                <select 
+                name="gender"
+                onChange={(e)=>{
+                  setTempData({...tempData, gender: e.target.value})
+                }}
+                className="form-select form-select-solid" aria-label="Select example">
+                  <option >{tempData?.gender}</option>
                   <option value="MALE">MALE</option>
                   <option value="FEMALE">FEMALE</option>
                 </select>
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Marital Status</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
-                  
+                  <select 
+                  name="maritalStatus"
+                  onChange={(e)=>{
+                      setTempData({...tempData, maritalStatus: e.target.value })
+                  }} 
+                  className="form-select form-select-solid" aria-label="Select example">
+                  <option >{tempData?.maritalStatus}</option>
                   <option value="SINGLE">SINGLE</option>
                   <option value="MARRIED">MARRIED</option>
                  
@@ -1160,7 +1304,12 @@ const EmployeeEditForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Nationality</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select 
+                  name="nationality"
+                  onChange={(e)=>{
+                    setTempData({...tempData, nationality: e.target.value })
+                  }}
+                  className="form-select form-select-solid" aria-label="Select example">
                     {allNations?.data.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
                       ))}
@@ -1169,10 +1318,13 @@ const EmployeeEditForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">National ID</label>
-                <input type="text" name="dob" defaultValue={dataByID?.nationalId} className="form-control form-control-solid" />
+                <input type="text" 
+                onChange={(e)=>{
+                  setTempData({...tempData, nationalId: e.target.value})
+                }}
+                value={tempData?.nationalId} className="form-control form-control-solid" />
               </div>
             </div>
-
           </div>
           }
 
@@ -1183,41 +1335,55 @@ const EmployeeEditForm= () =>{
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Phone Number</label>
-                  <input type="phone" value={dataByID?.phone} name="tel" pattern="[0-9]*" className="form-control form-control-solid" />
+                  <input type="phone" value={tempData?.phone}
+                  name="phone"
+                  onChange={handleChange} 
+                  
+                  pattern="[0-9]*" className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Alternative Phone number</label>
-                  <input type="phone" value={dataByID?.alternativePhone} name="tel" maxLength={15} onKeyPress={validatePhoneNumber} onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="phone" value={tempData?.alternativePhone} 
+                  name="alternativePhone"
+                maxLength={15} 
+                onKeyPress={validatePhoneNumber} 
+                onChange={handleChange}  
+                className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Address</label>
-                  <input type="text" name="address" value={dataByID?.address} onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text"
+                  name="address" 
+                  value={tempData?.address} 
+                  onChange={handleChange}  
+                  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Residential Address</label>
-                  <input type="text" name="raddress" value={dataByID?.residentialAddress} onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" name="residentialAddress" 
+                  value={tempData?.residentialAddress} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Email</label>
-                  <input type="email" name="email" value={dataByID?.email.toLowerCase()} onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="email" name="email" value={tempData?.email.toLowerCase()} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Personal Email</label>
-                  <input type="email" name="pemail" value={dataByID?.personalEmail} onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="email" name="pemail" value={tempData?.personalEmail} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Next of kin</label>
-                  <input type="text" name="email"  value={dataByID?.nextOfKin} onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" name="email"  value={tempData?.nextOfKin} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Guarantor</label>
-                  <input type="text" name="guarantor" value={dataByID?.guarantor} onChange={handleChange}  className="form-control form-control-solid" />
+                  <input type="text" name="guarantor" value={tempData?.guarantor} onChange={handleChange}  className="form-control form-control-solid" />
                 </div>
               </div>
             </div>
@@ -1228,16 +1394,17 @@ const EmployeeEditForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Group</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                  <option>{paygName}</option>
                   {allPaygroups?.data.map((item: any) => (
-                    <option value={dataByID.paygroupId}>{item.name}</option>
+                    <option value={tempData.paygroupId}>{item.name}</option>
                   ))}
                 </select>
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
-                 
+                  <select name="categoryId" onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                  <option>{catName}</option>
                   {allCategories?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
                     ))}
@@ -1248,8 +1415,8 @@ const EmployeeEditForm= () =>{
             <div className='row mb-0'>
             <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
-                
+                <select name="divisionId" onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                <option>{divName}</option>
                 {allDivisions?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1257,8 +1424,8 @@ const EmployeeEditForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Salary Grade</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
-                 
+                  <select name="gradeId" onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                 <option>{graName}</option>
                   {allGrades?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1269,7 +1436,8 @@ const EmployeeEditForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
+                  <select name="departmentId" onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                  <option>{depName}</option>
                   {allDepartments?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1277,8 +1445,8 @@ const EmployeeEditForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Notch</label>
-                  <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>{dataByID?.notchId} </option>
+                  <select name="notchId" className="form-select form-select-solid" aria-label="Select example">
+                  <option>{notchName}</option>
                   {allNotches?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1288,8 +1456,8 @@ const EmployeeEditForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
-                <option>{dataByID?.unitId} </option>
+                <select name="unitId" onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                <option>{uniName} </option>
                 {allUnits?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1297,8 +1465,8 @@ const EmployeeEditForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
-                <option>{dataByID?.jobTitleId} </option>
+                <select name="jobTitleId" onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                <option>{jobTName} </option>
                 {allJobTitles?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
@@ -1309,12 +1477,12 @@ const EmployeeEditForm= () =>{
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Job Roles</label>
-                <textarea {...register("jobRole")} className="form-control form-control-solid" placeholder='list job roles (seperate each role with a comma)' aria-label="With textarea"></textarea>
+                <textarea name="jobRole" value={tempData?.jobRole} onChange={handleChange} className="form-control form-control-solid" placeholder='list job roles (seperate each role with a comma)' aria-label="With textarea"></textarea>
 
               </div>
               <div className='col-3 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Employment Date</label>
-                <input type="date" name="edate" defaultValue={"1990-05-28"} onChange={handleChange}  className="form-control form-control-solid" />
+                <input type="date" name="employmentDate" value={tempData?.employmentDate} onChange={handleChange}  className="form-control form-control-solid" />
 
               </div>
               <div className='col-3 mb-7'>
@@ -1330,17 +1498,17 @@ const EmployeeEditForm= () =>{
             <div className='row mb-0'>
               <div  className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Type</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
-                  <option value="1">MONTHLY</option>
-                  <option value="2">WEEKLY</option>
-                  <option value="3">HOURLY</option>
+                <select name="payType" onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                  <option>{tempData?.payType} </option>
+                  <option value="MONTHLY">MONTHLY</option>
+                  <option value="WEEKLY">WEEKLY</option>
+                  <option value="HOURLY">HOURLY </option>
                 </select>
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Payment Method</label>
-                <select className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
+                <select name="paymentMethod" onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                  <option>{tempData?.paymentMethod} </option>
                   <option value="BANK">BANK</option>
                   <option value="CASH">CASH</option>
                 </select>
@@ -1353,7 +1521,7 @@ const EmployeeEditForm= () =>{
                 
                 <br></br>
                 
-                <select className="form-select form-select-solid" aria-label="Select example">
+                <select onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {BANKS.map((item: any) => (
                     <option value={item.code}>{item.branch}</option>
@@ -1362,18 +1530,18 @@ const EmployeeEditForm= () =>{
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Account </label>
-                <input type="text" name="account" value={dataByID?.account} className="form-control form-control-solid" />
+                <input type="text" name="account" onChange={handleChange} value={tempData?.account} className="form-control form-control-solid" />
               </div>
             </div>
             <div className='row mb-0'>
               
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">TIN </label>
-                <input type="text" name="tin" defaultValue={dataByID.tin}  className="form-control form-control-solid" />
+                <input type="text" name="tin" onChange={handleChange} value={tempData.tin}  className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">SSN </label>
-                <input type="text" name="ssn" defaultValue={dataByID.ssf}  className="form-control form-control-solid" />
+                <input type="text" name="ssf" onChange={handleChange} value={tempData.ssf}  className="form-control form-control-solid" />
               </div>
             </div>
             
@@ -1960,7 +2128,7 @@ const EmployeeEditForm= () =>{
             </div>}
         </div>
         </div >
-        <button className='btn btn-primary' disabled type="submit">Submit</button>
+        <button className='btn btn-primary' onClick={handleUpdate} type="submit">Submit</button>
       
     </div>
   );

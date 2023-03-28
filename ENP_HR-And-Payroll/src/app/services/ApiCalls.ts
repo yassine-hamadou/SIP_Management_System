@@ -7,6 +7,7 @@ export  const Api_Endpoint ="http://208.117.44.15/hrwebapi/api";
 export const fetchDivisions= ()=>{
     return axios.get(`${Api_Endpoint}/Divisions`)
 }
+
 export const fetchDepartments= ()=>{
     return axios.get(`${Api_Endpoint}/Departments`)
 }
@@ -27,6 +28,9 @@ export const fetchPaygroups= ()=>{
 }
 export const fetchEmployees= ()=>{
     return axios.get(`${Api_Endpoint}/Employees`)
+}
+export const updateEmployee = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Employees/${data.id}`, data)
 }
 export const fetchBanks= ()=>{
     return axios.get(`${Api_Endpoint}/Banks`)
@@ -49,12 +53,15 @@ export const fetchJobTitles= ()=>{
 export const fetchMedicals= ()=>{
     return axios.get(`${Api_Endpoint}/Medicals`)
 }
+
 export const fetchNoteCategories= ()=>{
     return axios.get(`${Api_Endpoint}/NoteCategories`)
 }
+
 export const fetchGradeLeaves= ()=>{
     return axios.get(`${Api_Endpoint}/GradeLeaves`)
 }
+
 export const fetchCurrencies= ()=>{
     return axios.get(`${Api_Endpoint}/Currencies`)
 }
@@ -71,15 +78,23 @@ export const fetchPeriods = () => {
 export const fetchProducts = () => {
     return axios.get(`${Api_Endpoint}/Products`)
 }
+
 export const fetchTrainees = () => {
     return axios.get(`${Api_Endpoint}/Trainees`)
 }
+
 export const fetchTrainings = () => {
     return axios.get(`${Api_Endpoint}/trainings`)
 }
+
 export const fetchTrainingSchedules = () => {
     return axios.get(`${Api_Endpoint}/TrainingSchedules`)
 }
+
+export const fetchNoteTransactions = () => {
+    return axios.get(`${Api_Endpoint}/NoteTransactions`)
+}
+
 export const fetchServiceProviders = () => {
     return axios.get(`${Api_Endpoint}/ServiceProviders`)
 }
@@ -87,12 +102,14 @@ export const fetchServiceProviders = () => {
 export const fetchRecruitmentTransactions = () => {
     return axios.get(`${Api_Endpoint}/RecruitmentTransactions`)
 }
+
 export const fetchTrainingDevTransactions = () => {
     return axios.get(`${Api_Endpoint}/TrainingDevTransactions`)
 }
 export const fetchAppraisalTransactions = () => {
     return axios.get(`${Api_Endpoint}/AppraisalPerfTransactions`)
 }
+
 export const fetchDashBoardData = () => {
     return axios.get(`${Api_Endpoint}/SortedData`)
 }
@@ -108,4 +125,5 @@ export const deleteLeavePlanning = (id: any) => {
 export const updateLeavePlanning = (data: any) => {
     return axios.put(`${Api_Endpoint}/LeavePlanings/${data.id}`, data)
 }
+
 

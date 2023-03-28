@@ -42,7 +42,7 @@ const NoteEntry = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/NoteTransactions/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -92,7 +92,10 @@ const NoteEntry = () => {
    
     {
       title: 'Employee ID',
-      dataIndex: 'name',
+      key: 'employeeId',
+      render: (record:any )=>{
+        return getEmID(record.employeeId)
+      },
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {
           return 1
@@ -105,12 +108,12 @@ const NoteEntry = () => {
     },
     {
       title: 'Reference #',
-      dataIndex: 'name',
+      dataIndex: 'reference',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.reference > b.reference) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.reference > a.reference) {
           return -1
         }
         return 0
@@ -118,12 +121,15 @@ const NoteEntry = () => {
     },
     {
       title: 'Note Category',
-      dataIndex: 'name',
+      key:'noteCategoryId',
+      render: (record:any )=>{
+        return getNoteName(record.noteCategoryId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.noteCategoryId > b.noteCategoryId) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.noteCategoryId > a.noteCategoryId) {
           return -1
         }
         return 0
@@ -132,12 +138,12 @@ const NoteEntry = () => {
     
     {
       title: 'Comments/ Description',
-      dataIndex: 'name',
+      dataIndex: 'comment',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.comment > b.comment) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.comment > a.comment) {
           return -1
         }
         return 0
@@ -180,12 +186,29 @@ const NoteEntry = () => {
     },
   ]
 
- 
+  const getEmID = (emId: any) => {
+    let emID = null
+    allEmployees?.data.map((item: any) => {
+      if (item.id === emId) {
+        emID=item.employeeId
+      }
+    })
+    return emID
+  }
+  const getNoteName = (n: any) => {
+    let noteName = null
+    allNoteCategories?.data.map((item: any) => {
+      if (item.id === n) {
+        noteName=item.name
+      }
+    })
+    return noteName
+  }
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/NoteTransactions`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -201,6 +224,12 @@ const NoteEntry = () => {
   const emplyeesByPaygroup:any = allEmployees?.data.filter((item:any) =>{
     return  item.paygroupId===parseInt(selectedValue1)
     })
+
+
+  const notesData:any = gridData.filter((item:any) =>{
+    return  (item.paygroupId===parseInt(selectedValue1))&&(item.periodId===parseInt(selectedValue2))
+    })
+
   const noteCategoriesByType:any = allNoteCategories?.data.filter((item:any) =>{
     return  item.type===selectedType
     })
@@ -229,7 +258,7 @@ const NoteEntry = () => {
     setGridData(filteredData)
   }
 
-  const url1 = `${Api_Endpoint}/NoteEntries1`
+  const url1 = `${Api_Endpoint}/NoteTransactions1`
   const submitNoteEntry = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
@@ -238,7 +267,7 @@ const NoteEntry = () => {
       reference: values.reference,
       employeeId: employeeRecord?.id,
       comment: values.comment,
-      noteCategoryId: parseInt(values.noteCategoryId),
+      noteCategoryId: parseInt(selectedType),
     }
     console.log(data)
       try { 
@@ -268,8 +297,8 @@ const NoteEntry = () => {
     >
 
       <div style={{padding: "0px 0px 40px 0px"}}  className='col-12'>
-        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
-        <div className='col-6 mb-7'>
+        <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
+        <div className='col-4 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
             <select value={selectedValue1} onChange={(e) => setSelectedValue1(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option value="select paygroup" > Select paygroup</option>
@@ -279,7 +308,17 @@ const NoteEntry = () => {
               ))}
             </select>
           </div>
-          <div className='col-6 mb-7'>
+          <div className='col-4 mb-7'>
+            <label htmlFor="exampleFormControlInput1" className=" form-label">Note Category</label>
+            <select className="form-select form-select-solid" value={selectedType} onChange={(e) => setSelectedType(e.target.value)} aria-label="Select example">
+              <option value="select period"> Select period</option>
+              <option value="N/A">N/A</option>
+              {allNoteCategories?.data.map((item: any) => (
+                <option value={item.id}>{item.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className='col-4 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Period</label>
             <select className="form-select form-select-solid" value={selectedValue2} onChange={(e) => setSelectedValue2(e.target.value)} aria-label="Select example">
               <option value="select period"> Select period</option>
@@ -321,7 +360,7 @@ const NoteEntry = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} dataSource={notesData} />
           <Modal
                 title='Note Entry'
                 open={isModalOpen}
@@ -377,16 +416,16 @@ const NoteEntry = () => {
                         <label htmlFor="exampleFormControlInput1" className="form-label">Reference #</label>
                         <input type="text" {...register("reference")}  className="form-control form-control-solid"/>
                       </div>
-                      <div className='col-6 mb-7'>
+                      {/* <div className='col-6 mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Note Type</label>
                         <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
                           <option value="Disciplinary">DISCIPLINARY ACTION</option>
                           <option value="Grievances">GRIEVANCES </option>
                         </select>
-                      </div>
+                      </div> */}
                       
-                      <div className='col-6 mb-7'>
+                      {/* <div className='col-6 mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Note Category</label>
                         <select {...register("noteCategoryId")} className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
@@ -394,7 +433,7 @@ const NoteEntry = () => {
                           <option value={item.id}>{item.name}</option>
                         ))}
                         </select>
-                      </div>
+                      </div> */}
                       
                       <div className='col-6 mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Upload Document</label>

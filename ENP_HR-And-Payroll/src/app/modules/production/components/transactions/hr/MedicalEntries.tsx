@@ -390,7 +390,7 @@ const MedicalEntries = () => {
                         </Select>
                     </div>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Medical Type</label>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Dependant</label>
                       <select {...register("medicalTypeId")} className="form-select form-select-solid" aria-label="Select example">
                         <option> select </option>
                         {allMedicals?.data.map((item: any) => (
@@ -401,8 +401,24 @@ const MedicalEntries = () => {
                   </div>
                   <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Service Provider</label>
+                      {/* <input type="date" {...register("date")}  className="form-control form-control-solid"/> */}
+                      <select {...register("medicalTypeId")} className="form-select form-select-solid" aria-label="Select example">
+                        <option> select </option>
+                        {allMedicals?.data.map((item: any) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
                       <input type="date" {...register("date")}  className="form-control form-control-solid"/>
+                    </div>
+                  </div>
+                  <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Voucher Number</label>
+                      <input type="text" {...register("voucherNumber")}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Comments</label>
@@ -412,9 +428,7 @@ const MedicalEntries = () => {
                   </div>
                   <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
-                    {/* <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" style={{display:'none'}} /> */}
-
-
+  
                     <input type="file" className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onChange={handleFileSelection} />
                       {selectedFile && (
                         <div>

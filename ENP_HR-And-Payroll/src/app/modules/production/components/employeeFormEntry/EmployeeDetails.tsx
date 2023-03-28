@@ -5,7 +5,7 @@ import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Form, Modal, Space, Table, Upload } from 'antd';
-import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchEmployees, fetchExperiences, fetchGrades, fetchNationalities, fetchNotches, fetchPaygroups, fetchQualifications, fetchSkills, fetchUnits } from '../../../../services/ApiCalls';
+import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchEmployees, fetchExperiences, fetchGrades, fetchJobTitles, fetchNationalities, fetchNotches, fetchPaygroups, fetchQualifications, fetchSkills, fetchUnits } from '../../../../services/ApiCalls';
 import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, MEDICALS, NOTCHES, UNITS } from '../../../../data/DummyData';
 import { KTSVG } from '../../../../../_metronic/helpers';
 import { useQuery } from 'react-query';
@@ -35,11 +35,21 @@ const EmplyeeDetails= () =>{
   const [img, setImg] = useState()
   const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
-  const [paygroupName, setPaygroupName]= useState("")
-  const [nationality, setNationality]= useState("")
-  const [grade, setGrade]= useState("")
-  const [unit, setUnit]= useState("")
-  const [jobTitle, setJobTitle]= useState("")
+  // const [paygroupName, setPaygroupName]= useState("")
+  // const [nationality, setNationality]= useState("")
+  // const [grade, setGrade]= useState("")
+  // const [unit, setUnit]= useState("")
+  // const [jobTitle, setJobTitle]= useState("")
+  const [tempData, setTempData]= useState<any>()
+  const [graName, setGraName] = useState<any>()
+  const [depName, setDepName] = useState<any>()
+  const [divName, setDivName] = useState<any>()
+  const [jobTName, setJobTName] = useState<any>()
+  const [uniName, setUniName] = useState<any>()
+  const [paygName, setPaygName] = useState<any>()
+  const [catName, setCatName] = useState<any>()
+  const [notchName, setNotchName] = useState<any>()
+  const [nation, setNation] = useState<any>()
 
   const deleteFamMem = async (element: any) => {
     try {
@@ -90,16 +100,12 @@ const EmplyeeDetails= () =>{
   const {data:allSkills} = useQuery('skill', fetchSkills, {cacheTime:5000})
   const {data:allQualifications} = useQuery('qualifications', fetchQualifications, {cacheTime:5000})
   const {data:allExperiences} = useQuery('experiences', fetchExperiences, {cacheTime:5000})
+  const {data:allJobTitles} = useQuery('jobtitle', fetchJobTitles, {cacheTime:5000})
 
 
-  const dataByID = allEmployees?.data.find((employee:any) =>{
-    return employee.id.toString() ===param.id
-  });
-
-
-  // console.log(dataByID)
-
-  let newId=dataByID?.gradeId
+  // const tempData = allEmployees?.data.find((employee:any) =>{
+  //   return employee.id.toString() ===param.id
+  // });
 
   const fetchImage = async () => {
     const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
@@ -159,58 +165,112 @@ const EmplyeeDetails= () =>{
     }
   }
 
-  const getDepartmentName = (departmentId: any) => {
-    let departmentName = ""
-    allDepartments?.data.map((item: any) => {
-      if (item.id === departmentId) {
-        departmentName=item.name
-      }
-    })
-    return departmentName
-  } 
-  const getGradeName = (gradeId: any) => {
-    let gradeName = ""
-    allGrades?.data.map((item: any) => {
-      if (item.id === gradeId) {
-        gradeName=item.name
-      }
-    })
-    return gradeName
-  } 
-  const getPaygroupName = (paygroupId: any) => {
-    let paygroupName = ""
-    allPaygroups?.data.map((item: any) => {
-      if (item.id === paygroupId) {
-        paygroupName=item.name
-      }
-    })
-    return setPaygroupName(paygroupName)
-  } 
-  const getNotchName = (notchId: any) => {
-    let notchName = ""
-    allNotches?.data.map((item: any) => {
-      if (item.id === notchId) {
-        notchName=item.name
-      }
-    })
-    return notchName
-  } 
-  const getNatoinName = (natId: any) => {
-    let nationName = ""
-    allNations?.data.map((item: any) => {
-      if (item?.id === parseInt(natId)) {
-        nationName=item.name
-      }
-    })
-    return setNationality(nationName)
-  } 
+  useEffect(()=>{
+
+    const getDepartmentName = () => {
+      let departmentName = null
+      allDepartments?.data.map((item: any) => {
+        if (item.id === tempData?.departmentId) {
+          departmentName=item.name
+        }
+      })
+      return setDepName(departmentName)
+    } 
+    const getGradeName = () => {
+      let gradeName = ""
+      allGrades?.data.map((item: any) => {
+        if (item.id === tempData?.gradeId) {
+          gradeName=item.name
+        }
+      })
+      return setGraName(gradeName)
+    } 
+    const getNationName = () => {
+      let nationmame = ""
+      allNations?.data.map((item: any) => {
+        if (item.id === parseInt(tempData?.nationality)) {
+          nationmame=item.name
+        }
+      })
+      return setNation(nationmame)
+    } 
+
+    const getUnitName = () => {
+      let unitName = ""
+      allUnits?.data.map((item: any) => {
+        if (item.id === tempData?.unitId) {
+          unitName=item.name
+        }
+      })
+      return setUniName(unitName)
+    } 
+    const getJobTName = () => {
+      let jobTitleName = ""
+      allJobTitles?.data.map((item: any) => {
+        if (item.id === tempData?.jobTitleId) {
+          jobTitleName=item.name
+        }
+      })
+      return setJobTName(jobTitleName)
+    } 
+
+    const getCatName = () => {
+      let categoryName = ""
+      allCategories?.data.map((item: any) => {
+        if (item.id === tempData?.categoryId) {
+          categoryName=item.name
+        }
+      })
+      return setCatName(categoryName)
+    } 
+
+    const getDivisionName = () => {
+      let divisionName = ""
+      allDivisions?.data.map((item: any) => {
+        if (item.id === tempData?.divisionId) {
+          divisionName=item.name
+        }
+      })
+      return setDivName(divisionName)
+    } 
+    const getPaygroupName = () => {
+      let paygroupName = null
+      allPaygroups?.data.map((item: any) => {
+        if (item.id === tempData?.paygroupId) {
+          paygroupName=item.name
+        }
+      })
+      return setPaygName(paygroupName)
+    } 
+    const getNotchName = () => {
+      let notchName = null
+      allNotches?.data.map((item: any) => {
+        if (item.id === tempData?.notchId) {
+          notchName=item.name
+        }
+      })
+      return setNotchName(notchName)
+    }
+    getNationName()
+    getCatName()
+    getJobTName()
+    getUnitName()
+    getDivisionName()
+    getDepartmentName()
+    getPaygroupName()
+    getNotchName()
+    getGradeName()
+  })
 
   useEffect(() => {
-    getNatoinName(dataByID?.nationalId)
-    getPaygroupName(dataByID?.paygroupId)
-    getDepartmentName(dataByID?.departmentId)
-    getNotchName(dataByID?.notchId)
-    getGradeName(dataByID?.gradeId)
+    const dataByID = allEmployees?.data.find((employee:any) =>{
+      return employee.id.toString() ===param.id
+    })
+    const getEmployeeById = ()=>{
+      setTempData(dataByID)
+    }
+
+    getEmployeeById()
     loadMedicalEntry()
     loadQualifications()
     loadFamilyMembers()
@@ -218,9 +278,9 @@ const EmplyeeDetails= () =>{
     loadSkills()
     fetchImage()
     
-  }, [dataByID?.nationalId, dataByID?.gradeId])
+  })
 
-  console.log(nationality)
+
 
 
   return (
@@ -240,92 +300,151 @@ const EmplyeeDetails= () =>{
         </a>
       </Link>
       <br></br>
-      <h3> You are viewing details of <span style={{color:"#FF6363"}}>  {dataByID?.firstName} {dataByID?.surname}</span></h3>
+        <h3> You are viewing details of <span style={{color:"#FF6363"}}>  {tempData?.firstName} {tempData?.surname}</span></h3>
       <hr />
       <br></br>
 
-      <div className='row mb-10'>
-        <h2 style={{color:"lightblue", fontWeight:"bold", textDecoration:"underline"}}>Details</h2>
+      <div className='row mb-5'>
+        {/* <h2 style={{color:"lightblue", fontWeight:"bold", textDecoration:"underline"}}>Details</h2> */}
+        <div style={{ marginBottom:"10px"}}>
+          <h2 style={{color:"#f2f2f2", fontWeight:"bold", backgroundColor:"Highlight", maxWidth:"180px", padding:"8px"}}>Details</h2>
+        </div>
         <br />
         <br />
-        <div className='col-3 mb-10'>
-            <h5>First Name</h5>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.firstName}</span>
-            {/* {dataByID?.firstName} */}
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>EmployeeId: <span style={{ color:"black"}}>{tempData?.employeeId}</span></h5>
         </div>
-        <div className='col-3 mb-10'>
-            <h6>Surname</h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.surname}</span>
-            {/* {dataByID?.firstName} */}
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>First Name: <span style={{ color:"black"}}>{tempData?.firstName}</span></h5>
         </div>
-        <div className='col-3 mb-10'>
-            <h6>Other name </h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.othername}</span>
-            {/* {dataByID?.firstName} */}
+        <div className='col-3 mb-5'>
+            <h5 style={{ color:"GrayText"}}>Surname: <span style={{ color:"black"}}>{tempData?.surname}</span></h5>
         </div>
-        <div className='col-3 mb-10'>
-          <h6>Gender </h6>
-              <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.gender}</span>
+        <div className='col-3 mb-5'>
+            <h5 style={{ color:"GrayText"}}>
+              Other name: <span style={{ color:"black"}}>{tempData?.otherName===null?"NULL":tempData?.otherName}</span>
+            </h5>
         </div>
-        <div className='col-3 mb-10'>
-          <h6 >Date of Birth</h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.dob}</span>
+        <div className='col-3 mb-5'>
+          <h5 style={{ color:"GrayText"}}>
+            Gender: <span style={{ color:"black"}}> {tempData?.gender}</span>
+          </h5>
         </div>
-        {/* <div className='col-3'>
-          <h6 >Phone</h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.phone}</span>
-        </div> */}
-        {/* <div className='col-3 mb-10'>
-          <h6 >Email</h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.email.toLowerCase()}</span>
-        </div> */}
-        <div className='col-3 mb-10'>
-          <h6 >Mrital Status</h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.maritalStatus }</span>
+        <div className='col-3 mb-5'>
+          <h5 style={{ color:"GrayText"}}>Date of Birth: 
+            <span style={{ color:"black"}}> {tempData?.dob}</span>
+          </h5>
         </div>
-        <div className='col-3 mb-10'>
-          <h6 >Nationality</h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {nationality}</span>
-        </div>
-        <div className='col-3 mb-10'>
-          <h6 >ID Card Number</h6>
-            {/* <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.nationalId}</span> */}
-        </div>
-        {/* <div className='col-3 mb-10'>
-          <h6 >ID Card Number</h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {paygroupName}</span>
-        </div> */}
-      </div>
-      {/* <div className='row mb-10'>
         
-        <div className='col-3'>
-            <h5>Phone</h5>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.phone}</span>
-            
+        <div className='col-3 mb-5'>
+          <h5 style={{ color:"GrayText"}} >Mrital Status:
+            <span style={{ color:"black"}}> {tempData?.maritalStatus===null?" NULL":tempData?.maritalStatus }</span>
+          </h5>
         </div>
-        <div className='col-3'>
-            <h6>Surname</h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.surname}</span>
-            
+        <div className='col-3 mb-5'>
+          <h5 style={{ color:"GrayText"}} >
+            Nationality: <span style={{ color:"black"}}>{tempData?.nationality===null?" NULL":nation}</span>
+          </h5>
         </div>
-        <div className='col-3'>
-            <h6>Other name </h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.othername}</span>
-            
+        <div className='col-3 mb-5'>
+          <h5 style={{ color:"GrayText"}} >
+            ID Card Number: <span style={{ color:"black"}}>{tempData?.nationalId}</span>
+            </h5> 
         </div>
-        <div className='col-2'>
-          <h6>Gender </h6>
-              <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.gender}</span>
+      </div>
+      {/* communication */}
+      {/* <br></br> */}
+      <div className='row mb-5'>
+        {/* <h2 style={{color:"lightblue", fontWeight:"bold", textDecoration:"underline"}}>Communication</h2> */}
+        <div style={{ marginBottom:"10px"}}>
+          <h2 style={{color:"#f2f2f2", fontWeight:"bold", backgroundColor:"Highlight", maxWidth:"180px", padding:"8px"}}>Communication</h2>
         </div>
-        <div className='col-3'>
-          <h6 >Date of Birth</h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.dob}</span>
+        <br />
+        <br />
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Phone Number: <span style={{ color:"black"}}>{tempData?.phone===null?" NULL":tempData?.phone}</span></h5>
         </div>
-        <div className='col-3'>
-          <h6 >Email</h6>
-            <span style={{fontSize:"16", color:"GrayText"}}> {dataByID?.email.toLowerCase()}</span>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Alternative Phone Number: <span style={{ color:"black"}}>{tempData?.alternativePhone===null?" NULL":tempData?.alternativePhone}</span></h5>
         </div>
-      </div> */}
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Address: <span style={{ color:"black"}}>{tempData?.address===null?" NULL":tempData?.address}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Residential Address: <span style={{ color:"black"}}>{tempData?.residentialAddress===null?" NULL":tempData?.residentialAddress}</span></h5>
+        </div>
+        
+        {/* <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Per. Email: <span style={{ color:"black"}}>{tempData?.personalEmail===null?" NULL":tempData?.personalEmail.toLowerCase()}</span></h5>
+        </div> */}
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Next Of Kin: <span style={{ color:"black"}}>{tempData?.nextOfKin===null?" NULL":tempData?.nextOfKin}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Guarantor: <span style={{ color:"black"}}>{tempData?.guarantor===null?" NULL":tempData?.guarantor}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Email: <span style={{ color:"black"}}>{tempData?.email===null?" NULL":tempData?.email.toLowerCase()}</span></h5>
+        </div>
+      </div>
+      {/* Administration */}
+      {/* <br></br> */}
+      <div className='row mb-5'>
+        {/* <h2 style={{color:"lightblue", fontWeight:"bold", textDecoration:"underline"}}>Administration</h2> */}
+        <div style={{ marginBottom:"10px"}}>
+          <h2 style={{color:"#f2f2f2", fontWeight:"bold", backgroundColor:"Highlight", maxWidth:"180px", padding:"8px"}}>Administration</h2>
+        </div>
+        <br />
+        <br />
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Paygroup: <span style={{ color:"black"}}>{tempData?.paygroupId===null?" NULL":paygName}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Category: <span style={{ color:"black"}}>{ tempData?.categoryId===null?" NULL":catName}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Division: <span style={{ color:"black"}}>{tempData?.divisionId===null?" NULL":divName}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Salary Grade: <span style={{ color:"black"}}>{tempData?.gradeId===null?" NULL":graName}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Department: <span style={{ color:"black"}}>{tempData?.departmentId===null?" NULL":depName}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Notch: <span style={{ color:"black"}}>{tempData?.notchId===null?" NULL":notchName}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Unit: <span style={{ color:"black"}}>{tempData?.unitId===null?" NULL":uniName}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>JobTitle: <span style={{ color:"black"}}>{tempData?.jobTitleId===null?" NULL":jobTName}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Job Roles: <span style={{ color:"black"}}>{tempData?.jobRole===null?" NULL":tempData?.jobRole}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Employment Date: <span style={{ color:"black"}}>{tempData?.employmentDate===null?" NULL":tempData?.employmentDate}</span></h5>
+        </div>
+      </div>
+      {/* Payroll */}
+      {/* <br></br> */}
+      <div className='row mb-5'>
+        <div style={{ marginBottom:"10px"}}>
+          <h2 style={{color:"#f2f2f2", fontWeight:"bold", backgroundColor:"Highlight", maxWidth:"180px", padding:"8px"}}>Payroll</h2>
+        </div>
+        <br />
+        <br />
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Phone: <span style={{ color:"black"}}>{tempData?.phone}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Alternative Phone: <span style={{ color:"black"}}>{ tempData?.alternativePhone}</span></h5>
+        </div>
+        <div className='col-3 mb-5'>
+            <h5  style={{ color:"GrayText"}}>Address: <span style={{ color:"black"}}>{tempData?.employmentDate===null?" NULL":tempData?.employmentDate}</span></h5>
+        </div>
+      </div>
     </div>
   );
 }

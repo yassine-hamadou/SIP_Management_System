@@ -586,7 +586,7 @@ const TrainingDevelopment = () => {
               <option value="Select">Select</option>
               {/* <option value="N/A">N/A</option> */}
               {allTrainingDevTransactions?.data.map((item: any) => (
-                <option value={item.id}>{item.reference}</option>
+                <option value={item.id}>{`Reference: ${item.reference} - facilitator: ${item.facilitator} - Venue: ${item.venue}`}</option>
               ))}
             </select>
           </div>
