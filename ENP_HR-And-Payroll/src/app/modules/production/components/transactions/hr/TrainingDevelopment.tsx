@@ -110,6 +110,7 @@ const TrainingDevelopment = () => {
         reader.onload = () => resolve(reader.result as string);
       });
     }
+
     const image = new Image();
     image.src = src;
     const imgWindow = window.open(src);
@@ -552,7 +553,6 @@ const TrainingDevelopment = () => {
       employeeId: employeeRecord.id,
       trainingDevTransactionId: parseInt(selectedRef),
     }
-    console.log(data)
       try { 
         
           const response = await axios.post(url2, data)
@@ -742,7 +742,7 @@ const TrainingDevelopment = () => {
                           }}
                           
                         >
-                          <option>select</option>
+                          <option>Select</option>
                           {allEmployees?.data.map((item: any) => (
                             <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
                           ))}
