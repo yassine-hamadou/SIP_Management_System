@@ -121,8 +121,18 @@ export function AsideMenuMain() {
         title='Reports' 
       />
         <AsideMenuItemWithSub to='#' title='Setups' icon='/media/icons/duotune/technology/teh004.svg' hasBullet={false}>
-          <AsideMenuItem to='setup/payroll/benefit' hasBullet={true} title='Benefits' />
-          <AsideMenuItem to='setup/payroll/deduction' hasBullet={true} title='Deductions' />
+          <AsideMenuItemWithSub to='#' title='Benefits' hasBullet={true}>
+          <AsideMenuItem to='setup/payroll/benefitcat' hasBullet={true} title='Categories' />
+          <AsideMenuItem to='setup/payroll/benefit' hasBullet={true} title='Details' />
+            
+
+          </AsideMenuItemWithSub>
+          <AsideMenuItemWithSub to='#' title='Deductions' hasBullet={true}>
+          <AsideMenuItem to='setup/payroll/deductioncat' hasBullet={true} title='Categories' />
+          <AsideMenuItem to='setup/payroll/deduction' hasBullet={true} title='Details' />
+            
+
+          </AsideMenuItemWithSub>
           <AsideMenuItem to='setup/payroll/saving-scheme' hasBullet={true} title='Saving Schemes' />
           <AsideMenuItem to='setup/payroll/loan' hasBullet={true} title='Loans' />
           <AsideMenuItem to='setup/payroll/approval-level' hasBullet={true} title='Approval Levels' />

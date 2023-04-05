@@ -111,6 +111,9 @@ import { Products } from '../modules/production/components/setup/hr/Produsts'
 import { ServiceProviders } from '../modules/production/components/setup/hr/ServiceProviders'
 import { ServiceCost } from '../modules/production/components/setup/hr/ServiceCost'
 import { GradeLeaves } from '../modules/production/components/setup/employee/GradeLeave'
+import { Perks } from '../modules/production/components/setup/employee/Perk'
+import { BenefitCats } from '../modules/production/components/setup/payroll/BenefitCat'
+import { DeductionCats } from '../modules/production/components/setup/payroll/DeductionCat'
 
 
 
@@ -610,6 +613,15 @@ const PrivateRoutes = () => {
            </SuspensedView>
          }
         />
+        <Route
+         path='perks/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Perks</PageTitle>
+             <Perks />
+           </SuspensedView>
+         }
+        />
         {/* HR Routes  */}
         <Route
          path='setup/hr/appraisals*'
@@ -724,11 +736,29 @@ const PrivateRoutes = () => {
          }
         />
         <Route
+         path='setup/payroll/benefitcat*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Benefit Categories</PageTitle>
+             <BenefitCats />
+           </SuspensedView>
+         }
+        />
+        <Route
          path='setup/payroll/currency*'
          element={
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Currencies</PageTitle>
              <Currency />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='setup/payroll/deductioncat*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Deduction Categories</PageTitle>
+             <DeductionCats />
            </SuspensedView>
          }
         />
@@ -806,6 +836,8 @@ const PrivateRoutes = () => {
          }
         />
         
+
+        {/* All reports routes */}
         <Route
          path='report/payrollPAYEReport*'
          element={
