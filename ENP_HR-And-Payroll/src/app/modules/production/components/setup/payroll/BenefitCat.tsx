@@ -1,7 +1,7 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { useForm } from 'react-hook-form'
 import { Api_Endpoint, fetchCurrencies, fetchGrades, fetchPaygroups } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
@@ -13,8 +13,8 @@ const BenefitCats = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const {register, reset, handleSubmit} = useForm()
-  const param:any  = useParams();
+  const { register, reset, handleSubmit } = useForm()
+  const param: any = useParams();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -42,13 +42,13 @@ const BenefitCats = () => {
     }
   }
 
-  
+
 
   function handleDelete(element: any) {
     deleteData(element)
   }
   const columns: any = [
-   
+
     {
       title: 'Code',
       dataIndex: 'code',
@@ -75,7 +75,7 @@ const BenefitCats = () => {
         return 0
       },
     },
-    
+
     {
       title: 'Action',
       fixed: 'right',
@@ -88,10 +88,10 @@ const BenefitCats = () => {
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-         
+
         </Space>
       ),
-      
+
     },
   ]
 
@@ -105,16 +105,16 @@ const BenefitCats = () => {
       console.log(error)
     }
   }
-  const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
+  const { data: allGrades } = useQuery('grades', fetchGrades, { cacheTime: 5000 })
 
   useEffect(() => {
-    
+
     loadData()
   }, [])
 
-//   const dataByID = gridData.filter((section:any) =>{
-//     return section.gradeId.toString() === param.id
-//   })
+  //   const dataByID = gridData.filter((section:any) =>{
+  //     return section.gradeId.toString() === param.id
+  //   })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -134,24 +134,27 @@ const BenefitCats = () => {
   }
 
   const url = `${Api_Endpoint}/BenefitCats`
-  const OnSUbmit = handleSubmit( async (values)=> {
+  const OnSUbmit = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
-          code: values.code,
-          name: values.name,
-          
-        }
+      code: values.code,
+      name: values.name,
+    }
     console.log(data)
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
-      reset()
-      setIsModalOpen(false)
-      loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
+    if (Object.keys(data.code).length === 0 || Object.keys(data.name).length === 0) {
+      // do nothing
+    } else {
+      try {
+        const response = await axios.post(url, data)
+        setSubmitLoading(false)
+        reset()
+        setIsModalOpen(false)
+        loadData()
+        return response.statusText
+      } catch (error: any) {
+        setSubmitLoading(false)
+        return error.statusText
+      }
     }
   })
 
@@ -167,7 +170,7 @@ const BenefitCats = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
@@ -179,7 +182,7 @@ const BenefitCats = () => {
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -188,52 +191,52 @@ const BenefitCats = () => {
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-            </button>
+              </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={gridData}  loading={loading}/>
+          <Table columns={columns} dataSource={gridData} loading={loading} />
           <Modal
-                title='BenefitCats Setup'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={OnSUbmit}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='BenefitCats Setup'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={OnSUbmit}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={OnSUbmit}
             >
-                <form
-                    onSubmit={OnSUbmit}
-                >
-                   <hr></hr>
-                   <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
-                    </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" {...register("name")}  className="form-control form-control-solid"/>
-                    </div>
-                    
-                   
-                  </div>
-                </form>
-            </Modal>
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text" {...register("code")} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} className="form-control form-control-solid" />
+                </div>
+
+
+              </div>
+            </form>
+          </Modal>
         </div>
       </KTCardBody>
     </div>
   )
 }
 
-export {BenefitCats}
+export { BenefitCats }
