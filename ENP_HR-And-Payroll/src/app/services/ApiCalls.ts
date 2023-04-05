@@ -114,6 +114,14 @@ export const fetchDashBoardData = () => {
     return axios.get(`${Api_Endpoint}/SortedData`)
 }
 
+export const fetchBenefitsCategory = () => {
+    return axios.get(`${Api_Endpoint}/BenefitCats`)
+}
+
+export const fetchDeductionsCategory = () => {
+    return axios.get(`${Api_Endpoint}/DeductionCats`)
+}
+
 export const postLeavePlanning = (data: any) => {
     return axios.post(`${Api_Endpoint}/LeavePlanings`, data)
 }

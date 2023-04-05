@@ -4,6 +4,8 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import {useForm} from 'react-hook-form'
+import { fetchBenefitsCategory } from '../../../../../services/ApiCalls'
+import { useQuery } from 'react-query'
 
 
 type Fields={
@@ -16,6 +18,10 @@ const Benefit = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
+
+  const {data:benefitCats} = useQuery('benefitCats', fetchBenefitsCategory, {cacheTime:5000})
+  const [selectedBenefitCat, setSelectedValue] = useState<any>(null);
+
   
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -305,10 +311,16 @@ const Benefit = () => {
                     <div className='col-6 mb-7'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
                       {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">Yes</option>
-                        <option value="2">No</option>
+                      <select value={selectedBenefitCat} onChange={(e) => setSelectedValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+                        {
+                          benefitCats?.data.length === 0 ? ( 
+                            <option value="1">Select</option>
+                          ) : (
+                            benefitCats?.data.map((item: any) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))
+                          )                         
+                        }
                       </select>
                     </div>
                   </div>

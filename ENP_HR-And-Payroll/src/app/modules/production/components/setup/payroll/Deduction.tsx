@@ -4,6 +4,8 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { DEDUCTION } from '../../../../../data/DummyData'
+import { useQuery } from 'react-query'
+import { fetchDeductionsCategory } from '../../../../../services/ApiCalls'
 
 const Deduction = () => {
   const [gridData, setGridData] = useState([])
@@ -12,6 +14,10 @@ const Deduction = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
+
+  const {data:deductionCats} = useQuery('deductionCats', fetchDeductionsCategory, {cacheTime:5000})
+  const [selectedDeductionCat, setSelectedDeductionCatValue] = useState<any>(null);
+
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -351,10 +357,16 @@ const Deduction = () => {
                     <div className='col-6 mb-7'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
                       {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">Yes</option>
-                        <option value="2">No</option>
+                      <select value={selectedDeductionCat} onChange={(e) => setSelectedDeductionCatValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+                        {
+                          deductionCats?.data.length === 0 ? ( 
+                            <option value="1">Select</option>
+                          ) : (
+                            deductionCats?.data.map((item: any) => (
+                              <option value={item.id}>{item.name}</option>
+                            ))
+                          )                         
+                        }
                       </select>
                     </div>
                   </div>

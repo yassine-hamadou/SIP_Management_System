@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchCurrencies, fetchGrades, fetchPaygroups } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchCurrencies, fetchDeductionsCategory, fetchGrades, fetchPaygroups } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -16,6 +16,8 @@ const DeductionCats = () => {
   const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+ 
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -118,9 +120,9 @@ const DeductionCats = () => {
     loadData()
   }, [])
 
-  const dataByID = gridData.filter((section:any) =>{
-    return section.gradeId.toString() === param.id
-  })
+  // const dataByID = gridData.filter((section:any) =>{
+  //   return section.gradeId.toString() === param.id
+  // })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
