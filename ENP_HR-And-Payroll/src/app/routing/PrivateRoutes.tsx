@@ -114,6 +114,7 @@ import { GradeLeaves } from '../modules/production/components/setup/employee/Gra
 import { Perks } from '../modules/production/components/setup/employee/Perk'
 import { BenefitCats } from '../modules/production/components/setup/payroll/BenefitCat'
 import { DeductionCats } from '../modules/production/components/setup/payroll/DeductionCat'
+import { GradePerks } from '../modules/production/components/setup/employee/GradePerk'
 
 
 
@@ -614,7 +615,16 @@ const PrivateRoutes = () => {
          }
         />
         <Route
-         path='perks/:id'
+         path='grade-perks/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Grade Perks</PageTitle>
+             <GradePerks />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='setup/employee/perks*'
          element={
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Perks</PageTitle>

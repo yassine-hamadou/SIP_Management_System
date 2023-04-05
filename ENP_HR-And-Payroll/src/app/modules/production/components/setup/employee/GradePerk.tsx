@@ -7,7 +7,7 @@ import { Api_Endpoint, fetchCurrencies, fetchGrades, fetchPaygroups } from '../.
 import { useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 
-const Perks = () => {
+const GradePerks = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -197,11 +197,11 @@ const Perks = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
-        {/* <h3 style={{fontWeight:"bolder"}}>{paygroupName}<span style={{color: "blue", fontSize:"22px", fontWeight:"normal"}}> &gt; </span> {gradeName} </h3>
+        <h3 style={{fontWeight:"bolder"}}>{paygroupName}<span style={{color: "blue", fontSize:"22px", fontWeight:"normal"}}> &gt; </span> {gradeName} </h3>
 
         <br></br>
         <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
-        <br></br> */}
+        <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
               <Input
@@ -272,4 +272,4 @@ const Perks = () => {
   )
 }
 
-export {Perks}
+export {GradePerks}

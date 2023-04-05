@@ -22,6 +22,7 @@ const TrainingDevelopment = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [selectedRef, setSelectedRef] = useState<any>("");
   const [jobtitleName, setJobtitleName] = useState("");
+  const [trainingName, setTrainingName] = useState("");
 
   const {register, reset, handleSubmit} = useForm()
   
@@ -459,6 +460,18 @@ const TrainingDevelopment = () => {
   setEmployeeRecord(newEmplo)
 }
   useEffect(() => {
+    const getTrainingName = () => {
+      let trainingName = ""
+      allTraininings?.data.map((item: any) => {
+        if (item.id === dataByID?.trainingId) {
+          trainingName=item.name
+          console.log("Hi test works")
+        }
+      })
+
+      
+      return setTrainingName(trainingName)
+    } 
     const getUnitName = () => {
       let jobtitleName = ""
       allJobTitles?.data.map((item: any) => {
@@ -469,10 +482,11 @@ const TrainingDevelopment = () => {
       setJobtitleName(jobtitleName)
       return jobtitleName
     } 
+    getTrainingName()
     getUnitName()
     loadTrainingScheduleData()
     loadTraineeData()
-  }, [])
+  }, [dataByID?.trainingId])
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
@@ -613,12 +627,12 @@ const TrainingDevelopment = () => {
           <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
             <div className='col-6 mb-7'>
               <label htmlFor="exampleFormControlInput1" className=" form-label">Reference#</label>
-              <input type="text" readOnly defaultValue={dataByID.reference} className="form-control form-control-solid" />
+              <input type="text" readOnly value={dataByID.reference} className="form-control form-control-solid" />
             </div>
 
             <div className='col-6 mb-7'>
               <label htmlFor="exampleFormControlInput1" className=" form-label">Training Type</label>
-              <input type="text" readOnly value={dataByID.trainingId} className="form-control form-control-solid" />
+              <input type="text" readOnly value={trainingName} className="form-control form-control-solid" />
             </div>
           </div>
           <div style={{padding: "20px 0px 0 0px"}} className='col-12 row mb-0'>
@@ -664,7 +678,7 @@ const TrainingDevelopment = () => {
             }}
           >
 
-          <Table columns={columnSchedules} dataSource={trainSchData} />
+          <Table columns={columnSchedules} dataSource={trainSchData}  />
           </div>
         </div>
         <div>

@@ -112,7 +112,7 @@ const Grades = () => {
       render: (_: any, record: any) => (
         <Space size='middle'>
           
-          <Link to={`/perks/${record.id}`}>
+          <Link to={`/grade-perks/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Perks</span>
           </Link>
           <Link to={`/notches/${record.id}`}>
