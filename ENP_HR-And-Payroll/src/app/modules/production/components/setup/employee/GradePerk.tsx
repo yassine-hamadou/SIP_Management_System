@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchCurrencies, fetchGrades, fetchPaygroups } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchCurrencies, fetchGrades, fetchPaygroups, fetchPerks } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -14,6 +14,7 @@ const GradePerks = () => {
   let [filteredData] = useState([])
   let [paygroupName, setPaygroupName] = useState<any>("")
   let [gradeName, setGradeName] = useState<any>("")
+  let [selectedPerk, setSelectedPerk] = useState<any>(null)
   const [submitLoading, setSubmitLoading] = useState(false)
   const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
@@ -65,13 +66,16 @@ const GradePerks = () => {
       },
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: 'Perk',
+      key: 'perkId',
+      render:(i:any)=>{
+        return getPerkName(i.perkId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.perkId > b.perkId) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.perkId > a.perkId) {
           return -1
         }
         return 0
@@ -104,7 +108,7 @@ const GradePerks = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Perks`)
+      const response = await axios.get(`${Api_Endpoint}/GradePerks`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -113,8 +117,18 @@ const GradePerks = () => {
   }
   const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
   const {data:allPaygroups} = useQuery('paygroups', fetchPaygroups, {cacheTime:5000})
-  const {data:allCurrencies} = useQuery('currencies', fetchCurrencies, {cacheTime:5000})
+  const {data:allPerks} = useQuery('perks', fetchPerks, {cacheTime:5000})
 
+
+  const getPerkName = (perkId: any) => {
+    let perkName = null
+    allPerks?.data.map((item: any) => {
+      if (item.id === perkId) {
+        perkName=item.name
+      }
+    })
+    return perkName
+  }
   const getItemName= async (param:any) =>{
 
     let newName=null
@@ -142,11 +156,6 @@ const GradePerks = () => {
     loadData()
   }, [])
 
-  const dataByID = gridData.filter((perk:any) =>{
-    return perk.gradId?.toString() === param.id
-  })
-  console.log(dataByID)
-
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
@@ -164,13 +173,12 @@ const GradePerks = () => {
     setGridData(filteredData)
   }
 
-  const url = `${Api_Endpoint}/Perks`
+  const url = `${Api_Endpoint}/GradePerks`
   const OnSUbmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
           gradId: parseInt(param.id),
-          code: values.code,
-          name: values.name
+          perkId: parseInt(selectedPerk)
         }
     console.log(data)
     try {
@@ -227,7 +235,7 @@ const GradePerks = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataByID} loading={loading} />
+          <Table columns={columns} dataSource={gridData} loading={loading} />
           <Modal
                 title='Perks Setup'
                 open={isModalOpen}
@@ -253,13 +261,18 @@ const GradePerks = () => {
                 >
                    <hr></hr>
                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                    <div className=' mb-7'>
+                    {/* <div className=' mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
                       <input type="text" {...register("code")}  className="form-control form-control-solid"/>
-                    </div>
+                    </div> */}
                     <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" {...register("name")}  className="form-control form-control-solid"/>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Perk</label>
+                        <select className="form-select form-select-solid" value={selectedPerk} onChange={(e) => setSelectedPerk(e.target.value)} aria-label="Select example">
+                            <option value=""> Select </option>
+                            {allPerks?.data.map((item: any) => (
+                                <option value={item.id}>{item.name}</option>
+                            ))}
+                        </select>
                     </div>
 
                    

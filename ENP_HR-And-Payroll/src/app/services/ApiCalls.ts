@@ -17,6 +17,9 @@ export const fetchUnits= ()=>{
 export const fetchGrades= ()=>{
     return axios.get(`${Api_Endpoint}/Grades`)
 }
+export const fetchPerks= ()=>{
+    return axios.get(`${Api_Endpoint}/Perks`)
+}
 export const fetchCategories= ()=>{
     return axios.get(`${Api_Endpoint}/Categories`)
 }
