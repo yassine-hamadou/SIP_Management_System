@@ -143,6 +143,8 @@ export function AsideMenuMain() {
 
           <AsideMenuItemWithSub to='#' title='Statutories' hasBullet={true}>
             <AsideMenuItem to='setup/payroll/tax' hasBullet={true} title='Taxes'/>
+            <AsideMenuItem to='setup/payroll/tax-formular' hasBullet={true} title='Tax Formular'/>
+
             <AsideMenuItem to='setup/payroll/snnit' hasBullet={true} title='SSNIT'/>
 
           </AsideMenuItemWithSub>
