@@ -64,12 +64,12 @@ const Benefit = () => {
 
     {
       title: 'Code',
-      dataIndex: 'name',
+      dataIndex: 'code',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.code > b.code) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.code > a.code) {
           return -1
         }
         return 0
@@ -90,12 +90,12 @@ const Benefit = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'name',
+      dataIndex: 'description',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.description > b.description) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.description > a.description) {
           return -1
         }
         return 0
@@ -103,12 +103,12 @@ const Benefit = () => {
     },
     {
       title: 'Type of Amount',
-      dataIndex: 'name',
+      dataIndex: 'typeOfAmount',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.typeOfAmount > b.typeOfAmount) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.typeOfAmount > a.typeOfAmount) {
           return -1
         }
         return 0
@@ -116,12 +116,12 @@ const Benefit = () => {
     },
     {
       title: 'Amount',
-      dataIndex: 'name',
+      dataIndex: 'amount',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.amount > b.amount) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.amount > a.amount) {
           return -1
         }
         return 0

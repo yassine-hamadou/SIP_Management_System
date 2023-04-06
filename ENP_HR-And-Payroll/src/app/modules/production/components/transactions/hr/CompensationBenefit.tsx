@@ -705,7 +705,10 @@ const allPerkByGrade:any = allGradePerks?.data.filter((item:any) =>{
                   <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     
                   {
-                    allPerkByGrade.length===0?"No Perks available for this Salary Grade":
+                    allPerkByGrade.length===0?
+                    <div d-flex justify-content-center>
+                      <h2>No perk data to display </h2>
+                    </div>:
 
                     allPerkByGrade.map((pek:any)=>(
                       <>
