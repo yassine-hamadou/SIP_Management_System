@@ -225,7 +225,7 @@ const TaxFormula = () => {
           </div>
           <Table columns={columns} dataSource={TAX}/>
           <Modal
-                title='Tax Setup'
+                title='Tax Formular Setup'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -258,11 +258,11 @@ const TaxFormula = () => {
                    
                     <hr></hr>
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                      <div className='mb-8'>
+                      <div className='mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Chargeable income</label>
                         <input type="text" name="topic"  className="form-control form-control-solid"/>
                       </div>
-                      <div className='mb-3'>
+                      <div className='mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="required form-label">Percentage</label>
                         <input type="text" name="trainDate"  className="form-control form-control-solid"/>
                       </div>

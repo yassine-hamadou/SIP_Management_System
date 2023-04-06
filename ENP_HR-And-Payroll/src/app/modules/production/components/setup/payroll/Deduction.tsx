@@ -251,6 +251,7 @@ const Deduction = () => {
   const onFinish = async (values: any) => {
     setSubmitLoading(true)
     const data = {
+      code: values.code,
       name: values.name,
     }
 
