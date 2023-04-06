@@ -10,7 +10,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
 import { employeedata, JOBTITLE } from '../../../../../data/DummyData'
 import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchEmployees, fetchJobTitles, fetchMedicals, fetchPaygroups, fetchPeriods, fetchUnits } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchEmployees, fetchGradePerks, fetchGrades, fetchJobTitles, fetchMedicals, fetchPaygroups, fetchPeriods, fetchPerks, fetchUnits } from '../../../../../services/ApiCalls'
 import { useForm } from 'react-hook-form'
 
 const CompensationBenefit = () => {
@@ -29,8 +29,7 @@ const CompensationBenefit = () => {
   const [profDevelopValue, setProfDevelopValue] = useState("");
   const [unitName, setunitName] = useState("");
   const [companyPropertyValue, setCompanyPropertyValue] = useState("");
-  const [employeeRecord, setEmployeeRecord]= useState<any>([])
-  // const [selectedValue, setSelectedValue] = useState<any>(null);
+  const [employeeRecord, setEmployeeRecord]= useState<any>(null)
   const [selectedValue1, setSelectedValue1] = useState<any>(null);
   const [selectedValue2, setSelectedValue2] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("tab1");
@@ -263,9 +262,9 @@ const CompensationBenefit = () => {
   const { data: allJobTitles } = useQuery('jobTitles', fetchJobTitles, { cacheTime: 5000 })
   const { data: allEmployees } = useQuery('employees', fetchEmployees, { cacheTime: 5000 })
   const { data: allUnits } = useQuery('units', fetchUnits, { cacheTime: 5000 })
-  // const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
+  const {data: allGradePerks} = useQuery('gradePerks', fetchGradePerks, {cacheTime:5000})
   // const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
-  // const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
+  const { data: allPerks } = useQuery('perks', fetchPerks, { cacheTime: 5000 })
   const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
 
   const getFirstName = (employeeId: any) => {
@@ -286,14 +285,14 @@ const CompensationBenefit = () => {
     })
     return surname
   } 
-  const getID = (employeeId: any) => {
-    let Id = null
-    allEmployees?.data.map((item: any) => {
-      if (item.id === employeeId) {
-        Id=item.id
+  const getPerkName = (perkId: any) => {
+    let pName = null
+    allPerks?.data.map((item: any) => {
+      if (item.id === perkId) {
+        pName=item.name
       }
     })
-    return Id
+    return pName
   } 
   const getGender= (employeeId: any) => {
     let gender = null
@@ -350,6 +349,11 @@ const CompensationBenefit = () => {
     return  item.paygroupId===parseInt(selectedValue1)
     })
 
+const allPerkByGrade:any = allGradePerks?.data.filter((item:any) =>{
+  return item.gradeId===employeeRecord?.gradeId
+})
+
+
   useEffect(() => {
     const getUnitName = () => {
       let unitName = ""
@@ -365,10 +369,6 @@ const CompensationBenefit = () => {
     loadData()
   }, [allUnits?.data, employeeRecord?.unitId])
 
-  // const dataWithIndex = gridData.map((item: any, index) => ({
-  //   ...item,
-  //   key: index,
-  // }))
   const dataByID:any = gridData.filter((refId:any) =>{
 
     return  (refId.paygroupId===parseInt(selectedValue1))&&(refId.jobTitleId===parseInt(selectedValue2))
@@ -390,7 +390,6 @@ const CompensationBenefit = () => {
     })
     setGridData(filteredData)
   }
-
 
   const url1 = `${Api_Endpoint}/CompensationBenefitTransactions`
   const submitCompensation = handleSubmit(async (values) => {
@@ -526,18 +525,17 @@ const CompensationBenefit = () => {
                           
                           {...register("employeeId")}
                           showSearch
-                          placeholder="select a reference"
+                          placeholder="select a employeeId"
                           optionFilterProp="children"
                           style={{width:"300px"}}
                           value={employeeRecord?.id}
                           onChange={(e)=>{
                             onEmployeeChange(e)
                           }}
-                          
                         >
                           <option>select</option>
                           {emplyeesByPaygroup.map((item: any) => (
-                            <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
+                            <option key={item.id} value={item.id}>{item.employeeId} - {item.firstName} - {item.surname}</option>
                           ))}
                         </Select>
                     </div>
@@ -569,7 +567,7 @@ const CompensationBenefit = () => {
                     </div>
                   </div>
                   <hr></hr>
-                  <div>
+                  {/* <div>
                     <div style={{display:"flex", }} className="tabs">
                       <div
                         className={`tab ${activeTab === "tab1" ? "active" : ""}`}
@@ -702,9 +700,36 @@ const CompensationBenefit = () => {
                         </div>
                       </div>}
                     </div>
+                  </div> */}
+                  
+                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                    
+                  {
+                    allPerkByGrade.length===0?"No Perks available for this Salary Grade":
+
+                    allPerkByGrade.map((pek:any)=>(
+                      <>
+
+                      <div className='col-6 mb-3'>
+                        
+                        <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">{getPerkName(pek.perkId)}</label>
+                          <Radio.Group {...register("basicSalary")} >
+                            <Radio value="Yes">Yes</Radio>
+                            <Radio value="No">No</Radio>
+                          </Radio.Group>
+                        <textarea style={{margin: "10px 0px 0 0px"}} {...register("basicSalaryComment")} className="form-control form-control-solid" placeholder='comments on basic salary (optional)' aria-label="With textarea"></textarea>
+                      </div>
+                      </>
+                      // <h3>{getPerkName(pek.perkId)}</h3>
+                    ))
+                  }
+                    
+                    
                   </div>
                   {/* <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                   
                     <div className='col-6 mb-3'>
+                      
                       <label style={{padding: "0px 30px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Basic Salary</label>
                         <Radio.Group {...register("basicSalary")} onChange={onBasicSalryChange} value={basicSalary}>
                           <Radio value="Yes">Yes</Radio>
@@ -720,8 +745,8 @@ const CompensationBenefit = () => {
                       </Radio.Group>
                       <textarea style={{margin: "10px 0px 0 0px"}} {...register("allowanceComment")} className="form-control form-control-solid" placeholder='comments on allowance (optional)' aria-label="With textarea"></textarea>
                     </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
+                  </div> */}
+                  {/* <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label style={{padding: "0px 36px 0 0px"}} htmlFor="exampleFormControlInput1" className=" form-label">Bonus </label>
                       <Radio.Group onChange={onBonusChange} value={bonusValue}>
@@ -766,7 +791,6 @@ const CompensationBenefit = () => {
                       </Radio.Group>
                       <textarea style={{margin: "10px 0px 0 0px"}} {...register("companyPropertyComment")} className="form-control form-control-solid" placeholder='comments on company property (optional)' aria-label="With textarea"></textarea>
                     </div>
-                    
                   </div> */}
                   
                 </form>

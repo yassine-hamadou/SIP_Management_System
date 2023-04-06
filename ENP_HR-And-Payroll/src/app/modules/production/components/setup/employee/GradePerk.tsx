@@ -52,19 +52,19 @@ const GradePerks = () => {
   }
   const columns: any = [
    
-    {
-      title: 'Code',
-      dataIndex: 'code',
-      sorter: (a: any, b: any) => {
-        if (a.code > b.code) {
-          return 1
-        }
-        if (b.code > a.code) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Code',
+    //   dataIndex: 'code',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.code > b.code) {
+    //       return 1
+    //     }
+    //     if (b.code > a.code) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
       title: 'Perk',
       key: 'perkId',

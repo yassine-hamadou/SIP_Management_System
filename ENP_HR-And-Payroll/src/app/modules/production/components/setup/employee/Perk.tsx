@@ -142,10 +142,6 @@ const Perks = () => {
     loadData()
   }, [])
 
-  const dataByID = gridData.filter((perk:any) =>{
-    return perk.gradId?.toString() === param.id
-  })
-
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {

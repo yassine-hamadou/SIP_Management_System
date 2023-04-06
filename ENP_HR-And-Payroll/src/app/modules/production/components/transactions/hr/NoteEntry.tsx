@@ -135,9 +135,8 @@ const NoteEntry = () => {
         return 0
       },
     },
-    
     {
-      title: 'Comments/ Description',
+      title: 'Comments',
       dataIndex: 'comment',
       sorter: (a: any, b: any) => {
         if (a.comment > b.comment) {
@@ -162,17 +161,13 @@ const NoteEntry = () => {
         return 0
       },
     },
-
     {
       title: 'Action',
       fixed: 'right',
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
+         
           <a href='#' className='btn btn-light-warning btn-sm'>
             Update
           </a>
