@@ -115,6 +115,7 @@ import { Perks } from '../modules/production/components/setup/employee/Perk'
 import { BenefitCats } from '../modules/production/components/setup/payroll/BenefitCat'
 import { DeductionCats } from '../modules/production/components/setup/payroll/DeductionCat'
 import { GradePerks } from '../modules/production/components/setup/employee/GradePerk'
+import { TaxFormula } from '../modules/production/components/setup/payroll/TaxFormula'
 
 
 
@@ -435,6 +436,16 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>Payruns </PageTitle>
              <Payrun />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='setup/payroll/tax-formular*'
+         element={
+          
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Tax Formula </PageTitle>
+             <TaxFormula />
            </SuspensedView>
          }
         />
