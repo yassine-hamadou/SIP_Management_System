@@ -65,7 +65,7 @@ const GradePerks = () => {
       },
     },
     {
-      title: 'Name',
+      title: 'Perk',
       dataIndex: 'name',
       sorter: (a: any, b: any) => {
         if (a.name > b.name) {

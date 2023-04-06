@@ -145,7 +145,6 @@ const Perks = () => {
   const dataByID = gridData.filter((perk:any) =>{
     return perk.gradId?.toString() === param.id
   })
-  console.log(dataByID)
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -168,7 +167,6 @@ const Perks = () => {
   const OnSUbmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
-          gradId: parseInt(param.id),
           code: values.code,
           name: values.name
         }
@@ -227,7 +225,7 @@ const Perks = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataByID} loading={loading} />
+          <Table columns={columns} dataSource={gridData} loading={loading} />
           <Modal
                 title='Perks Setup'
                 open={isModalOpen}
@@ -261,8 +259,6 @@ const Perks = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                       <input type="text" {...register("name")}  className="form-control form-control-solid"/>
                     </div>
-
-                   
                   </div>
                 </form>
             </Modal>
