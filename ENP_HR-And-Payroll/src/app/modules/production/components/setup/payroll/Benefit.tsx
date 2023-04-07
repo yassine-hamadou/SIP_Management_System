@@ -57,6 +57,16 @@ const Benefit = () => {
     }
   }
 
+  // update data on the server
+  const updateData = async (element: any) => {
+    try {
+      const response = await axios.put(`${Api_Endpoint}/Benefits/${element.id}`, element)
+      return response.status
+    } catch (e) {
+      return e
+    }
+  }
+
 
 
   function handleDelete(element: any) {
@@ -153,7 +163,7 @@ const Benefit = () => {
           {/* <Link to={`/setup/sections/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Sections</span>
           </Link> */}
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a href='#' className='btn btn-light-warning btn-sm' onClick={showModal} >
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
