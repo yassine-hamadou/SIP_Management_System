@@ -24,6 +24,8 @@ const Benefit = () => {
   const { data: benefitCats } = useQuery('benefitCats', fetchBenefitsCategory, { cacheTime: 5000 })
   const { data: periods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
 
+  const typeOfAmount = ['FORMULA','PERCENTAGE OF GROSS', 'VARYING AMOUNT', 'BASIC OF PERCENTAGE' ]
+
 
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -341,8 +343,11 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
                   <select {...register("typeOfAmount")} className="form-select form-select-solid" aria-label="Select example">
                     <option> select</option>
-                    <option value="1">Yes</option>
-                    <option value="2">No</option>
+                    {
+                      typeOfAmount.map((item: any) => (
+                        <option value={item}>{item}</option>
+                      ))
+                    }
                   </select>
                 </div>
                 <div className='col-6 mb-7'>
