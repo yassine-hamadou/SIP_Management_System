@@ -130,8 +130,16 @@ export const fetchBenefitsCategory = () => {
     return axios.get(`${Api_Endpoint}/BenefitCats`)
 }
 
+export const updateBenefitCats = (data: any) => {
+    return axios.put(`${Api_Endpoint}/BenefitCats/${data.id}`, data)
+}
+
 export const fetchDeductionsCategory = () => {
     return axios.get(`${Api_Endpoint}/DeductionCats`)
+}
+
+export const updateDeductionsCategory = (data: any) => {
+    return axios.put(`${Api_Endpoint}/DeductionCats/${data.id}`, data)
 }
 
 export const postLeavePlanning = (data: any) => {

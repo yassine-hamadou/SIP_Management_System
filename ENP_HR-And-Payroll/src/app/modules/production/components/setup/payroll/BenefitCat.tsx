@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchCurrencies, fetchGrades, fetchPaygroups } from '../../../../../services/ApiCalls'
-import { useQuery } from 'react-query'
+import { Api_Endpoint, fetchCurrencies, fetchGrades, fetchPaygroups, updateBenefitCats } from '../../../../../services/ApiCalls'
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom'
 
 const BenefitCats = () => {
@@ -17,6 +17,8 @@ const BenefitCats = () => {
   const param: any = useParams();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isUpdate, setIsUpdate] = useState(false)
+  const [tempData, setTempData] = useState<any>()
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -29,6 +31,7 @@ const BenefitCats = () => {
   const handleCancel = () => {
     reset()
     setIsModalOpen(false)
+    setIsUpdate(false)
   }
 
   const deleteData = async (element: any) => {
@@ -42,6 +45,10 @@ const BenefitCats = () => {
     }
   }
 
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
+  }
 
 
   function handleDelete(element: any) {
@@ -82,7 +89,7 @@ const BenefitCats = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
@@ -158,6 +165,29 @@ const BenefitCats = () => {
     }
   })
 
+
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation(updateBenefitCats, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['benefitCats', tempData.id], data);
+      loadData()
+      reset()
+      setIsUpdate(false)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    mutate(tempData)
+  }
+
+  const showUpdateModal = (values: any) => {
+    setIsUpdate(true)
+    setTempData(values);
+  }
+
+  console.log(tempData)
+
   return (
     <div
       style={{
@@ -230,6 +260,43 @@ const BenefitCats = () => {
                 </div>
 
 
+              </div>
+            </form>
+          </Modal>
+          {/* update benefit category modal */}
+          <Modal
+            title='BenefitCats Update'
+            open={isUpdate}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={handleUpdate}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={handleUpdate}
+            >
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="code" className="form-label">Code</label>
+                  <input type="text"  {...register("code")} defaultValue={tempData?.code} onChange={handleChange} name='code' id='code' className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="name" className="form-label">Name</label>
+                  <input type="text"  {...register("name")} defaultValue={tempData?.name} onChange={handleChange} name='name' id='name' className="form-control form-control-solid" />
+                </div>
               </div>
             </form>
           </Modal>

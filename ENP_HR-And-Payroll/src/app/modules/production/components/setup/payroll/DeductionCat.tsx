@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchCurrencies, fetchDeductionsCategory, fetchGrades, fetchPaygroups } from '../../../../../services/ApiCalls'
-import { useQuery } from 'react-query'
+import { Api_Endpoint, fetchCurrencies, fetchDeductionsCategory, fetchGrades, fetchPaygroups, updateDeductionsCategory } from '../../../../../services/ApiCalls'
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom'
 
 const DeductionCats = () => {
@@ -16,7 +16,8 @@ const DeductionCats = () => {
   const { register, reset, handleSubmit } = useForm()
   const param: any = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const [isUpdate, setIsUpdate] = useState(false)
+  const [tempData, setTempData] = useState<any>()
 
 
   const showModal = () => {
@@ -30,6 +31,7 @@ const DeductionCats = () => {
   const handleCancel = () => {
     reset()
     setIsModalOpen(false)
+    setIsUpdate(false)
   }
 
   const deleteData = async (element: any) => {
@@ -43,11 +45,21 @@ const DeductionCats = () => {
     }
   }
 
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
+  }
 
 
   function handleDelete(element: any) {
     deleteData(element)
   }
+
+  const showUpdateModal = (values: any) => {
+    setIsUpdate(true)
+    setTempData(values);
+  }
+
   const columns: any = [
 
     {
@@ -84,7 +96,7 @@ const DeductionCats = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
@@ -167,6 +179,23 @@ const DeductionCats = () => {
     }
   })
 
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation(updateDeductionsCategory, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['benefitCats', tempData.id], data);
+      loadData()
+      reset()
+      setIsUpdate(false)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    mutate(tempData)
+  }
+
+  console.log(tempData)
+
   return (
     <div
       style={{
@@ -239,6 +268,44 @@ const DeductionCats = () => {
                 </div>
 
 
+              </div>
+            </form>
+          </Modal>
+
+           {/* update deductions category modal */}
+          <Modal
+            title='DeductionCats update'
+            open={isUpdate}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={handleUpdate}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={handleUpdate}
+            >
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="code" className="form-label">Code</label>
+                  <input type="text"  {...register("code")} defaultValue={tempData?.code} onChange={handleChange} name='code' id='code' className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="name" className="form-label">Name</label>
+                  <input type="text"  {...register("name")} defaultValue={tempData?.name} onChange={handleChange} name='name' id='name' className="form-control form-control-solid" />
+                </div>
               </div>
             </form>
           </Modal>

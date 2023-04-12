@@ -27,15 +27,10 @@ const Benefit = () => {
   const typeOfAmount = ['FORMULA', 'PERCENTAGE OF GROSS', 'VARYING AMOUNT', 'BASIC OF PERCENTAGE']
 
   const [tempData, setTempData] = useState<any>()
-
-  // check if user clicked add or update
   const [isUpdate, setIsUpdate] = useState(false)
-
-
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [modalData, setModalData] = useState({})
-
   const { register, reset, handleSubmit } = useForm()
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -280,41 +275,6 @@ const Benefit = () => {
   console.log(tempData)
 
 
-  const onUpdate = handleSubmit(async (values, event) => {
-    setLoading(true)
-    const data = {
-      code: values.code,
-      name: values.name,
-      description: values.description,
-      amount: parseInt(values.amount),
-      typeOfAmount: values.typeOfAmount,
-      accountNumber: values.accountNumber,
-      periodType: values.periodType,
-      periodInterval: values.periodInterval,
-      currencyId: parseInt(values.currencyId),
-      accrued: values.accrued,
-      taxTypeId: parseInt(values.taxTypeId),
-      startPeriod: parseInt(values.startPeriod),
-      isTaxable: values.isTaxable,
-      benefitCat: parseInt(values.benefitCat),
-    }
-    console.log(data)
-    try {
-      const response = await axios.put(`${Api_Endpoint}/Benefits/${values.id}`, data)
-      setLoading(false)
-      setIsUpdate(false)
-      reset()
-      loadData()
-      return response.statusText
-    } catch (error: any) {
-      setLoading(false)
-      setIsUpdate(false)
-      reset()
-      return error.statusText
-    }
-  })
-
-
   return (
     <div
       style={{
@@ -509,10 +469,12 @@ const Benefit = () => {
             </form>
           </Modal>
 
+          {/* update benefit  modal */}
+
           <Modal
             title='Benefit Update'
             open={isUpdate}
-            onCancel={() => setIsUpdate(false)}
+            onCancel={handleCancel}
             closable={true}
             width={860}
             footer={[
