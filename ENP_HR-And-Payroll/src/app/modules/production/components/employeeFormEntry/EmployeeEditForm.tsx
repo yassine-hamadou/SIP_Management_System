@@ -1146,8 +1146,6 @@ console.log( tempData)
           Back to list
         </a>
       </Link>
-     
-        
         <div className="tabs">
           
           <button 

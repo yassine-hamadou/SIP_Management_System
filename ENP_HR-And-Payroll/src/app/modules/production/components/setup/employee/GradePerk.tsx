@@ -51,20 +51,6 @@ const GradePerks = () => {
     deleteData(element)
   }
   const columns: any = [
-   
-    // {
-    //   title: 'Code',
-    //   dataIndex: 'code',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.code > b.code) {
-    //       return 1
-    //     }
-    //     if (b.code > a.code) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
     {
       title: 'Perk',
       key: 'perkId',
@@ -140,6 +126,11 @@ const GradePerks = () => {
     return newName
  }
 
+
+ const dataByID = gridData.filter((section:any) =>{
+  return section.gradeId.toString() === param.id
+})
+
   useEffect(() => {
     (async ()=>{
       let res = await getItemName(param.id)
@@ -177,7 +168,7 @@ const GradePerks = () => {
   const OnSUbmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
-          gradId: parseInt(param.id),
+          gradeId: parseInt(param.id),
           perkId: parseInt(selectedPerk)
         }
     console.log(data)
@@ -235,7 +226,7 @@ const GradePerks = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={gridData} loading={loading} />
+          <Table columns={columns} dataSource={dataByID} loading={loading} />
           <Modal
                 title='Perks Setup'
                 open={isModalOpen}
