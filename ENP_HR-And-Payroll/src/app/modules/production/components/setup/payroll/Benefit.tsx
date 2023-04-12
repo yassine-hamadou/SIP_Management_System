@@ -4,10 +4,9 @@ import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchBenefitsCategory, fetchPeriods } from '../../../../../services/ApiCalls'
-import { useQuery } from 'react-query'
+import { Api_Endpoint, fetchBenefits, fetchBenefitsCategory, fetchPeriods, updateBenefit } from '../../../../../services/ApiCalls'
 import { validateExpression } from '@devexpress/analytics-core/analytics-internal'
-
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 type Fields = {
   name: string
@@ -207,6 +206,23 @@ const Benefit = () => {
     }
   }
 
+  // const { data: allBenefits } = useQuery('benefits', fetchBenefits, { cacheTime: 5000 })
+
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation(updateBenefit, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['benefits', tempData.id], data);
+      loadData()
+      reset()
+      setIsUpdate(false)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    mutate(tempData)
+  }
+
   const globalSearch = () => {
     // @ts-ignore
     filteredData = dataWithVehicleNum.filter((value) => {
@@ -235,7 +251,7 @@ const Benefit = () => {
       taxTypeId: parseInt(values.taxTypeId),
       startPeriod: parseInt(selectedPeriod),
       isTaxable: values.isTaxable,
-      benefitCat: parseInt(values.benefitCat),
+      benefitCat: parseInt(selectedBenefitCat),
     }
     console.log(data)
     try {
@@ -247,6 +263,7 @@ const Benefit = () => {
       return response.statusText
 
     } catch (error: any) {
+      reset()
       setLoading(false)
       return error.statusText
     }
@@ -257,9 +274,10 @@ const Benefit = () => {
   const showUpdateModal = (values: any) => {
     setIsUpdate(true)
     setTempData(values);
-    console.log(tempData)
+
   }
 
+  console.log(tempData)
 
 
   const onUpdate = handleSubmit(async (values, event) => {
@@ -498,7 +516,7 @@ const Benefit = () => {
             closable={true}
             width={860}
             footer={[
-              <Button key='back' onClick={() => setIsUpdate(false)}>
+              <Button key='back' onClick={handleCancel}>
                 Cancel
               </Button>,
               <Button
@@ -506,7 +524,7 @@ const Benefit = () => {
                 type='primary'
                 htmlType='submit'
                 loading={submitLoading}
-                onClick={onUpdate}
+                onClick={handleUpdate}
               >
                 Update
               </Button>,
@@ -514,7 +532,7 @@ const Benefit = () => {
           >
 
             <form
-              onSubmit={onUpdate}
+              onSubmit={handleUpdate}
             >
               <hr></hr>
               <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
@@ -537,7 +555,7 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                  {...register("benefitCat")}
+                    {...register("benefitCat")}
                     onChange={(e) => {
                       setTempData({ ...tempData, benefitCat: e.target.value })
                     }}
@@ -559,7 +577,7 @@ const Benefit = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
                   <select
-                  {...register("typeOfAmount")}
+                    {...register("typeOfAmount")}
                     onChange={(e) => {
                       setTempData({ ...tempData, typeOfAmount: e.target.value })
                     }}
@@ -588,7 +606,7 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Period Type</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                  {...register("periodType")} 
+                    {...register("periodType")}
                     defaultValue={tempData?.periodType}
                     onChange={(e) => {
                       setTempData({ ...tempData, periodType: e.target.value })
@@ -603,7 +621,7 @@ const Benefit = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Period Interval</label>
                   <select
-                  {...register("periodInterval")}
+                    {...register("periodInterval")}
                     defaultValue={tempData?.periodInterval}
                     onChange={(e) => {
                       setTempData({ ...tempData, periodInterval: e.target.value })
@@ -617,7 +635,7 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Currency</label>
                   {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
                   <select
-                  {...register("currencyId")}
+                    {...register("currencyId")}
                     defaultValue={tempData?.currencyId}
                     onChange={(e) => {
                       setTempData({ ...tempData, currencyId: e.target.value })
@@ -633,7 +651,7 @@ const Benefit = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Accrued</label>
                   <select
-                  {...register("accrued")}
+                    {...register("accrued")}
                     defaultValue={tempData?.accrued}
                     onChange={(e) => {
                       setTempData({ ...tempData, accrued: e.target.value })
@@ -647,7 +665,7 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                  {...register("taxTypeId")}
+                    {...register("taxTypeId")}
                     defaultValue={tempData?.taxTypeId}
                     onChange={(e) => {
                       setTempData({ ...tempData, taxTypeId: e.target.value })
@@ -662,7 +680,7 @@ const Benefit = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
                   <select
-                  {...register("startPeriod")}
+                    {...register("startPeriod")}
                     defaultValue={tempData?.startPeriod}
                     onChange={(e) => {
                       setTempData({ ...tempData, startPeriod: e.target.value })
@@ -683,7 +701,7 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">isTaxable</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                  {...register("isTaxable")}
+                    {...register("isTaxable")}
                     defaultValue={tempData?.isTaxable}
                     onChange={(e) => {
                       setTempData({ ...tempData, isTaxable: e.target.value })
