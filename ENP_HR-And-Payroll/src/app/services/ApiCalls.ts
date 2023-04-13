@@ -45,6 +45,12 @@ export const fetchEmployees= ()=>{
 export const updateEmployee = (data: any) => {
     return axios.put(`${Api_Endpoint}/Employees/${data.id}`, data)
 }
+export const updateBenefit = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Benefits/${data.id}`, data)
+}
+export const fetchBenefits = (data: any) => {
+    return axios.get(`${Api_Endpoint}/Benefits/`)
+}
 export const fetchBanks= ()=>{
     return axios.get(`${Api_Endpoint}/Banks`)
 }
