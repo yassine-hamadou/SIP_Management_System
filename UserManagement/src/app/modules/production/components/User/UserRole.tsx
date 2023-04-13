@@ -50,12 +50,12 @@ const UserRole = () => {
   const columns: any = [    
     {
       title: 'Role Name',
-      dataIndex: 'name',
+      dataIndex: 'roleId',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.roleId > b.roleId) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.roleId > a.roleId) {
           return -1
         }
         return 0
@@ -153,7 +153,7 @@ const UserRole = () => {
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
-              <Input
+              {/* <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
                 type='text'
@@ -162,7 +162,7 @@ const UserRole = () => {
               />
               <Button type='primary' onClick={globalSearch}>
                 Search
-              </Button>
+              </Button> */}
             </Space>
             <Space style={{marginBottom: 16}}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>

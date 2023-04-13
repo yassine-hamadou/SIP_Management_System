@@ -11,7 +11,7 @@ import {
 import {LayoutSplashScreen} from '../../../../_metronic/layout/core'
 import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
-import {getUserByToken} from './_requests'
+import {getUserByToken, parseJwt} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
 
 type AuthContextProps = {
@@ -64,12 +64,13 @@ const AuthInit: FC<WithChildren> = ({children}) => {
   const {auth, logout, setCurrentUser} = useAuth()
   const didRequest = useRef(false)
   const [showSplashScreen, setShowSplashScreen] = useState(true)
-  // We should request user by authToken (IN OUR EXAMPLE IT'S API_TOKEN) before rendering the application
+  // We should request user by authToken (IN OUR EXAMPLE IT'S jwtToken) before rendering the application
   useEffect(() => {
     const requestUser = async (apiToken: string) => {
       try {
         if (!didRequest.current) {
-          const {data} = await getUserByToken(apiToken)
+          // const {data} = await getUserByToken(apiToken)
+          const data:any =  parseJwt(apiToken)
           if (data) {
             setCurrentUser(data)
           }
@@ -86,8 +87,9 @@ const AuthInit: FC<WithChildren> = ({children}) => {
       return () => (didRequest.current = true)
     }
 
-    if (auth && auth.api_token) {
-      requestUser(auth.api_token)
+    if (auth && auth.jwtToken) {
+
+      requestUser(auth.jwtToken)
     } else {
       logout()
       setShowSplashScreen(false)

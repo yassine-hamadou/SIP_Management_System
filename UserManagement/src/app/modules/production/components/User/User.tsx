@@ -6,7 +6,9 @@ import { ENP_URL } from '../../urls'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint} from '../../../../services/ApiCalls'
+import { Api_Endpoint, fetchTaxes} from '../../../../services/ApiCalls'
+import { AUTH_LOCAL_STORAGE_KEY, useAuth } from '../../../auth'
+import { stringify } from 'querystring'
 
 const User = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -18,7 +20,8 @@ const User = () => {
   const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
   const navigate = useNavigate();
-
+const [test, setUserInfo] = useState<any>(null)
+const {saveAuth, setCurrentUser} = useAuth()
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -44,8 +47,9 @@ const User = () => {
       return e
     }
   }
+const token:any = localStorage.getItem("accessToken")?.replace(/['"]/g, '')
 
-
+// console.log(token)
   function handleDelete(element: any) {
     deleteData(element)
   }
@@ -126,9 +130,9 @@ const User = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <Link to={`/user-applications/${record.id}`}>
+          {/* <Link to={`/user-applications/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Applications</span>
-          </Link>
+          </Link> */}
           <Link to={`/user-roles/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Roles</span>
           </Link>
@@ -144,6 +148,9 @@ const User = () => {
     },
   ]
 
+  const {data:taxes} = useQuery('taxes', fetchTaxes, {cacheTime:5000})
+
+  // console.log(taxes)
   // const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
 
   // const getNotchName = (notchId: any) => {
@@ -168,9 +175,36 @@ const User = () => {
   }
 
   useEffect(() => {
+    const fetchQuotes = async () => {
+      const res = await axios.get(
+        "http://208.117.44.15/hrwebapi/api/Taxes",
+        {
+          headers: {
+            Authorization: 'Bearer '+ 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Inlhd2JhIiwiZW1haWwiOiJ5YXdAc2lwY29uc3VsdC5uZXQiLCJzdXJuYW1lIjoiTUVOU0FIIiwiZmlyc3ROYW1lIjoiWUFXU09OIiwiZ2VuZGVyIjoiTUFMRSAgICAgICIsImlkIjoiMiIsImV4cCI6MTY4MTQyMDE1MSwiYXVkIjoiaHR0cDovLzIwOC4xMTcuNDQuMTUvIn0.h5NBj6_2YwFV9WtxScC6VNUWrJGJZF_6ZibIaY2yIbg'
+          }
+        }
+      );
+      return setUserInfo(res.data);
+    };
+    // function parseJwt(token:any) {
+    //   if (!token) { return; }
+    //   const base64Url = token.split('.')[1];
+    //   const base64 = base64Url.replace('-', '+').replace('_', '/');
+    //   const newOb = JSON.parse(window.atob(base64))
+    //   return setUserInfo(newOb);
+    // }
+    
+    // parseJwt(token)
+    fetchQuotes()
     loadData()
   }, [])
 
+
+  // console.log(test);
+
+  // console.log(userInfo?.firstName);
+  
+  
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
