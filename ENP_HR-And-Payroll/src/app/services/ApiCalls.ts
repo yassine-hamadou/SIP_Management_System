@@ -4,6 +4,13 @@ import axios from 'axios';
 
 export  const Api_Endpoint ="http://208.117.44.15/hrwebapi/api";
 
+export let axioInstance = axios.create({
+    headers: {
+      Authorization : `${localStorage.getItem("kt-auth-react-v")}`
+      }
+    }
+)
+
 export const fetchDivisions= ()=>{
     return axios.get(`${Api_Endpoint}/Divisions`)
 }
