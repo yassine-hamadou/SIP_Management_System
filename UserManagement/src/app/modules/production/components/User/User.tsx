@@ -6,7 +6,7 @@ import { ENP_URL } from '../../urls'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchTaxes} from '../../../../services/ApiCalls'
+import { Api_Endpoint, fetchUsers} from '../../../../services/ApiCalls'
 import { AUTH_LOCAL_STORAGE_KEY, useAuth } from '../../../auth'
 import { stringify } from 'querystring'
 
@@ -148,8 +148,8 @@ const token:any = localStorage.getItem("accessToken")?.replace(/['"]/g, '')
     },
   ]
 
-  const {data:taxes} = useQuery('taxes', fetchTaxes, {cacheTime:5000})
-
+  // const {data:taxes} = useQuery('taxes', fetchTaxes, {cacheTime:5000})
+  const {data:allUsers} = useQuery('users', fetchUsers, {cacheTime:5000})
   // console.log(taxes)
   // const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
 
@@ -175,17 +175,19 @@ const token:any = localStorage.getItem("accessToken")?.replace(/['"]/g, '')
   }
 
   useEffect(() => {
-    const fetchQuotes = async () => {
-      const res = await axios.get(
-        "http://208.117.44.15/hrwebapi/api/Taxes",
-        {
-          headers: {
-            Authorization: 'Bearer '+ 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Inlhd2JhIiwiZW1haWwiOiJ5YXdAc2lwY29uc3VsdC5uZXQiLCJzdXJuYW1lIjoiTUVOU0FIIiwiZmlyc3ROYW1lIjoiWUFXU09OIiwiZ2VuZGVyIjoiTUFMRSAgICAgICIsImlkIjoiMiIsImV4cCI6MTY4MTQyMDE1MSwiYXVkIjoiaHR0cDovLzIwOC4xMTcuNDQuMTUvIn0.h5NBj6_2YwFV9WtxScC6VNUWrJGJZF_6ZibIaY2yIbg'
-          }
-        }
-      );
-      return setUserInfo(res.data);
-    };
+    // const fetchQuotes = async () => {
+    //   const res = await axios.get(
+    //     "http://208.117.44.15/hrwebapi/api/Taxes",
+    //     {
+    //       headers: {
+    //         Authorization: 'Bearer '+ 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Inlhd2JhIiwiZW1haWwiOiJ5YXdAc2lwY29uc3VsdC5uZXQiLCJzdXJuYW1lIjoiTUVOU0FIIiwiZmlyc3ROYW1lIjoiWUFXU09OIiwiZ2VuZGVyIjoiTUFMRSAgICAgICIsImlkIjoiMiIsImV4cCI6MTY4MTQyMDE1MSwiYXVkIjoiaHR0cDovLzIwOC4xMTcuNDQuMTUvIn0.h5NBj6_2YwFV9WtxScC6VNUWrJGJZF_6ZibIaY2yIbg'
+    //       }
+    //     }
+    //   );
+    //   return setUserInfo(res.data);
+    // };
+    
+   
     // function parseJwt(token:any) {
     //   if (!token) { return; }
     //   const base64Url = token.split('.')[1];
@@ -195,7 +197,7 @@ const token:any = localStorage.getItem("accessToken")?.replace(/['"]/g, '')
     // }
     
     // parseJwt(token)
-    fetchQuotes()
+    // fetchQuotes()
     loadData()
   }, [])
 
