@@ -1,11 +1,12 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { DEDUCTION } from '../../../../../data/DummyData'
-import { useQuery } from 'react-query'
-import { fetchDeductionsCategory } from '../../../../../services/ApiCalls'
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { Api_Endpoint, fetchCurrencies, fetchDeductionsCategory, fetchPeriods, fetchTaxes, updateDeductions } from '../../../../../services/ApiCalls'
+import { useForm } from 'react-hook-form'
 
 const Deduction = () => {
   const [gridData, setGridData] = useState([])
@@ -14,12 +15,27 @@ const Deduction = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
+  const { register, reset, handleSubmit } = useForm()
+  const [selectedPeriod, setSelectedPeriodValue] = useState<any>(null);
+  const [selectedTaxtype, setSelectedTaxtypeValue] = useState<any>(null);
+  const [selectedCurrency, setSelectedCurrencyValue] = useState<any>(null);
 
-  const {data:deductionCats} = useQuery('deductionCats', fetchDeductionsCategory, {cacheTime:5000})
+
+  const { data: deductionCats } = useQuery('deductionCats', fetchDeductionsCategory, { cacheTime: 5000 })
+  const { data: periods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
+  const { data: taxes } = useQuery('taxes', fetchTaxes, { cacheTime: 5000 })
+  const { data: currencies } = useQuery('currencies', fetchCurrencies, { cacheTime: 5000 })
+
   const [selectedDeductionCat, setSelectedDeductionCatValue] = useState<any>(null);
-
+  const [isUpdate, setIsUpdate] = useState(false)
+  const [tempData, setTempData] = useState<any>()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+
+  const currencyList = ['GHC', 'GBP', 'USD', 'AUD']
+  const typeOfAmountList = ['FORMULA', 'PERCENTAGE OF GROSS', 'VARYING AMOUNT', 'BASIC OF PERCENTAGE']
+
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -32,11 +48,12 @@ const Deduction = () => {
   const handleCancel = () => {
     form.resetFields()
     setIsModalOpen(false)
+    setIsUpdate(false)
   }
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/Deductions/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -46,13 +63,22 @@ const Deduction = () => {
     }
   }
 
-  
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
+  }
 
   function handleDelete(element: any) {
     deleteData(element)
   }
+
+  const showUpdateModal = (values: any) => {
+    setIsUpdate(true)
+    setTempData(values);
+  }
+
   const columns: any = [
-   
+
     {
       title: 'Code',
       dataIndex: 'code',
@@ -81,7 +107,7 @@ const Deduction = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'desc',
+      dataIndex: 'description',
       sorter: (a: any, b: any) => {
         if (a.desc > b.desc) {
           return 1
@@ -94,7 +120,7 @@ const Deduction = () => {
     },
     {
       title: 'Category',
-      dataIndex: 'cat',
+      dataIndex: 'deductionCatId',
       sorter: (a: any, b: any) => {
         if (a.cat > b.cat) {
           return 1
@@ -107,7 +133,7 @@ const Deduction = () => {
     },
     {
       title: 'Type of Amount',
-      dataIndex: 'tamount',
+      dataIndex: 'typeOfAmount',
       sorter: (a: any, b: any) => {
         if (a.tamount > b.tamount) {
           return 1
@@ -133,7 +159,7 @@ const Deduction = () => {
     },
     {
       title: 'Account Number',
-      dataIndex: 'accnum',
+      dataIndex: 'accountNumber',
       sorter: (a: any, b: any) => {
         if (a.accnum > b.accnum) {
           return 1
@@ -146,7 +172,7 @@ const Deduction = () => {
     },
     {
       title: 'Currency',
-      dataIndex: 'currency',
+      dataIndex: 'currencyId',
       sorter: (a: any, b: any) => {
         if (a.currency > b.currency) {
           return 1
@@ -159,7 +185,7 @@ const Deduction = () => {
     },
     {
       title: 'Tax Type',
-      dataIndex: 'taxtype',
+      dataIndex: 'taxTypeId',
       sorter: (a: any, b: any) => {
         if (a.taxtype > b.taxtype) {
           return 1
@@ -190,32 +216,33 @@ const Deduction = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
+
           {/* <Link to={`/setup/sections/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Sections</span>
           </Link> */}
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-         
+
         </Space>
       ),
-      
+
     },
   ]
 
-  
-   
+
+
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/Deductions`)
       setGridData(response.data)
       setLoading(false)
+      console.log(response.data)
     } catch (error) {
       console.log(error)
     }
@@ -247,12 +274,22 @@ const Deduction = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
+  const url = `${Api_Endpoint}/Deductions`
   const onFinish = async (values: any) => {
     setSubmitLoading(true)
     const data = {
       code: values.code,
       name: values.name,
+      description: values.description,
+      account: parseInt(values.account),
+      typeOfAmount: values.typeOfAmount,
+      accountNumber: values.accountNumber,
+      periodType: values.periodType,
+      currencyId: parseInt(values.currencyId),
+      accrued: values.accrued,
+      taxTypeId: parseInt(values.taxTypeId),
+      deductionCatId: parseInt(values.deductionCatId),
+      startPeriod: parseInt(selectedPeriod),
     }
 
     console.log(data)
@@ -270,6 +307,23 @@ const Deduction = () => {
     }
   }
 
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation(updateDeductions, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['benefitCats', tempData.id], data);
+      loadData()
+      form.resetFields()
+      setIsUpdate(false)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    mutate(tempData)
+  }
+  console.log(tempData)
+
+
   return (
     <div
       style={{
@@ -282,7 +336,7 @@ const Deduction = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
@@ -294,7 +348,7 @@ const Deduction = () => {
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -303,164 +357,363 @@ const Deduction = () => {
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-            </button>
+              </button>
             </Space>
           </div>
-          <Table columns={columns}  dataSource={DEDUCTION}/>
+          <Table columns={columns} dataSource={DEDUCTION} />
           <Modal
-                title='Deduction Setup'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                width={860}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='Deduction Setup'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            width={860}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={() => {
+                  form.submit()
+                }}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={onFinish}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
-                >
-                  <hr></hr>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Code</label>
-                      <input type="text" name="code"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
-                      <input type="text" name="name"  className="form-control form-control-solid"/>
-                      
-                    </div>
-                  </div>
-                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Description</label>
-                      <input type="text" name="desc"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
-                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
-                      <select value={selectedDeductionCat} onChange={(e) => setSelectedDeductionCatValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
-                        {
-                          deductionCats?.data.length === 0 ? ( 
-                            <option value="1">Select</option>
-                          ) : (
-                            deductionCats?.data.map((item: any) => (
-                              <option value={item.id}>{item.name}</option>
-                            ))
-                          )                         
-                        }
-                      </select>
-                    </div>
-                  </div>
-                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">FORMULA</option>
-                        <option value="2">PERCENTAGE OF GROSS</option>
-                        <option value="3">PERCENTAGE OF BASIC</option>
-                      </select>
-                    </div>
-                    <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Amount</label>
-                      <input type="number" min={0} name="amount" defaultValue={0.00} className="form-control form-control-solid"/>
-                      
-                    </div>
-                  </div>
-                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Account No.</label>
-                      <input type="text" name="accno"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Period Type</label>
-                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">Jan-23</option>
-                        <option value="2">Feb-23</option>
-                        <option value="3">Mar-23</option>
-                        <option value="4">Apr-23</option>
-                        <option value="5">May-23</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Period Interval</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">Weekly</option>
-                        <option value="2">Monthly</option>
-                      </select>
-                    </div>
-                    <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Currency</label>
-                      {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">GHC</option>
-                        <option value="2">GBP</option>
-                        <option value="3">AUD</option>
-                        <option value="4">USD</option>
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Accrued</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">YES</option>
-                        <option value="2">NO</option>
-                      </select>
-                    </div>
-                    <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
-                      {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">TAX TABLE </option>
-                        <option value="2">TAX FORMULA </option>
-                        <option value="3">NON TAXABLE </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
-                      <input type="date" name="period"  className="form-control form-control-solid"/>
+              <hr></hr>
+              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Code</label>
+                  <input type="text" {...register("code")} name="code" className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                  <input type="text" {...register("name")} name="name" className="form-control form-control-solid" />
 
-                    </div>
-                    
-                  </div>
-                </Form>
-            </Modal>
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Description</label>
+                  <input type="text" {...register("description")} name="description" className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
+                  {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                  <select
+                    value={selectedDeductionCat}
+                    onChange={(e) => setSelectedDeductionCatValue(e.target.value)} 
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option>Select</option>
+                    {
+                      deductionCats?.data.map((item: any) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
+                  <select {...register("typeOfAmount")} className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    {
+                      typeOfAmountList.map((item: any) => (
+                        <option value={item}>{item}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Amount</label>
+                  <input type="number" {...register("amount")} min={0} name="amount" defaultValue={0.00} className="form-control form-control-solid" />
+
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Account No.</label>
+                  <input type="text" {...register("accountNumber")} name="accountNumber" className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Period Type</label>
+                  {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                  <select className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    {
+                      periods?.data.map((item: any) => (
+                        <option value={item.name}>{item.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Period Interval</label>
+                  <select className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    <option value="1">Weekly</option>
+                    <option value="2">Monthly</option>
+                  </select>
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Currency</label>
+                  {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
+                  <select className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    {
+                      currencies?.data.map((item: any) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Accrued</label>
+                  <select className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    <option value="1">YES</option>
+                    <option value="2">NO</option>
+                  </select>
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
+                  {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                  <select className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    {
+                      taxes?.data.map((item: any) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
+                  <select
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option>Select period</option>
+                    {
+                      periods?.data.map((item: any) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))
+                    }
+                  </select>
+
+                </div>
+
+              </div>
+            </form>
+          </Modal>
+
+          {/* update deductions modal */}
+
+          <Modal
+            title='Deduction Update'
+            open={isUpdate}
+            onCancel={handleCancel}
+            closable={true}
+            width={860}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={handleUpdate}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={handleUpdate}
+            >
+              <hr></hr>
+              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Code</label>
+                  <input type="text" defaultValue={tempData?.code} onChange={handleChange} name="code" className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                  <input type="text" defaultValue={tempData?.name} onChange={handleChange} name="name" className="form-control form-control-solid" />
+
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Description</label>
+                  <input type="text" defaultValue={tempData?.desc} onChange={handleChange} name="desc" className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
+                  {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                  <select
+                    defaultValue={tempData?.deductionCatId}
+                    onChange={(e) => setTempData({ ...tempData, deductionCatId: e.target.value })}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option>Select</option>
+                    {
+                      deductionCats?.data.map((item: any) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
+                  <select
+                    defaultValue={tempData?.typeOfAmount}
+                    onChange={(e) => setTempData({ ...tempData, typeOfAmount: e.target.value })}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    {
+                      typeOfAmountList.map((item: any) => (
+                        <option value={item}>{item}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Amount</label>
+                  <input type="number" defaultValue={tempData?.amount} onChange={handleChange} min={0} name="amount" className="form-control form-control-solid" />
+
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Account No.</label>
+                  <input type="text" defaultValue={tempData?.accnum} onChange={handleChange} name="accno" className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Period Type</label>
+                  {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                  <select
+                    defaultValue={tempData?.ptype}
+                    onChange={(e) => {
+                      setTempData({ ...tempData, ptype: e.target.value })
+                    }}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    {
+                      periods?.data.map((item: any) => (
+                        <option value={item.name}>{item.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Period Interval</label>
+                  <select
+                    defaultValue={tempData?.pinterval}
+                    onChange={(e) => {
+                      setTempData({ ...tempData, pinterval: e.target.value })
+                    }}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    <option value="1">Weekly</option>
+                    <option value="2">Monthly</option>
+                  </select>
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Currency</label>
+                  {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
+                  <select
+                    defaultValue={tempData?.currency}
+                    onChange={(e) => {
+                      setTempData({ ...tempData, currency: e.target.value })
+                    }}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    {
+                      currencyList.map((item: any) => (
+                        <option value={item}>{item}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Accrued</label>
+                  <select
+                    defaultValue={tempData?.accrued}
+                    onChange={(e) => {
+                      setTempData({ ...tempData, accrued: e.target.value })
+                    }}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    <option value="1">YES</option>
+                    <option value="2">NO</option>
+                  </select>
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
+                  {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
+                  <select
+                    defaultValue={tempData?.taxtype}
+                    onChange={(e) => {
+                      setTempData({ ...tempData, taxtype: e.target.value })
+                    }}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option> select</option>
+                    {
+                      taxes?.data.map((item: any) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
+                  <select
+                    defaultValue={tempData?.startPeriod}
+                    onChange={(e) => {
+                      setTempData({ ...tempData, startPeriod: e.target.value })
+                    }}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option>Select date</option>
+                    {
+                      periods?.data.map((item: any) => (
+                        <option value={item.id}>{item.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+
+              </div>
+            </form>
+          </Modal>
+
         </div>
       </KTCardBody>
     </div>
   )
 }
 
-export {Deduction}
+export { Deduction }
