@@ -75,6 +75,7 @@ const Deduction = () => {
   const showUpdateModal = (values: any) => {
     setIsUpdate(true)
     setTempData(values);
+    console.log(values)
   }
 
   const columns: any = [
@@ -109,10 +110,10 @@ const Deduction = () => {
       title: 'Description',
       dataIndex: 'description',
       sorter: (a: any, b: any) => {
-        if (a.desc > b.desc) {
+        if (a.description > b.description) {
           return 1
         }
-        if (b.desc > a.desc) {
+        if (b.description > a.description) {
           return -1
         }
         return 0
@@ -122,10 +123,10 @@ const Deduction = () => {
       title: 'Category',
       dataIndex: 'deductionCatId',
       sorter: (a: any, b: any) => {
-        if (a.cat > b.cat) {
+        if (a.deductionCatId > b.deductionCatId) {
           return 1
         }
-        if (b.cat > a.cat) {
+        if (b.deductionCatId > a.deductionCatId) {
           return -1
         }
         return 0
@@ -135,10 +136,10 @@ const Deduction = () => {
       title: 'Type of Amount',
       dataIndex: 'typeOfAmount',
       sorter: (a: any, b: any) => {
-        if (a.tamount > b.tamount) {
+        if (a.typeOfAmount > b.typeOfAmount) {
           return 1
         }
-        if (b.tamount > a.tamount) {
+        if (b.typeOfAmount > a.typeOfAmount) {
           return -1
         }
         return 0
@@ -161,10 +162,10 @@ const Deduction = () => {
       title: 'Account Number',
       dataIndex: 'accountNumber',
       sorter: (a: any, b: any) => {
-        if (a.accnum > b.accnum) {
+        if (a.accountNumber > b.accountNumber) {
           return 1
         }
-        if (b.accnum > a.accnum) {
+        if (b.accountNumber > a.accountNumber) {
           return -1
         }
         return 0
@@ -174,10 +175,10 @@ const Deduction = () => {
       title: 'Currency',
       dataIndex: 'currencyId',
       sorter: (a: any, b: any) => {
-        if (a.currency > b.currency) {
+        if (a.currencyId > b.currencyId) {
           return 1
         }
-        if (b.currency > a.currency) {
+        if (b.currencyId > a.currencyId) {
           return -1
         }
         return 0
@@ -187,10 +188,10 @@ const Deduction = () => {
       title: 'Tax Type',
       dataIndex: 'taxTypeId',
       sorter: (a: any, b: any) => {
-        if (a.taxtype > b.taxtype) {
+        if (a.taxTypeId > b.taxTypeId) {
           return 1
         }
-        if (b.taxtype > a.taxtype) {
+        if (b.taxTypeId > a.taxTypeId) {
           return -1
         }
         return 0
@@ -275,7 +276,8 @@ const Deduction = () => {
   }
 
   const url = `${Api_Endpoint}/Deductions`
-  const onFinish = async (values: any) => {
+  const onFinish = handleSubmit(async (values: any, event) => {
+    event?.preventDefault()
     setSubmitLoading(true)
     const data = {
       code: values.code,
@@ -306,6 +308,7 @@ const Deduction = () => {
       return error.statusText
     }
   }
+  )
 
   const queryClient = useQueryClient()
   const { isLoading, mutate } = useMutation(updateDeductions, {
@@ -376,9 +379,7 @@ const Deduction = () => {
                 type='primary'
                 htmlType='submit'
                 loading={submitLoading}
-                onClick={() => {
-                  form.submit()
-                }}
+                onClick={onFinish}
               >
                 Submit
               </Button>,
@@ -561,14 +562,18 @@ const Deduction = () => {
               <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Description</label>
-                  <input type="text" defaultValue={tempData?.desc} onChange={handleChange} name="desc" className="form-control form-control-solid" />
+                  <input type="text" defaultValue={tempData?.description} onChange={handleChange} name="description" className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                    defaultValue={tempData?.deductionCatId}
-                    onChange={(e) => setTempData({ ...tempData, deductionCatId: e.target.value })}
+                    defaultValue={
+                      deductionCats?.data.map((item: any) => (
+                        item.id === parseInt(tempData?.deductionCatId) ? item.name : null
+                      ))
+                    }
+                    onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option>Select</option>
                     {

@@ -310,6 +310,7 @@ const Benefit = () => {
 
   })
 
+  console.log(tempData?.benefitCat)
 
   const showUpdateModal = (values: any) => {
     setIsUpdate(true)
@@ -564,7 +565,7 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                  defaultValue={
+                  value={
                     benefitCats?.data.map((item: any) => (
                       item.id === parseInt(tempData?.benefitCat) ? item.name : null
                     ))
