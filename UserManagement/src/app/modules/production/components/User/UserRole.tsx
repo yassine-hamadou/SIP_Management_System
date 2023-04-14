@@ -20,8 +20,7 @@ const UserRole = () => {
   const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
   const navigate = useNavigate();
-
-
+  let [userFName, setUserFName] = useState<any>("")
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -47,10 +46,17 @@ const UserRole = () => {
     }
   }
 
+  function handleDelete(element: any) {
+    deleteData(element)
+  }
+
   const columns: any = [    
     {
       title: 'Role Name',
-      dataIndex: 'roleId',
+      key: 'roleId',
+      render:(i:any)=>{
+        return getRoleName(i.roleId)
+      },
       sorter: (a: any, b: any) => {
         if (a.roleId > b.roleId) {
           return 1
@@ -68,9 +74,12 @@ const UserRole = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <Link to="#">
-            <span className='btn btn-light-success btn-sm'>Remove</span>
-          </Link>
+          {/* <Link to="#">
+            <span className='btn btn-light-danger btn-sm'>Remove</span>
+          </Link> */}
+          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
+          Remove
+          </a>
         </Space>
       ),
       
@@ -80,6 +89,17 @@ const UserRole = () => {
   // const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
   const {data:allRoles} = useQuery('roles', fetchRoles, {cacheTime:5000})
   const {data:allUsers} = useQuery('users', fetchUsers, {cacheTime:5000})
+
+
+  const getRoleName = (perkId: any) => {
+    let RoleName = null
+    allRoles?.data.map((item: any) => {
+      if (item.id === perkId) {
+        RoleName=item.name
+      }
+    })
+    return RoleName
+  }
 
   const loadData = async () => {
     setLoading(true)
@@ -91,11 +111,23 @@ const UserRole = () => {
       console.log(error)
     }
   }
+
+  const getUserName= async (id:any) =>{
+    let newName=null
+     const   itemTest = await allUsers?.data.find((item:any) =>
+      item.id.toString()===id
+    )
+     newName = await itemTest
+    return newName
+ }
+
   useEffect(() => {
+    (async ()=>{
+      let res = await getUserName(param.id)
+      setUserFName(res?.firstName + "   "+ res?.surname)
+    })();
     loadData()
   }, [])
-
-
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -103,6 +135,10 @@ const UserRole = () => {
       loadData()
     }
   }
+
+  const dataByID = gridData.filter((section:any) =>{
+    return section.userId.toString() === param.id
+  })
 
   const globalSearch = () => {
     // @ts-ignore
@@ -151,6 +187,10 @@ const UserRole = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <h3 style={{fontWeight:"bolder"}}>{userFName} </h3>
+        <br></br>
+        <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
               {/* <Input
@@ -171,7 +211,7 @@ const UserRole = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns} />
+          <Table columns={columns} dataSource={dataByID} />
           <Modal
                 title='Add New UserRole'
                 open={isModalOpen}

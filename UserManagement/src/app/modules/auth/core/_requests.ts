@@ -41,7 +41,7 @@ export function requestPassword(email: string) {
   })
 }
 
-
+// This will get me all details of the user!
 export function parseJwt(token:string) {
   if (!token) { return; }
   const base64Url = token.split('.')[1];
