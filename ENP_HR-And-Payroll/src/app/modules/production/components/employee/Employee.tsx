@@ -6,7 +6,8 @@ import { ENP_URL } from '../../urls'
 import { Link } from 'react-router-dom'
 import { employeedata } from '../../../../data/DummyData'
 import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchDepartments, fetchEmployees, fetchGrades, fetchNotches, fetchPaygroups } from '../../../../services/ApiCalls'
+import { Api_Endpoint, axioInstance, fetchDepartments, fetchEmployees, fetchGrades, fetchNotches, fetchPaygroups } from '../../../../services/ApiCalls'
+import { AUTH_LOCAL_STORAGE_KEY } from '../../../auth'
 
 const Employee = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -260,13 +261,17 @@ const Employee = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Employees`)
+      const response = await axioInstance.get(`${Api_Endpoint}/Employees`,
+     
+      )
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
     }
   }
+
+  console.log(localStorage.getItem("kt-auth-react-v"))
 
   useEffect(() => {
     loadData()

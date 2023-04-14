@@ -4,24 +4,24 @@ import * as Yup from 'yup'
 import clsx from 'clsx'
 import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
-import {getUserByToken, login} from '../core/_requests'
+import {getUserByToken, login, parseJwt} from '../core/_requests'
 import {useAuth} from '../core/Auth'
 
 const loginSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Wrong ID')
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('ID is required'),
+  username: Yup.string()
+    // .email('Wrong username')
+    .min(5, 'Minimum 5 charaters')
+    .max(50, 'Maximum 50 charaters')
+    .required('Username is required'),
   password: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
+    .min(6, 'Minimum 6 charaters')
+    .max(50, 'Maximum 50 charaters')
     .required('Password is required'),
 })
 
 const initialValues = {
-  email: 'sipuser',
-  password: 'admin',
+  username: '',
+  password: '',
 }
 
 /*
@@ -34,16 +34,29 @@ export function Login() {
   const [loading, setLoading] = useState(false)
   const {saveAuth, setCurrentUser} = useAuth()
 
+
+
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
     onSubmit: async (values, {setStatus, setSubmitting}) => {
       setLoading(true)
       try {
-        const {data: auth} = await login(values.email, values.password)
+        const {data: auth} = await login(values.username, values.password)
+        
+        // this help me get the 
         saveAuth(auth)
-        const {data: user} = await getUserByToken(auth.api_token)
-        setCurrentUser(user)
+
+        //this gets the jwtToken of the login user!
+        const token:any = localStorage.getItem("accessToken")
+        // const {data: user} = await getUserByToken(auth.jwtToken)
+
+        //this goes to decode the token and return the user details!
+        parseJwt(token)
+        
+        //now I have to assign the !
+        const cuUser:any =  parseJwt(token)
+       setCurrentUser(cuUser)
       } catch (error) {
         console.error(error)
         saveAuth(undefined)
@@ -72,22 +85,22 @@ export function Login() {
       <div className='fv-row mb-10'>
         <label className='form-label fs-6 fw-bolder text-dark'>Username</label>
         <input
-          placeholder='User ID'
-          {...formik.getFieldProps('email')}
+          placeholder='Username'
+          {...formik.getFieldProps('username')}
           className={clsx(
             'form-control form-control-lg form-control-solid',
-            {'is-invalid': formik.touched.email && formik.errors.email},
+            {'is-invalid': formik.touched.username && formik.errors.username},
             {
-              'is-valid': formik.touched.email && !formik.errors.email,
+              'is-valid': formik.touched.username && !formik.errors.username,
             }
           )}
           type='text'
-          name='email'
+          name='username'
           autoComplete='off'
         />
-        {formik.touched.email && formik.errors.email && (
+        {formik.touched.username && formik.errors.username && (
           <div className='fv-plugins-message-container'>
-            <span role='alert'>{formik.errors.email}</span>
+            <span role='alert'>{formik.errors.username}</span>
           </div>
         )}
       </div>
@@ -99,16 +112,7 @@ export function Login() {
           <div className='d-flex flex-stack mb-2'>
             {/* begin::Label */}
             <label className='form-label fw-bolder text-dark fs-6 mb-0'>Password</label>
-            {/* end::Label */}
-            {/* begin::Link */}
-            {/* <Link
-              to='/auth/forgot-password'
-              className='link-primary fs-6 fw-bolder'
-              style={{marginLeft: '5px'}}
-            >
-              Forgot Password ?
-            </Link> */}
-            {/* end::Link */}
+            
           </div>
         </div>
         <input
@@ -151,43 +155,7 @@ export function Login() {
             </span>
           )}
         </button>
-
-        {/* begin::Separator */}
-        {/*<div className='text-center text-muted text-uppercase fw-bolder mb-5'>or</div>*/}
-        {/* end::Separator */}
-
-        {/*/!* begin::Google link *!/*/}
-        {/*<a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100 mb-5'>*/}
-        {/*  <img*/}
-        {/*    alt='Logo'*/}
-        {/*    src={toAbsoluteUrl('/media/svg/brand-logos/google-icon.svg')}*/}
-        {/*    className='h-20px me-3'*/}
-        {/*  />*/}
-        {/*  Continue with Google*/}
-        {/*</a>*/}
-        {/*/!* end::Google link *!/*/}
-
-        {/*/!* begin::Google link *!/*/}
-        {/*<a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100 mb-5'>*/}
-        {/*  <img*/}
-        {/*    alt='Logo'*/}
-        {/*    src={toAbsoluteUrl('/media/svg/brand-logos/facebook-4.svg')}*/}
-        {/*    className='h-20px me-3'*/}
-        {/*  />*/}
-        {/*  Continue with Facebook*/}
-        {/*</a>*/}
-        {/*/!* end::Google link *!/*/}
-
-        {/*/!* begin::Google link *!/*/}
-        {/*<a href='#' className='btn btn-flex flex-center btn-light btn-lg w-100'>*/}
-        {/*  <img*/}
-        {/*    alt='Logo'*/}
-        {/*    src={toAbsoluteUrl('/media/svg/brand-logos/apple-black.svg')}*/}
-        {/*    className='h-20px me-3'*/}
-        {/*  />*/}
-        {/*  Continue with Apple*/}
-        {/*</a>*/}
-        {/*/!* end::Google link *!/*/}
+       
       </div>
        {/*end::Action */}
     </form>

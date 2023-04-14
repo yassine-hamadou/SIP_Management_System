@@ -2,8 +2,18 @@ import axios from 'axios';
 
 
 
-export  const Api_Endpoint ="http://208.117.44.15/userapi/api";
 
+export  const Api_Endpoint ="http://208.117.44.15/userapi/api";
+export  const Api_Endpoint2 ="http://208.117.44.15/hrwebapi/api";
+const token:any = localStorage.getItem("accessToken")?.replace(/['"]/g, '')
+
+export const fetchTaxes= ()=>{
+    return axios.get(`${Api_Endpoint2}/Taxes`, {
+        headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNpcGFkbWluIiwiZW1haWwiOiJhZGFuQHNpcGNvbnN1bHQubmV0Iiwic3VybmFtZSI6IkRPTkctVVVSRSIsImZpcnN0TmFtZSI6IkFEQU4iLCJnZW5kZXIiOiJNQUxFICAgICAgIiwiaWQiOiIzIiwiZXhwIjoxNjgxNDE4Nzg5LCJhdWQiOiJodHRwOi8vMjA4LjExNy40NC4xNS8ifQ.3wR0RE-zrF2MVIwgJdLtqN-uUQS2H38nffEYYtXcxXo`
+        }
+    })
+}
 export const fetchUsers= ()=>{
     return axios.get(`${Api_Endpoint}/Users`)
 }
