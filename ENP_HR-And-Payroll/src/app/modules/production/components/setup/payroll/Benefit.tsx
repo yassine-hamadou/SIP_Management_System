@@ -583,9 +583,9 @@ const Benefit = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
                   <select
+                   defaultValue={tempData?.typeOfAmount}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
-                    <option> {tempData?.typeOfAmount}</option>
                     {
                       typeOfAmountList.map((item: any) => (
                         <option value={item}>{item}</option>

@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import * as Yup from 'yup'
 import clsx from 'clsx'
-import {Link} from 'react-router-dom'
-import {useFormik} from 'formik'
-import {getUserByToken, login} from '../core/_requests'
-import {useAuth} from '../core/Auth'
+import { Link } from 'react-router-dom'
+import { useFormik } from 'formik'
+import { getUserByToken, login } from '../core/_requests'
+import { useAuth } from '../core/Auth'
 
 const loginSchema = Yup.object().shape({
   username: Yup.string()
@@ -34,15 +34,15 @@ const initialValues = {
 
 export function Login() {
   const [loading, setLoading] = useState(false)
-  const {saveAuth, setCurrentUser} = useAuth()
+  const { saveAuth, setCurrentUser } = useAuth()
 
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
-    onSubmit: async (values, {setStatus, setSubmitting}) => {
+    onSubmit: async (values, { setStatus, setSubmitting }) => {
       setLoading(true)
       try {
-        const {data: auth} = await login(values.username, values.password)
+        const { data: auth } = await login(values.username, values.password)
         saveAuth(auth)
         // const {data: user} = await getUserByToken(auth.jwtToken)
         setCurrentUser(auth.jwtToken)
@@ -74,7 +74,7 @@ export function Login() {
           {...formik.getFieldProps('username')}
           className={clsx(
             'form-control form-control-lg form-control-solid',
-            {'is-invalid': formik.touched.username && formik.errors.username},
+            { 'is-invalid': formik.touched.username && formik.errors.username },
             {
               'is-valid': formik.touched.username && !formik.errors.username,
             }
@@ -129,9 +129,21 @@ export function Login() {
               defaultValue={''}
               {...formik.getFieldProps('tenantId')}
             >
+
               {
-                
+                formik.values.username === '' && formik.values.password === '' ?
+                  '' : 
+                  <>
+                    <option value='damangDivision'>EnP - DAMANG DIVISION</option>
+                    <option value='dzataDivision'>EnP - DZATA DIVISION</option>
+                    <option value='mpohorDivision'>EnP - MPOHOR DIVISION</option>
+                    <option value='headOffice'>EnP - HEAD OFFICE</option>
+                    <option value='salagaDivision'>EnP - SALAGA DIVISION</option>
+                    <option value='tarkwaDivision'>EnP - TARKWA DIVISION</option>
+                  </>
               }
+
+
               {/* <option></option>
               <option value='damangDivision'>EnP - DAMANG DIVISION</option>
               <option value='dzataDivision'>EnP - DZATA DIVISION</option>
@@ -142,12 +154,12 @@ export function Login() {
             </select>
           </div>
           {formik.touched.tenantId && formik.errors.tenantId && (
-          <div className='fv-plugins-message-container'>
-            <div className='fv-help-block'>
-              <span role='alert'>{formik.errors.tenantId}</span>
+            <div className='fv-plugins-message-container'>
+              <div className='fv-help-block'>
+                <span role='alert'>{formik.errors.tenantId}</span>
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </div>
       </div>
       <div className='text-center'>
@@ -159,7 +171,7 @@ export function Login() {
         >
           {!loading && <span className='indicator-label'>Continue</span>}
           {loading && (
-            <span className='indicator-progress' style={{display: 'block'}}>
+            <span className='indicator-progress' style={{ display: 'block' }}>
               Please wait...
               <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
             </span>
