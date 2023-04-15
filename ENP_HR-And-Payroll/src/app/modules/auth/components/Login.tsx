@@ -126,12 +126,11 @@ export function Login() {
               data-kt-select2='true'
               data-placeholder='Select option'
               data-allow-clear='true'
-              defaultValue={''}
               {...formik.getFieldProps('tenantId')}
             >
 
               {
-                formik.values.username === '' && formik.values.password === '' ?
+                formik.values.username === '' || formik.values.password === '' ?
                   '' : 
                   <>
                     <option value='damangDivision'>EnP - DAMANG DIVISION</option>

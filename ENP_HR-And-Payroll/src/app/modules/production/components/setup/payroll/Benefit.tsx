@@ -13,6 +13,7 @@ type Fields = {
   name: string
 }
 
+
 const Benefit = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -33,6 +34,12 @@ const Benefit = () => {
   const typeOfAmountList = ['FORMULA', 'PERCENTAGE OF GROSS', 'VARYING AMOUNT', 'BASIC OF PERCENTAGE']
 
   const [tempData, setTempData] = useState<any>()
+  const [newBenefitCat, setNewBenefitCat] = useState([])
+  const [newPeriod, setNewPeriod] = useState([])
+  const [newCurrency, setNewCurrency] = useState([])
+  const [newTaxType, setNewTaxType] = useState([])
+  const [newTypeOfAmount, setNewTypeOfAmount] = useState([])
+
   const [isUpdate, setIsUpdate] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { register, reset, handleSubmit } = useForm()
@@ -46,16 +53,13 @@ const Benefit = () => {
   const [benefitCat, setBenefitCat] = useState<any>()
   const [periodInterval, setPeriodInterval] = useState<any>()
   const [taxTypeId, setTaxTypeId] = useState<any>()
-  const [currencyId, setCurrencyId] = useState<any>()
+  const [currency, setCurrency] = useState<any>()
   const [typeOfAmount, setTypeOfAmount] = useState<any>()
   const [accountNumber, setAccountNumber] = useState<any>()
   const [accrued, setAccrued] = useState<any>()
   const [startPeriod, setStartPeriod] = useState<any>()
 
-
-
-
-
+  
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -74,6 +78,12 @@ const Benefit = () => {
   const handleChange = (event: any) => {
     event.preventDefault()
     setTempData({ ...tempData, [event.target.name]: event.target.value });
+  }
+
+  // handle change in select fields
+  const handleSelectChange = (event: any, name: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [name]: event })
   }
 
 
@@ -198,23 +208,6 @@ const Benefit = () => {
     },
   ]
 
-  const getBenefitCatName = async () => {
-    let benefitCatName = ''
-    try {
-      const response = await axios.get(`${Api_Endpoint}/BenefitCats`)
-
-      response?.data.map((item: any) => {
-        if (item.id === tempData.benefitCatId) {
-          benefitCatName = item.name
-          return setBenefitCat(benefitCatName)
-        }
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-
   const loadData = async () => {
     setLoading(true)
     try {
@@ -229,7 +222,22 @@ const Benefit = () => {
   useEffect(() => {
     loadData()
 
-  }, [])
+    
+    
+
+    
+  })
+
+  useEffect(() => {
+    const benefitByID = benefits?.data.find((benefit: any) => {
+      return benefit.id.toString() === param.id
+    })
+    const getBenefit = () => {
+      setTempData(benefitByID)
+    }
+
+    getBenefit()
+  }, [param.id, benefits])
 
 
 
@@ -310,16 +318,56 @@ const Benefit = () => {
 
   })
 
-  console.log(tempData?.benefitCat)
+  const getBenefitCatName = () => {
+    let benefitCatName = ''
+    benefitCats?.data.map((item: any) => {
+      if (item.id === tempData?.benefitCat) {
+        benefitCatName = item.name
+        return setBenefitCat(benefitCatName)
+      }
+    })
+  }
+
+  const getCurrencyName = () => {
+    let currencyName = ''
+    currencies?.data.map((item: any) => {
+      if (item.id === tempData?.currencyID) {
+        currencyName = item.name
+        return setCurrency(currencyName)
+      }
+    })
+  }
+
+  const getStartPeriod = () => {
+    let startPeriod = ''
+    periods?.data.map((item: any) => {
+      if (item.id === tempData?.startPeriod) {
+        startPeriod = item.name
+        return setStartPeriod(startPeriod)
+      }
+    })
+  }
+
 
   const showUpdateModal = (values: any) => {
     setIsUpdate(true)
     setTempData(values);
 
+    const newBenefitCat = benefitCats?.data.filter((item: any) => item.id !== tempData?.benefitCat)
+    const newCurrency = currencies?.data.filter((item: any) => item.id !== tempData?.currencyID)
+    const newPeriod = periods?.data.filter((item: any) => item.id !== tempData?.startPeriod)  
+    const newTaxType = taxes?.data.filter((item: any) => item.id !== tempData?.taxTypeId)
+
+       
+    setNewBenefitCat(newBenefitCat)
+    setNewCurrency(newCurrency)
+    setNewPeriod(newPeriod)
+       
+    
+    getStartPeriod()
+    getCurrencyName()
+    getBenefitCatName()
   }
-
-  console.log(tempData)
-
 
   return (
     <div
@@ -402,7 +450,7 @@ const Benefit = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
-                  <select {...register("benefitCat")} name='benefitCat' className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("benefitCat")} onChange={handleChange}  className="form-select form-select-solid" aria-label="Select example">
                     <option>Select</option>
                     {
                       benefitCats?.data.map((item: any) => (
@@ -458,7 +506,7 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Currency</label>
                   {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
                   <select
-                    onChange={(e) => setSelectedCurrencyValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+                    onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                     <option> select</option>
                     {
                       currencies?.data.map((item: any) => (
@@ -482,7 +530,7 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                    onChange={(e) => setSelectedTaxtypeValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+                    onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                     <option> select</option>
                     {
                       taxes?.data.map((item: any) => (
@@ -495,7 +543,7 @@ const Benefit = () => {
               <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
-                  <select onChange={(e) => setSelectedPeriodValue(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+                  <select onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                     <option>Select period</option>
                     {
                       periods?.data.map((item: any) => (
@@ -562,18 +610,14 @@ const Benefit = () => {
                   <input {...register("description")} defaultValue={tempData?.description} onChange={handleChange} type="text" name='description' id='description' className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Category</label>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Catgory</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                  value={
-                    benefitCats?.data.map((item: any) => (
-                      item.id === parseInt(tempData?.benefitCat) ? item.name : null
-                    ))
-                  }
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
+                    <option>{benefitCat}</option>
                     {
-                      benefitCats?.data.map((item: any) => (
+                      newBenefitCat.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
                       ))
                     }
@@ -584,7 +628,7 @@ const Benefit = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
                   <select
-                   defaultValue={tempData?.typeOfAmount}
+                    defaultValue={tempData?.typeOfAmount}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
@@ -609,7 +653,7 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Period Type</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                  defaultValue={tempData?.periodType}
+                    defaultValue={tempData?.periodType}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option value="Monthly">Monthly</option>
@@ -632,16 +676,12 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Currency</label>
                   {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
                   <select
-                    defaultValue={
-                      currencies?.data.map((item: any) => (
-                        item.id === parseInt(tempData?.currencyId) ? item.name : null
-                      ))
-                    }
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
+                    <option>{currency}</option>
                     {
-                      currencies?.data.map((item: any) => (
-                        <option value={item.id}>{item.name}</option>
+                      newCurrency.map((item: any) => (
+                        <option value={tempData.currencyId}>{item.name}</option>
                       ))
                     }
                   </select>
@@ -663,11 +703,6 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                  defaultValue={
-                    taxes?.data.map((item: any) => (
-                      item.id === parseInt(tempData?.taxTypeId) ? item.name : 'select tax type'
-                    ))
-                  }
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
@@ -683,15 +718,10 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
                   <select
                     onChange={handleChange}
-                    className="form-select form-select-solid" aria-label="Select example"
-                    defaultValue={
-                      periods?.data.map((item: any) => (
-                        item.id === parseInt(tempData?.startPeriod) ? item.name : null
-                      ))
-                    }
-                  >
-                    {
-                      periods?.data.map((item: any) => (
+                    className="form-select form-select-solid" aria-label="Select example">
+                    <option>{startPeriod}</option>
+                      {
+                      newPeriod.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
                       ))
                     }
