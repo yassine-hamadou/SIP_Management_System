@@ -168,3 +168,15 @@ export const updateLeavePlanning = (data: any) => {
 export const fetchTaxes = () => {
     return axios.get(`${Api_Endpoint}/Taxes`)
 }
+
+export const updateTaxes = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Taxes/${data.id}`, data)
+}
+
+export const fetchTaxFormulas = () => {
+    return axios.get(`${Api_Endpoint}/TaxFormulas`)
+}
+
+export const updateTaxFormulas = (data: any) => {
+    return axios.put(`${Api_Endpoint}/TaxFormulas/${data.id}`, data)
+}

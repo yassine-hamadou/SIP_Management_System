@@ -112,7 +112,6 @@ const BenefitCats = () => {
       console.log(error)
     }
   }
-  const { data: allGrades } = useQuery('grades', fetchGrades, { cacheTime: 5000 })
 
   useEffect(() => {
 
