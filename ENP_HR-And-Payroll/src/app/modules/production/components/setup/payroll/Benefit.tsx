@@ -40,7 +40,7 @@ const Benefit = () => {
   const [newTaxType, setNewTaxType] = useState([])
   const [newTypeOfAmount, setNewTypeOfAmount] = useState([])
 
-  const [isUpdate, setIsUpdate] = useState(false)
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { register, reset, handleSubmit } = useForm()
 
@@ -66,13 +66,13 @@ const Benefit = () => {
 
   const handleOk = () => {
     setIsModalOpen(false)
-    setIsUpdate(false)
+    setIsUpdateModalOpen(false)
   }
 
   const handleCancel = () => {
     reset()
     setIsModalOpen(false)
-    setIsUpdate(false)
+    setIsUpdateModalOpen(false)
   }
 
   const handleChange = (event: any) => {
@@ -99,9 +99,6 @@ const Benefit = () => {
     }
   }
 
-  const handleBenefitChange = (event: any) => {
-    console.log('tyA: ', event.target.value)
-  }
 
   function handleDelete(element: any) {
     deleteData(element)
@@ -251,7 +248,7 @@ const Benefit = () => {
       reset()
       setTempData({})
       loadData()
-      setIsUpdate(false)
+      setIsUpdateModalOpen(false)
     },
     onError: (error) => {
       console.log('error: ', error)
@@ -332,7 +329,7 @@ const Benefit = () => {
 
 
   const showUpdateModal = (values: any) => {
-    setIsUpdate(true)
+    setIsUpdateModalOpen(true)
     setTempData(values);
 
     console.log(values)
@@ -563,7 +560,7 @@ const Benefit = () => {
 
           <Modal
             title='Benefit Update'
-            open={isUpdate}
+            open={isUpdateModalOpen}
             onCancel={handleCancel}
             closable={true}
             width={860}
@@ -610,7 +607,7 @@ const Benefit = () => {
                     {...register("benefitCat")}
                     name='benefitCat'
                     value={benefitCat}
-                    onChange={handleBenefitChange}
+                    onChange={e => setBenefitCat(e.target.value)}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
                       benefitCats?.data.map((item: any) => (
