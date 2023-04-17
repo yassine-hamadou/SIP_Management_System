@@ -132,13 +132,13 @@ export function Login() {
               {
                 
               }
-              {/* <option></option>
+              <option></option>
               <option value='damangDivision'>EnP - DAMANG DIVISION</option>
               <option value='dzataDivision'>EnP - DZATA DIVISION</option>
               <option value='mpohorDivision'>EnP - MPOHOR DIVISION</option>
               <option value='headOffice'>EnP - HEAD OFFICE</option>
               <option value='salagaDivision'>EnP - SALAGA DIVISION</option>
-              <option value='tarkwaDivision'>EnP - TARKWA DIVISION</option> */}
+              <option value='tarkwaDivision'>EnP - TARKWA DIVISION</option>
             </select>
           </div>
           {formik.touched.tenantId && formik.errors.tenantId && (

@@ -19,7 +19,7 @@ const Perks = () => {
   const param:any  = useParams();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -43,8 +43,6 @@ const Perks = () => {
       return e
     }
   }
-
-  
 
   function handleDelete(element: any) {
     deleteData(element)
@@ -97,10 +95,6 @@ const Perks = () => {
     },
   ]
 
- 
-
-  
-
   const loadData = async () => {
     setLoading(true)
     try {
@@ -116,9 +110,7 @@ const Perks = () => {
   const {data:allCurrencies} = useQuery('currencies', fetchCurrencies, {cacheTime:5000})
 
   const getItemName= async (param:any) =>{
-
     let newName=null
-  
      const   itemTest = await allGrades?.data.find((item:any) =>
       item.id.toString()===param
     )
