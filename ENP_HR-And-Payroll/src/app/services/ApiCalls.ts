@@ -137,8 +137,20 @@ export const fetchBenefitsCategory = () => {
     return axios.get(`${Api_Endpoint}/BenefitCats`)
 }
 
+export const updateBenefitCats = (data: any) => {
+    return axios.put(`${Api_Endpoint}/BenefitCats/${data.id}`, data)
+}
+
 export const fetchDeductionsCategory = () => {
     return axios.get(`${Api_Endpoint}/DeductionCats`)
+}
+
+export const updateDeductionsCategory = (data: any) => {
+    return axios.put(`${Api_Endpoint}/DeductionCats/${data.id}`, data)
+}
+
+export const updateDeductions = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Deductions/${data.id}`, data)
 }
 
 export const postLeavePlanning = (data: any) => {
@@ -153,4 +165,18 @@ export const updateLeavePlanning = (data: any) => {
     return axios.put(`${Api_Endpoint}/LeavePlanings/${data.id}`, data)
 }
 
+export const fetchTaxes = () => {
+    return axios.get(`${Api_Endpoint}/Taxes`)
+}
 
+export const updateTaxes = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Taxes/${data.id}`, data)
+}
+
+export const fetchTaxFormulas = () => {
+    return axios.get(`${Api_Endpoint}/TaxFormulas`)
+}
+
+export const updateTaxFormulas = (data: any) => {
+    return axios.put(`${Api_Endpoint}/TaxFormulas/${data.id}`, data)
+}
