@@ -30,6 +30,9 @@ export const updateGrade = (data: any) => {
 export const fetchGradePerks= ()=>{
     return axios.get(`${Api_Endpoint}/GradePerks`)
 }
+export const updateGradePerks = (data: any) => {
+    return axios.put(`${Api_Endpoint}/GradePerks/${data.id}`, data)
+}
 export const fetchPerks= ()=>{
     return axios.get(`${Api_Endpoint}/Perks`)
 }
