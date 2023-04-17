@@ -24,11 +24,17 @@ export const fetchUnits= ()=>{
 export const fetchGrades= ()=>{
     return axios.get(`${Api_Endpoint}/Grades`)
 }
+export const updateGrade = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Grades/${data.id}`, data)
+}
 export const fetchGradePerks= ()=>{
     return axios.get(`${Api_Endpoint}/GradePerks`)
 }
 export const fetchPerks= ()=>{
     return axios.get(`${Api_Endpoint}/Perks`)
+}
+export const updatePerk = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Perks/${data.id}`, data)
 }
 export const fetchCategories= ()=>{
     return axios.get(`${Api_Endpoint}/Categories`)
@@ -36,8 +42,14 @@ export const fetchCategories= ()=>{
 export const fetchNotches= ()=>{
     return axios.get(`${Api_Endpoint}/Notches`)
 }
+export const updateNotch = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Notches/${data.id}`, data)
+}
 export const fetchPaygroups= ()=>{
     return axios.get(`${Api_Endpoint}/Paygroups`)
+}
+export const updatePaygroup = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Paygroups/${data.id}`, data)
 }
 export const fetchEmployees= ()=>{
     return axios.get(`${Api_Endpoint}/Employees`)

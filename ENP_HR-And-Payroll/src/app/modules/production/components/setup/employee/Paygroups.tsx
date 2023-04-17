@@ -1,13 +1,13 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { PAYGROUP } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchPaygroups } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchPaygroups, updatePaygroup } from '../../../../../services/ApiCalls'
 import { Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 const Paygroups = () => {
   const [gridData, setGridData] = useState([])
@@ -15,8 +15,10 @@ const Paygroups = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const {register, reset, handleSubmit} = useForm()
+  const { register, reset, handleSubmit } = useForm()
+  const [tempData, setTempData] = useState<any>()
 
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -30,6 +32,12 @@ const Paygroups = () => {
   const handleCancel = () => {
     reset()
     setIsModalOpen(false)
+    setIsUpdateModalOpen(false)
+  }
+
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
   const deleteData = async (element: any) => {
@@ -44,13 +52,13 @@ const Paygroups = () => {
     }
   }
 
-  
+
 
   function handleDelete(element: any) {
     deleteData(element)
   }
   const columns: any = [
-   
+
     {
       title: 'Code',
       dataIndex: 'code',
@@ -100,21 +108,21 @@ const Paygroups = () => {
           <Link to={`/grades/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Grades</span>
           </Link>
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={ () => showUpdateModal(record) } className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-         
+
         </Space>
       ),
-      
+
     },
   ]
 
 
-  const {data:allPaygroups} = useQuery('paygroups', fetchPaygroups, {cacheTime:5000})
+  const { data: allPaygroups } = useQuery('paygroups', fetchPaygroups, { cacheTime: 5000 })
   const loadData = async () => {
     setLoading(true)
     try {
@@ -133,7 +141,7 @@ const Paygroups = () => {
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
     key: index,
-    numberOfHours: item.numberOfHours===null?"---":item.numberOfHours,
+    numberOfHours: item.numberOfHours === null ? "---" : item.numberOfHours,
   }))
 
   const handleInputChange = (e: any) => {
@@ -153,14 +161,34 @@ const Paygroups = () => {
     setGridData(filteredData)
   }
 
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation(updatePaygroup, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['paygroup', tempData.id], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsUpdateModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    mutate(tempData)
+    console.log('update: ', tempData)
+  }
+
   const url = `${Api_Endpoint}/Paygroups`
-  const OnSUbmit = handleSubmit( async (values)=> {
+  const OnSUbmit = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
-          code: values.code,
-          name: values.name,
-          numberOfHours: values.numberOfHours,
-        }
+      code: values.code,
+      name: values.name,
+      numberOfHours: values.numberOfHours,
+    }
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
@@ -174,6 +202,12 @@ const Paygroups = () => {
     }
   })
 
+  const showUpdateModal = (values: any) => {
+    setIsUpdateModalOpen(true)
+    setTempData(values);
+    console.log(values)
+  }
+
   return (
     <div
       style={{
@@ -186,7 +220,7 @@ const Paygroups = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
@@ -198,7 +232,7 @@ const Paygroups = () => {
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -207,54 +241,97 @@ const Paygroups = () => {
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-            </button>
+              </button>
             </Space>
           </div>
-          <Table columns={columns}  dataSource={dataWithIndex} loading={loading}/>
+          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
           <Modal
-                title='Paygroup Setup'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={OnSUbmit}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='Paygroup Setup'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={OnSUbmit}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={OnSUbmit}
             >
-                <form
-                    onSubmit={OnSUbmit}
-                >
-                  <hr></hr>
-                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
-                    </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" {...register("name")}  className="form-control form-control-solid"/>
-                    </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Number of Hours</label>
-                      <input type="number" min={0} {...register("numberOfHours")}  className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                </form>
-            </Modal>
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text" {...register("code")} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Number of Hours</label>
+                  <input type="number" min={0} {...register("numberOfHours")} className="form-control form-control-solid" />
+                </div>
+              </div>
+            </form>
+          </Modal>
+
+          {/* update modal */}
+          
+          <Modal
+            title='Paygroup Update'
+            open={isUpdateModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={handleUpdate}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={handleUpdate}
+            >
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text" {...register("code")} value={tempData?.code} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} value={tempData?.name} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Number of Hours</label>
+                  <input type="number" min={0} {...register("numberOfHours")} value={tempData?.numberOfHours} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+              </div>
+            </form>
+          </Modal>
         </div>
       </KTCardBody>
     </div>
   )
 }
 
-export {Paygroups}
+export { Paygroups }
