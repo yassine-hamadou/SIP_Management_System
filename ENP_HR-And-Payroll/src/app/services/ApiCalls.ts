@@ -95,6 +95,9 @@ export const fetchNoteCategories= ()=>{
 export const fetchGradeLeaves= ()=>{
     return axios.get(`${Api_Endpoint}/GradeLeaves`)
 }
+export const updateGradeLeave = (data: any) => {
+    return axios.put(`${Api_Endpoint}/GradeLeaves/${data.id}`, data)
+}
 
 export const fetchCurrencies= ()=>{
     return axios.get(`${Api_Endpoint}/Currencies`)

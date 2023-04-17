@@ -158,7 +158,7 @@ const Grades = () => {
 
   // this filters for only grades for the pARAM ID 
   const dataByID = gridData.filter((section: any) => {
-    return section.paygroupId.toString() === param.id
+    return section.paygroupId?.toString() === param.id
   })
 
   const loadData = async () => {
