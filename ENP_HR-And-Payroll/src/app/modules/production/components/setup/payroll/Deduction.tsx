@@ -83,9 +83,9 @@ const Deduction = () => {
     data?.map((item: any) => {
       if (item.id === field) {
         fieldName = item.name
-        return fieldName
       }
     })
+    return fieldName
   }
 
   // filter item out from data
@@ -149,6 +149,9 @@ const Deduction = () => {
     {
       title: 'Category',
       dataIndex: 'deductionCatId',
+      render: (_: any, record: any) => {
+        return getFieldname(deductionCats?.data, record.deductionCatId)      
+      },
       sorter: (a: any, b: any) => {
         if (a.deductionCatId > b.deductionCatId) {
           return 1
@@ -201,6 +204,9 @@ const Deduction = () => {
     {
       title: 'Currency',
       dataIndex: 'currencyId',
+      render: (_: any, record: any) => {
+        return getFieldname(currencies?.data, record.currencyId)      
+      },
       sorter: (a: any, b: any) => {
         if (a.currencyId > b.currencyId) {
           return 1
@@ -631,7 +637,7 @@ const Deduction = () => {
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Amount</label>
-                  <input type="number" {...register("account")} min={0} name="account" value={tempData?.account} className="form-control form-control-solid" />
+                  <input type="number" {...register("account")} min={0} name="account" value={tempData?.account} onChange={handleChange} className="form-control form-control-solid" />
 
                 </div>
               </div>
@@ -673,8 +679,8 @@ const Deduction = () => {
                   {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
                   <select
                     {...register("currencyId")}
-                    value={tempData?.currencyID}
-                    onChange={e => setStartPeriod(e.target.value)}
+                    value={tempData?.currencyId}
+                    onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
                       currencies?.data.map((item: any) => (
@@ -702,8 +708,8 @@ const Deduction = () => {
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
                     {...register("taxTypeId")}
-                    value={taxType}
-                    onChange={e => setTaxType(e.target.value)}
+                    value={tempData?.taxTypeId}
+                    onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
                       taxes?.data.map((item: any) => (
@@ -718,8 +724,8 @@ const Deduction = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
                   <select
                     {...register("startPeriod")}
-                    value={startPeriod}
-                    onChange={e => setStartPeriod(e.target.value)}
+                    value={tempData?.startPeriod}
+                    onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
                       periods?.data.map((item: any) => (
@@ -728,7 +734,6 @@ const Deduction = () => {
                     }
                   </select>
                 </div>
-
               </div>
             </form>
           </Modal>
