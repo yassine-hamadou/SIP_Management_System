@@ -14,12 +14,21 @@ export let axioInstance = axios.create({
 export const fetchDivisions= ()=>{
     return axios.get(`${Api_Endpoint}/Divisions`)
 }
+export const updateDivison = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Divisions/${data.id}`, data)
+}
 
 export const fetchDepartments= ()=>{
     return axios.get(`${Api_Endpoint}/Departments`)
 }
+export const updateDepartment= (data: any) => {
+    return axios.put(`${Api_Endpoint}/Departments/${data.id}`, data)
+}
 export const fetchUnits= ()=>{
     return axios.get(`${Api_Endpoint}/Units`)
+}
+export const updateUnit = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Units/${data.id}`, data)
 }
 export const fetchGrades= ()=>{
     return axios.get(`${Api_Endpoint}/Grades`)
@@ -41,6 +50,9 @@ export const updatePerk = (data: any) => {
 }
 export const fetchCategories= ()=>{
     return axios.get(`${Api_Endpoint}/Categories`)
+}
+export const updateCategory = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Categories/${data.id}`, data)
 }
 export const fetchNotches= ()=>{
     return axios.get(`${Api_Endpoint}/Notches`)
