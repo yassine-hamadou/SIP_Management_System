@@ -553,7 +553,7 @@ const Benefit = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="code" className="required form-label">Code</label>
 
-                  <input {...register("code")}  value={tempData?.code} onChange={handleChange} className="form-control form-control-solid" />
+                  <input {...register("code")} value={tempData?.code} onChange={handleChange} className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="name" className="required form-label">Name</label>
@@ -599,7 +599,7 @@ const Benefit = () => {
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="amount" className="required form-label">Amount</label>
-                  <input  {...register("amount")} value={tempData?.amount} onChange={handleChange} type="number"  min={0} className="form-control form-control-solid" />
+                  <input  {...register("amount")} value={tempData?.amount} onChange={handleChange} type="number" min={0} className="form-control form-control-solid" />
 
                 </div>
               </div>
@@ -640,7 +640,7 @@ const Benefit = () => {
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
-                       currencies?.data.map((item: any) => (
+                      currencies?.data.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
                       ))
                     }
@@ -663,8 +663,8 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Tax Type</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                  {...register("taxTypeId")}
-                  value={tempData?.taxTypeId}
+                    {...register("taxTypeId")}
+                    value={tempData?.taxTypeId}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {

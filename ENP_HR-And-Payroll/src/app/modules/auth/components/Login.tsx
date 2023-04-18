@@ -149,7 +149,6 @@ export function Login() {
                     <option value='tarkwaDivision'>EnP - TARKWA DIVISION</option>
                   </>
               }
-              {/* <option></option> */}
 
 
               {/* <option></option>
