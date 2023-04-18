@@ -1,6 +1,9 @@
 import {AuthModel} from './_models'
 
-const AUTH_LOCAL_STORAGE_KEY = 'kt-auth-react-v'
+const AUTH_LOCAL_STORAGE_KEY = 'token'
+const AccessKey = 'accessToken'
+const SessionAccessKey = 'sessionAccessToken'
+const refreshKey = 'refreshToken'
 const getAuth = (): AuthModel | undefined => {
   if (!localStorage) {
     return
@@ -28,8 +31,17 @@ const setAuth = (auth: AuthModel) => {
   }
 
   try {
-    const lsValue = JSON.stringify(auth.jwtToken)
+    const lsValue = JSON.stringify(auth)
+    const tok = JSON.stringify(auth.jwtToken)
+    const sessionToken = JSON.stringify(auth.jwtToken)
+    const refresh = JSON.stringify(auth.refreshToken)
     localStorage.setItem(AUTH_LOCAL_STORAGE_KEY, lsValue)
+     //here I am saving the jwtToken of the login user
+     sessionStorage.setItem(SessionAccessKey, sessionToken)
+     //here I am saving the jwtToken of the login user
+     localStorage.setItem(AccessKey, tok)
+     //here I am saving the refreshToken of the login user
+     localStorage.setItem(refreshKey, refresh)
   } catch (error) {
     console.error('AUTH LOCAL STORAGE SAVE ERROR', error)
   }
@@ -55,11 +67,10 @@ export function setupAxios(axios: any) {
       if (auth && auth.jwtToken) {
         config.headers.Authorization = `${auth.jwtToken}`
       }
-
       return config
     },
     (err: any) => Promise.reject(err)
   )
 }
 
-export {getAuth, setAuth, removeAuth, AUTH_LOCAL_STORAGE_KEY}
+export {getAuth, setAuth, removeAuth, AUTH_LOCAL_STORAGE_KEY, AccessKey}

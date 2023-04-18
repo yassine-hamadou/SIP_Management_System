@@ -6,6 +6,7 @@ import { ENP_URL } from '../../../urls'
 import { Api_Endpoint, fetchTaxFormulas, fetchTaxes, updateTaxes } from '../../../../../services/ApiCalls'
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useForm } from 'react-hook-form'
+import { reach } from 'yup'
 
 const Tax = () => {
   const [gridData, setGridData] = useState([])
@@ -169,19 +170,41 @@ const Tax = () => {
     },
   ]
 
-  const loadData = async () => {
-    setLoading(true)
-    try {
-      const response = await axios.get(`${Api_Endpoint}/Taxes`)
-      setGridData(response.data)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
+
+  const testToken  = sessionStorage.getItem('sessionAccessToken')?.replace(/['"]/g, '')
+
+  // console.log(testToken)
+
+  const cusHeaders = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + testToken
   }
+  // const loadData = async () => {
+  //   setLoading(true)
+  //   try {
+  //     const response = await axios.get(`${Api_Endpoint}/Taxes`,{headers:cusHeaders})
+  //     setGridData(response.data)
+  //     setLoading(false)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
   useEffect(() => {
-    loadData()
+    // loadData()
+
+    fetch(`${Api_Endpoint}/Taxes`, {
+      headers: {
+        
+      }
+    }).then((res)=>{
+      return res.json();
+    }).then((resp)=>{
+      console.log(resp)
+    }).catch((err)=>{
+      console.log(err.message);
+      
+    })
   }, [])
 
 
@@ -193,7 +216,7 @@ const Tax = () => {
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
-      loadData()
+      // loadData()
     }
   }
 
@@ -204,7 +227,7 @@ const Tax = () => {
       queryClient.setQueryData(['taxes', tempData.id], data);
       reset()
       setTempData({})
-      loadData()
+      // loadData()
       setIsUpdate(false)
     }
   })
@@ -241,7 +264,7 @@ const Tax = () => {
       setSubmitLoading(false)
       reset()
       setIsModalOpen(false)
-      loadData()
+      // loadData()
       console.log(data)
       return response.statusText
     } catch (error: any) {

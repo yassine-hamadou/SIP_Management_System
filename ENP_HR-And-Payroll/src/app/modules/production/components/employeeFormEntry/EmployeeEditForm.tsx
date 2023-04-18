@@ -881,8 +881,7 @@ const EmployeeEditForm = () => {
 
 
   useEffect(() => {
-    const newData = allPaygroups?.data.filter((item: any) => item.id !== tempData?.paygroupId)
-    setNewPay(newData)
+    
 
     const getDepartmentName = () => {
       let departmentName = null
@@ -893,6 +892,7 @@ const EmployeeEditForm = () => {
       })
       return setDepName(departmentName)
     }
+
     const getGradeName = () => {
       let gradeName = ""
       allGrades?.data.map((item: any) => {
@@ -912,6 +912,7 @@ const EmployeeEditForm = () => {
       })
       return setUniName(unitName)
     }
+
     const getJobTName = () => {
       let jobTitleName = ""
       allJobTitles?.data.map((item: any) => {
@@ -941,6 +942,7 @@ const EmployeeEditForm = () => {
       })
       return setDivName(divisionName)
     }
+
     const getPaygroupName = () => {
       let paygroupName = null
       allPaygroups?.data.map((item: any) => {
@@ -950,6 +952,7 @@ const EmployeeEditForm = () => {
       })
       return setPaygName(paygroupName)
     }
+
     const getNotchName = () => {
       let notchName = null
       allNotches?.data.map((item: any) => {
@@ -959,6 +962,7 @@ const EmployeeEditForm = () => {
       })
       return setNotchName(notchName)
     }
+
     getCatName()
     getJobTName()
     getUnitName()
@@ -970,7 +974,8 @@ const EmployeeEditForm = () => {
   })
 
   useEffect(() => {
-
+    const newData = allPaygroups?.data.filter((item: any) => item.id !== tempData?.paygroupId)
+    setNewPay(newData)
 
     const dataByID = allEmployees?.data.find((employee: any) => {
       return employee.id.toString() === param.id
@@ -1043,7 +1048,6 @@ const EmployeeEditForm = () => {
     mutate(tempData)
   }
 
-  console.log(tempData)
 
   const url = `${Api_Endpoint}/EmployeeSkills`
   const submitSkills = handleSubmit(async (values: any) => {
@@ -1052,7 +1056,6 @@ const EmployeeEditForm = () => {
       skillId: values.skillId,
       employeeId: parseInt(param.id),
     }
-    console.log(data)
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
@@ -1073,7 +1076,6 @@ const EmployeeEditForm = () => {
       name: values.name,
       employeeId: parseInt(param.id),
     }
-    console.log(data)
     try {
       const response = await axios.post(url1, data)
       setSubmitLoading(false)
@@ -1094,7 +1096,6 @@ const EmployeeEditForm = () => {
       qualificationId: values.qualificationId,
       employeeId: parseInt(param.id),
     }
-    console.log(data)
     try {
       const response = await axios.post(url2, data)
       setSubmitLoading(false)
@@ -1122,7 +1123,6 @@ const EmployeeEditForm = () => {
       note: values.note,
       employeeId: parseInt(param.id),
     }
-    console.log(data)
     try {
       const response = await axios.post(url3, data)
       setSubmitLoading(false)

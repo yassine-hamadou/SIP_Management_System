@@ -11,7 +11,7 @@ import {
 import {LayoutSplashScreen} from '../../../../_metronic/layout/core'
 import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
-import {getUserByToken} from './_requests'
+import {getUserByToken, parseJwt} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
 
 type AuthContextProps = {
@@ -69,7 +69,8 @@ const AuthInit: FC<WithChildren> = ({children}) => {
     const requestUser = async (apiToken: string) => {
       try {
         if (!didRequest.current) {
-          const {data} = await getUserByToken(apiToken)
+          // const {data} = await getUserByToken(apiToken)
+          const data:any =  parseJwt(apiToken)
           if (data) {
             setCurrentUser(data)
           }
@@ -77,7 +78,7 @@ const AuthInit: FC<WithChildren> = ({children}) => {
       } catch (error) {
         console.error(error)
         if (!didRequest.current) {
-          logout()
+          // logout()
         }
       } finally {
         setShowSplashScreen(false)

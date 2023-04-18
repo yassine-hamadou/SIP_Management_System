@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import clsx from 'clsx'
 import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
-import { getUserByToken, login } from '../core/_requests'
+import { getUserByToken, login, parseJwt } from '../core/_requests'
 import { useAuth } from '../core/Auth'
 
 const loginSchema = Yup.object().shape({
@@ -44,8 +44,16 @@ export function Login() {
       try {
         const { data: auth } = await login(values.username, values.password)
         saveAuth(auth)
+        //this gets the jwtToken of the login user!
+        const token:any = localStorage.getItem("accessToken")
         // const {data: user} = await getUserByToken(auth.jwtToken)
-        setCurrentUser(auth.jwtToken)
+        // setCurrentUser(auth.jwtToken)
+         //this goes to decode the token and return the user details!
+         parseJwt(token)
+        
+         //now I have to assign the !
+         const cuUser:any =  parseJwt(token)
+        setCurrentUser(cuUser)
       } catch (error) {
         console.error(error)
         setStatus('The login detail is incorrect')

@@ -82,6 +82,7 @@ const Benefit = () => {
   function handleDelete(element: any) {
     deleteData(element)
   }
+
   const columns: any = [
 
     {
@@ -211,6 +212,7 @@ const Benefit = () => {
     key: index,
   }))
 
+  
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
@@ -310,7 +312,6 @@ const Benefit = () => {
   const showUpdateModal = (values: any) => {
     setIsUpdateModalOpen(true)
     setTempData(values);
-
     console.log(values)
   }
 

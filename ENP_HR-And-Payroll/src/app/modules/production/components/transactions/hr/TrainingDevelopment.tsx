@@ -678,7 +678,7 @@ const TrainingDevelopment = () => {
             }}
           >
 
-          <Table columns={columnSchedules} dataSource={trainSchData}  />
+          <Table columns={columnSchedules} dataSource={trainSchData} pagination={{defaultPageSize:3}} />
           </div>
         </div>
         <div>
@@ -711,7 +711,7 @@ const TrainingDevelopment = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={traineeEmployeeData} />
+          <Table columns={columns} dataSource={traineeEmployeeData}  />
 
           {/* Modal for adding Employeee to trainingRef*/}
           <Modal

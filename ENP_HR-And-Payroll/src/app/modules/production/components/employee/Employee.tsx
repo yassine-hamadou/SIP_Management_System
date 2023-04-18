@@ -271,7 +271,6 @@ const Employee = () => {
     }
   }
 
-  console.log(localStorage.getItem("kt-auth-react-v"))
 
   useEffect(() => {
     loadData()
