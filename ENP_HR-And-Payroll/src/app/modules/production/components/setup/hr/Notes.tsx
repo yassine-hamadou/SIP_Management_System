@@ -1,11 +1,10 @@
-import {Button, Form, Input, InputNumber, Modal, Radio, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Input, Modal, Space, Table } from 'antd'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
-import { NOTES } from '../../../../../data/DummyData'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
+import { Api_Endpoint, updateItem, updateNoteCategory, updatePerk } from '../../../../../services/ApiCalls'
+import { useQueryClient, useMutation } from 'react-query'
 
 const Notes = () => {
   const [gridData, setGridData] = useState([])
@@ -14,6 +13,9 @@ const Notes = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const {register, reset, handleSubmit} = useForm()
+  const [tempData, setTempData] = useState<any>()
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -27,6 +29,12 @@ const Notes = () => {
   const handleCancel = () => {
     reset()
     setIsModalOpen(false)
+    setIsUpdateModalOpen(false)
+  }
+
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
   const deleteData = async (element: any) => {
@@ -98,7 +106,7 @@ const Notes = () => {
           {/* <Link to={`/setup/sections/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Sections</span>
           </Link> */}
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
@@ -147,6 +155,32 @@ const Notes = () => {
     })
     setGridData(filteredData)
   }
+  const queryClient = useQueryClient()
+  const { isLoading, mutate: PutNoteCategory } = useMutation(updateNoteCategory , {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['NoteCategories', tempData.id], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsUpdateModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    PutNoteCategory(tempData)
+    console.log('update: ', tempData)
+  }
+
+  const showUpdateModal = (values: any) => {
+    setIsUpdateModalOpen(true)
+    setTempData(values);
+    console.log(values)
+  }
+
 
   const url = `${Api_Endpoint}/NoteCategories`
   const OnSUbmit = handleSubmit( async (values)=> {
@@ -280,10 +314,50 @@ const Notes = () => {
                   </div>
                 </form>
             </Modal>
+
+            {/* update modal */}
+
+          <Modal
+            title='Note Category Update'
+            open={isUpdateModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={handleUpdate}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={handleUpdate}
+            >
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text" {...register("code")} value={tempData?.code} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} value={tempData?.name} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+              </div>
+            </form>
+          </Modal>
         </div>
       </KTCardBody>
     </div>
   )
 }
 
-export {Notes}
+export { Notes }
+
