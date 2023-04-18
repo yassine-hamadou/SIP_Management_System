@@ -293,7 +293,7 @@ const Perks = () => {
           {/* update modal */}
 
           <Modal
-            title='Perks Update'
+            title='Perk Update'
             open={isUpdateModalOpen}
             onCancel={handleCancel}
             closable={true}

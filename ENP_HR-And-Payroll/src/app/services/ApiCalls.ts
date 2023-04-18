@@ -2,71 +2,71 @@ import axios from 'axios';
 
 
 
-export  const Api_Endpoint ="http://208.117.44.15/hrwebapi/api";
+export const Api_Endpoint = "http://208.117.44.15/hrwebapi/api";
 
 export let axioInstance = axios.create({
     headers: {
-      Authorization : `${localStorage.getItem("kt-auth-react-v")}`
-      }
+        Authorization: `${localStorage.getItem("kt-auth-react-v")}`
     }
+}
 )
 
-export const fetchDivisions= ()=>{
+export const fetchDivisions = () => {
     return axios.get(`${Api_Endpoint}/Divisions`)
 }
 export const updateDivison = (data: any) => {
     return axios.put(`${Api_Endpoint}/Divisions/${data.id}`, data)
 }
 
-export const fetchDepartments= ()=>{
+export const fetchDepartments = () => {
     return axios.get(`${Api_Endpoint}/Departments`)
 }
-export const updateDepartment= (data: any) => {
+export const updateDepartment = (data: any) => {
     return axios.put(`${Api_Endpoint}/Departments/${data.id}`, data)
 }
-export const fetchUnits= ()=>{
+export const fetchUnits = () => {
     return axios.get(`${Api_Endpoint}/Units`)
 }
 export const updateUnit = (data: any) => {
     return axios.put(`${Api_Endpoint}/Units/${data.id}`, data)
 }
-export const fetchGrades= ()=>{
+export const fetchGrades = () => {
     return axios.get(`${Api_Endpoint}/Grades`)
 }
 export const updateGrade = (data: any) => {
     return axios.put(`${Api_Endpoint}/Grades/${data.id}`, data)
 }
-export const fetchGradePerks= ()=>{
+export const fetchGradePerks = () => {
     return axios.get(`${Api_Endpoint}/GradePerks`)
 }
 export const updateGradePerks = (data: any) => {
     return axios.put(`${Api_Endpoint}/GradePerks/${data.id}`, data)
 }
-export const fetchPerks= ()=>{
+export const fetchPerks = () => {
     return axios.get(`${Api_Endpoint}/Perks`)
 }
 export const updatePerk = (data: any) => {
     return axios.put(`${Api_Endpoint}/Perks/${data.id}`, data)
 }
-export const fetchCategories= ()=>{
+export const fetchCategories = () => {
     return axios.get(`${Api_Endpoint}/Categories`)
 }
 export const updateCategory = (data: any) => {
     return axios.put(`${Api_Endpoint}/Categories/${data.id}`, data)
 }
-export const fetchNotches= ()=>{
+export const fetchNotches = () => {
     return axios.get(`${Api_Endpoint}/Notches`)
 }
 export const updateNotch = (data: any) => {
     return axios.put(`${Api_Endpoint}/Notches/${data.id}`, data)
 }
-export const fetchPaygroups= ()=>{
+export const fetchPaygroups = () => {
     return axios.get(`${Api_Endpoint}/Paygroups`)
 }
 export const updatePaygroup = (data: any) => {
     return axios.put(`${Api_Endpoint}/Paygroups/${data.id}`, data)
 }
-export const fetchEmployees= ()=>{
+export const fetchEmployees = () => {
     return axios.get(`${Api_Endpoint}/Employees`)
 }
 export const updateEmployee = (data: any) => {
@@ -78,40 +78,54 @@ export const updateBenefit = (data: any) => {
 export const fetchBenefits = (data: any) => {
     return axios.get(`${Api_Endpoint}/Benefits/`)
 }
-export const fetchBanks= ()=>{
+export const fetchBanks = () => {
     return axios.get(`${Api_Endpoint}/Banks`)
 }
-export const fetchNationalities= ()=>{
+export const fetchNationalities = () => {
     return axios.get(`${Api_Endpoint}/Nationalities`)
 }
-export const fetchSkills= ()=>{
+
+export const updateNationality = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Nationalities/${data.id}`, data)
+}
+export const fetchSkills = () => {
     return axios.get(`${Api_Endpoint}/Skills`)
 }
-export const fetchExperiences= ()=>{
+export const updateSkill = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Skills/${data.id}`, data)
+}
+
+export const fetchExperiences = () => {
     return axios.get(`${Api_Endpoint}/Experiences`)
 }
-export const fetchQualifications= ()=>{
+export const fetchQualifications = () => {
     return axios.get(`${Api_Endpoint}/Qualifications`)
 }
-export const fetchJobTitles= ()=>{
+export const updateQualification = (data: any) => {
+    return axios.put(`${Api_Endpoint}/Qualifications/${data.id}`, data)
+}
+export const fetchJobTitles = () => {
     return axios.get(`${Api_Endpoint}/JobTitles`)
 }
-export const fetchMedicals= ()=>{
+export const updateJobTitle = (data: any) => {
+    return axios.put(`${Api_Endpoint}/JobTitles/${data.id}`, data)
+}
+export const fetchMedicals = () => {
     return axios.get(`${Api_Endpoint}/Medicals`)
 }
 
-export const fetchNoteCategories= ()=>{
+export const fetchNoteCategories = () => {
     return axios.get(`${Api_Endpoint}/NoteCategories`)
 }
 
-export const fetchGradeLeaves= ()=>{
+export const fetchGradeLeaves = () => {
     return axios.get(`${Api_Endpoint}/GradeLeaves`)
 }
 export const updateGradeLeave = (data: any) => {
     return axios.put(`${Api_Endpoint}/GradeLeaves/${data.id}`, data)
 }
 
-export const fetchCurrencies= ()=>{
+export const fetchCurrencies = () => {
     return axios.get(`${Api_Endpoint}/Currencies`)
 }
 

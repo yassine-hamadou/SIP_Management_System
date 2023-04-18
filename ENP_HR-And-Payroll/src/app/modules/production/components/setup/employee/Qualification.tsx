@@ -1,9 +1,10 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Input, Modal, Space, Table } from 'antd'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
+import { Api_Endpoint, updateQualification } from '../../../../../services/ApiCalls'
+import { useQueryClient, useMutation } from 'react-query'
 
 const Qualification = () => {
   const [gridData, setGridData] = useState([])
@@ -11,8 +12,9 @@ const Qualification = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const {register, reset, handleSubmit} = useForm()
-
+  const { register, reset, handleSubmit } = useForm()
+  const [tempData, setTempData] = useState<any>()
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -26,6 +28,12 @@ const Qualification = () => {
   const handleCancel = () => {
     reset()
     setIsModalOpen(false)
+    setIsUpdateModalOpen(false)
+  }
+
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
   const deleteData = async (element: any) => {
@@ -40,13 +48,11 @@ const Qualification = () => {
     }
   }
 
-  
-
   function handleDelete(element: any) {
     deleteData(element)
   }
   const columns: any = [
-   
+
     {
       title: 'Code',
       dataIndex: 'code',
@@ -80,16 +86,16 @@ const Qualification = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-         
+
         </Space>
       ),
-      
+
     },
   ]
   const loadData = async () => {
@@ -129,13 +135,40 @@ const Qualification = () => {
     setGridData(filteredData)
   }
 
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation(updateQualification, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['qualification', tempData.id], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsUpdateModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    mutate(tempData)
+    console.log('update: ', tempData)
+  }
+
+  const showUpdateModal = (values: any) => {
+    setIsUpdateModalOpen(true)
+    setTempData(values);
+    console.log(values)
+  }
+
+
   const url = `${Api_Endpoint}/Qualifications`
-  const OnSUbmit = handleSubmit( async (values)=> {
+  const OnSUbmit = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
-          code: values.code,
-          name: values.name,
-        }
+      code: values.code,
+      name: values.name,
+    }
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
@@ -161,7 +194,7 @@ const Qualification = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
@@ -173,7 +206,7 @@ const Qualification = () => {
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -182,51 +215,91 @@ const Qualification = () => {
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-            </button>
+              </button>
             </Space>
           </div>
-          <Table columns={columns}  dataSource={dataWithIndex} loading={loading} />
+          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
           <Modal
-                title='Qualifications Setup'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={OnSUbmit}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='Qualifications Setup'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={OnSUbmit}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={OnSUbmit}
             >
-                <form
-                    onSubmit={OnSUbmit}
-                >
-                  <hr></hr>
-                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
-                    </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" {...register("name")} className="form-control form-control-solid"/>
-                    </div>
-                    
-                  </div>
-                </form>
-            </Modal>
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text" {...register("code")} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} className="form-control form-control-solid" />
+                </div>
+
+              </div>
+            </form>
+          </Modal>
+
+           {/* update modal */}
+
+           <Modal
+            title='Qualification Update'
+            open={isUpdateModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={handleUpdate}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={handleUpdate}
+            >
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text" {...register("code")} value={tempData?.code} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} value={tempData?.name} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+              </div>
+            </form>
+          </Modal>
         </div>
       </KTCardBody>
     </div>
   )
 }
 
-export {Qualification}
+export { Qualification }
+
