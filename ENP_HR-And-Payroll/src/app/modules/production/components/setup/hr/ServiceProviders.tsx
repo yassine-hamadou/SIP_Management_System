@@ -1,12 +1,11 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Form, Input, Modal, Space, Table } from 'antd'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
-import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchServiceProviders } from '../../../../../services/ApiCalls'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link } from 'react-router-dom'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
+import { Api_Endpoint, fetchServiceProviders, updateServiceProvider } from '../../../../../services/ApiCalls'
 
 const ServiceProviders = () => {
   const [gridData, setGridData] = useState([])
@@ -15,9 +14,11 @@ const ServiceProviders = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  const [tempData, setTempData] = useState<any>()
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const {register, reset, handleSubmit} = useForm()
+  const { register, reset, handleSubmit } = useForm()
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -27,8 +28,15 @@ const ServiceProviders = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
+    setIsUpdateModalOpen(false)
+    setTempData(null)
+  }
+
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
   const deleteData = async (element: any) => {
@@ -43,13 +51,13 @@ const ServiceProviders = () => {
     }
   }
 
-  
+
 
   function handleDelete(element: any) {
     deleteData(element)
   }
   const columns: any = [
-   
+
     {
       title: 'Code',
       dataIndex: 'code',
@@ -134,26 +142,26 @@ const ServiceProviders = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
+
           <Link to={`/service-cost/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Cost</span>
           </Link>
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-         
+
         </Space>
       ),
-      
+
     },
   ]
 
-//   const {data:allServiceProviders} = useQuery('ServiceProviders', fetchServiceProviders, {cacheTime:5000})
+  //   const {data:allServiceProviders} = useQuery('ServiceProviders', fetchServiceProviders, {cacheTime:5000})
 
-const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProviders, {cacheTime:5000})
+  const { data: allServiceProviders } = useQuery('serviceProviders', fetchServiceProviders, { cacheTime: 5000 })
   const loadData = async () => {
     setLoading(true)
     try {
@@ -195,18 +203,47 @@ const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProv
     setGridData(filteredData)
   }
 
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation(updateServiceProvider, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['ServiceProviders', tempData.id], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsUpdateModalOpen(false)
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    mutate(tempData)
+    console.log('update: ', tempData)
+  }
+
+  const showUpdateModal = (values: any) => {
+    showModal()
+    setIsUpdateModalOpen(true)
+    setTempData(values);
+    console.log(values)
+  }
+
+
   const url = `${Api_Endpoint}/ServiceProviders`
-  const OnSUbmit = handleSubmit( async (values)=> {
+  const OnSUbmit = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
-          code: values.code,
-          name: values.name,
-          address: values.address,
-          email: values.email,
-          phone: values.phone,
-          contactPerson: values.contactPerson,
-        }
-        console.log(data)
+      code: values.code,
+      name: values.name,
+      address: values.address,
+      email: values.email,
+      phone: values.phone,
+      contactPerson: values.contactPerson,
+    }
+    console.log(data)
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
@@ -232,7 +269,7 @@ const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProv
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
@@ -244,7 +281,7 @@ const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProv
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -253,72 +290,92 @@ const {data:allServiceProviders} = useQuery('serviceProviders', fetchServiceProv
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-            </button>
+              </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataWithIndex}  />
+          <Table columns={columns} dataSource={dataWithIndex} />
           <Modal
-                title='Service Providers Setup'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                width={800}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={OnSUbmit}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title={isUpdateModalOpen ? 'Update Service Provider' : 'Add Service Provider'}
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            width={800}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={isUpdateModalOpen ? handleUpdate : OnSUbmit}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={isUpdateModalOpen ? handleUpdate : OnSUbmit}
             >
-                <form
-                    onSubmit={OnSUbmit}  
-                >
-                  <hr></hr>
-                 
-                    <div style={{padding: "20px 0px 20px 20px"}} className='row mb-0 '>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                            <input type="text" {...register("code")}  className="form-control form-control-solid"/>
-                        </div>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                            <input type="text" {...register("name")}  className="form-control form-control-solid"/>
-                        </div>
-                    </div>
-                    <div style={{padding: "0px 20px 0px 20px"}} className='row mb-0 '>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Address</label>
-                            <input type="text" {...register("address")}  className="form-control form-control-solid"/>
-                        </div>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Phone</label>
-                            <input type="tel" {...register("phone")}  className="form-control form-control-solid"/>
-                        </div>
-                    </div>
-                    <div style={{padding: "0px 20px 0px 20px"}} className='row mb-0 col-12'>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Email</label>
-                            <input type="email" {...register("email")}  className="form-control form-control-solid"/>
-                        </div>
-                        <div className='col-6 mb-7'>
-                            <label htmlFor="exampleFormControlInput1" className="form-label">Contact Person</label>
-                            <input type="text" {...register("contactPerson")} placeholder="e.g Dr. Mensah Anang" className="form-control form-control-solid"/>
-                        </div>
-                    </div>
-                </form>
-            </Modal>
+              <hr></hr>
+
+              <div style={{ padding: "20px 0px 20px 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text"
+                    {...register("code")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.code : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.name : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0px 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Address</label>
+                  <input type="text" {...register("address")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.address : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Phone</label>
+                  <input type="tel" {...register("phone")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.phone : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+                </div>
+              </div>
+              <div style={{ padding: "0px 20px 0px 20px" }} className='row mb-0 col-12'>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Email</label>
+                  <input type="email" {...register("email")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.email : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Contact Person</label>
+                  <input type="text" {...register("contactPerson")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.contactPerson : ''}
+                    onChange={handleChange}
+                    placeholder="e.g Dr. Mensah Anang" className="form-control form-control-solid" />
+                </div>
+              </div>
+            </form>
+          </Modal>
         </div>
       </KTCardBody>
     </div>
   )
 }
 
-export {ServiceProviders}
+export { ServiceProviders }
+

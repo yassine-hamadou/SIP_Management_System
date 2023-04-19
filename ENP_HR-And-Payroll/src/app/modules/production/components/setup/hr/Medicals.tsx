@@ -1,13 +1,11 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Form, Input, Modal, Space, Table } from 'antd'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
-import { MEDICALS } from '../../../../../data/DummyData'
-import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchMedicals } from '../../../../../services/ApiCalls'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link } from 'react-router-dom'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
+import { Api_Endpoint, fetchMedicals, updateMedical } from '../../../../../services/ApiCalls'
 
 const Medicals = () => {
   const [gridData, setGridData] = useState([])
@@ -16,9 +14,10 @@ const Medicals = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  const [tempData, setTempData] = useState<any>()
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const {register, reset, handleSubmit} = useForm()
+  const { register, reset, handleSubmit } = useForm()
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -28,9 +27,16 @@ const Medicals = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
+    setIsUpdateModalOpen(false)
   }
+
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
+  }
+
 
   const deleteData = async (element: any) => {
     try {
@@ -44,13 +50,13 @@ const Medicals = () => {
     }
   }
 
-  
+
 
   function handleDelete(element: any) {
     deleteData(element)
   }
   const columns: any = [
-   
+
     {
       title: 'Code',
       dataIndex: 'code',
@@ -77,7 +83,7 @@ const Medicals = () => {
         return 0
       },
     },
-    
+
 
     {
       title: 'Action',
@@ -85,24 +91,24 @@ const Medicals = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
+
           <Link to={`/products/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Products</span>
           </Link>
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-         
+
         </Space>
       ),
-      
+
     },
   ]
 
-  const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
+  const { data: allMedicals } = useQuery('medicals', fetchMedicals, { cacheTime: 5000 })
   const loadData = async () => {
     setLoading(true)
     try {
@@ -144,13 +150,40 @@ const Medicals = () => {
     setGridData(filteredData)
   }
 
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation(updateMedical, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['Medicals', tempData.id], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsUpdateModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    mutate(tempData)
+    console.log('update: ', tempData)
+  }
+
+  const showUpdateModal = (values: any) => {
+    setIsUpdateModalOpen(true)
+    setTempData(values);
+    console.log(values)
+  }
+
+
   const url = `${Api_Endpoint}/Medicals`
-  const OnSUbmit = handleSubmit( async (values)=> {
+  const OnSUbmit = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
-          code: values.code,
-          name: values.name,
-        }
+      code: values.code,
+      name: values.name,
+    }
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
@@ -176,7 +209,7 @@ const Medicals = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
@@ -188,7 +221,7 @@ const Medicals = () => {
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -197,51 +230,91 @@ const Medicals = () => {
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-            </button>
+              </button>
             </Space>
           </div>
           <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
           <Modal
-                title='Medical Setup'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={OnSUbmit}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='Medicals Type Setup'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={OnSUbmit}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={OnSUbmit}
             >
-                <form
-                    onSubmit={OnSUbmit}  
-                >
-                  <hr></hr>
-                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                      <input type="text" {...register("code")}  className="form-control form-control-solid"/>
-                    </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" {...register("name")}  className="form-control form-control-solid"/>
-                    </div>
-                    
-                  </div>
-                </form>
-            </Modal>
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text" {...register("code")} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} className="form-control form-control-solid" />
+                </div>
+
+              </div>
+            </form>
+          </Modal>
+
+          {/* update modal */}
+
+          <Modal
+            title='Medicals Type Update'
+            open={isUpdateModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={handleUpdate}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={handleUpdate}
+            >
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text" {...register("code")} value={tempData?.code} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} value={tempData?.name} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+              </div>
+            </form>
+          </Modal>
         </div>
       </KTCardBody>
     </div>
   )
 }
 
-export {Medicals}
+export { Medicals }
+

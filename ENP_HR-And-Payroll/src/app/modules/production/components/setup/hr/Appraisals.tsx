@@ -4,8 +4,9 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { APPRAISAL } from '../../../../../data/DummyData'
-import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, updateAppraisal } from '../../../../../services/ApiCalls'
 import { useForm } from 'react-hook-form'
+import { useQueryClient, useMutation } from 'react-query'
 
 const Appraisals = () => {
   const [gridData, setGridData] = useState([])
@@ -14,7 +15,8 @@ const Appraisals = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const {register, reset, handleSubmit} = useForm()
-
+  const [tempData, setTempData] = useState<any>()
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -26,8 +28,14 @@ const Appraisals = () => {
   }
 
   const handleCancel = () => {
-    reset() 
+    reset()
     setIsModalOpen(false)
+    setIsUpdateModalOpen(false)
+  }
+
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
   const deleteData = async (element: any) => {
@@ -80,7 +88,7 @@ const Appraisals = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
@@ -129,6 +137,33 @@ const Appraisals = () => {
     })
     setGridData(filteredData)
   }
+
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation(updateAppraisal, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['perk', tempData.id], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsUpdateModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    mutate(tempData)
+    console.log('update: ', tempData)
+  }
+
+  const showUpdateModal = (values: any) => {
+    setIsUpdateModalOpen(true)
+    setTempData(values);
+    console.log(values)
+  }
+
 
   const url = `${Api_Endpoint}/Appraisals`
   const OnSubmit = handleSubmit( async (values)=> {
@@ -225,6 +260,46 @@ const Appraisals = () => {
                   </div>
                 </form>
             </Modal>
+
+                      {/* update modal */}
+
+          <Modal
+            title='Appraisal Update'
+            open={isUpdateModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={handleUpdate}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={handleUpdate}
+            >
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text" {...register("code")} value={tempData?.code} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} value={tempData?.name} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+              </div>
+            </form>
+          </Modal>
+
         </div>
       </KTCardBody>
     </div>
