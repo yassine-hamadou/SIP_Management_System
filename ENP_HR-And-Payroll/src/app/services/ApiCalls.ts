@@ -3,13 +3,23 @@ import axios from 'axios';
 
 
 export const Api_Endpoint = "http://208.117.44.15/hrwebapi/api";
+export const UsersEndpoint = "http://208.117.44.15/userapi/api/";
 
 export let axioInstance = axios.create({
     headers: {
-        Authorization: `${localStorage.getItem("kt-auth-react-v")}`
+        Authorization: `${localStorage.getItem("token")}`
     }
 }
 )
+
+
+export const fetchUserRoless = () => {
+    return axios.get(`${UsersEndpoint}/UserRoles`)
+}
+
+export const fetchRoless = () => {
+    return axios.get(`${UsersEndpoint}/Roles`)
+}
 
 export const fetchDivisions = () => {
     return axios.get(`${Api_Endpoint}/Divisions`)

@@ -175,6 +175,10 @@ const Paygroups = () => {
     }
   })
 
+  if (isLoading==true){
+    window.alert("Updating paygroup")
+  }
+
   const handleUpdate = (e: any) => {
     e.preventDefault()
     mutate(tempData)
