@@ -1,13 +1,12 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Modal, Space, Table } from 'antd'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
-import { ENP_URL } from '../../urls'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { employeedata } from '../../../../data/DummyData'
 import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchRoles, fetchUserRoles, fetchUsers} from '../../../../services/ApiCalls'
+import { useNavigate, useParams } from 'react-router-dom'
+import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
+import { Api_Endpoint, fetchDocument } from '../../../../services/ApiCalls'
+import { ENP_URL } from '../../urls'
 
 const UserRole = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -87,8 +86,8 @@ const UserRole = () => {
   ]
 
   // const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
-  const {data:allRoles} = useQuery('roles', fetchRoles, {cacheTime:5000})
-  const {data:allUsers} = useQuery('users', fetchUsers, {cacheTime:5000})
+  const {data:allRoles} = useQuery('roles',() => fetchDocument('UserRoles'), {cacheTime:5000})
+  const {data:allUsers} = useQuery('users',() => fetchDocument('Users'), {cacheTime:5000})
 
 
   const getRoleName = (perkId: any) => {
@@ -261,4 +260,5 @@ const UserRole = () => {
   )
 }
 
-export {UserRole}
+export { UserRole }
+

@@ -1,12 +1,10 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { Button, Input, Modal, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { ENP_URL } from '../../urls'
-import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, updateRole } from '../../../../services/ApiCalls'
-import { useQueryClient, useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
+import { useNavigate, useParams } from 'react-router-dom'
+import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
 
 const Roles = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -21,7 +19,6 @@ const Roles = () => {
   const navigate = useNavigate();
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
-
 
 
   const showModal = () => {
@@ -44,20 +41,22 @@ const Roles = () => {
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${Api_Endpoint}/Roles/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['roles', tempData], data);
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
     }
-  }
+  })
 
   function handleDelete(element: any) {
-    deleteData(element)
+    const item = {
+      url: 'Roles',
+      data: element
+    }
+    deleteData(item)
   }
 
   const columns: any = [
@@ -109,14 +108,14 @@ const Roles = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Roles`)
+      const response = await fetchDocument('Roles')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
     }
   }
-
+  
   useEffect(() => {
     loadData()
   }, [])
@@ -143,9 +142,9 @@ const Roles = () => {
   }
 
   const queryClient = useQueryClient()
-  const { isLoading, mutate } = useMutation(updateRole, {
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['roles', tempData.id], data);
+      queryClient.setQueryData(['roles', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -153,14 +152,18 @@ const Roles = () => {
       setIsModalOpen(false)
     },
     onError: (error) => {
-      console.log('error: ', error)
+      console.log('update error: ', error)
     }
   })
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
-    mutate(tempData)
-    console.log('update: ', tempData)
+    const item = {
+      url: 'Roles',
+      data: tempData
+    }
+    updateData(item)
+    console.log('update: ', item.data)
   }
 
   const showUpdateModal = (values: any) => {
@@ -170,27 +173,31 @@ const Roles = () => {
     console.log(values)
   }
 
-  const url = `${Api_Endpoint}/Roles`
-  const OnSUbmit = handleSubmit(async (values) => {
+  const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const data = {
-      name: values.name,
-      description: values.description,
+    const endpoint = 'Roles'
 
-      // gradeId: parseInt(param.id),
-      // perkId: parseInt(selectedPerk)
+    const item = {
+      data: {
+        name: values.name,
+        description: values.description,
+      },
+      url: endpoint
     }
-    console.log(data)
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
+    console.log(item.data)
+    postData(item)
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['users', tempData], data);
       reset()
-      setIsModalOpen(false)
+      setTempData({})
       loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
     }
   })
 
@@ -242,14 +249,14 @@ const Roles = () => {
                 type='primary'
                 htmlType='submit'
                 loading={submitLoading}
-                onClick={isUpdateModalOpen ? handleUpdate : OnSUbmit}
+                onClick={isUpdateModalOpen ? handleUpdate : OnSubmit}
               >
                 Submit
               </Button>,
             ]}
           >
             <form
-              onSubmit={isUpdateModalOpen ? handleUpdate : OnSUbmit}
+              onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}
             >
               <hr></hr>
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
@@ -277,3 +284,4 @@ const Roles = () => {
 }
 
 export { Roles }
+

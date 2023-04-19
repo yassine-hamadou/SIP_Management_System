@@ -1,7 +1,7 @@
 import { Button, Form, Input, InputNumber, Upload, Modal, Space, Table, Radio, RadioChangeEvent, message, Select } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
+import { KTCardBody, KTSVG, toAbsoluteUrl } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
@@ -11,6 +11,9 @@ import { useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
 import { Api_Endpoint, fetchCategories, fetchJobTitles, fetchPaygroups, fetchRecruitmentTransactions, fetchUnits } from '../../../../../services/ApiCalls'
 import RecruitmentUpform from './RecruitmentUpform'
+
+
+const tempImg = toAbsoluteUrl('/media/avatars/user.png')
 
 const RecruitmentSelection = () => {
   const [gridData, setGridData] = useState([])
@@ -32,6 +35,7 @@ const RecruitmentSelection = () => {
   const [selectedGen, setSelectedGen] = useState<any>("");
   const [employeeRecord, setEmployeeRecord] = useState<any>(null)
   const [activeTab, setActiveTab] = useState("tab1");
+  const [tempImage, setTempImage] = useState(tempImg);
   const showModal = () => {
     // if(selectedValue!==""){
       setIsModalOpen(true)
@@ -50,6 +54,26 @@ const RecruitmentSelection = () => {
     }, 500);
     // console.log('page to reload')
 }
+const onRadioChange = (e: RadioChangeEvent) => {
+  console.log('radio checked', e.target.value);
+  setRadioValue(e.target.value);
+};
+const onRadio1Change = (e: RadioChangeEvent) => {
+  console.log('radio checked', e.target.value);
+  setRadio1Value(e.target.value);
+};
+const onRadio2Change = (e: RadioChangeEvent) => {
+  console.log('radio checked', e.target.value);
+  setRadio2Value(e.target.value);
+};
+const onRadio3Change = (e: RadioChangeEvent) => {
+  console.log('radio checked', e.target.value);
+  setRadio3Value(e.target.value);
+};
+const onRadio4Change = (e: RadioChangeEvent) => {
+  console.log('radio checked', e.target.value);
+  setRadio4Value(e.target.value);
+};
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
   };
@@ -116,29 +140,24 @@ const RecruitmentSelection = () => {
     imgWindow?.document.write(image.outerHTML);
   };
 
-  const onRadioChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadioValue(e.target.value);
-  };
-  const onRadio1Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio1Value(e.target.value);
-  };
-  const onRadio2Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio2Value(e.target.value);
-  };
-  const onRadio3Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio3Value(e.target.value);
-  };
-  const onRadio4Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio4Value(e.target.value);
-  };
 
   function handleDelete(element: any) {
     deleteData(element)
+  }
+
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempImage(event.target.value);
+  }
+  const showPreview = (e:any)=>{
+    if (e.target.files && e.target.files[0]){
+      let imageFile = e.target.files[0]
+      const reader = new FileReader()
+      reader.onload = (x:any)=>{
+        setTempImage(x.target?.result)
+      }
+      reader.readAsDataURL(imageFile)
+    }
   }
 
   const columns: any = [
@@ -346,6 +365,7 @@ const OnSUbmit = handleSubmit(async (values) => {
   }
 })
 
+  // const url1 = "https://localhost:5001/api/RecruitmentApplicants"
   const url1 = `${Api_Endpoint}/RecruitmentApplicants`
   const submitApplicant = handleSubmit(async (values) => {
     setLoading(true)
@@ -357,8 +377,10 @@ const OnSUbmit = handleSubmit(async (values) => {
       gender: selectedGen,
       phone: values.phone,
       email: values.email,
-      qualification: values.qualification,
+      qualification: values.qualification
     }
+    console.log(data);
+    
       try { 
         
           const response = await axios.post(url1, data)
@@ -481,7 +503,6 @@ const OnSUbmit = handleSubmit(async (values) => {
           </div>
           <Table columns={columns} rowKey={(record) => record.id} dataSource={dataWithIndex} loading={loading} />
           {/* Add form */}
-
           
           {/* Add applicant form modal*/}
           <Modal
@@ -552,7 +573,10 @@ const OnSUbmit = handleSubmit(async (values) => {
                 <input type="text" {...register("qualification")} className="form-control form-control-solid" />
               </div>
               <div className='col-6 mb-3' style={{ padding: "30px 20px 0 20px" }}>
-                <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
+                <img src={tempImage} style={{height:"90px"}}  alt="" />
+                <input {...register("ImageFile")} className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' 
+                onChange={showPreview}
+                type="file" />
                 
               </div>
             </div>

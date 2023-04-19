@@ -13,19 +13,19 @@ export function AsideMenuMain() {
         <AsideMenuItem 
             to='users/' 
             hasBullet={false} 
-            icon='/media/icons/duotune/communication/com013.svg'
+            icon='/media/icons/duotune/communication/com014.svg'
             title='Users' 
           />
         <AsideMenuItem 
             to='roles/' 
             hasBullet={false} 
-            icon='/media/icons/duotune/communication/com013.svg'
+            icon='/media/icons/duotune/general/gen055.svg'
             title='Roles' 
           />
         <AsideMenuItem 
             to='applications/' 
             hasBullet={false} 
-            icon='/media/icons/duotune/communication/com013.svg'
+            icon='/media/icons/duotune/communication/com005.svg'
             title='Applications' 
           />
 

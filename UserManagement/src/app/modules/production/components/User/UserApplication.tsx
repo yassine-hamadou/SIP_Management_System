@@ -1,12 +1,12 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Input, Modal, Space, Table } from 'antd'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
-import { ENP_URL } from '../../urls'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchApplications, } from '../../../../services/ApiCalls'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
+import { Api_Endpoint, fetchDocument } from '../../../../services/ApiCalls'
+import { ENP_URL } from '../../urls'
 
 const UserApplication = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -78,7 +78,7 @@ const UserApplication = () => {
     },
   ]
 
-  const {data:allUserApplications} = useQuery('useapplications', fetchApplications, {cacheTime:5000})
+  const {data:allUserApplications} = useQuery('useapplications',() => fetchDocument('Applications'), {cacheTime:5000})
 
   // const getNotchName = (notchId: any) => {
   //   let notchName = null
@@ -223,4 +223,5 @@ const UserApplication = () => {
   )
 }
 
-export {UserApplication}
+export { UserApplication }
+
