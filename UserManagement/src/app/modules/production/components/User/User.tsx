@@ -8,7 +8,6 @@ import { useQuery } from 'react-query'
 import { useForm } from 'react-hook-form'
 import { Api_Endpoint, fetchUsers} from '../../../../services/ApiCalls'
 import { AUTH_LOCAL_STORAGE_KEY, useAuth } from '../../../auth'
-import { stringify } from 'querystring'
 
 const User = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -180,7 +179,7 @@ const token:any = localStorage.getItem("accessToken")?.replace(/['"]/g, '')
     //     "http://208.117.44.15/hrwebapi/api/Taxes",
     //     {
     //       headers: {
-    //         Authorization: 'Bearer '+ 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Inlhd2JhIiwiZW1haWwiOiJ5YXdAc2lwY29uc3VsdC5uZXQiLCJzdXJuYW1lIjoiTUVOU0FIIiwiZmlyc3ROYW1lIjoiWUFXU09OIiwiZ2VuZGVyIjoiTUFMRSAgICAgICIsImlkIjoiMiIsImV4cCI6MTY4MTQyMDE1MSwiYXVkIjoiaHR0cDovLzIwOC4xMTcuNDQuMTUvIn0.h5NBj6_2YwFV9WtxScC6VNUWrJGJZF_6ZibIaY2yIbg'
+    //         Authorization: 'Bearer '+ ''
     //       }
     //     }
     //   );
