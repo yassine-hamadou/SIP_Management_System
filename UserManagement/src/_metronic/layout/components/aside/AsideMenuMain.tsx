@@ -25,7 +25,7 @@ export function AsideMenuMain() {
         <AsideMenuItem 
             to='applications/' 
             hasBullet={false} 
-            icon='/media/icons/duotune/communication/com005.svg'
+            icon='/media/icons/duotune/files/fil012.svg'
             title='Applications' 
           />
 

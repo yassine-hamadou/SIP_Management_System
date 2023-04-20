@@ -161,8 +161,7 @@ const Applications = () => {
   }
 
 
-  const url = `${Api_Endpoint}/applications`
-  const OnSUbmit = handleSubmit(async (values) => {
+  const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
     const endpoint = 'Applications'
 
@@ -215,7 +214,7 @@ const Applications = () => {
               </Button>
             </Space>
             <Space style={{ marginBottom: 16 }}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+              <button type='button' className='btn btn-primary me-8' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
@@ -236,14 +235,14 @@ const Applications = () => {
                 type='primary'
                 htmlType='submit'
                 loading={submitLoading}
-                onClick={isUpdateModalOpen ? handleUpdate : OnSUbmit}
+                onClick={isUpdateModalOpen ? handleUpdate : OnSubmit}
               >
                 Submit
               </Button>,
             ]}
           >
             <form
-              onSubmit={isUpdateModalOpen ? handleUpdate : OnSUbmit}
+              onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}
             >
               <hr></hr>
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
