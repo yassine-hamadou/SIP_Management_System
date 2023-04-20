@@ -669,6 +669,7 @@ const Deduction = () => {
                     {...register("periodInterval")}
                     value={tempData?.periodInterval}
                     onChange={handleChange}
+                    onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option value="Weekly">Weekly</option>
                     <option value="Monthly">Monthly</option>
@@ -698,6 +699,7 @@ const Deduction = () => {
                     {...register("accrued")}
                     value={tempData?.accrued}
                     onChange={handleChange}
+                    onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>

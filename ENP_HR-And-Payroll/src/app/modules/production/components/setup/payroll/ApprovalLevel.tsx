@@ -3,6 +3,9 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { useForm } from 'react-hook-form'
+import { useQueryClient, useMutation } from 'react-query'
+import { deleteItem, fetchDocument, updateItem, postItem } from '../../../../../services/ApiCalls'
 
 const ApprovalLevel = () => {
   const [gridData, setGridData] = useState([])
@@ -12,8 +15,17 @@ const ApprovalLevel = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { register, reset, handleSubmit } = useForm()
 
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [tempData, setTempData] = useState<any>()
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const queryClient = useQueryClient()
+
+
+  const statusList = ['Active', 'Inactive']
+
+  
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -23,26 +35,33 @@ const ApprovalLevel = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
+    setIsUpdateModalOpen(false)
+    setTempData(null)
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
+  }
+
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['ApprovalLevels', tempData], data);
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
     }
-  }
-
-  
+  })
 
   function handleDelete(element: any) {
-    deleteData(element)
+    const item = {
+      url: 'ApprovalLevels',
+      data: element
+    }
+    deleteData(item)
   }
   const columns: any = [
    
@@ -96,7 +115,7 @@ const ApprovalLevel = () => {
           {/* <Link to={`/setup/sections/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Sections</span>
           </Link> */}
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
@@ -112,7 +131,7 @@ const ApprovalLevel = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await fetchDocument('ApprovalLevels')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -146,27 +165,65 @@ const ApprovalLevel = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
-    const data = {
-      name: values.name,
-    }
-
-    console.log(data)
-
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
-      form.resetFields()
-      setIsModalOpen(false)
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['ApprovalLevels', tempData], data);
+      reset()
+      setTempData({})
       loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
+      setIsUpdateModalOpen(false)
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
     }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    const item = {
+      url: 'ApprovalLevels',
+      data: tempData
+    }
+    updateData(item)
+    console.log('update: ', item.data)
   }
+
+  const showUpdateModal = (values: any) => {
+    showModal()
+    setIsUpdateModalOpen(true)
+    setTempData(values);
+    console.log(values)
+  }
+
+  const OnSubmit = handleSubmit(async (values) => {
+    setLoading(true)
+    const endpoint = 'ApprovalLevels'
+
+    const item = {
+      data: {
+        name: values.name,
+        code: values.code,
+        status: parseInt(values.status),
+      },
+      url: endpoint
+    }
+    console.log(item.data)
+    postData(item)
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['ApprovalLevels', tempData], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
+    }
+  })
 
   return (
     <div
@@ -206,7 +263,7 @@ const ApprovalLevel = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-                title='Approval Level Setup'
+                title={isUpdateModalOpen ? 'Approval Level Update' : 'Approval Level Setup'}
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -219,42 +276,46 @@ const ApprovalLevel = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
+                   onClick={isUpdateModalOpen ? handleUpdate : OnSubmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
+                <form
+                   onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}
                 >
                   <hr></hr>
-                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                      <input type="text" name="code"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" name="name"  className="form-control form-control-solid"/>
-                    </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        <option value="1">Active </option>
-                        <option value="2">Not Active </option>
-                      </select>
-                    </div>
-                  </div>
-                </Form>
+                  <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input
+                    {...register("code")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.code : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input
+                    {...register("name")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.name : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
+                  <select onSelect={handleChange}
+                    {...register("status")} value={isUpdateModalOpen === true ? tempData?.status : null}
+                    onChange={handleChange}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    {isUpdateModalOpen === false ? <option>Select status</option> : null}
+                    <option value='0'>Inactive</option>
+                    <option value='1'>Active</option>
+                  </select>
+                </div>
+              </div>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

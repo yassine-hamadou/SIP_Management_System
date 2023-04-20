@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ENP_URL } from '../modules/production/urls';
 
 
 
@@ -12,6 +13,43 @@ export let axioInstance = axios.create({
 }
 )
 
+// ------------ApiEndpoint---------------------
+
+//dynamic fetch function
+export function fetchDocument(url: string) {
+    return axios.get(`${Api_Endpoint}/${url}`)
+}
+
+//dynamic update function
+export function updateItem(item: any) {
+    return axios.put(`${Api_Endpoint}/${item.url}/${item.data.id}`, item.data)
+}
+
+//dynamic delete function
+export function deleteItem(item: any) {
+    return axios.delete(`${Api_Endpoint}/${item.url}/${item.data.id}`)
+}
+
+//dynamic post function
+export function postItem(item: any) {
+    return axios.post(`${Api_Endpoint}/${item.url}`, item.data)
+}
+
+// ------------SmWebEndpoint---------------------
+
+export function fetchSmWebApiDocument(url: string) {
+    return axios.get(`${ENP_URL}/${url}`)
+}
+export function updateSmWebApiItem(item: any) {
+    return axios.put(`${ENP_URL}/${item.url}/${item.data.id}`, item.data)
+}
+export function deleteSmWebApiItem(item: any) {
+    return axios.delete(`${ENP_URL}/${item.url}/${item.data.id}`)
+}
+export function postSmWebApiItem(item: any) {
+    return axios.post(`${ENP_URL}/${item.url}`, item.data)
+}
+
 export const fetchUserRoless = () => {
     return axios.get(`${UsersEndpoint}/UserRoles`)
 }
@@ -20,14 +58,7 @@ export const fetchRoless = () => {
     return axios.get(`${UsersEndpoint}/Roles`)
 }
 
-//dynamic fetch function
-export const fetchDocument = (url: string) => {
-    return axios.get(`${Api_Endpoint}/${url}`)
-}
-//dynamic update function
-export const updateItem = (url: string, data: any) => {
-    return axios.put(`${Api_Endpoint}/${url}/${data.id}`, data)
-}
+
 
 export const fetchDivisions = () => {
     return axios.get(`${Api_Endpoint}/Divisions`)

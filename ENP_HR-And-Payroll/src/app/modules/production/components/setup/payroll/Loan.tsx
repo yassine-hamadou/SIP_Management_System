@@ -1,9 +1,11 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
-import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
+import { Button, Form, Input, Modal, Space, Table } from 'antd'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useMutation, useQueryClient } from 'react-query'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { LOANS } from '../../../../../data/DummyData'
+import { deleteItem, fetchSmWebApiDocument, postSmWebApiItem, updateSmWebApiItem } from '../../../../../services/ApiCalls'
+import { ENP_URL } from '../../../urls'
 
 const Loan = () => {
   const [gridData, setGridData] = useState([])
@@ -11,9 +13,14 @@ const Loan = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
+  const { register, reset, handleSubmit } = useForm()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [tempData, setTempData] = useState<any>()
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const queryClient = useQueryClient()
+  const typeOfInterestList = ['FORMULA', 'PERCENTAGE OF GROSS', 'VARYING AMOUNT', 'BASIC OF PERCENTAGE']
+  const periodList = ['WEEKLY', 'MONTHLY']
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -24,29 +31,38 @@ const Loan = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
+    setIsUpdateModalOpen(false)
+    setTempData(null)
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
+  }
+
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['loan', tempData], data);
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
     }
-  }
-
-  
+  })
 
   function handleDelete(element: any) {
-    deleteData(element)
+    const item = {
+      url: '',
+      data: element
+    }
+    deleteData(item)
   }
+
+
   const columns: any = [
-   
+
     {
       title: 'Code',
       dataIndex: 'code',
@@ -86,7 +102,7 @@ const Loan = () => {
         return 0
       },
     },
-    
+
     {
       title: 'Moratorium',
       dataIndex: 'moratorium',
@@ -172,29 +188,29 @@ const Loan = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
+
           {/* <Link to={`/setup/sections/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Sections</span>
           </Link> */}
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-         
+
         </Space>
       ),
-      
+
     },
   ]
 
-  
+
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await fetchSmWebApiDocument('ProductionActivity')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -228,28 +244,72 @@ const Loan = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
-    setSubmitLoading(true)
-    const data = {
-      name: values.name,
-    }
-
-    console.log(data)
-
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
-      form.resetFields()
-      setIsModalOpen(false)
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateSmWebApiItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['ProductionActivity', tempData], data);
+      reset()
+      setTempData({})
       loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
+      setIsUpdateModalOpen(false)
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
     }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    const item = {
+      url: 'ProductionActivity',
+      data: tempData
+    }
+    updateData(item)
+    console.log('update: ', item.data)
   }
 
+  const showUpdateModal = (values: any) => {
+    showModal()
+    setIsUpdateModalOpen(true)
+    setTempData(values);
+    console.log(values)
+  }
+
+
+  const OnSubmit = handleSubmit(async (values) => {
+    setLoading(true)
+    const endpoint = 'ProductionActivity'
+
+    const item = {
+      data: {
+        name: values.name,
+        interestR: values.interestR,
+        interestType: values.interestType,
+        moratorium: values.moratorium,
+        repayMin: values.repayMin,
+        repayMax: values.repayMax,
+        repayC: values.repayC,
+        interestC: values.interestC,
+        deductionPeriod: values.deductionPeriod,
+      },
+      url: endpoint
+    }
+    console.log(item.data)
+    postData(item)
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postSmWebApiItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['users', tempData], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
+    }
+  })
   return (
     <div
       style={{
@@ -262,7 +322,7 @@ const Loan = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
@@ -274,7 +334,7 @@ const Loan = () => {
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -283,113 +343,145 @@ const Loan = () => {
               <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-            </button>
+              </button>
             </Space>
           </div>
-          <Table columns={columns}  dataSource={LOANS}/>
+          <Table columns={columns} dataSource={LOANS} />
           <Modal
-                title='Loan Setup'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                width={860}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title={isUpdateModalOpen ? 'Loan Update' : 'Loan Add'}
+
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            width={860}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={isUpdateModalOpen ? handleUpdate : OnSubmit}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <form
+              onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}
             >
-                <Form
-                    // labelCol={{span: 7}}
-                    // wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    
-                    onFinish={onFinish}
-                >
 
-                <hr></hr>
-                <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
-                    <input type="text" name="name"  className="form-control form-control-solid"/>
-                  </div>
-                  <div className='col-6 mb-7'>
+              <hr></hr>
+              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Name</label>
+                  <input type="text"
+                    {...register("name")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.name : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Interest Rate</label>
-                    <input type="text" name="interestR"  className="form-control form-control-solid"/>
-                    
-                  </div>
+                  <input type="text"
+                    {...register("interestR")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.interestR : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+
                 </div>
-                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Interest Type</label>
-                    <select className="form-select form-select-solid" aria-label="Select example">
-                      <option>select</option>
-                      <option value="1">FORMULA</option>
-                      <option value="2">PERCENTAGE OF GROSS</option>
-                      <option value="3">VARYING AMOUNT</option>
-                      <option value="3">PERCENTAGE OF BASIC</option>
-                    </select>
-                  </div>
-                  <div className='col-6 mb-7'>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Interest Type</label>
+                  <select
+                    {...register("typeOfInterest")}
+                    value={tempData?.typeOfInterest}
+                    onChange={handleChange}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    {
+                      typeOfInterestList.map((item: any) => (
+                        <option value={item}>{item}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Moratorium</label>
-                  <input type="text" name="moratorium"  className="form-control form-control-solid"/>
+                  <input
+                    {...register("moratorium")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.moratorium : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
 
-                  </div>
                 </div>
-                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Min Repayment Period</label>
-                    <input type="text" name="repayMin"  className="form-control form-control-solid"/>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Min Repayment Period</label>
+                  <input
+                    {...register("repayMin")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.repayMin : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
 
-                  </div>
-                  <div className='col-6 mb-7'>
+                </div>
+                <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Max Repayment Period</label>
-                  <input type="text" name="repayMax"  className="form-control form-control-solid"/>
+                  <input
+                    {...register("repayMax")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.repayMax : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
 
-                  </div>
                 </div>
-                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Repayment Percentage Ceiling</label>
-                    <input type="text" name="repayC"  className="form-control form-control-solid"/>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Repayment Percentage Ceiling</label>
+                  <input
+                    {...register("repayC")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.repayC : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
 
-                  </div>
-                  <div className='col-6 mb-7'>
+                </div>
+                <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Deduction</label>
-                    <select className="form-select form-select-solid" aria-label="Select example">
-                      <option>select</option>
-                      <option value="1">MONTHLY</option>
-                      <option value="2">WEEKLY</option>
-                    </select>
-                  </div>
+                  <select
+                    {...register("deductionPeriod")} value={isUpdateModalOpen === true ? tempData?.deductionPeriod : null}
+                    onChange={handleChange}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    {isUpdateModalOpen === false ? <option>Select service</option> : null}
+                    {
+                      periodList.map((item: any) => (
+                        <option value={item}>{item}</option>
+                      ))
+                    }
+                  </select>
                 </div>
-                <div style={{padding: "0px 20px 0 20px"}} className='row mb-0 '>
-                  <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Interest On Cancellation</label>
-                    <input type="text" name="interestC"  className="form-control form-control-solid"/>
+              </div>
+              <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label">Interest On Cancellation</label>
+                  <input
+                    {...register("interestC")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.interestC : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
 
-                  </div>
-                 
                 </div>
-                </Form>
-            </Modal>
+
+              </div>
+            </form>
+          </Modal>
         </div>
       </KTCardBody>
     </div>
   )
 }
 
-export {Loan}
+export { Loan }
+

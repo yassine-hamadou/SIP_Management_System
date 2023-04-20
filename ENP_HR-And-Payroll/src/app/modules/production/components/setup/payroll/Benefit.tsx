@@ -614,6 +614,7 @@ const Benefit = () => {
                   <select
                     defaultValue={tempData?.periodType}
                     onChange={handleChange}
+                    onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option value="Monthly">Monthly</option>
                     <option value="Yearly">Yearly</option>
@@ -654,6 +655,7 @@ const Benefit = () => {
                   <select
                     value={tempData?.accrued}
                     onChange={handleChange}
+                    onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
@@ -696,6 +698,7 @@ const Benefit = () => {
                   <select
                     defaultValue={tempData?.isTaxable}
                     onChange={handleChange}
+                    onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
