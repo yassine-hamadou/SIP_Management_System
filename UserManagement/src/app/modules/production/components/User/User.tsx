@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { deleteItem, fetchDocument, fetchUsers, postItem, updateItem } from '../../../../services/ApiCalls'
-import { useAuth } from '../../../auth'
+import { AUTH_LOCAL_STORAGE_KEY, useAuth } from '../../../auth'
 
 const User = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -190,7 +190,7 @@ const User = () => {
     //     "http://208.117.44.15/hrwebapi/api/Taxes",
     //     {
     //       headers: {
-    //         Authorization: 'Bearer '+ 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Inlhd2JhIiwiZW1haWwiOiJ5YXdAc2lwY29uc3VsdC5uZXQiLCJzdXJuYW1lIjoiTUVOU0FIIiwiZmlyc3ROYW1lIjoiWUFXU09OIiwiZ2VuZGVyIjoiTUFMRSAgICAgICIsImlkIjoiMiIsImV4cCI6MTY4MTQyMDE1MSwiYXVkIjoiaHR0cDovLzIwOC4xMTcuNDQuMTUvIn0.h5NBj6_2YwFV9WtxScC6VNUWrJGJZF_6ZibIaY2yIbg'
+    //         Authorization: 'Bearer '+ ''
     //       }
     //     }
     //   );
