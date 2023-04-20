@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-<<<<<<< HEAD
-
 
 
 export const Api_Endpoint = "http://208.117.44.15/userapi/api";
@@ -36,12 +34,7 @@ export function postItem(item: any) {
     return axios.post(`${Api_Endpoint}/${item.url}`, item.data)
 }
 
-export const fetchUsers = () => {
-=======
-export  const Api_Endpoint ="http://208.117.44.15/userapi/api";
-
 export const fetchUsers= ()=>{
->>>>>>> 2ebd024371ec7efa99c43b350af491857704a49b
     return axios.get(`${Api_Endpoint}/Users`)
 }
 // post user
