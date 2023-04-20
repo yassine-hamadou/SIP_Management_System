@@ -28,6 +28,9 @@ const Benefit = () => {
   const { data: currencies } = useQuery('currencies', fetchCurrencies, { cacheTime: 5000 })
   const { data: benefits } = useQuery('benefits', fetchBenefits, { cacheTime: 5000 })
   const typeOfAmountList = ['FORMULA', 'PERCENTAGE OF GROSS', 'VARYING AMOUNT', 'BASIC OF PERCENTAGE']
+  const yesNoList = ['YES', 'NO']
+  const monthWeekList = ['MONTHLY', 'WEEKLY']
+  const monthYearList = ['MONTHLY', 'YEARLY']
 
   const [tempData, setTempData] = useState<any>()
 
@@ -470,8 +473,11 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Accrued</label>
                   <select {...register("accrued")} name='accrued' className="form-select form-select-solid" aria-label="Select example">
                     <option> select</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
+                    {
+                      yesNoList.map((item: any) => (
+                        <option value={item}>{item}</option>
+                      ))
+                    }
                   </select>
                 </div>
                 <div className='col-6 mb-7'>
@@ -513,8 +519,11 @@ const Benefit = () => {
                     name='isTaxable'
                     className="form-select form-select-solid" aria-label="Select example">
                     <option>select</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
+                    {
+                      yesNoList.map((item: any) => (
+                        <option value={item}>{item}</option>
+                      ))
+                    }
                   </select>
                 </div>
               </div>
@@ -570,12 +579,11 @@ const Benefit = () => {
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
                     {...register("benefitCat")}
-                    value={tempData?.benefitCat}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
                       benefitCats?.data.map((item: any) => (
-                        <option value={item.id}>{item.name}</option>
+                        <option selected={tempData?.benefitCat === item.id? true : false } value={item.id}>{item.name}</option>
                       ))
                     }
                   </select>
@@ -587,12 +595,11 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Type of Amount</label>
                   <select
                     {...register("typeOfAmount")}
-                    value={tempData?.typeOfAmount}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
                       typeOfAmountList.map((item: any) => (
-                        <option value={item}>{item}</option>
+                        <option selected={tempData?.typeOfAmount === item? true : false } value={item}>{item}</option>
                       ))
                     }
                   </select>
@@ -614,10 +621,12 @@ const Benefit = () => {
                   <select
                     defaultValue={tempData?.periodType}
                     onChange={handleChange}
-                    onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
-                    <option value="Monthly">Monthly</option>
-                    <option value="Yearly">Yearly</option>
+                    {
+                      monthYearList.map((item: any) => (
+                        <option selected={tempData?.periodType === item? true : false } value={item}>{item}</option>
+                      ))
+                    }
                   </select>
                 </div>
               </div>
@@ -625,11 +634,14 @@ const Benefit = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Period Interval</label>
                   <select
-                    value={tempData?.periodInterval}
                     onChange={handleChange}
+                    onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
-                    <option value="Weekly">Weekly</option>
-                    <option value="Monthly">Monthly</option>
+                    {
+                      monthWeekList.map((item: any) => (
+                        <option selected={tempData?.periodInterval === item? true : false } value={item}>{item}</option>
+                      ))
+                    }
                   </select>
                 </div>
                 <div className='col-6 mb-7'>
@@ -637,12 +649,11 @@ const Benefit = () => {
                   {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
                   <select
                     {...register("currencyId")}
-                    value={tempData?.currencyId}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
                       currencies?.data.map((item: any) => (
-                        <option value={item.id}>{item.name}</option>
+                        <option selected={tempData?.currencyId === item.id ? true : false } value={item.id}>{item.name}</option>
                       ))
                     }
                   </select>
@@ -655,10 +666,12 @@ const Benefit = () => {
                   <select
                     value={tempData?.accrued}
                     onChange={handleChange}
-                    onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
+                   {
+                      yesNoList.map((item: any) => (
+                        <option selected={tempData?.accrued === item? true : false } value={item}>{item}</option>
+                      ))
+                    }
                   </select>
                 </div>
                 <div className='col-6 mb-7'>
@@ -666,12 +679,11 @@ const Benefit = () => {
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
                     {...register("taxTypeId")}
-                    value={tempData?.taxTypeId}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
                       taxes?.data.map((item: any) => (
-                        <option value={item.id}>{item.name}</option>
+                        <option selected={tempData?.taxTypeId === item.id? true : false } value={item.id}>{item.name}</option>
                       ))
                     }
                   </select>
@@ -682,12 +694,11 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Start Period</label>
                   <select
                     {...register("startPeriod")}
-                    value={tempData?.startPeriod}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {
                       periods?.data.map((item: any) => (
-                        <option value={item.id}>{item.name}</option>
+                        <option selected={tempData?.startPeriod === item.id? true : false } value={item.id}>{item.name}</option>
                       ))
                     }
                   </select>
@@ -696,12 +707,14 @@ const Benefit = () => {
                   <label htmlFor="exampleFormControlInput1" className="required form-label">isTaxable</label>
                   {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                   <select
-                    defaultValue={tempData?.isTaxable}
                     onChange={handleChange}
                     onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
+                    {
+                      yesNoList.map((item: any) => (
+                        <option selected={tempData?.isTaxable === item ? true : false } value={item}>{item}</option>
+                      ))
+                    }
                   </select>
                 </div>
               </div>

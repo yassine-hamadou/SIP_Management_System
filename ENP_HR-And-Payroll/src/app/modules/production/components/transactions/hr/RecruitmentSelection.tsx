@@ -8,8 +8,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table'
 import { CATEGORY, employeedata, JOBTITLE, PAYGROUP, UNITS } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchCategories, fetchJobTitles, fetchPaygroups, fetchRecruitmentTransactions, fetchUnits } from '../../../../../services/ApiCalls'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { Api_Endpoint, fetchCategories, fetchJobTitles, fetchPaygroups, fetchRecruitmentTransactions, fetchUnits, postItem } from '../../../../../services/ApiCalls'
 import RecruitmentUpform from './RecruitmentUpform'
 
 
@@ -36,6 +36,7 @@ const RecruitmentSelection = () => {
   const [employeeRecord, setEmployeeRecord] = useState<any>(null)
   const [activeTab, setActiveTab] = useState("tab1");
   const [tempImage, setTempImage] = useState(tempImg);
+  const queryClient = useQueryClient()
   const showModal = () => {
     // if(selectedValue!==""){
       setIsModalOpen(true)
@@ -84,6 +85,7 @@ const onRadio4Change = (e: RadioChangeEvent) => {
   const handleCancel = () => {
     reset()
     setIsModalOpen(false)
+    setTempImage(tempImg);
   }
   const handleRefCancel = () => {
     reset()
@@ -369,7 +371,8 @@ const OnSUbmit = handleSubmit(async (values) => {
   const url1 = `${Api_Endpoint}/RecruitmentApplicants`
   const submitApplicant = handleSubmit(async (values) => {
     setLoading(true)
-    const data = {
+    const item = {
+      data: {
       recruitmentTransactionId: parseInt(selectedValue),
       firstName: values.firstName,
       lastName: values.lastName,
@@ -379,23 +382,24 @@ const OnSUbmit = handleSubmit(async (values) => {
       email: values.email,
       qualification: values.qualification,
       ImageFile: tempImage
+    },
+    url: 'RecruitmentApplicants'
+  }
+    console.log(item.data)
+    postData(item)
+    
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['Parameters', data], data);
+      reset()
+      loadData()
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
     }
-    console.log(data);
-    
-      try { 
-        
-          const response = await axios.post(url1, data)
-          setSubmitLoading(false)
-          reset()
-          setIsModalOpen(false)
-          loadData()
-          return response.statusText
-        
-      } catch (error: any) {
-        setSubmitLoading(false)
-        return error.statusText
-      } 
-    
   })
 
  
@@ -553,8 +557,7 @@ const OnSUbmit = handleSubmit(async (values) => {
                 <select value={selectedGen} onChange={(e) => setSelectedGen(e.target.value)} className="form-select form-select-solid"  aria-label="Select example">
                 <option value="">select</option>
                 <option value="MALE">MALE</option>
-                <option value="FEMALE">FEMALE</option>
-                
+                <option value="FEMALE">FEMALE</option>                
               </select>
               </div>
             </div>

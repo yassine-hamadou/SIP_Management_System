@@ -141,6 +141,7 @@ export function Login() {
                 formik.values.username === '' || formik.values.password === '' ?
                   '' : 
                   <>
+                    <option >Select Company</option>
                     <option value='damangDivision'>EnP - DAMANG DIVISION</option>
                     <option value='dzataDivision'>EnP - DZATA DIVISION</option>
                     <option value='mpohorDivision'>EnP - MPOHOR DIVISION</option>
