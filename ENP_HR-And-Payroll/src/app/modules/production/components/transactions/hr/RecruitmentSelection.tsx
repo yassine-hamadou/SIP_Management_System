@@ -377,7 +377,8 @@ const OnSUbmit = handleSubmit(async (values) => {
       gender: selectedGen,
       phone: values.phone,
       email: values.email,
-      qualification: values.qualification
+      qualification: values.qualification,
+      ImageFile: tempImage
     }
     console.log(data);
     

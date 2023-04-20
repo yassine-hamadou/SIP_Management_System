@@ -418,8 +418,7 @@ const User = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Password</label>
                   <input type="text" {...register("password")}
-                    defaultValue={isUpdateModalOpen === true ? tempData.password : ''}
-                    onChange={handleChange}
+                    placeholder={isUpdateModalOpen === true ? 'enter new password' : 'password'}
                     className="form-control form-control-solid" />
                 </div>
 
