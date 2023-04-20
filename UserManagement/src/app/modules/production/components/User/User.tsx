@@ -255,12 +255,17 @@ const User = () => {
   const handleUpdate = (e: any) => {
     e.preventDefault()
     // object item to be passed down to updateItem function 
-    const item = {
-      url: 'Users',
-      data: tempData
+    if (tempData.firstName.length >= 5) {
+      const item = {
+        url: 'Users',
+        data: tempData
+      }
+      updateData(item)
+      console.log('update: ', item.data)
+    } else {
+      setLoading(false)
+      message.error('First Name must be more than 5 characters')
     }
-    updateData(item)
-    console.log('update: ', item.data)
   }
 
   const showUpdateModal = (values: any) => {
@@ -392,6 +397,7 @@ const User = () => {
                   <label htmlFor="exampleFormControlInput1" className="form-label">Gender</label>
                   <select {...register("gender")} value={isUpdateModalOpen === true ? tempData?.gender : null}
                     onChange={handleChange}
+                    onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option>Select service</option> : null}
                     {
@@ -399,7 +405,7 @@ const User = () => {
                         <option value={item}>{item}</option>
                       ))
                     }
-                    
+
                   </select>
                 </div>
                 <div className='col-6 mb-7'>
