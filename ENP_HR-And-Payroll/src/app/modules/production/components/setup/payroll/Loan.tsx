@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { LOANS } from '../../../../../data/DummyData'
-import { deleteItem, fetchSmWebApiDocument, postSmWebApiItem, updateSmWebApiItem } from '../../../../../services/ApiCalls'
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../../services/ApiCalls'
 import { ENP_URL } from '../../../urls'
 
 const Loan = () => {
@@ -210,7 +210,7 @@ const Loan = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchSmWebApiDocument('ProductionActivity')
+      const response = await fetchDocument('ProductionActivity')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -244,7 +244,7 @@ const Loan = () => {
     setGridData(filteredData)
   }
 
-  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateSmWebApiItem, {
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
       queryClient.setQueryData(['ProductionActivity', tempData], data);
       reset()
@@ -298,7 +298,7 @@ const Loan = () => {
     postData(item)
   })
 
-  const { mutate: postData, isLoading: postLoading } = useMutation(postSmWebApiItem, {
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
       queryClient.setQueryData(['users', tempData], data);
       reset()

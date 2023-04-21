@@ -87,30 +87,12 @@ const Currency = () => {
         return 0
       },
     },
-    // {
-    //   title: 'Status',
-    //   dataIndex: 'status',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.status > b.status) {
-    //       return 1
-    //     }
-    //     if (b.status > a.status) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
-
     {
       title: 'Action',
       fixed: 'right',
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>

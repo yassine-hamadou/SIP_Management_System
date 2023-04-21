@@ -35,20 +35,6 @@ export function postItem(item: any) {
     return axios.post(`${Api_Endpoint}/${item.url}`, item.data)
 }
 
-// ------------SmWebEndpoint---------------------
-
-export function fetchSmWebApiDocument(url: string) {
-    return axios.get(`${ENP_URL}/${url}`)
-}
-export function updateSmWebApiItem(item: any) {
-    return axios.put(`${ENP_URL}/${item.url}/${item.data.id}`, item.data)
-}
-export function deleteSmWebApiItem(item: any) {
-    return axios.delete(`${ENP_URL}/${item.url}/${item.data.id}`)
-}
-export function postSmWebApiItem(item: any) {
-    return axios.post(`${ENP_URL}/${item.url}`, item.data)
-}
 
 export const fetchUserRoless = () => {
     return axios.get(`${UsersEndpoint}/UserRoles`)
