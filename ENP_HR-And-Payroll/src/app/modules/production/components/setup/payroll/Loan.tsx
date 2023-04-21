@@ -4,7 +4,11 @@ import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { LOANS } from '../../../../../data/DummyData'
+<<<<<<< HEAD
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../../services/ApiCalls'
+=======
+import { deleteItem} from '../../../../../services/ApiCalls'
+>>>>>>> 7c55f3e2409e3847ea1e8915d002eafb4ec6ffe9
 import { ENP_URL } from '../../../urls'
 
 const Loan = () => {
@@ -210,9 +214,15 @@ const Loan = () => {
   const loadData = async () => {
     setLoading(true)
     try {
+<<<<<<< HEAD
       const response = await fetchDocument('ProductionActivity')
       setGridData(response.data)
       setLoading(false)
+=======
+      // const response = await fetchSmWebApiDocument('ProductionActivity')
+      // setGridData(response.data)
+      // setLoading(false)
+>>>>>>> 7c55f3e2409e3847ea1e8915d002eafb4ec6ffe9
     } catch (error) {
       console.log(error)
     }
@@ -244,6 +254,7 @@ const Loan = () => {
     setGridData(filteredData)
   }
 
+<<<<<<< HEAD
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
       queryClient.setQueryData(['ProductionActivity', tempData], data);
@@ -257,6 +268,21 @@ const Loan = () => {
       console.log('error: ', error)
     }
   })
+=======
+  // const { isLoading: updateLoading, mutate: updateData } = useMutation(updateSmWebApiItem, {
+  //   onSuccess: (data) => {
+  //     queryClient.setQueryData(['ProductionActivity', tempData], data);
+  //     reset()
+  //     setTempData({})
+  //     loadData()
+  //     setIsUpdateModalOpen(false)
+  //     setIsModalOpen(false)
+  //   },
+  //   onError: (error) => {
+  //     console.log('error: ', error)
+  //   }
+  // })
+>>>>>>> 7c55f3e2409e3847ea1e8915d002eafb4ec6ffe9
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
@@ -264,7 +290,7 @@ const Loan = () => {
       url: 'ProductionActivity',
       data: tempData
     }
-    updateData(item)
+    // updateData(item)
     console.log('update: ', item.data)
   }
 
@@ -295,9 +321,10 @@ const Loan = () => {
       url: endpoint
     }
     console.log(item.data)
-    postData(item)
+    // postData(item)
   })
 
+<<<<<<< HEAD
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
       queryClient.setQueryData(['users', tempData], data);
@@ -310,6 +337,21 @@ const Loan = () => {
       console.log('post error: ', error)
     }
   })
+=======
+  // const { mutate: postData, isLoading: postLoading } = useMutation(postSmWebApiItem, {
+  //   onSuccess: (data) => {
+  //     queryClient.setQueryData(['users', tempData], data);
+  //     reset()
+  //     setTempData({})
+  //     loadData()
+  //     setIsModalOpen(false)
+  //   },
+  //   onError: (error) => {
+  //     console.log('post error: ', error)
+  //   }
+  // })
+  
+>>>>>>> 7c55f3e2409e3847ea1e8915d002eafb4ec6ffe9
   return (
     <div
       style={{

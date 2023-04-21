@@ -4,7 +4,7 @@ import { ENP_URL } from '../modules/production/urls';
 
 
 export const Api_Endpoint = "http://208.117.44.15/hrwebapi/api";
-export const UsersEndpoint = "http://208.117.44.15/userapi/api/";
+export const UsersEndpoint = "http://208.117.44.15/userapi/api";
 
 export let axioInstance = axios.create({
     headers: {
@@ -36,11 +36,15 @@ export function postItem(item: any) {
 }
 
 
+<<<<<<< HEAD
 export const fetchUserRoless = () => {
+=======
+export const fetchUserRoles = () => {
+>>>>>>> 7c55f3e2409e3847ea1e8915d002eafb4ec6ffe9
     return axios.get(`${UsersEndpoint}/UserRoles`)
 }
 
-export const fetchRoless = () => {
+export const fetchRoles = () => {
     return axios.get(`${UsersEndpoint}/Roles`)
 }
 

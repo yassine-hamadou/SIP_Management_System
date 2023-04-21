@@ -5,7 +5,11 @@ import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
+<<<<<<< HEAD
 import { deleteItem, fetchDocument, postItem, updateItem} from '../../../../../services/ApiCalls'
+=======
+import { deleteItem} from '../../../../../services/ApiCalls'
+>>>>>>> 7c55f3e2409e3847ea1e8915d002eafb4ec6ffe9
 
 const Overtime = () => {
   const [gridData, setGridData] = useState([])
@@ -102,8 +106,13 @@ const Overtime = () => {
   const loadData = async () => {
     setLoading(true)
     try {
+<<<<<<< HEAD
       const response = await fetchDocument('ProductionActivity')
       setGridData(response.data)
+=======
+      // const response = await fetchSmWebApiDocument('ProductionActivity')
+      // setGridData(response.data)
+>>>>>>> 7c55f3e2409e3847ea1e8915d002eafb4ec6ffe9
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -136,6 +145,7 @@ const Overtime = () => {
     setGridData(filteredData)
   }
 
+<<<<<<< HEAD
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
       queryClient.setQueryData(['ProductionActivity', tempData], data);
@@ -149,6 +159,21 @@ const Overtime = () => {
       console.log('error: ', error)
     }
   })
+=======
+  // const { isLoading: updateLoading, mutate: updateData } = useMutation(updateSmWebApiItem, {
+  //   onSuccess: (data) => {
+  //     queryClient.setQueryData(['ProductionActivity', tempData], data);
+  //     reset()
+  //     setTempData({})
+  //     loadData()
+  //     setIsUpdateModalOpen(false)
+  //     setIsModalOpen(false)
+  //   },
+  //   onError: (error) => {
+  //     console.log('error: ', error)
+  //   }
+  // })
+>>>>>>> 7c55f3e2409e3847ea1e8915d002eafb4ec6ffe9
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
@@ -156,7 +181,7 @@ const Overtime = () => {
       url: 'ProductionActivity',
       data: tempData
     }
-    updateData(item)
+    // updateData(item)
     console.log('update: ', item.data)
   }
 
@@ -179,9 +204,10 @@ const Overtime = () => {
       url: endpoint
     }
     console.log(item.data)
-    postData(item)
+    // postData(item)
   })
 
+<<<<<<< HEAD
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
       queryClient.setQueryData(['ProductionActivity', tempData], data);
@@ -194,6 +220,20 @@ const Overtime = () => {
       console.log('post error: ', error)
     }
   })
+=======
+  // const { mutate: postData, isLoading: postLoading } = useMutation(postSmWebApiItem, {
+  //   onSuccess: (data) => {
+  //     queryClient.setQueryData(['ProductionActivity', tempData], data);
+  //     reset()
+  //     setTempData({})
+  //     loadData()
+  //     setIsModalOpen(false)
+  //   },
+  //   onError: (error) => {
+  //     console.log('post error: ', error)
+  //   }
+  // })
+>>>>>>> 7c55f3e2409e3847ea1e8915d002eafb4ec6ffe9
 
   return (
     <div
