@@ -280,7 +280,6 @@ const User = () => {
     setLoading(true)
     const endpoint = 'Users'
     // object item to be passed down to postItem function
-    if (values.firstName.length >= 5) {
       const item = {
         data: {
           firstName: values.firstName,
@@ -294,10 +293,6 @@ const User = () => {
       }
       console.log(item.data)
       postData(item)
-    } else {
-      setLoading(false)
-      message.error('First Name must be more than 5 characters')
-    }
   })
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
@@ -399,7 +394,7 @@ const User = () => {
                     onChange={handleChange}
                     onSelect={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
-                    {isUpdateModalOpen === false ? <option>Select service</option> : null}
+                    {isUpdateModalOpen === false ? <option>Select gender</option> : null}
                     {
                       genderList.map((item: any) => (
                         <option value={item}>{item}</option>

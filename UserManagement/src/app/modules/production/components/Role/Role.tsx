@@ -263,6 +263,7 @@ const Roles = () => {
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Role Name</label>
                   <input type="text" {...register("name")}
+                    onChange={handleChange}
                     defaultValue={isUpdateModalOpen === true ? tempData.name : ''}
                     className="form-control form-control-solid" />
                 </div>
