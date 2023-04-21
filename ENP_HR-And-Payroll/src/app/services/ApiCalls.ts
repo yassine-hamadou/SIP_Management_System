@@ -36,11 +36,7 @@ export function postItem(item: any) {
 }
 
 
-<<<<<<< HEAD
-export const fetchUserRoless = () => {
-=======
 export const fetchUserRoles = () => {
->>>>>>> 7c55f3e2409e3847ea1e8915d002eafb4ec6ffe9
     return axios.get(`${UsersEndpoint}/UserRoles`)
 }
 
