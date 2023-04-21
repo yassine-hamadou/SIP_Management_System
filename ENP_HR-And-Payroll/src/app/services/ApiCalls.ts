@@ -3,7 +3,7 @@ import axios from 'axios';
 
 
 export const Api_Endpoint = "http://208.117.44.15/hrwebapi/api";
-export const UsersEndpoint = "http://208.117.44.15/userapi/api/";
+export const UsersEndpoint = "http://208.117.44.15/userapi/api";
 
 export let axioInstance = axios.create({
     headers: {
@@ -12,11 +12,11 @@ export let axioInstance = axios.create({
 }
 )
 
-export const fetchUserRoless = () => {
+export const fetchUserRoles = () => {
     return axios.get(`${UsersEndpoint}/UserRoles`)
 }
 
-export const fetchRoless = () => {
+export const fetchRoles = () => {
     return axios.get(`${UsersEndpoint}/Roles`)
 }
 
