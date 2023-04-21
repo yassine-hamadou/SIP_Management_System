@@ -1,70 +1,63 @@
 import { Link } from 'react-router-dom'
 import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
+import { ReportCard } from './ReportCardItem'
+
 
 
 const PayrollReportPage = () => {
+  
+  const PayrollReportData = [
+    {
+      title: "Employees Reports",
+      reports: [
+        { title: "List", link: "/report/payrollPAYEReport" },
+        { title: "Age Profile", link: "/report/payrollAgeProfileReport" },
+        { title: "Staff Movement", link: "/report/payrollStaffMovementReport" },
+        { title: "History", link: "/report/payrollHistoryReport" },
+        { title: "Status", link: "/report/payrollStatusReport" },
+      ]
+    },
+    {
+      title: "Human Resource Reports",
+      reports: [
+        { title: "Recruitment and Selection", link: "/report/hrRecruitmentSelectionReport" },
+        { title: "Compensation and Benefit", link: "/report/hrCompensationBenefitReport" },
+        { title: "Training and Development", link: "/report/hrTrainingDevelopmentReport" },
+        { title: "Appraisal and Performance", link: "/report/hrAppraisalPerformanceReport" },
+        { title: "Disciplinary Actions", link: "/report/hrDisciplinaryActionsReport" },
+        { title: "Leave Planning", link: "/report/hrLeavePlanningReport" },
+        { title: "Medical", link: "/report/hrMedicalReport" },
+      ]
+    },
+    {
+      title: "Payroll Reports",
+      reports: [
+        { title: "Transaction History", link: "/report/payrollTransactionHistoryReport" },
+        { title: "Payslip", link: "/report/payrollPayslipReport" },
+        { title: "Journal", link: "/report/payrollJournalReport" },
+        { title: "Basic Pay Reconciliation", link: "/report/payrollBasicPayReconciliationReport" },
+        { title: "Bank Summary", link: "/report/payrollBankSummaryReport" },
+        { title: "Analysis", link: "/report/payrollAnalysisReport" },
+        { title: "Statutory  Reports", link: "/report/payrollStatutoryReportsReport" },
+        { title: "Loans", link: "/report/payrollLoanssReport" },
+      ]
+    }
+  ]
 
   return (
-    <div
-      style={{
-        backgroundColor: 'white',
-        padding: '20px',
-        borderRadius: '5px',
-        boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-      }}
-    >
-      <KTCardBody className='py-4 '>
-      
-          <div className='row mb-10'>
-            <div className='col-4'>
-              <h2>
-                Employees Reports
-              </h2>
-              <br />
-              <ul>
-                <li><h4><Link to="/report/payrollPAYEReport">List</Link></h4></li>
-                <li><h4><Link to="">Age Profile</Link></h4></li>
-                <li><h4><Link to="#">Staff Movement</Link></h4></li>
-                <li><h4><Link to="#">History</Link></h4></li>
-                <li><h4><Link to="#">Status</Link></h4></li>
-              </ul>
-            </div>
-            <div className='col-4'>
-              <h2>
-                Human Resource Reports
-              </h2>
-              <br />
-              <ul>
-                <li><h4><Link to="#">Recruitment and Selection</Link></h4></li>
-                <li><h4><Link to="#">Compensations and Benefits</Link></h4></li>
-                <li><h4><Link to="#">Training and development</Link></h4></li>
-                <li><h4><Link to="#">Appraisal and Performance</Link></h4></li>
-                <li><h4><Link to="#">Disciplinary Actions</Link></h4></li>
-                <li><h4><Link to="#">Leave Planning</Link></h4></li>
-                <li><h4><Link to="#">Medical</Link></h4></li>
-              </ul>
-            </div>
-            <div className='col-4'>
-              <h2>
-                Payroll Reports 
-              </h2>
-              <br />
-              <ul>
-                <li><h4><Link to="#">Transaction History</Link></h4></li>
-                <li><h4><Link to="#">Payslip</Link></h4></li>
-                <li><h4><Link to="#">Journal</Link></h4></li>
-                <li><h4><Link to="#">Basic Pay Reconciliation</Link></h4></li>
-                <li><h4><Link to="#">Bank Summary</Link></h4></li>
-                <li><h4><Link to="#">Analysis</Link></h4></li>
-                <li><h4><Link to="#">Statutory  Reports</Link></h4></li>
-                <li><h4><Link to="#">Loans</Link></h4></li>
-              </ul>
-            </div>
-            
-          </div>
-          
-    
-      </KTCardBody>
+    <div>
+      <div className='row col-12 mb-10'>
+        {
+          PayrollReportData.map((report, index) => {
+            return (
+              <div className='col-4' key={index}>
+                <ReportCard data={report} />
+              </div>
+            )
+          })
+        }
+      </div>
+
     </div>
   )
 }

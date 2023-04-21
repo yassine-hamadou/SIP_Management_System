@@ -1,140 +1,113 @@
 import { Link } from 'react-router-dom'
+import { ReportCard } from './ReportCardItem'
 
+
+const  HrReportData = [
+  {
+    title: "Recruitment and Selection",
+    reports: [
+      { title: "Reference #", link: "/RecruitmentSelectionReferenceReport" },
+      { title: "Job Title", link: "/RecruitmentSelectJobTitleRepor" },
+    ]
+  },
+  {
+    title: "Compensation and Benefit",
+    reports: [
+      { title: "Employee", link: "/CompensationBenefitByEmployeeReport" },
+      { title: "Department", link: "/CompensationBenefitByDepartmentReport" },
+      { title: "Job Title", link: "/CompensationBenefitByJobTitleReport" },
+    ]
+  },
+  {
+    title: "Training and Development",
+    reports: [
+      { title: "Reference #", link: "/TrainingDevelopmentByEmployeeReport" },
+      { title: "Training Type", link: "/TrainingDevelopmentByDepartmentReport" },
+      { title: "Summary", link: "/TrainingDevelopmentByJobTitleReport" },
+    ]
+  },
+  {
+    title: "Appraisal and Performance",
+    reports: [
+      { title: "Employee", link: "/AppraisalPerformanceByEmployeeReport" },
+      { title: "Appraisal Type", link: "/AppraisalPerformanceByAppraisalTypeReport" },
+    ]
+  },
+  {
+
+    title: "Notes",
+    reports: [
+      { title: "Employee", link: "/NotesEmployeeReport" },
+      { title: "Note Category", link: "/NoteCategoryReport" },
+      { title: "Summary", link: "/NotesSummaryReport" },
+    ]
+  },
+  {
+    title: "Leave",
+    reports: [
+      { title: "Employee", link: "/LeaveEmployeeReport" },
+      { title: "Department", link: "/LeaveDepartmentReport" },
+      { title: "Summary", link: "/LeaveSummaryReport" },
+    ]
+  },
+  {
+    title: "Medical",
+    reports: [
+      { title: "Employee", link: "/MedicalEmployeeReport" },
+      { title: "Medical Type", link: "/MedicalTypeReport" },
+      { title: "Summary", link: "/MedicalSummaryReport" },
+    ]
+  },
+]
 
 const HrReportPage = () => {
 
+  const HrReportData1 = HrReportData.slice(0, 3)
+  const HrReportData2 = HrReportData.slice(3, 6)
+  const HrReportData3 = HrReportData.slice(6, 9)
+
   return (
-    <div 
-    
+    <div
+
     >
       <div className='row col-12 mb-10'>
-        <div 
-          style={{
-              width:"310px",
-              backgroundColor: 'white',
-              padding: '20px',
-              borderRadius: '5px',
-              margin:'0px 10px 0px 10px',
-              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
-          <h2 style={{color:"GrayText"}}>Recruitment and Selection</h2>
-          <hr></hr>
-       
-          <h3><span className="bullet me-5"></span><Link to="/RecruitmentSelectionReferenceReport">Reference #</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="/RecruitmentSelectJobTitleRepor">Job Title</Link></h3>
-        </div>
-        <div
-          style={{
-              width:"310px",
-              backgroundColor: 'white',
-              padding: '20px',
-              margin:'0px 10px 0px 10px',
-              borderRadius: '5px',
-              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
-          <h2 style={{color:"GrayText"}}>Compensation and Benefit</h2>
-          <hr></hr>
-    
-          <h3><span className="bullet me-5"></span><Link to="/CompensationBenefitByEmployeeReport">Employee</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="/CompensationBenefitByDepartmentReport">Department</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="/CompensationBenefitByJobTitleReport">Job Title</Link></h3>
-         
-        </div>
-        <div
-          style={{
-              width:"310px",
-              backgroundColor: 'white',
-              padding: '20px',
-              margin:'0px 10px 0px 10px',
-              borderRadius: '5px',
-              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
-          <h2 style={{color:"GrayText"}}>Training and Development</h2>
-          <hr></hr>
-         
-          <h3><span className="bullet me-5"></span><Link to="/TrainingDevelopmentByReferenceReport">Reference #</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="/TrainingDevelopmentByTrainingTypeReport">Training Type</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="/TrainingDevelopmentBySummaryReport">Summary</Link></h3>
-          
-        </div>
-        <div
-          style={{
-              width:"320px",
-              backgroundColor: 'white',
-              padding: '20px',
-              margin:'0px 10px 0px 10px',
-              borderRadius: '5px',
-              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
-          <h2 style={{color:"GrayText"}}>Appraisal and Performance</h2>
-          <hr></hr>
-          <h3><span className="bullet me-5"></span><Link to="/AppraisalPerformanceByEmployeeReport">Employee</Link></h3>
-          <h3><span className="bullet me-5"></span><Link to="/AppraisalPerformanceByAppraisalTypeReport">Appraisal Type</Link></h3>
-        </div>
+        {
+          HrReportData1.map((report, index) => {
+            return (
+              <div className='col-4' key={index}>
+                <ReportCard data={report} />
+              </div>
+            )
+          })
+        }
       </div>
 
       <div className='row col-12 mb-10'>
-        <div 
-          style={{
-              width:"310px",
-              backgroundColor: 'white',
-              padding: '20px',
-              borderRadius: '5px',
-              margin:'0px 10px 0px 10px',
-              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
-          <h2 style={{color:"GrayText"}}>Notes</h2>
-          <hr></hr>
-          
-          <h2><span className="bullet me-5"></span><Link to="/NotesEmployeeReport">Employee</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/NoteCategoryReport">Note Category</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/NotesSummaryReport">Summary</Link></h2>
-        </div>
-        <div 
-          style={{
-              width:"310px",
-              backgroundColor: 'white',
-              padding: '20px',
-              margin:'0px 10px 0px 10px',
-              borderRadius: '5px',
-              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
-          <h2 style={{color:"GrayText"}}>Leave</h2>
-          <hr></hr>
-          
-          <h2><span className="bullet me-5"></span><Link to="/LeaveEmployeeReport">Employee</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/LeaveDepartmentReport">Department</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/LeaveSummaryReport">Summary</Link></h2>
-         
-        </div>
-        <div
-          style={{
-              width:"310px",
-              backgroundColor: 'white',
-              padding: '20px',
-              margin:'0px 10px 0px 10px',
-              borderRadius: '5px',
-              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
-          <h2 style={{color:"GrayText"}}>Medical</h2>
-          <hr></hr>
-          
-          <h2><span className="bullet me-5"></span><Link to="/MedicalEmployeeReport">Employee</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/MedicalTypeReport">Medical Type</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/MedicalSummaryReport">Summary</Link></h2>
-          
-        </div>
-        
+        {
+          HrReportData2.map((report, index) => {
+            return (
+              <div className='col-4' key={index}>
+                <ReportCard data={report} />
+              </div>
+            )
+          })
+        }
       </div>
+
+      <div className='row col-12 mb-10'>
+        {
+          HrReportData3.map((report, index) => {
+            return (
+              <div className='col-4' key={index}>
+                <ReportCard data={report} />
+              </div>
+            )
+          })
+        }
+      </div>     
+      
     </div>
   )
 }
 
-export {HrReportPage}
+export { HrReportPage }
