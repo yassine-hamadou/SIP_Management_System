@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ENP_URL } from '../modules/production/urls';
 
 
 
@@ -12,6 +13,29 @@ export let axioInstance = axios.create({
 }
 )
 
+// ------------ApiEndpoint---------------------
+
+//dynamic fetch function
+export function fetchDocument(url: string) {
+    return axios.get(`${Api_Endpoint}/${url}`)
+}
+
+//dynamic update function
+export function updateItem(item: any) {
+    return axios.put(`${Api_Endpoint}/${item.url}/${item.data.id}`, item.data)
+}
+
+//dynamic delete function
+export function deleteItem(item: any) {
+    return axios.delete(`${Api_Endpoint}/${item.url}/${item.data.id}`)
+}
+
+//dynamic post function
+export function postItem(item: any) {
+    return axios.post(`${Api_Endpoint}/${item.url}`, item.data)
+}
+
+
 export const fetchUserRoles = () => {
     return axios.get(`${UsersEndpoint}/UserRoles`)
 }
@@ -20,15 +44,7 @@ export const fetchRoles = () => {
     return axios.get(`${UsersEndpoint}/Roles`)
 }
 
-//dynamic fetch function
-export const fetchDocument = (url: string) => {
-    return axios.get(`${Api_Endpoint}/${url}`)
-}
 
-//dynamic update function
-export const updateItem = (url: string, data: any) => {
-    return axios.put(`${Api_Endpoint}/${url}/${data.id}`, data)
-}
 
 export const fetchDivisions = () => {
     return axios.get(`${Api_Endpoint}/Divisions`)

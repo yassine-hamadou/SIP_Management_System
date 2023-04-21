@@ -1,12 +1,10 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { Button, Input, Modal, Space, Table, message } from 'antd'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { ENP_URL } from '../../urls'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchUsers, updateUser } from '../../../../services/ApiCalls'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
+import { deleteItem, fetchDocument, fetchUsers, postItem, updateItem } from '../../../../services/ApiCalls'
 import { AUTH_LOCAL_STORAGE_KEY, useAuth } from '../../../auth'
 
 const User = () => {
@@ -23,7 +21,9 @@ const User = () => {
   const { saveAuth, setCurrentUser } = useAuth()
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const queryClient = useQueryClient()
 
+  const genderList = ['MALE', 'FEMALE']
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -44,22 +44,22 @@ const User = () => {
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${Api_Endpoint}/Users/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['users', tempData], data);
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
     }
-  }
-  const token: any = localStorage.getItem("accessToken")?.replace(/['"]/g, '')
+  })
 
-  // console.log(token)
-  function handleDelete(element: any) {
-    deleteData(element)
+  const handleDelete = (element: any) => {
+    const item = {
+      url: 'Users',
+      data: element
+    }
+    deleteData(item)
   }
 
   const columns: any = [
@@ -174,13 +174,15 @@ const User = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Users`)
+      const response = await fetchDocument('Users')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
     }
   }
+
+
 
   useEffect(() => {
     // const fetchQuotes = async () => {
@@ -235,10 +237,10 @@ const User = () => {
     setGridData(filteredData)
   }
 
-  const queryClient = useQueryClient()
-  const { isLoading, mutate } = useMutation(updateUser, {
+
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['users', tempData.id], data);
+      queryClient.setQueryData(['users', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -246,14 +248,24 @@ const User = () => {
       setIsModalOpen(false)
     },
     onError: (error) => {
-      console.log('error: ', error)
+      console.log('update error: ', error)
     }
   })
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
-    mutate(tempData)
-    console.log('update: ', tempData)
+    // object item to be passed down to updateItem function 
+    if (tempData.firstName.length >= 5) {
+      const item = {
+        url: 'Users',
+        data: tempData
+      }
+      updateData(item)
+      console.log('update: ', item.data)
+    } else {
+      setLoading(false)
+      message.error('First Name must be more than 5 characters')
+    }
   }
 
   const showUpdateModal = (values: any) => {
@@ -264,28 +276,35 @@ const User = () => {
   }
 
 
-  const url = `${Api_Endpoint}/Users`
-  const OnSUbmit = handleSubmit(async (values) => {
+  const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const data = {
-      firstName: values.firstName,
-      username: values.username,
-      password: values.password,
-      surname: values.surname,
-      email: values.email,
-      gender: values.gender,
-    }
-    console.log(data)
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
+    const endpoint = 'Users'
+    // object item to be passed down to postItem function
+      const item = {
+        data: {
+          firstName: values.firstName,
+          username: values.username,
+          password: values.password,
+          surname: values.surname,
+          email: values.email,
+          gender: values.gender,
+        },
+        url: endpoint
+      }
+      console.log(item.data)
+      postData(item)
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['users', tempData], data);
       reset()
-      setIsModalOpen(false)
+      setTempData({})
       loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
     }
   })
 
@@ -320,7 +339,7 @@ const User = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={gridData} />
+          <Table columns={columns} dataSource={gridData} loading={loading} />
           <Modal
             title={isUpdateModalOpen ? 'Update User' : 'Add User'}
             open={isModalOpen}
@@ -336,14 +355,14 @@ const User = () => {
                 type='primary'
                 htmlType='submit'
                 loading={submitLoading}
-                onClick={isUpdateModalOpen ? handleUpdate : OnSUbmit}
+                onClick={isUpdateModalOpen ? handleUpdate : OnSubmit}
               >
                 Submit
               </Button>,
             ]}
           >
             <form
-              onSubmit={isUpdateModalOpen ? handleUpdate : OnSUbmit}
+              onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}
             >
               <hr></hr>
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
@@ -352,13 +371,14 @@ const User = () => {
                   <input type="text" {...register("firstName")}
                     defaultValue={isUpdateModalOpen === true ? tempData.firstName : ''}
                     onChange={handleChange}
+                    minLength={5}
                     className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Surname</label>
                   <input type="text" {...register("surname")}
-                   defaultValue={isUpdateModalOpen === true ? tempData.surname : ''}
-                   onChange={handleChange}
+                    defaultValue={isUpdateModalOpen === true ? tempData.surname : ''}
+                    onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
@@ -370,24 +390,30 @@ const User = () => {
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Gender</label>
-                  <select {...register("gender")} value={isUpdateModalOpen === true ? tempData?.gender : null} onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
-                  {isUpdateModalOpen === false ?  <option>Select service</option> : null}
-                    <option value="MALE"> MALE </option>
-                    <option value="FEMALE"> FEMALE </option>
+                  <select {...register("gender")} value={isUpdateModalOpen === true ? tempData?.gender : null}
+                    onChange={handleChange}
+                    onSelect={handleChange}
+                    className="form-select form-select-solid" aria-label="Select example">
+                    {isUpdateModalOpen === false ? <option>Select gender</option> : null}
+                    {
+                      genderList.map((item: any) => (
+                        <option value={item}>{item}</option>
+                      ))
+                    }
+
                   </select>
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Username</label>
                   <input type="text" {...register("username")}
-                  defaultValue={isUpdateModalOpen === true ? tempData.username : ''}
-                  onChange={handleChange}
+                    defaultValue={isUpdateModalOpen === true ? tempData.username : ''}
+                    onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Password</label>
                   <input type="text" {...register("password")}
-                    defaultValue={isUpdateModalOpen === true ? tempData.password : ''}
-                    onChange={handleChange}
+                    placeholder={isUpdateModalOpen === true ? 'enter new password' : 'password'}
                     className="form-control form-control-solid" />
                 </div>
 
@@ -401,3 +427,4 @@ const User = () => {
 }
 
 export { User }
+

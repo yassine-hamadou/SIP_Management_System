@@ -1,64 +1,49 @@
 import { Link } from 'react-router-dom'
+import { ReportCard } from './ReportCardItem'
 
 const EmployeeReportPage = () => {
 
+  const EmployeeReportData = [
+    {
+      title: "List",
+      reports: [
+        { title: "Paygroup", link: "/EmployeeListReport" },
+        { title: "Division", link: "/EmployeeDivisionReport" },
+        { title: "Summary", link: "/EmployeeDivisionSummaryReport" },
+      ]
+    },
+    {
+      title: "Age Profile",
+      reports: [
+        { title: "Detail", link: "/EmployeeAgeRangeReport" },
+        { title: "Summary", link: "/EmployeeAgeSummaryReport" },
+      ]
+    },
+    {
+      title: "Family Profile",
+      reports: [
+        { title: "Employee", link: "/EmployeeFamilyReport" },
+        { title: "Summary", link: "/EmployeeFamilySummaryReport" },
+      ]
+    },
+  ]
+
   return (
-    <div 
-    
-    >
+    <div>
       <div className='row col-12 mb-10'>
-        <div className='col-3'
-          style={{
-              backgroundColor: 'white',
-              padding: '20px',
-              borderRadius: '5px',
-              margin:'0px 10px 0px 10px',
-              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
-          <h2>List</h2>
-          <hr></hr>
-          <br></br>
-          <h2><span className="bullet me-5"></span><Link to="/EmployeeListReport">Paygroup</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/EmployeeDivisionReport">Division</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/EmployeeDivisionSummaryReport">Summary</Link></h2>
-        </div>
-        <div className='col-3'
-          style={{
-              backgroundColor: 'white',
-              padding: '20px',
-              margin:'0px 10px 0px 10px',
-              borderRadius: '5px',
-              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
-          <h2>Age Profile</h2>
-          <hr></hr>
-          <br></br>
-          <h2><span className="bullet me-5"></span><Link to="/EmployeeAgeRangeReport">Detail</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/EmployeeAgeSummaryReport">Summary</Link></h2>
-         
-        </div>
-        <div className='col-3'
-          style={{
-              backgroundColor: 'white',
-              padding: '20px',
-              margin:'0px 10px 0px 10px',
-              borderRadius: '5px',
-              boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
-          <h2>Family Profile</h2>
-          <hr></hr>
-          <br></br>
-          <h2><span className="bullet me-5"></span><Link to="/EmployeeFamilyReport">Employee</Link></h2>
-          <h2><span className="bullet me-5"></span><Link to="/EmployeeFamilySummaryReport">Summary</Link></h2>
-          
-        </div>
-        
+        {
+          EmployeeReportData.map((report, index) => {
+            return (
+              <div className='col-4' key={index}>
+                <ReportCard data={report} />
+              </div>
+            )
+          })
+        }
       </div>
+
     </div>
   )
 }
 
-export {EmployeeReportPage}
+export { EmployeeReportPage }

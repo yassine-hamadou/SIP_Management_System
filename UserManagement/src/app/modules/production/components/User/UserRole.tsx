@@ -1,13 +1,12 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Modal, Space, Table, message } from 'antd'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
-import { ENP_URL } from '../../urls'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { employeedata } from '../../../../data/DummyData'
-import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchRoles, fetchUserRoles, fetchUsers} from '../../../../services/ApiCalls'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useNavigate, useParams } from 'react-router-dom'
+import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
+import { deleteItem, fetchDocument, postItem } from '../../../../services/ApiCalls'
+
 
 const UserRole = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -21,6 +20,12 @@ const UserRole = () => {
   const param:any  = useParams();
   const navigate = useNavigate();
   let [userFName, setUserFName] = useState<any>("")
+  const queryClient = useQueryClient()
+    // const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
+    const {data:allRoles} = useQuery('userRoles',() => fetchDocument('UserRoles'), {cacheTime:5000})
+    const {data:allUsers} = useQuery('users',() => fetchDocument('Users'), {cacheTime:5000})
+    const {data:roles} = useQuery('roles',() => fetchDocument('Roles'), {cacheTime:5000})
+  
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -34,21 +39,25 @@ const UserRole = () => {
     setIsModalOpen(false)
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${ENP_URL}/UserRoles/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['users'], data);
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
     }
+  })
+
+  const handleDelete = (element: any) => {
+    const item = {
+      url: 'UserRoles',
+      data: element
+    }
+    deleteData(item)
   }
 
-  function handleDelete(element: any) {
-    deleteData(element)
-  }
+
 
   const columns: any = [    
     {
@@ -86,14 +95,9 @@ const UserRole = () => {
     },
   ]
 
-  // const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
-  const {data:allRoles} = useQuery('roles', fetchRoles, {cacheTime:5000})
-  const {data:allUsers} = useQuery('users', fetchUsers, {cacheTime:5000})
-
-
   const getRoleName = (perkId: any) => {
     let RoleName = null
-    allRoles?.data.map((item: any) => {
+    roles?.data.map((item: any) => {
       if (item.id === perkId) {
         RoleName=item.name
       }
@@ -101,10 +105,12 @@ const UserRole = () => {
     return RoleName
   }
 
+
+
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/UserRoles`)
+      const response = await fetchDocument('UserRoles')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -114,7 +120,7 @@ const UserRole = () => {
 
   const getUserName= async (id:any) =>{
     let newName=null
-     const   itemTest = await allUsers?.data.find((item:any) =>
+     const itemTest = await allUsers?.data.find((item:any) =>
       item.id.toString()===id
     )
      newName = await itemTest
@@ -153,26 +159,43 @@ const UserRole = () => {
     setGridData(filteredData)
   }
 
+  const checkRole = (roleId: any) => {
+    let isAssigned = false
+    allRoles?.data.map((item: any) => {
+      if (item.userId.toString() === param.id && item.roleId.toString() === roleId.toString()) {
+        isAssigned = true
+      }
+    })
+    return isAssigned
+  }
 
-  const url = `${Api_Endpoint}/UserRoles`
-  const OnSUbmit = handleSubmit( async (values)=> {
+  const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const data = {
+    const endpoint = 'UserRoles'
+    if(!checkRole(values.roleId)){
+      const item = {
+        data: {
           userId: parseInt(param.id),
           roleId: values.roleId,
-          // perkId: parseInt(selectedPerk)
-        }
-    console.log(data)
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
+        },
+        url: endpoint
+      }
+      console.log(item.data)
+      postData(item)
+    }else{
+      message.error('Role already assigned')
+    }
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['users'], data);
       reset()
-      setIsModalOpen(false)
       loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
     }
   })
 
@@ -226,14 +249,14 @@ const UserRole = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={OnSUbmit}
+                    onClick={OnSubmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
                 <form
-                    onSubmit={OnSUbmit}
+                    onSubmit={OnSubmit}
                 >
                    <hr></hr>
                    <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
@@ -245,7 +268,7 @@ const UserRole = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Role</label>
                         <select {...register("roleId")} className="form-select form-select-solid"  aria-label="Select example">
                             <option value=""> Select </option>
-                            {allRoles?.data.map((item: any) => (
+                            {roles?.data.map((item: any) => (
                                 <option value={item.id}>{item.name}</option>
                             ))}
                         </select>
@@ -261,4 +284,5 @@ const UserRole = () => {
   )
 }
 
-export {UserRole}
+export { UserRole }
+

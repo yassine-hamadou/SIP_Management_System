@@ -1,13 +1,10 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { Button, Input, Modal, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { ENP_URL } from '../../urls'
-import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { employeedata } from '../../../../data/DummyData'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { Api_Endpoint, updateApplication } from '../../../../services/ApiCalls'
+import { useMutation, useQueryClient } from 'react-query'
+import { useNavigate, useParams } from 'react-router-dom'
+import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
+import { Api_Endpoint, deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
 
 const Applications = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -45,23 +42,22 @@ const Applications = () => {
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${Api_Endpoint}/Applications/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['applications', tempData], data);
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
     }
-  }
-
-
-
+  })
 
   function handleDelete(element: any) {
-    deleteData(element)
+    const item = {
+      url: 'Applications',
+      data: element
+    }
+    deleteData(item)
   }
   const columns: any = [
 
@@ -100,7 +96,7 @@ const Applications = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Applications`)
+      const response = await fetchDocument('Applications')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -133,9 +129,9 @@ const Applications = () => {
   }
 
   const queryClient = useQueryClient()
-  const { isLoading, mutate } = useMutation(updateApplication, {
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['applications', tempData.id], data);
+      queryClient.setQueryData(['applications', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -149,8 +145,12 @@ const Applications = () => {
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
-    mutate(tempData)
-    console.log('update: ', tempData)
+    const item = {
+      url: 'Applications',
+      data: tempData
+    }
+    updateData(item)
+    console.log('update: ', item.data)
   }
 
   const showUpdateModal = (values: any) => {
@@ -161,24 +161,31 @@ const Applications = () => {
   }
 
 
-  const url = `${Api_Endpoint}/applications`
-  const OnSUbmit = handleSubmit(async (values) => {
+  const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const data = {
-      name: values.name,
-      description: values.description
+    const endpoint = 'Applications'
+
+    const item = {
+      data: {
+        name: values.name,
+        description: values.description,
+      },
+      url: endpoint
     }
-    console.log(data)
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
+    console.log(item.data)
+    postData(item)
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['users', tempData], data);
       reset()
-      setIsModalOpen(false)
+      setTempData({})
       loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
     }
   })
 
@@ -207,7 +214,7 @@ const Applications = () => {
               </Button>
             </Space>
             <Space style={{ marginBottom: 16 }}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+              <button type='button' className='btn btn-primary me-8' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
@@ -228,14 +235,14 @@ const Applications = () => {
                 type='primary'
                 htmlType='submit'
                 loading={submitLoading}
-                onClick={isUpdateModalOpen ? handleUpdate : OnSUbmit}
+                onClick={isUpdateModalOpen ? handleUpdate : OnSubmit}
               >
                 Submit
               </Button>,
             ]}
           >
             <form
-              onSubmit={isUpdateModalOpen ? handleUpdate : OnSUbmit}
+              onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}
             >
               <hr></hr>
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
@@ -264,3 +271,4 @@ const Applications = () => {
 }
 
 export { Applications }
+

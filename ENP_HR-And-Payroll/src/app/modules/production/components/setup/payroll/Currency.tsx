@@ -5,7 +5,8 @@ import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { CURRENCY } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, deleteItem, fetchDocument, postItem, updateItem } from '../../../../../services/ApiCalls'
+import { useMutation, useQueryClient } from 'react-query'
 
 const Currency = () => {
   const [gridData, setGridData] = useState([])
@@ -16,6 +17,10 @@ const Currency = () => {
   const {register, reset, handleSubmit} = useForm()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [tempData, setTempData] = useState<any>()
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const queryClient = useQueryClient()
+
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -28,24 +33,31 @@ const Currency = () => {
   const handleCancel = () => {
     reset()
     setIsModalOpen(false)
+    setIsUpdateModalOpen(false)
+    setTempData(null)
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${Api_Endpoint}/Currencies/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
+  }
+
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['Currencies', tempData], data);
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
     }
-  }
-
-  
+  })
 
   function handleDelete(element: any) {
-    deleteData(element)
+    const item = {
+      url: 'Currencies',
+      data: element
+    }
+    deleteData(item)
   }
   const columns: any = [
    
@@ -99,7 +111,7 @@ const Currency = () => {
           {/* <Link to={`/setup/sections/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Sections</span>
           </Link> */}
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
@@ -117,7 +129,7 @@ const Currency = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Currencies`)
+      const response = await fetchDocument('Currencies')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -151,24 +163,63 @@ const Currency = () => {
     setGridData(filteredData)
   }
 
-  const url = `${Api_Endpoint}/Currencies`
-  const OnSUbmit = handleSubmit( async (values)=> {
-    setLoading(true)
-    const data = {
-          code: values.code,
-          name: values.name,
-        }
-        console.log(data)
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['Currencies', tempData], data);
       reset()
-      setIsModalOpen(false)
+      setTempData({})
       loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
+      setIsUpdateModalOpen(false)
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    const item = {
+      url: 'Currencies',
+      data: tempData
+    }
+    updateData(item)
+    console.log('update: ', item.data)
+  }
+
+  const showUpdateModal = (values: any) => {
+    showModal()
+    setIsUpdateModalOpen(true)
+    setTempData(values);
+    console.log(values)
+  }
+
+
+  const OnSubmit = handleSubmit( async (values)=> {
+    setLoading(true)
+    const endpoint = 'Currencies'
+
+    const item = {
+      data: {
+        name: values.name,
+        code: values.code,
+      },
+      url: endpoint
+    }
+    console.log(item.data)
+    postData(item)
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['Parameters', tempData], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
     }
   })
 
@@ -208,9 +259,9 @@ const Currency = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  dataSource={dataWithIndex}/>
+          <Table columns={columns}  dataSource={dataWithIndex} loading={loading}/>
           <Modal
-                title='Currency Setup'
+                title={isUpdateModalOpen ? 'Currency Update' : 'Currency Setup'}
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -223,26 +274,26 @@ const Currency = () => {
                     type='primary'
                     htmlType='submit'
                     loading={submitLoading}
-                    onClick={OnSUbmit}
+                    onClick={isUpdateModalOpen ? handleUpdate : OnSubmit}
                     >
                         Submit
                     </Button>,
                 ]}
             >
                 <form
-                    onSubmit={OnSUbmit}
+                    onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}
                 >
                   <hr></hr>
-                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                      <input type="text" {...register("code")} className="form-control form-control-solid"/>
-                    </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                      <input type="text" {...register("name")}  className="form-control form-control-solid"/>
-                    </div>
-                  </div>
+                  <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
+                  <input type="text" {...register("code")} value={tempData?.code} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} value={tempData?.name} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+              </div>
                 </form>
             </Modal>
         </div>
