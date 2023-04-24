@@ -1,7 +1,7 @@
-import {Button, Input, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Input, Space, Table } from 'antd'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 
 const DestinationTable = () => {
@@ -11,7 +11,7 @@ const DestinationTable = () => {
   let [filteredData] = useState([])
 
   const columns: any = [
-   
+
     {
       title: 'Name',
       dataIndex: 'locationCode',
@@ -33,7 +33,18 @@ const DestinationTable = () => {
     },
     {
       title: 'Action',
-    
+      fixed: 'right',
+      width: 100,
+      render: (_: any, record: any) => (
+        <Space size='middle'>
+          <a href='#' className='btn btn-light-warning btn-sm'>
+            Update
+          </a>
+          <a href='#' className='btn btn-light-danger btn-sm'>
+            Delete
+          </a>
+        </Space>
+      ),
     },
   ]
 
@@ -87,7 +98,7 @@ const DestinationTable = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
@@ -99,11 +110,25 @@ const DestinationTable = () => {
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
-              <button type='button' className='btn btn-primary me-3'>
+            <Space style={{ marginBottom: 16 }}>
+              <Button type='primary' className='btn btn-primary me-3' style={{
+                // align content to the center
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                Add
+              </Button>
+              <Button type='primary' className='btn btn-primary' style={{
+                // align content to the center
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }} >
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-              </button>
+              </Button>
             </Space>
           </div>
           <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
@@ -113,5 +138,5 @@ const DestinationTable = () => {
   )
 }
 
-export {DestinationTable}
+export { DestinationTable }
 

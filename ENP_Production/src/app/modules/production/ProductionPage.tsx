@@ -132,7 +132,7 @@ const ProductionPage: React.FC = () => {
           path='mine-area'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Mine Area</PageTitle>
+              <PageTitle breadcrumbs={accountBreadCrumbs}>PRO Mine Area</PageTitle>
               <MineArea />
             </>
           }
@@ -141,7 +141,7 @@ const ProductionPage: React.FC = () => {
           path='origin'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Origin</PageTitle>
+              <PageTitle breadcrumbs={accountBreadCrumbs}>PRO Origin</PageTitle>
               <OriginPage />
             </>
           }
@@ -150,7 +150,7 @@ const ProductionPage: React.FC = () => {
           path='destination'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Destination</PageTitle>
+              <PageTitle breadcrumbs={accountBreadCrumbs}>PRO Destination</PageTitle>
               <DestinationTable/>
             </>
           }

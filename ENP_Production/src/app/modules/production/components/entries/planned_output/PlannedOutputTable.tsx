@@ -3,11 +3,15 @@ import {
   Form,
   Input,
   Modal,
+  Select,
   Space,
   Table,
 } from 'antd'
-import {KTSVG} from '../../../../../../_metronic/helpers'
-import {useState} from "react";
+import { KTSVG } from '../../../../../../_metronic/helpers'
+import { useState } from "react";
+import { DownloadOutlined } from '@ant-design/icons';
+import { fetchDocument } from '../../../urls';
+import { useQuery } from 'react-query';
 
 const PlannedOutputTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -33,6 +37,15 @@ const PlannedOutputTable = () => {
   const handleCancel = () => {
     setIsModalOpen(false)
   }
+
+  const { data: destinations } = useQuery('destinations', () => fetchDocument('IclocsApi'), { cacheTime: 5000 })
+
+
+  // onchange for the select
+  const onChange = (value: any) => {
+    console.log(`selected ${value}`);
+  }
+
   return (
     <div
       style={{
@@ -43,7 +56,7 @@ const PlannedOutputTable = () => {
       }}
     >
       <div className='d-flex justify-content-between'>
-        <Space style={{marginBottom: 16}}>
+        <Space style={{ marginBottom: 16 }}>
           <Input
             placeholder='Enter Search Text'
             type='text'
@@ -53,19 +66,31 @@ const PlannedOutputTable = () => {
             Search
           </Button>
         </Space>
-        <Space style={{marginBottom: 16}}>
-          <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+        <Space style={{ marginBottom: 16 }}>
+          <Button type='primary' className='btn btn-primary me-3' onClick={showModal} style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }} size='large'>
             <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
             Add
-          </button>
-          <button type='button' className='btn btn-light-primary me-3'>
+          </Button>
+          <Button type='primary' className='btn btn-light-primary me-3' style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }} size='large'>
             <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
             Upload
-          </button>
-          <button type='button' className='btn btn-light-primary me-3'>
+          </Button>
+          <Button type='primary' className='btn btn-light-primary me-3' style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }} size='large'>
             <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
             Export
-          </button>
+          </Button>
         </Space>
       </div>
       <Table columns={columns} bordered />
@@ -91,30 +116,36 @@ const PlannedOutputTable = () => {
       >
         <Form
           name='control-hooks'
-          labelCol={{span: 8}}
-          wrapperCol={{span: 14}}
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 14 }}
           title='Add Fault'
         >
           <Form.Item
-              name='Destination'
-              label='Destination'
-              rules={[{required: true, message: 'Please input destination!'}]}
+            name='Destination'
+            label='Destination'
+            rules={[{ required: true, message: 'Please input destination!' }]}
+          >
+            <Select onChange={onChange}>
+              {
+                destinations?.data.map((destination: any) => (
+                  <Select.Option value={destination.locationCode}>{destination.locationDesc}</Select.Option>
+                ))
+              }
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name='Activity'
+            label='Activity'
+            rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-              name='Activity'
-              label='Activity'
-              rules={[{required: true}]}
+            name='Quantity'
+            label='Quantity'
+            rules={[{ required: true, type: "number" }]}
           >
-            <Input/>
-          </Form.Item>
-          <Form.Item
-              name='Quantity'
-              label='Quantity'
-              rules={[{required: true, type: "number"}]}
-          >
-            <Input/>
+            <Input />
           </Form.Item>
 
         </Form>
@@ -123,4 +154,4 @@ const PlannedOutputTable = () => {
   )
 }
 
-export {PlannedOutputTable}
+export { PlannedOutputTable }
