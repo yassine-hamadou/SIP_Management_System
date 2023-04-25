@@ -1,20 +1,24 @@
 import {
   Button, DatePicker,
+  Divider,
   Form,
   Input,
   Modal,
   Select,
   Space,
   Table,
+  Upload,
 } from 'antd'
 import { KTSVG } from '../../../../../../_metronic/helpers'
 import { useState } from "react";
-import { DownloadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import { fetchDocument } from '../../../urls';
 import { useQuery } from 'react-query';
 
 const PlannedOutputTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+  const [uploadedFile, setUploadedFile] = useState<any>(null)
   const columns: any = [
     {
       title: 'Destinaton',
@@ -34,8 +38,14 @@ const PlannedOutputTable = () => {
     setIsModalOpen(true)
   }
 
+  const showUploadModal = () => {
+    setIsUploadModalOpen(true)
+    console.log('upload modal clicked')
+  }
+
   const handleCancel = () => {
     setIsModalOpen(false)
+    setIsUploadModalOpen(false)
   }
 
   const { data: destinations } = useQuery('destinations', () => fetchDocument('IclocsApi'), { cacheTime: 5000 })
@@ -60,9 +70,9 @@ const PlannedOutputTable = () => {
           <Input
             placeholder='Enter Search Text'
             type='text'
-            allowClear
+            allowClear size='large'
           />
-          <Button type='primary'>
+          <Button type='primary' size='large'>
             Search
           </Button>
         </Space>
@@ -79,7 +89,9 @@ const PlannedOutputTable = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-          }} size='large'>
+          }} size='large'
+            onClick={showUploadModal}
+          >
             <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
             Upload
           </Button>
@@ -114,6 +126,7 @@ const PlannedOutputTable = () => {
           </Button>,
         ]}
       >
+        <Divider />
         <Form
           name='control-hooks'
           labelCol={{ span: 8 }}
@@ -147,6 +160,47 @@ const PlannedOutputTable = () => {
           >
             <Input />
           </Form.Item>
+
+        </Form>
+      </Modal>
+
+      {/* Modal to upload file */}
+      <Modal
+        title='Upload Planned Output'
+        open={isUploadModalOpen}
+        onCancel={handleCancel}
+        closable={true}
+        footer={[
+          <Button key='back' onClick={handleCancel}>
+            Cancel
+          </Button>,
+          <Button
+            key='submit'
+            type='primary'
+            htmlType='submit'
+          >
+            Submit
+          </Button>,
+        ]}
+      >
+        <Divider />
+        <Form
+          name='control-hooks'
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 14 }}
+          title='Add Fault'
+        >
+          <Space size='large'>
+            <Upload>
+              <Button
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              icon={<UploadOutlined />}>Click to Upload</Button>
+            </Upload>
+          </Space>
 
         </Form>
       </Modal>

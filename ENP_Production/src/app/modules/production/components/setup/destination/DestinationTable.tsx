@@ -104,9 +104,9 @@ const DestinationTable = () => {
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
+                value={searchText} size='large'
               />
-              <Button type='primary' onClick={globalSearch}>
+              <Button type='primary' onClick={globalSearch} size='large'>
                 Search
               </Button>
             </Space>
@@ -116,7 +116,7 @@ const DestinationTable = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}>
+              }} size='large'>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </Button>
@@ -125,7 +125,7 @@ const DestinationTable = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-              }} >
+              }} size='large'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
               </Button>

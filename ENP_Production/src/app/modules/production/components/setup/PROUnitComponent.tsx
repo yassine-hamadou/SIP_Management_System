@@ -1,8 +1,9 @@
-import { Button, Input, Space, Table } from 'antd'
+import { Button, Form, Input, Modal, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { ENP_URL } from '../../urls'
+import { PageActionButtons } from '../CommonComponents'
 
 
 const ProUnitComponet = (props: any) => {
@@ -10,6 +11,15 @@ const ProUnitComponet = (props: any) => {
     const [loading, setLoading] = useState(false)
     const [searchText, setSearchText] = useState('')
     let [filteredData] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const showModal = () => {
+        setIsModalOpen(true)
+    }
+
+    const handleCancel = () => {
+        setIsModalOpen(false)
+    }
 
     const columns: any = [
 
@@ -46,7 +56,7 @@ const ProUnitComponet = (props: any) => {
                 return 0
             },
         },
-        
+
         {
             title: 'Manufacturer',
             dataIndex: 'manufacturer',
@@ -145,25 +155,42 @@ const ProUnitComponet = (props: any) => {
                             </Button>
                         </Space>
                         <Space style={{ marginBottom: 16 }}>
-                            <Button type='primary' className='btn btn-primary me-3' style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }} size='large' >
-                                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                                Add
-                            </Button>
-                            <Button type='primary' className='btn btn-primary' style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }} size='large' >
-                                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                                Export
-                            </Button>
+                            <PageActionButtons
+                                onAddClick={() => { console.log('add clicked') }}
+                                onExportClicked={() => { console.log('export clicked') }}
+                            />
                         </Space>
                     </div>
                     <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
+
+                    <Modal
+                        title={props.title}
+                        open={isModalOpen}
+                        onCancel={handleCancel}
+                        closable={true}
+                        footer={[
+                            <Button key='back' onClick={handleCancel}>
+                                Cancel
+                            </Button>,
+                            <Button
+                                key='submit'
+                                type='primary'
+                                htmlType='submit'
+                            >
+                                Submit
+                            </Button>,
+                        ]}
+                    >
+                        <Form
+                            name='control-hooks'
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 14 }}
+                            title='Cycle Details'
+                        >
+
+                        </Form>
+                    </Modal>
+
                 </div>
             </KTCardBody>
         </div>

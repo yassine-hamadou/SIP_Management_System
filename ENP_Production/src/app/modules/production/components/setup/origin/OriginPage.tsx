@@ -1,7 +1,7 @@
-import {Button, Input, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Input, Space, Table } from 'antd'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
+import { useEffect, useState } from 'react'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 
 const OriginPage = () => {
@@ -11,7 +11,7 @@ const OriginPage = () => {
   let [filteredData] = useState([])
 
   const columns: any = [
-   
+
     {
       title: 'Name',
       dataIndex: 'locationCode',
@@ -32,9 +32,9 @@ const OriginPage = () => {
       sorter: (a: any, b: any) => a.locationDesc - b.locationDesc,
     },
     {
-        title: 'Action',
-      
-      },
+      title: 'Action',
+
+    },
   ]
 
   const loadData = async () => {
@@ -87,23 +87,27 @@ const OriginPage = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
+                value={searchText} size='large'
               />
-              <Button type='primary' onClick={globalSearch}>
+              <Button type='primary' onClick={globalSearch} size='large'>
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
-              <button type='button' className='btn btn-primary me-3'>
+            <Space style={{ marginBottom: 16 }}>
+              <Button type='primary' className='btn btn-primary' style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }} size='large'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-              </button>
+              </Button>
             </Space>
           </div>
           <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
@@ -113,4 +117,5 @@ const OriginPage = () => {
   )
 }
 
-export {OriginPage}
+export { OriginPage }
+

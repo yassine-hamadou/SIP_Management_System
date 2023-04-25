@@ -1,9 +1,7 @@
 /* eslint-disable react/jsx-no-target-blank */
-import React from 'react'
 import { useIntl } from 'react-intl'
-import { KTSVG } from '../../../helpers'
-import { AsideMenuItemWithSub } from './AsideMenuItemWithSub'
 import { AsideMenuItem } from './AsideMenuItem'
+import { AsideMenuItemWithSub } from './AsideMenuItemWithSub'
 
 export function AsideMenuMain() {
   const intl = useIntl()
