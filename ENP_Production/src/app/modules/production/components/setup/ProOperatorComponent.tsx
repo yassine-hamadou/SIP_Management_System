@@ -1,7 +1,8 @@
 import { Button, Input, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
-import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
+import { KTCardBody } from '../../../../../_metronic/helpers'
 import { fetchDocument } from '../../urls'
+import { PageActionButtons } from '../CommonComponents'
 
 
 const OperatorComponent = (props: any) => {
@@ -97,14 +98,10 @@ const OperatorComponent = (props: any) => {
                             </Button>
                         </Space>
                         <Space style={{ marginBottom: 16 }}>
-                            <Button type='primary' className='btn btn-primary' style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }} size='large'>
-                                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                                Export
-                            </Button>
+                        <PageActionButtons
+                                onExportClicked={() => { console.log('export clicked') }}
+                                hasExportButton={true}
+                            />
                         </Space>
                     </div>
                     <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
@@ -115,3 +112,4 @@ const OperatorComponent = (props: any) => {
 }
 
 export { OperatorComponent }
+

@@ -1,5 +1,6 @@
+import { UploadOutlined } from '@ant-design/icons';
 import {
-  Button, DatePicker,
+  Button,
   Divider,
   Form,
   Input,
@@ -7,13 +8,12 @@ import {
   Select,
   Space,
   Table,
-  Upload,
-} from 'antd'
-import { KTSVG } from '../../../../../../_metronic/helpers'
+  Upload
+} from 'antd';
 import { useState } from "react";
-import { UploadOutlined } from '@ant-design/icons';
-import { fetchDocument } from '../../../urls';
 import { useQuery } from 'react-query';
+import { fetchDocument } from '../../../urls';
+import { PageActionButtons } from '../../CommonComponents';
 
 const PlannedOutputTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -77,32 +77,15 @@ const PlannedOutputTable = () => {
           </Button>
         </Space>
         <Space style={{ marginBottom: 16 }}>
-          <Button type='primary' className='btn btn-primary me-3' onClick={showModal} style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }} size='large'>
-            <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-            Add
-          </Button>
-          <Button type='primary' className='btn btn-light-primary me-3' style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }} size='large'
-            onClick={showUploadModal}
-          >
-            <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-            Upload
-          </Button>
-          <Button type='primary' className='btn btn-light-primary me-3' style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }} size='large'>
-            <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-            Export
-          </Button>
+          <PageActionButtons
+            onAddClick={showModal}
+            onExportClicked={() => { console.log('export clicked') }}
+            onUploadClicked={() => { console.log('upload clicked') }}
+            hasAddButton={true}
+            hasExportButton={true}
+            hasUploadButton={true}
+          />
+
         </Space>
       </div>
       <Table columns={columns} bordered />
@@ -193,12 +176,12 @@ const PlannedOutputTable = () => {
           <Space size='large'>
             <Upload>
               <Button
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              icon={<UploadOutlined />}>Click to Upload</Button>
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                icon={<UploadOutlined />}>Click to Upload</Button>
             </Upload>
           </Space>
 
@@ -208,4 +191,5 @@ const PlannedOutputTable = () => {
   )
 }
 
-export { PlannedOutputTable }
+export { PlannedOutputTable };
+

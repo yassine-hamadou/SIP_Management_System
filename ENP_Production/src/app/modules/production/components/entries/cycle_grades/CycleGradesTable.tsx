@@ -4,10 +4,10 @@ import {
   Input,
   Modal,
   Space,
-  Table, TimePicker,
-} from 'antd'
-import {KTSVG} from '../../../../../../_metronic/helpers'
-import {useState} from "react";
+  Table
+} from 'antd';
+import { useState } from "react";
+import { PageActionButtons } from '../../CommonComponents';
 
 const CycleGradesTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -60,7 +60,7 @@ const CycleGradesTable = () => {
       }}
     >
       <div className='d-flex justify-content-between'>
-        <Space style={{marginBottom: 16}}>
+        <Space style={{ marginBottom: 16 }}>
           <Input
             placeholder='Enter Search Text'
             type='text'
@@ -70,19 +70,15 @@ const CycleGradesTable = () => {
             Search
           </Button>
         </Space>
-        <Space style={{marginBottom: 16}}>
-          <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-            <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-            Add
-          </button>
-          <button type='button' className='btn btn-light-primary me-3'>
-            <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-            Upload
-          </button>
-          <button type='button' className='btn btn-light-primary me-3'>
-            <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-            Export
-          </button>
+        <Space style={{ marginBottom: 16 }}>
+          <PageActionButtons
+            onAddClick={showModal}
+            onExportClicked={() => { console.log('export clicked') }}
+            onUploadClicked={() => { console.log('upload clicked') }}
+            hasAddButton={true}
+            hasExportButton={true}
+            hasUploadButton={true}
+          />
         </Space>
       </div>
       <Table columns={columns} bordered />
@@ -108,51 +104,51 @@ const CycleGradesTable = () => {
       >
         <Form
           name='control-hooks'
-          labelCol={{span: 8}}
-          wrapperCol={{span: 14}}
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 14 }}
           title='Add Fault'
         >
           <Form.Item
-              name='date'
-              label='Date'
-              rules={[{required: true, message: 'Please input date!'}]}
+            name='date'
+            label='Date'
+            rules={[{ required: true, message: 'Please input date!' }]}
           >
-            <DatePicker/>
+            <DatePicker />
           </Form.Item>
           <Form.Item
-              name='shift'
-              label='Shift'
-              rules={[{required: true}]}
+            name='shift'
+            label='Shift'
+            rules={[{ required: true }]}
           >
-            <Input/>
+            <Input />
           </Form.Item>
           <Form.Item
-              name='Loader'
-              label='Loader'
-              rules={[{required: true}]}
+            name='Loader'
+            label='Loader'
+            rules={[{ required: true }]}
           >
-            <Input/>
+            <Input />
           </Form.Item>
           <Form.Item
-              name='Hauler'
-              label='Hauler'
-              rules={[{required: true}]}
+            name='Hauler'
+            label='Hauler'
+            rules={[{ required: true }]}
           >
-            <Input/>
+            <Input />
           </Form.Item>
           <Form.Item
-              name='Origin'
-              label='Origin'
-              rules={[{required: true}]}
+            name='Origin'
+            label='Origin'
+            rules={[{ required: true }]}
           >
-            <Input/>
+            <Input />
           </Form.Item>
           <Form.Item
-              name='Material'
-              label='Material'
-              rules={[{required: true}]}
+            name='Material'
+            label='Material'
+            rules={[{ required: true }]}
           >
-            <Input/>
+            <Input />
           </Form.Item>
         </Form>
       </Modal>
@@ -160,4 +156,5 @@ const CycleGradesTable = () => {
   )
 }
 
-export {CycleGradesTable}
+export { CycleGradesTable };
+

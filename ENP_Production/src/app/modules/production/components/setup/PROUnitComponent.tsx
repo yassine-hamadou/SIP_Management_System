@@ -1,7 +1,7 @@
 import { Button, Form, Input, Modal, Space, Table } from 'antd'
-import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
+import { useEffect, useState } from 'react'
+import { KTCardBody } from '../../../../../_metronic/helpers'
 import { ENP_URL } from '../../urls'
 import { PageActionButtons } from '../CommonComponents'
 
@@ -158,6 +158,8 @@ const ProUnitComponet = (props: any) => {
                             <PageActionButtons
                                 onAddClick={() => { console.log('add clicked') }}
                                 onExportClicked={() => { console.log('export clicked') }}
+                                hasAddButton={true}
+                                hasExportButton={true}
                             />
                         </Space>
                     </div>

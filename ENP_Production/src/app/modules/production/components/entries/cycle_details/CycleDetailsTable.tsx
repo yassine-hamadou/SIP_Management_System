@@ -5,10 +5,11 @@ import {
     Modal,
     Space,
     Table, TimePicker,
-} from 'antd'
-import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
+} from 'antd';
 import { useState } from "react";
 import { Link } from 'react-router-dom';
+import { KTCardBody } from '../../../../../../_metronic/helpers';
+import { PageActionButtons } from '../../CommonComponents';
 
 const CycleDetailsTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -125,30 +126,14 @@ const CycleDetailsTable = () => {
                             </Button>
                         </Space>
                         <Space style={{ marginBottom: 16 }}>
-                            <Button type='primary' className='btn btn-primary me-3' onClick={showModal} style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }} size='large'>
-                                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                                Add
-                            </Button>
-                            <Button type='primary' className='btn btn-light-primary me-3' style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }} size='large'>
-                                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                                Upload
-                            </Button>
-                            <Button type='primary' className='btn btn-light-primary me-3' style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }} size='large'>
-                                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                                Export
-                            </Button>
+                            <PageActionButtons
+                                onAddClick={showModal}
+                                onExportClicked={() => { console.log('export clicked') }}
+                                onUploadClicked={() => { console.log('upload clicked') }}
+                                hasAddButton={true}
+                                hasExportButton={true}
+                                hasUploadButton={true}
+                            />
                         </Space>
                     </div>
                     <Table columns={columns} bordered />
@@ -292,4 +277,5 @@ const CycleDetailsTable = () => {
     )
 }
 
-export { CycleDetailsTable }
+export { CycleDetailsTable };
+
