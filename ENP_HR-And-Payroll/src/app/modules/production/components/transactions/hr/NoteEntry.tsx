@@ -24,6 +24,7 @@ const NoteEntry = () => {
   const {register, reset, handleSubmit} = useForm()
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const tenantId = localStorage.getItem('tenant')
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -203,7 +204,7 @@ const NoteEntry = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/NoteTransactions`)
+      const response = await axios.get(`${Api_Endpoint}/NoteTransactions/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -253,7 +254,7 @@ const NoteEntry = () => {
     setGridData(filteredData)
   }
 
-  const url1 = `${Api_Endpoint}/NoteTransactions1`
+  const url1 = `${Api_Endpoint}/NoteTransactions`
   const submitNoteEntry = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
@@ -262,6 +263,7 @@ const NoteEntry = () => {
       reference: values.reference,
       employeeId: employeeRecord?.id,
       comment: values.comment,
+      tenantId: tenantId,
       noteCategoryId: parseInt(selectedType),
     }
     console.log(data)

@@ -14,13 +14,17 @@ const toolbarButtonMarginClass = 'ms-1 ms-lg-3',
 const Topbar: FC = () => {
   const {config} = useLayout()
   const {currentUser} = useAuth()
-
+  const tenantId = localStorage.getItem('tenant')
   return (
     <div className='d-flex align-items-stretch flex-shrink-0'>
-
+      <div style={{paddingRight: "10px"}} className='d-flex align-items-center fs-5'>
+          Company: <strong style={{borderRight:"1px solid grey", paddingLeft: "8px",paddingRight:"25px"}}>{ tenantId?.toLocaleUpperCase()}</strong>
+      </div>
+      
       <div
         className={clsx('d-flex align-items-center', toolbarButtonMarginClass)}
         id='kt_header_user_menu_toggle'
+        
       >
         {/* begin::Toggle */}
         <div
@@ -30,6 +34,7 @@ const Topbar: FC = () => {
           data-kt-menu-placement='bottom-end'
           data-kt-menu-flip='bottom'
         >
+          
           <img src={toAbsoluteUrl('/media/avatars/user.png')} alt='ENP user Profile' />
           <p>{currentUser?.phone}</p>
         </div>
@@ -38,7 +43,7 @@ const Topbar: FC = () => {
       </div>
       <div style={{paddingLeft: "20px"}} className='d-flex align-items-center fs-5'>
             {currentUser?.username}
-          </div>
+      </div>
       {/* end::User */}
 
       {/* begin::Aside Toggler */}

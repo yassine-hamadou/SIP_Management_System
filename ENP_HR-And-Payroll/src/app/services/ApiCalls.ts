@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ENP_URL } from '../modules/production/urls';
 
-
+const tenantId = localStorage.getItem('tenant')
 
 export const Api_Endpoint = "http://208.117.44.15/hrwebapi/api";
 export const UsersEndpoint = "http://208.117.44.15/userapi/api";
@@ -17,7 +17,7 @@ export let axioInstance = axios.create({
 
 //dynamic fetch function
 export function fetchDocument(url: string) {
-    return axios.get(`${Api_Endpoint}/${url}`)
+    return axios.get(`${Api_Endpoint}/${url}/`)
 }
 
 //dynamic update function
@@ -42,6 +42,9 @@ export const fetchUserRoles = () => {
 
 export const fetchRoles = () => {
     return axios.get(`${UsersEndpoint}/Roles`)
+}
+export const fetchCompanies = () => {
+    return axios.get(`${UsersEndpoint}/Companies`)
 }
 
 

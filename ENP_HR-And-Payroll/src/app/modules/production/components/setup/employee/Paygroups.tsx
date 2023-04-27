@@ -21,6 +21,8 @@ const Paygroups = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -126,7 +128,7 @@ const Paygroups = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Paygroups`)
+      const response = await axios.get(`${Api_Endpoint}/Paygroups/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -192,8 +194,10 @@ const Paygroups = () => {
       code: values.code,
       name: values.name,
       numberOfHours: values.numberOfHours,
+      tenantId: tenantId,
     }
     try {
+      
       const response = await axios.post(url, data)
       setSubmitLoading(false)
       reset()

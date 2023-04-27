@@ -5,6 +5,7 @@ const Skill = () => {
     title: 'Skills',
     url: 'Skills',
   }
+  
   return (
     <div>
       < SetupComponent data={data} />    

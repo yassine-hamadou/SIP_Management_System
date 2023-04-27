@@ -1,6 +1,7 @@
 import { SetupComponent } from '../CommonSetupComponent'
 
 const DeductionCats = () => {
+
   const data = {
     title: 'Deductions Category',
     url: 'DeductionCats',

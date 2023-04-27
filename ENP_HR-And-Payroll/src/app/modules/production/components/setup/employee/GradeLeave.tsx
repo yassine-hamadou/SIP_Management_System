@@ -22,6 +22,8 @@ const GradeLeaves = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   let [paygroupName, setPaygroupName] = useState<any>("")
   let [gradeName, setGradeName] = useState<any>("")
+
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -147,7 +149,7 @@ const GradeLeaves = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/GradeLeaves`)
+      const response = await axios.get(`${Api_Endpoint}/GradeLeaves/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -226,6 +228,7 @@ const GradeLeaves = () => {
     const data = {
       gradeId: parseInt(param.id),
       leaveId: parseInt(values.leaveId),
+      tenantId: tenantId,
       numberOfDays: parseInt(values.numberOfDays),
 
     }

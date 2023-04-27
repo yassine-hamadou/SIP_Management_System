@@ -19,14 +19,20 @@ export function AsideMenuMain() {
         <AsideMenuItem 
             to='roles/' 
             hasBullet={false} 
-            icon='/media/icons/duotune/general/gen055.svg'
+            icon='/media/icons/duotune/technology/teh002.svg'
             title='Roles' 
           />
         <AsideMenuItem 
             to='applications/' 
             hasBullet={false} 
-            icon='/media/icons/duotune/files/fil012.svg'
+            icon='/media/icons/duotune/general/gen062.svg'
             title='Applications' 
+          />
+        <AsideMenuItem 
+            to='company/' 
+            hasBullet={false} 
+            icon='/media/icons/duotune/finance/fin005.svg'
+            title='Companies' 
           />
 
     </>

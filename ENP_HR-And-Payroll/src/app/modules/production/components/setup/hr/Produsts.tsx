@@ -1,6 +1,7 @@
 import { SetupComponent } from '../CommonSetupComponent'
 
 const Products = () => {
+
   const data = {
     title: 'Products',
     url: 'Products',

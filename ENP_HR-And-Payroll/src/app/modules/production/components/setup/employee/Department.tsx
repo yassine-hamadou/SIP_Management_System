@@ -6,6 +6,7 @@ const Department = () => {
     title: 'Departments',
     url: 'Departments',
   }
+
   return (
     <div>
       < SetupComponent data={data} />    

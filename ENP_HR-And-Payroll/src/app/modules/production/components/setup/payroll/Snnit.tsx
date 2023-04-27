@@ -11,7 +11,7 @@ const SNNIT = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -244,6 +244,7 @@ const SNNIT = () => {
     setSubmitLoading(true)
     const data = {
       name: values.name,
+      tenantId: tenantId,
     }
 
     console.log(data)

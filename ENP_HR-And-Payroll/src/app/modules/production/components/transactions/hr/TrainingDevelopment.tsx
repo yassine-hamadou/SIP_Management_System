@@ -23,7 +23,7 @@ const TrainingDevelopment = () => {
   const [selectedRef, setSelectedRef] = useState<any>("");
   const [jobtitleName, setJobtitleName] = useState("");
   const [trainingName, setTrainingName] = useState("");
-
+  const tenantId = localStorage.getItem('tenant')
   const {register, reset, handleSubmit} = useForm()
   
   const [isModalOpen, setIsModalOpen] = useState(false)

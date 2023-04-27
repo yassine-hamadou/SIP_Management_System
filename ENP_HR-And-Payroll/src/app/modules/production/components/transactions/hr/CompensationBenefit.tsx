@@ -33,6 +33,7 @@ const CompensationBenefit = () => {
   const [selectedValue1, setSelectedValue1] = useState<any>(null);
   const [selectedValue2, setSelectedValue2] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("tab1");
+  const tenantId = localStorage.getItem('tenant')
 
   const {register, reset, handleSubmit} = useForm()
   const showModal = () => {
@@ -251,7 +252,7 @@ const CompensationBenefit = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/CompensationBenefitTransactions`)
+      const response = await axios.get(`${Api_Endpoint}/CompensationBenefitTransactions/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -412,6 +413,7 @@ const allPerkByGrade:any = allGradePerks?.data.filter((item:any) =>{
       healthInsuranceComment: values.healthInsuranceComment,
       profDevelopment: profDevelopValue,
       profDevelopmentComment: values.profDevelopmentComment,
+      tenantId: tenantId,
       
     }
       try { 

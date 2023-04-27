@@ -12,6 +12,7 @@ import { Roles } from '../modules/production/components/Role/Role'
 import { User } from '../modules/production/components/User/User'
 import { UserRole } from '../modules/production/components/User/UserRole'
 import { UserApplication } from '../modules/production/components/User/UserApplication'
+import { Companies } from '../modules/production/components/Company/Company'
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: '',
@@ -96,8 +97,15 @@ const PrivateRoutes = () => {
            </SuspensedView>
          }
         />
-
-
+        <Route
+         path='company/*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Companies</PageTitle>
+             <Companies />
+           </SuspensedView>
+         }
+        />
         <Route path='*' element={<Navigate to='/error/404' />} />
       </Route>
     </Routes>

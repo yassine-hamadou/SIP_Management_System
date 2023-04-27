@@ -21,6 +21,7 @@ const MedicalEntries = () => {
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
   const {register, reset, handleSubmit} = useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const tenantId = localStorage.getItem('tenant')
   const handleFileSelection = (event:any) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -262,6 +263,7 @@ const MedicalEntries = () => {
           medicalTypeId: parseInt(values.medicalTypeId),
           date: values.date,
           comment: values.comment,
+          tenantId: tenantId,
         }
         console.log(data)
     try {
@@ -286,7 +288,7 @@ const MedicalEntries = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-      <div style={{padding: "0px 0px 40px 0px"}}  className='col-12'>
+      <div style={{padding: "0px 0px 40px 0px"}} className='col-12'>
         <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
           <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>

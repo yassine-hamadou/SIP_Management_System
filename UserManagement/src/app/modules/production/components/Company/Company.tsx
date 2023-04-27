@@ -1,25 +1,25 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { Button, Input, Modal, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
-import { period } from '../../../../../data/DummyData'
-import { Api_Endpoint, deleteItem, fetchDocument, postItem, updateItem } from '../../../../../services/ApiCalls'
 import { useForm } from 'react-hook-form'
-import { useQueryClient, useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
+import { useNavigate, useParams } from 'react-router-dom'
+import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
 
-const Period = () => {
-  const [gridData, setGridData] = useState([])
+const Companies = () => {
+  const [gridData, setGridData] = useState<any>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
-  const { register, reset, handleSubmit } = useForm()
-  const tenantId = localStorage.getItem('tenant')
+  const [img, setImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { register, reset, handleSubmit } = useForm()
+  const param: any = useParams();
+  const navigate = useNavigate();
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
-  const queryClient = useQueryClient()
+
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -43,7 +43,7 @@ const Period = () => {
 
   const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['Periods', tempData], data);
+      queryClient.setQueryData(['Companies', tempData], data);
       loadData()
     },
     onError: (error) => {
@@ -53,27 +53,13 @@ const Period = () => {
 
   function handleDelete(element: any) {
     const item = {
-      url: 'Periods',
+      url: 'Companies',
       data: element
     }
     deleteData(item)
   }
 
   const columns: any = [
-
-    {
-      title: 'Code',
-      dataIndex: 'code',
-      sorter: (a: any, b: any) => {
-        if (a.code > b.code) {
-          return 1
-        }
-        if (b.code > a.code) {
-          return -1
-        }
-        return 0
-      },
-    },
     {
       title: 'Name',
       dataIndex: 'name',
@@ -88,26 +74,13 @@ const Period = () => {
       },
     },
     {
-      title: 'Start Date',
-      dataIndex: 'startDate',
+      title: 'Description',
+      dataIndex: 'description',
       sorter: (a: any, b: any) => {
-        if (a.startDate > b.startDate) {
+        if (a.description > b.description) {
           return 1
         }
-        if (b.startDate > a.startDate) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'End Date',
-      dataIndex: 'endDate',
-      sorter: (a: any, b: any) => {
-        if (a.endDate > b.endDate) {
-          return 1
-        }
-        if (b.endDate > a.endDate) {
+        if (b.description > a.description) {
           return -1
         }
         return 0
@@ -126,7 +99,6 @@ const Period = () => {
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-
         </Space>
       ),
 
@@ -136,23 +108,18 @@ const Period = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      // const response = await fetchDocument('Periods')
-      const response = await axios.get(`${Api_Endpoint}/Periods/tenant/${tenantId}`)
+      const response = await fetchDocument('Companies')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
     }
   }
-
+  
   useEffect(() => {
     loadData()
   }, [])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-  }))
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -163,17 +130,19 @@ const Period = () => {
 
   const globalSearch = () => {
     // @ts-ignore
-    filteredData = dataWithVehicleNum.filter((value) => {
+    filteredData = dataWithIndex.filter((value) => {
       return (
-        value.name.toLowerCase().includes(searchText.toLowerCase())
+        value.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.description.toLowerCase().includes(searchText.toLowerCase()) 
       )
     })
     setGridData(filteredData)
   }
 
+  const queryClient = useQueryClient()
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['Periods', tempData], data);
+      queryClient.setQueryData(['Companies', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -181,14 +150,14 @@ const Period = () => {
       setIsModalOpen(false)
     },
     onError: (error) => {
-      console.log('error: ', error)
+      console.log('update error: ', error)
     }
   })
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
     const item = {
-      url: 'Periods',
+      url: 'Companies',
       data: tempData
     }
     updateData(item)
@@ -202,18 +171,14 @@ const Period = () => {
     console.log(values)
   }
 
-
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const endpoint = 'Periods'
+    const endpoint = 'Companies'
 
     const item = {
       data: {
-        code: values.code,
         name: values.name,
-        startDate: values.startDate,
-        endDate: values.endDate,
-        tenantId: tenantId,
+        description: values.description,
       },
       url: endpoint
     }
@@ -223,7 +188,7 @@ const Period = () => {
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['Periods', tempData], data);
+      queryClient.setQueryData(['companies', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -259,22 +224,18 @@ const Period = () => {
               </Button>
             </Space>
             <Space style={{ marginBottom: 16 }}>
+
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
               </button>
 
-              <button type='button' className='btn btn-light-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                Export
-              </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
+          <Table columns={columns} dataSource={gridData} loading={loading} />
           <Modal
-            title={isUpdateModalOpen ? 'Period Update' : 'Period Setup'}
+            title={isUpdateModalOpen ? 'Update Company' : 'Add Company'}
             open={isModalOpen}
-            width="600px"
             onCancel={handleCancel}
             closable={true}
             footer={[
@@ -298,22 +259,18 @@ const Period = () => {
               <hr></hr>
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
                 <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                  <input type="text" {...register("code")} value={ isUpdateModalOpen === true ? tempData?.code : null} onChange={handleChange} className="form-control form-control-solid" />
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Company Name</label>
+                  <input type="text" {...register("name")}
+                    onChange={handleChange}
+                    defaultValue={isUpdateModalOpen === true ? tempData.name : ''}
+                    className="form-control form-control-solid" />
                 </div>
                 <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                  <input type="text" {...register("name")} value={ isUpdateModalOpen === true ? tempData?.name : null} onChange={handleChange} className="form-control form-control-solid" />
-                </div>
-                <div className='row'>
-                  <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="form-label">Start Date</label>
-                    <input type="date" {...register("startDate")} value={ isUpdateModalOpen === true ? tempData?.startDate : null} onChange={handleChange} className="form-control form-control-solid" />
-                  </div>
-                  <div className='col-6 mb-7'>
-                    <label htmlFor="exampleFormControlInput1" className="form-label">End Date</label>
-                    <input type="date" {...register("endDate")} value={ isUpdateModalOpen === true ? tempData?.endDate : null} onChange={handleChange} className="form-control form-control-solid" />
-                  </div>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
+                  <input type="text" {...register("description")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.description : ''}
+                    onChange={handleChange}
+                    placeholder='optional' className="form-control form-control-solid" />
                 </div>
 
               </div>
@@ -325,4 +282,5 @@ const Period = () => {
   )
 }
 
-export { Period }
+export { Companies }
+

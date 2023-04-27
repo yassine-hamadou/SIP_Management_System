@@ -18,7 +18,7 @@ const SetupComponent = (props: any) => {
     const [tempData, setTempData] = useState<any>()
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const queryClient = useQueryClient()
-
+    const tenantId = localStorage.getItem('tenant')
 
     const showModal = () => {
         setIsModalOpen(true)
@@ -107,7 +107,7 @@ const SetupComponent = (props: any) => {
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument(props.data.url)
+            const response = await fetchDocument(`${props.data.url}/tenant/${tenantId}`)
             setGridData(response.data)
             setLoading(false)
         } catch (error) {
@@ -179,6 +179,7 @@ const SetupComponent = (props: any) => {
             data: {
                 name: values.name,
                 code: values.code,
+                tenantId:tenantId,
             },
             url: props.data.url
         }

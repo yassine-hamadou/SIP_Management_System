@@ -36,6 +36,7 @@ const AppraisalPerformance = () => {
   const [radio2Value, setRadio2Value] = useState(1);
   const [radio3Value, setRadio3Value] = useState(1);
   const [radio4Value, setRadio4Value] = useState(1);
+  const tenantId = localStorage.getItem('tenant')
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
   };
@@ -294,7 +295,7 @@ const AppraisalPerformance = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/AppraisalPerfTransactions`)
+      const response = await axios.get(`${Api_Endpoint}/AppraisalPerfTransactions/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -433,6 +434,7 @@ const AppraisalPerformance = () => {
         improvScore: radio2Value.toString(),
         goalComment: values.goalComment,
         goalScore: radio3Value.toString(),
+        tenantId: tenantId,
       }
       console.log(data)
       try { 

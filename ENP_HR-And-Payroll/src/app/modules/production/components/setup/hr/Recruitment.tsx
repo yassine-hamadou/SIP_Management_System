@@ -1,6 +1,7 @@
 import { SetupComponent } from "../CommonSetupComponent"
 
 const Recruitments = () => {
+
   const data = {
     title: 'Recruitments',
     url: 'Recruitments',

@@ -1,9 +1,10 @@
 import { SetupComponent } from '../CommonSetupComponent'
 
 const Currency = () => {
+  
   const data = {
     title: 'Currency',
-    url: 'Currencies',
+    url: `Currencies`,
     }
   return (
     <div>

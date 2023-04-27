@@ -12,7 +12,7 @@ function RecruitmentUpform() {
     const [searchText, setSearchText] = useState('')
     const [selectedValue, setSelectedValue] = useState("");
     const [submitLoading, setSubmitLoading] = useState(false)
-
+    const tenantId = localStorage.getItem('tenant')
     const [messageApi, contextHolder] = message.useMessage();
 
 
@@ -68,6 +68,7 @@ function RecruitmentUpform() {
         categoryId: parseInt(values.categoryId),
         jobTitleId: parseInt(values.jobTitleId),
         unitId: parseInt(values.unitId),
+        tenantId: tenantId,
       }
       console.log(data)
       try {
