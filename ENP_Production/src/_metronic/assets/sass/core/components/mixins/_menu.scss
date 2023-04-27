@@ -42,7 +42,8 @@
 		> .menu-inner > .menu-item {
 			> .menu-content,
 			> .menu-link {
-				padding-left: calc(#{1 * $value} + #{$offset});
+				padding-left: 50px;
+				// padding-left: calc(#{1 * $value} + #{$offset});
 			}
 
 			> .menu-sub:not([data-popper-placement]) {
@@ -50,7 +51,8 @@
 				> .menu-inner > .menu-item {
 					> .menu-content,
 					> .menu-link {
-						padding-left: calc(#{2 * $value} + #{$offset});
+						padding-left: 72px;
+						// padding-left: calc(#{2 * $value} + #{$offset});
 					}
 
 					> .menu-sub:not([data-popper-placement]) {
@@ -58,7 +60,8 @@
 						> .menu-inner > .menu-item {
 							> .menu-content,
 							> .menu-link {
-								padding-left: calc(#{3 * $value} + #{$offset});
+								padding-left: 95px;
+								// padding-left: calc(#{3 * $value} + #{$offset});
 							}
 
 							> .menu-sub:not([data-popper-placement]) {
