@@ -22,7 +22,7 @@ const Perks = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -109,7 +109,7 @@ const Perks = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Perks`)
+      const response = await axios.get(`${Api_Endpoint}/Perks/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -195,7 +195,8 @@ const Perks = () => {
     setLoading(true)
     const data = {
       code: values.code,
-      name: values.name
+      name: values.name,
+      tenantId: tenantId,
     }
     console.log(data)
     try {

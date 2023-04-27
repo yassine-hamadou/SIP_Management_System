@@ -19,6 +19,8 @@ const ServiceProviders = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { register, reset, handleSubmit } = useForm()
 
+  const tenantId = localStorage.getItem('tenant')
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -165,7 +167,7 @@ const ServiceProviders = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get("http://208.117.44.15/hrwebapi/api/ServiceProviders")
+      const response = await axios.get(`${Api_Endpoint}/ServiceProviders/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -241,6 +243,7 @@ const ServiceProviders = () => {
       address: values.address,
       email: values.email,
       phone: values.phone,
+      tenantId: tenantId,
       contactPerson: values.contactPerson,
     }
     console.log(data)

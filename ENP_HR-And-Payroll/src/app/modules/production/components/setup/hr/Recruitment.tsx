@@ -19,7 +19,8 @@ const Recruitments = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -124,7 +125,7 @@ const Recruitments = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Recruitments`)
+      const response = await axios.get(`${Api_Endpoint}/Recruitments/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -190,6 +191,7 @@ const Recruitments = () => {
     const data = {
           code: values.code,
           name: values.name,
+          tenantId: tenantId,
     }
     console.log(data)
     try {

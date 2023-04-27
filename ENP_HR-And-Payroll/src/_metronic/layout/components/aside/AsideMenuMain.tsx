@@ -28,7 +28,7 @@ export function AsideMenuMain() {
     //   return rol.id
     // });
 
-    console.log(currentUserRoles);
+    // console.log(currentUserRoles);
     
 
   return (
@@ -81,33 +81,6 @@ export function AsideMenuMain() {
             }
           </>
         </AsideMenuItemWithSub>
-
-        {/* Setups authorizations */}
-        {/* {
-          currentUserRoles?.find((rolId:any)=>rolId?.includes('6'))
-          ||currentUserRoles?.find((rolId:any)=>rolId?.includes('5'))
-          ?console.log("You access setups")
-          :""
-        } */}
-
-        {/* Transactions authorization*/}
-        {/* {
-          currentUserRoles?.find((rolId:any)=>rolId?.includes('5'))
-          ||currentUserRoles?.find((rolId:any)=>rolId?.includes('6'))
-          ||currentUserRoles?.find((rolId:any)=>rolId?.includes('7'))
-          ||currentUserRoles?.find((rolId:any)=>rolId?.includes('28'))
-          ? console.log("Hi admin and supervisor")
-          :""
-        } */}
-
-        {/* Reports authorization*/}
-        {/* {
-          currentUserRoles?.find((rolId:any)=>rolId?.includes('5'))
-          ||currentUserRoles?.find((rolId:any)=>rolId?.includes('6'))
-          ||currentUserRoles?.find((rolId:any)=>rolId?.includes('7'))
-          ? console.log("You can acces reports")
-          :""
-        } */}
 
         {
           isHR==true?
@@ -220,10 +193,11 @@ export function AsideMenuMain() {
                 <>
                   {/* Transactions authorization*/}
                   {
-                    currentUserRoles?.find((rolId:any)=>rolId?.includes('5'))
+                    currentUserRoles?.find((rolId:any)=>rolId?.includes('2'))
+                    ||currentUserRoles?.find((rolId:any)=>rolId?.includes('4'))
                     ||currentUserRoles?.find((rolId:any)=>rolId?.includes('6'))
                     ||currentUserRoles?.find((rolId:any)=>rolId?.includes('7'))
-                    ||currentUserRoles?.find((rolId:any)=>rolId?.includes('28'))
+                    ||currentUserRoles?.find((rolId:any)=>rolId?.includes('8'))
                     ? <AsideMenuItemWithSub to='#' title='Transactions' icon='/media/icons/duotune/ecommerce/ecm001.svg' hasBullet={false}>
                         <AsideMenuItem to='transaction/hr/recruitment-selection' hasBullet={true} title='Recruitments and Selections' />
                         <AsideMenuItem to='transaction/hr/compensation-benefit' hasBullet={true} title='Compensations and Benefits' />
@@ -238,10 +212,10 @@ export function AsideMenuMain() {
 
                   {/* Processes authorization*/}
                   {
-                    currentUserRoles?.find((rolId:any)=>rolId?.includes('2'))
+                    currentUserRoles?.find((rolId:any)=>rolId?.includes('1'))
+                    ||currentUserRoles?.find((rolId:any)=>rolId?.includes('2'))
                     ||currentUserRoles?.find((rolId:any)=>rolId?.includes('4'))
-                    ||currentUserRoles?.find((rolId:any)=>rolId?.includes('6'))
-                    ||currentUserRoles?.find((rolId:any)=>rolId?.includes('7'))
+                    ||currentUserRoles?.find((rolId:any)=>rolId?.includes('5'))
                     ||currentUserRoles?.find((rolId:any)=>rolId?.includes('8'))
                     ? <AsideMenuItemWithSub to='#' title='Processes' icon='/media/icons/duotune/general/gen008.svg' hasBullet={false}>
                         <AsideMenuItem to='#' hasBullet={true} title='Approvals' />
@@ -289,8 +263,6 @@ export function AsideMenuMain() {
                   }
                 </>
             
-              
-
             </AsideMenuItemWithSub>
 
             {/* Payroll Section */}
@@ -398,7 +370,6 @@ export function AsideMenuMain() {
          <div className='separator  mx-1 my-4'></div>
        </div>
       </div>
-
 
       {/* Administration authorizations */}
       {

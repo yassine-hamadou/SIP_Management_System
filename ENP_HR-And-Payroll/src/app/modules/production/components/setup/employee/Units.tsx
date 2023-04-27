@@ -21,6 +21,8 @@ const Units = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
 
+
+  const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -109,7 +111,7 @@ const Units = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Units`)
+      const response = await axios.get(`${Api_Endpoint}/Units/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -208,6 +210,7 @@ const Units = () => {
     const data = {
       code: values.code,
       name: values.name,
+      tenantId: tenantId,
       departmentId: parseInt(param.id),
     }
     console.log(data)

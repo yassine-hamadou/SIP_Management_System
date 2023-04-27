@@ -18,6 +18,8 @@ const Medicals = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { register, reset, handleSubmit } = useForm()
+
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -112,7 +114,7 @@ const Medicals = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get("http://208.117.44.15/hrwebapi/api/Medicals")
+      const response = await axios.get(`${Api_Endpoint}/Medicals/tenant/${tenantId} `)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -183,6 +185,7 @@ const Medicals = () => {
     const data = {
       code: values.code,
       name: values.name,
+      tenantId: tenantId,
     }
     try {
       const response = await axios.post(url, data)

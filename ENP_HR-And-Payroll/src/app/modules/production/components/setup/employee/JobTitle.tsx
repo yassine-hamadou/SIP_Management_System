@@ -18,6 +18,8 @@ const JobTitle = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const tenantId = localStorage.getItem('tenant')
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -108,7 +110,7 @@ const JobTitle = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/JobTitles`)
+      const response = await axios.get(`${Api_Endpoint}/JobTitles/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -176,6 +178,7 @@ const JobTitle = () => {
     const data = {
           code: values.code,
           name: values.name,
+          tenantId: tenantId,
         }
     try {
       const response = await axios.post(url, data)

@@ -37,7 +37,7 @@ const Benefit = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { register, reset, handleSubmit } = useForm()
-
+  const tenantId = localStorage.getItem('tenant')
   const [benefitCat, setBenefitCat] = useState<any>()
   const [startPeriod, setStartPeriod] = useState<any>()
 
@@ -194,7 +194,7 @@ const Benefit = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Benefits`)
+      const response = await axios.get(`${Api_Endpoint}/Benefits/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -275,6 +275,7 @@ const Benefit = () => {
       startPeriod: parseInt(values.startPeriod),
       isTaxable: values.isTaxable,
       benefitCat: parseInt(values.benefitCat),
+      tenantId: tenantId,
     }
 
     try {

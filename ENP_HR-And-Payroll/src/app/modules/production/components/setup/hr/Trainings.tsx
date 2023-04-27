@@ -19,6 +19,8 @@ const Trainings = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const tenantId = localStorage.getItem('tenant')
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -123,7 +125,7 @@ const Trainings = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/trainings`)
+      const response = await axios.get(`${Api_Endpoint}/trainings/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -190,6 +192,7 @@ const Trainings = () => {
     const data = {
           code: values.code,
           name: values.name,
+          tenantId: tenantId,
         }
     try {
       const response = await axios.post(url, data)

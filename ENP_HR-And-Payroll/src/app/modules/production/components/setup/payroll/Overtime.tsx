@@ -15,7 +15,7 @@ const Overtime = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
   const { register, reset, handleSubmit } = useForm()
-
+  const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -175,6 +175,7 @@ const Overtime = () => {
     const item = {
       data: {
         topic: values.topic,
+        tenantId: tenantId,
       },
       url: endpoint
     }

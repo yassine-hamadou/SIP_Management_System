@@ -18,7 +18,7 @@ const Appraisals = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -104,7 +104,7 @@ const Appraisals = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Appraisals`)
+      const response = await axios.get(`${Api_Endpoint}/Appraisals/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -171,6 +171,7 @@ const Appraisals = () => {
     const data = {
           code: values.code,
           name: values.name,
+          tenantId: tenantId,
     }
     console.log(data)
     try {

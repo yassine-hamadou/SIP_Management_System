@@ -17,6 +17,8 @@ const Nationality = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -108,7 +110,7 @@ const Nationality = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Nationalities`)
+      const response = await axios.get(`${Api_Endpoint}/Nationalities/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -174,6 +176,7 @@ const Nationality = () => {
     const data = {
       code: values.code,
       name: values.name,
+      tenantId: tenantId,
     }
     try {
       const response = await axios.post(url, data)

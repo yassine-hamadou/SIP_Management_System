@@ -15,7 +15,7 @@ const Notes = () => {
   const {register, reset, handleSubmit} = useForm()
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
-
+  const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -122,7 +122,7 @@ const Notes = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/NoteCategories`)
+      const response = await axios.get(`${Api_Endpoint}/NoteCategories/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -189,6 +189,7 @@ const Notes = () => {
           code: values.code,
           name: values.name,
           type: values.type,
+          tenantId: tenantId,
           diaryEvent: parseInt(values.diaryEvent),
     }
     console.log(data)

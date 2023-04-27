@@ -18,6 +18,8 @@ const JobTitleQualification = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   let [itemName, setItemName] = useState<any>("")
   const navigate = useNavigate();
+
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -114,7 +116,7 @@ const JobTitleQualification = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/JobTitleQualifications`)
+      const response = await axios.get(`${Api_Endpoint}/JobTitleQualifications/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -170,6 +172,7 @@ const JobTitleQualification = () => {
     setLoading(true)
     const data = {
         jobTitleId: param.id,
+        tenantId: tenantId,
         qualificationId: values.qualificationId,
         }
         console.log(data)

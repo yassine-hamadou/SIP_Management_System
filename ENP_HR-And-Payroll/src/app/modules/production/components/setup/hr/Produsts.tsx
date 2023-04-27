@@ -21,6 +21,7 @@ const Products = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
+  const tenantId = localStorage.getItem('tenant')
   const navigate = useNavigate();
   const showModal = () => {
     setIsModalOpen(true)
@@ -115,7 +116,7 @@ const Products = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get("http://208.117.44.15/hrwebapi/api/Products")
+      const response = await axios.get(`${Api_Endpoint}/Products/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -197,6 +198,7 @@ const Products = () => {
     const data = {
           code: values.code,
           name: values.name,
+          tenantId: tenantId,
           medicalTypeId: parseInt(param.id),
         }
     try {

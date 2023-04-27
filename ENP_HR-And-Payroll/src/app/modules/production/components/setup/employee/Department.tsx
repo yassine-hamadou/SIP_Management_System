@@ -24,6 +24,7 @@ const Department = () => {
   const showModal = () => {
     setIsModalOpen(true)
   }
+  const tenantId = localStorage.getItem('tenant')
 
   const handleOk = () => {
     setIsModalOpen(false)
@@ -111,7 +112,7 @@ const Department = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Departments`)
+      const response = await axios.get(`${Api_Endpoint}/Departments/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -204,6 +205,7 @@ const dataByID = gridData.filter((section:any) =>{
     const data = {
       code: values.code,
       name: values.name,
+      tenantId: tenantId,
       divisionId: parseInt(param.id),
     }
     console.log(data)

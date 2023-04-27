@@ -24,6 +24,8 @@ const Notches = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
 
+
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -138,7 +140,7 @@ const Notches = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Notches`)
+      const response = await axios.get(`${Api_Endpoint}/Notches/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -241,6 +243,7 @@ const Notches = () => {
       gradeId: parseInt(param.id),
       name: values.name,
       currencyId: parseInt(values.currencyId),
+      tenantId: tenantId,
       amount: parseFloat(values.amount).toFixed(2),
     }
     console.log(data)

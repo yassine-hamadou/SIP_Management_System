@@ -18,6 +18,8 @@ const JobTitleSkill = () => {
   const param:any  = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false)
   let [itemName, setItemName] = useState<any>("")
+
+  const tenantId = localStorage.getItem('tenant')
   const navigate = useNavigate();
   const showModal = () => {
     setIsModalOpen(true)
@@ -102,7 +104,7 @@ const JobTitleSkill = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/JobTitleSkills`)
+      const response = await axios.get(`${Api_Endpoint}/JobTitleSkills/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -172,6 +174,7 @@ const JobTitleSkill = () => {
     const data = {
           jobTitleId: parseInt(param.id),
           skillId: values.skillId,
+          tenantId: tenantId,
         }
     try {
       const response = await axios.post(url, data)

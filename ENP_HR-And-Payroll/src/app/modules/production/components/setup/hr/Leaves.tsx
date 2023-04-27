@@ -18,7 +18,7 @@ const Leaves = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -121,7 +121,7 @@ const Leaves = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Leaves`)
+      const response = await axios.get(`${Api_Endpoint}/Leaves/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -188,6 +188,7 @@ const Leaves = () => {
     const data = {
           code: values.code,
           name: values.name,
+          tenantId: tenantId,
         }
     try {
       const response = await axios.post(url, data)

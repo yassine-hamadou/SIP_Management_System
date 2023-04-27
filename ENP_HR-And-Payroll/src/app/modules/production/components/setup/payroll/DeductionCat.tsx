@@ -18,7 +18,7 @@ const DeductionCats = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isUpdate, setIsUpdate] = useState(false)
   const [tempData, setTempData] = useState<any>()
-
+  const tenantId = localStorage.getItem('tenant')
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -116,7 +116,7 @@ const DeductionCats = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/DeductionCats`)
+      const response = await axios.get(`${Api_Endpoint}/DeductionCats/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -159,6 +159,7 @@ const DeductionCats = () => {
     const data = {
       code: values.code,
       name: values.name,
+      tenantId: tenantId,
 
     }
     console.log(data)

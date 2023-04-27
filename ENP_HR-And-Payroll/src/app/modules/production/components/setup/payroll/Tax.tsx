@@ -14,7 +14,7 @@ const Tax = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-
+  const tenantId = localStorage.getItem('tenant')
   const [isUpdate, setIsUpdate] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { register, reset, handleSubmit } = useForm()
@@ -258,6 +258,7 @@ const Tax = () => {
       percentage: parseInt(values.percentage),
       taxFormularID: parseInt(values.taxFormular),
       order: values.order,
+      tenantId: tenantId,
     }
     try {
       const response = await axios.post(url, data)

@@ -22,6 +22,8 @@ const Grades = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   let [itemName, setItemName] = useState<any>("")
+
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -164,7 +166,7 @@ const Grades = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Grades`)
+      const response = await axios.get(`${Api_Endpoint}/Grades/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -236,6 +238,7 @@ const Grades = () => {
       name: values.name,
       description: values.description,
       paygroupId: parseInt(param.id),
+      tenantId: tenantId,
     }
     try {
       const response = await axios.post(url, data)

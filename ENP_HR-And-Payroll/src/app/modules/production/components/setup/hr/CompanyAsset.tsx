@@ -18,7 +18,7 @@ const CompanyAsset = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -123,7 +123,7 @@ const CompanyAsset = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/CompanyAssets`)
+      const response = await axios.get(`${Api_Endpoint}/CompanyAssets/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -190,6 +190,7 @@ const CompanyAsset = () => {
     const data = {
       code: values.code,
       name: values.name,
+      tenantId: tenantId,
     }
     try {
       const response = await axios.post(url, data)

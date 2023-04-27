@@ -11,7 +11,7 @@ const SavingScheme = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -241,6 +241,7 @@ const SavingScheme = () => {
     setSubmitLoading(true)
     const data = {
       name: values.name,
+      tenantId: tenantId,
     }
 
     console.log(data)

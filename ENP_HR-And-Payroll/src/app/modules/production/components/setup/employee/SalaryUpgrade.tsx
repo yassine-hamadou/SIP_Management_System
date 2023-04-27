@@ -12,6 +12,8 @@ const SalaryUpgrade = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
 
+
+  const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -112,7 +114,7 @@ const SalaryUpgrade = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${ENP_URL}/ProductionActivity/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -151,6 +153,7 @@ const SalaryUpgrade = () => {
     setSubmitLoading(true)
     const data = {
       name: values.name,
+      tenantId: tenantId,
     }
 
     console.log(data)

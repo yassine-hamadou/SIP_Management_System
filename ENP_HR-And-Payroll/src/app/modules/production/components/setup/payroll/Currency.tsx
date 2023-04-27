@@ -21,7 +21,7 @@ const Currency = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const queryClient = useQueryClient()
 
-
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -129,7 +129,8 @@ const Currency = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument('Currencies')
+      const response = await axios.get(`${Api_Endpoint}/Currencies/tenant/${tenantId}`)
+      // const response = await fetchDocument('Currencies')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -137,9 +138,12 @@ const Currency = () => {
     }
   }
 
+  console.log(gridData);
+  
+
   useEffect(() => {
     loadData()
-  }, [])
+  }, [tenantId])
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
@@ -203,6 +207,7 @@ const Currency = () => {
       data: {
         name: values.name,
         code: values.code,
+        tenantId: tenantId,
       },
       url: endpoint
     }
@@ -212,7 +217,7 @@ const Currency = () => {
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['Parameters', tempData], data);
+      queryClient.setQueryData(['currencies', tempData], data);
       reset()
       setTempData({})
       loadData()

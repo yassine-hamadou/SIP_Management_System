@@ -5,7 +5,7 @@ import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { useForm } from 'react-hook-form'
 import { useQueryClient, useMutation } from 'react-query'
-import { deleteItem, fetchDocument, updateItem, postItem } from '../../../../../services/ApiCalls'
+import { deleteItem, fetchDocument, updateItem, postItem, Api_Endpoint } from '../../../../../services/ApiCalls'
 
 const ApprovalLevel = () => {
   const [gridData, setGridData] = useState([])
@@ -21,7 +21,7 @@ const ApprovalLevel = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const queryClient = useQueryClient()
-
+  const tenantId = localStorage.getItem('tenant')
 
   const statusList = ['Active', 'Inactive']
 
@@ -131,7 +131,8 @@ const ApprovalLevel = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument('ApprovalLevels')
+      const response = await axios.get(`${Api_Endpoint}/ApprovalLevels/tenant/${tenantId}`)
+      // const response = await fetchDocument('ApprovalLevels')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -204,6 +205,7 @@ const ApprovalLevel = () => {
       data: {
         name: values.name,
         code: values.code,
+        tenantId: tenantId,
         status: parseInt(values.status),
       },
       url: endpoint

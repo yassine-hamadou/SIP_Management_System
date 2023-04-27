@@ -15,7 +15,7 @@ const Period = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
   const { register, reset, handleSubmit } = useForm()
-
+  const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -136,7 +136,8 @@ const Period = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument('Periods')
+      // const response = await fetchDocument('Periods')
+      const response = await axios.get(`${Api_Endpoint}/Periods/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -212,6 +213,7 @@ const Period = () => {
         name: values.name,
         startDate: values.startDate,
         endDate: values.endDate,
+        tenantId: tenantId,
       },
       url: endpoint
     }

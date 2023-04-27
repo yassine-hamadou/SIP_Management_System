@@ -16,6 +16,7 @@ const Categories = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const tenantId = localStorage.getItem('tenant')
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -105,7 +106,7 @@ const Categories = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Categories`)
+      const response = await axios.get(`${Api_Endpoint}/Categories/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -172,6 +173,7 @@ const Categories = () => {
     const data = {
       code: values.code,
       name: values.name,
+      tenantId: tenantId,
     }
     try {
       const response = await axios.post(url, data)

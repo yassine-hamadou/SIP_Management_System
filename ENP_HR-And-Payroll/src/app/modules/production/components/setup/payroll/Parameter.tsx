@@ -15,7 +15,7 @@ const Parameter = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const { register, reset, handleSubmit } = useForm()
-
+  const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -205,6 +205,7 @@ const Parameter = () => {
       data: {
         name: values.name,
         code: values.code,
+        tenantId: tenantId,
         status: parseInt(values.status),
       },
       url: endpoint

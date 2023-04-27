@@ -21,6 +21,8 @@ const ServiceCost = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const param: any = useParams();
+
+  const tenantId = localStorage.getItem('tenant')
   const navigate = useNavigate();
   const showModal = () => {
     setIsModalOpen(true)
@@ -121,7 +123,7 @@ const ServiceCost = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get("http://208.117.44.15/hrwebapi/api/ServiceCosts")
+      const response = await axios.get(`${Api_Endpoint}/ServiceCosts/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -217,6 +219,7 @@ const ServiceCost = () => {
     const data = {
       serviceProviderId: parseInt(param.id),
       medicalServiceId: parseInt(selectedValue),
+      tenantId: tenantId,
       cost: parseFloat(values.cost).toFixed(2)
     }
     console.log(data)

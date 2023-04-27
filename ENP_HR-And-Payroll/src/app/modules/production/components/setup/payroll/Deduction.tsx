@@ -19,7 +19,7 @@ const Deduction = () => {
   const [selectedPeriod, setSelectedPeriodValue] = useState<any>(null);
   const [selectedTaxtype, setSelectedTaxtypeValue] = useState<any>(null);
   const [selectedCurrency, setSelectedCurrencyValue] = useState<any>(null);
-
+  const tenantId = localStorage.getItem('tenant')
 
   const { data: deductionCats } = useQuery('deductionCats', fetchDeductionsCategory, { cacheTime: 5000 })
   const { data: periods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
@@ -271,7 +271,7 @@ const Deduction = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Deductions`)
+      const response = await axios.get(`${Api_Endpoint}/Deductions/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
       console.log(response.data)
@@ -313,6 +313,7 @@ const Deduction = () => {
     const data = {
       code: values.code,
       name: values.name,
+      tenantId: tenantId,
       description: values.description,
       account: parseInt(values.account),
       typeOfAmount: values.typeOfAmount,

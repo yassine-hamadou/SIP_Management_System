@@ -23,6 +23,8 @@ const GradePerks = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const tenantId = localStorage.getItem('tenant')
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -96,7 +98,7 @@ const GradePerks = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/GradePerks`)
+      const response = await axios.get(`${Api_Endpoint}/GradePerks/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -198,7 +200,8 @@ const GradePerks = () => {
     setLoading(true)
     const data = {
       gradeId: parseInt(param.id),
-      perkId: parseInt(values.perkId)
+      perkId: parseInt(values.perkId),
+      tenantId: tenantId,
     }
     console.log(data)
     try {

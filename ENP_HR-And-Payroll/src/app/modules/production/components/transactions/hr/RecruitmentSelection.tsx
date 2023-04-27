@@ -36,6 +36,7 @@ const RecruitmentSelection = () => {
   const [employeeRecord, setEmployeeRecord] = useState<any>(null)
   const [activeTab, setActiveTab] = useState("tab1");
   const [tempImage, setTempImage] = useState(tempImg);
+  const tenantId = localStorage.getItem('tenant')
   const queryClient = useQueryClient()
   const showModal = () => {
     // if(selectedValue!==""){
@@ -350,6 +351,7 @@ const OnSUbmit = handleSubmit(async (values) => {
     categoryId: parseInt(values.categoryId),
     jobTitleId: parseInt(values.jobTitleId),
     unitId: parseInt(values.unitId),
+    tenantId: tenantId,
   }
   try {
    
@@ -381,7 +383,8 @@ const OnSUbmit = handleSubmit(async (values) => {
       phone: values.phone,
       email: values.email,
       qualification: values.qualification,
-      ImageFile: tempImage
+      ImageFile: tempImage,
+      tenantId: tenantId,
     },
     url: 'RecruitmentApplicants'
   }
