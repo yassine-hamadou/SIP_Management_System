@@ -250,7 +250,7 @@ const PlannedOutputTable = () => {
               <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Quantity</label>
-                  <input type="number" {...register("quantity")} min={0} name="quantity" value={!isUpdateModalOpen ? '' : tempData?.quantity} onChange={handleChange} className="form-control form-control-white" />
+                  <input type="number" {...register("quantity")} min={0} step={1} name="quantity" defaultValue={!isUpdateModalOpen ? 0 : tempData?.quantity} onChange={handleChange} className="form-control form-control-white" />
                 </div>
               </div>
 

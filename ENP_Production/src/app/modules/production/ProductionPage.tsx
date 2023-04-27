@@ -150,7 +150,7 @@ const ProductionPage: React.FC = () => {
           path='destination'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>PRO Destination</PageTitle>
+              <PageTitle breadcrumbs={accountBreadCrumbs}>Destination</PageTitle>
               <DestinationTable/>
             </>
           }
