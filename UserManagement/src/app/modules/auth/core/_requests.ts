@@ -5,7 +5,7 @@ import {AuthModel, UserModel} from './_models'
 const API_URL = "http://208.117.44.15/hrwebapi/api/Users"
 
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/verify_token`
-export const LOGIN_URL = `${API_URL}/Login`
+export const LOGIN_URL = `${API_URL}/Login/Super`
 export const REGISTER_URL = `${API_URL}/register`
 export const REQUEST_PASSWORD_URL = `${API_URL}/forgot_password`
 

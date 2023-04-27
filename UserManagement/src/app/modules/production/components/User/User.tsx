@@ -185,37 +185,13 @@ const User = () => {
 
 
   useEffect(() => {
-    // const fetchQuotes = async () => {
-    //   const res = await axios.get(
-    //     "http://208.117.44.15/hrwebapi/api/Taxes",
-    //     {
-    //       headers: {
-    //         Authorization: 'Bearer '+ ''
-    //       }
-    //     }
-    //   );
-    //   return setUserInfo(res.data);
-    // };
 
-
-    // function parseJwt(token:any) {
-    //   if (!token) { return; }
-    //   const base64Url = token.split('.')[1];
-    //   const base64 = base64Url.replace('-', '+').replace('_', '/');
-    //   const newOb = JSON.parse(window.atob(base64))
-    //   return setUserInfo(newOb);
-    // }
-
-    // parseJwt(token)
-    // fetchQuotes()
     loadData()
   }, [])
 
-
-  // console.log(test);
-
-  // console.log(userInfo?.firstName);
-
+  const dataByID = gridData.filter((user: any) => {
+    return user.id !== 42
+  })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -339,7 +315,7 @@ const User = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={gridData} loading={loading} />
+          <Table columns={columns} dataSource={dataByID} loading={loading} />
           <Modal
             title={isUpdateModalOpen ? 'Update User' : 'Add User'}
             open={isModalOpen}
