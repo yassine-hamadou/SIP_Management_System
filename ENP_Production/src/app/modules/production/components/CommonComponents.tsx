@@ -8,7 +8,7 @@ const PageActionButtons = (
     return (
         <div className='d-flex align-items-center'>
             {
-                
+
                 hasAddButton && (
                     <Button
                         type='primary'
@@ -60,4 +60,26 @@ const PageActionButtons = (
         </div>
     )
 }
-export { PageActionButtons }
+
+const ModalFooterButtons = ({ onCancel, onSubmit }: any) => {
+    return (
+        <>
+            <Button
+                key='back'
+                onClick={onCancel}
+                size="large">
+                Cancel
+            </Button>,
+            <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                onClick={onSubmit}
+                size="large">
+                Submit
+            </Button>,
+        </>
+
+    )
+}
+export { PageActionButtons, ModalFooterButtons }

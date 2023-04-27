@@ -1,24 +1,63 @@
-import { Button, Form, Input, Modal, Space, Table } from 'antd'
-import axios from 'axios'
+import { Button, Input, Modal, Space, Table, message } from 'antd'
 import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useMutation, useQueryClient } from 'react-query'
 import { KTCardBody } from '../../../../../_metronic/helpers'
-import { ENP_URL } from '../../urls'
-import { PageActionButtons } from '../CommonComponents'
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../urls'
+import { ModalFooterButtons, PageActionButtons } from '../CommonComponents'
 
 
 const ProUnitComponet = (props: any) => {
-    const [gridData, setGridData] = useState([])
-    const [loading, setLoading] = useState(false)
-    const [searchText, setSearchText] = useState('')
-    let [filteredData] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+    const [uploadedFile, setUploadedFile] = useState<any>(null)
+    const [gridData, setGridData] = useState([])
+    let [filteredData] = useState([])
+    const [submitLoading, setSubmitLoading] = useState(false)
+    const [searchText, setSearchText] = useState('')
+
+    const [loading, setLoading] = useState(false)
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+    const [tempData, setTempData] = useState<any>()
+    const { register, reset, handleSubmit } = useForm()
+    const queryClient = useQueryClient()
+
+    const handleChange = (event: any) => {
+        event.preventDefault()
+        setTempData({ ...tempData, [event.target.name]: event.target.value });
+    }
 
     const showModal = () => {
         setIsModalOpen(true)
     }
 
+    const showUploadModal = () => {
+        setIsUploadModalOpen(true)
+    }
+
     const handleCancel = () => {
+        reset()
         setIsModalOpen(false)
+        setIsUploadModalOpen(false)
+        setIsUpdateModalOpen(false)
+    }
+
+    const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+        onSuccess: (data) => {
+            queryClient.setQueryData([props.data.url, tempData], data);
+            loadData()
+        },
+        onError: (error) => {
+            console.log('delete error: ', error)
+        }
+    })
+
+    function handleDelete(element: any) {
+        const item = {
+            url: props.data.url,
+            data: element
+        }
+        deleteData(item)
     }
 
     const columns: any = [
@@ -39,7 +78,7 @@ const ProUnitComponet = (props: any) => {
 
         {
             title: 'Model Name',
-            dataIndex: 'modlName',
+            dataIndex: 'modelName',
             sorter: (a: any, b: any) => a.modlName - b.modlName,
         },
 
@@ -63,27 +102,25 @@ const ProUnitComponet = (props: any) => {
             width: 100,
             render: (_: any, record: any) => (
                 <Space size='middle'>
-                    <a href='#' className='btn btn-light-warning btn-sm'>
+                    <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
                         Update
                     </a>
-                    <a href='#' className='btn btn-light-danger btn-sm'>
+                    <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
                         Delete
                     </a>
                 </Space>
             ),
-
         },
-
     ]
 
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await axios.get(`${ENP_URL}/VmequpsApi`)
-
+            const response = await fetchDocument(props.data.url)
             setGridData(response.data)
             setLoading(false)
         } catch (error) {
+            setLoading(false)
             console.log(error)
         }
     }
@@ -114,6 +151,74 @@ const ProUnitComponet = (props: any) => {
         })
         setGridData(filteredData)
     }
+    const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+        onSuccess: (data) => {
+            queryClient.setQueryData(['plannedOutput', tempData], data);
+            reset()
+            setTempData({})
+            loadData()
+            setIsUpdateModalOpen(false)
+            setIsModalOpen(false)
+        },
+        onError: (error) => {
+            console.log('error: ', error)
+        }
+    })
+
+    const handleUpdate = (e: any) => {
+        if (tempData.destination === '' || tempData.activity === '' || tempData.quantity === '') {
+            message.error('Please fill all the fields')
+        } else {
+            e.preventDefault()
+            const item = {
+                url: props.data.url,
+                data: tempData
+            }
+            updateData(item)
+            console.log('update: ', item.data)
+        }
+    }
+
+    const showUpdateModal = (values: any) => {
+        showModal()
+        setIsUpdateModalOpen(true)
+        setTempData(values);
+        console.log(values)
+    }
+
+
+    const OnSubmit = handleSubmit(async (values) => {
+        setSubmitLoading(true)
+        if (tempData.destination === '' || tempData.activity === '' || tempData.quantity === '') {
+            message.error('Please fill all the fields')
+        } else {
+            const item = {
+                data: {
+                    destination: values.destination,
+                    activity: values.activity,
+                    quantity: values.quantity,
+                },
+                url: props.data.url
+            }
+            console.log(item.data)
+            postData(item)
+        }
+    })
+
+    const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+        onSuccess: (data) => {
+            queryClient.setQueryData([props.data.url, tempData], data);
+            reset()
+            setTempData({})
+            loadData()
+            setIsModalOpen(false)
+            setSubmitLoading(false)
+        },
+        onError: (error) => {
+            setSubmitLoading(false)
+            console.log('post error: ', error)
+        }
+    })
 
     return (
         <div
@@ -142,43 +247,44 @@ const ProUnitComponet = (props: any) => {
                         </Space>
                         <Space style={{ marginBottom: 16 }}>
                             <PageActionButtons
-                                onAddClick={() => { console.log('add clicked') }}
+                                onAddClick={showModal}
                                 onExportClicked={() => { console.log('export clicked') }}
                                 hasAddButton={true}
                                 hasExportButton={true}
                             />
                         </Space>
                     </div>
-                    <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
+                    <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
 
                     <Modal
-                        title={props.title}
+                        title={isUpdateModalOpen ? `${props.data.title} Update` : `${props.data.title} Setup`}
                         open={isModalOpen}
                         onCancel={handleCancel}
                         closable={true}
-                        footer={[
-                            <Button key='back' onClick={handleCancel}>
-                                Cancel
-                            </Button>,
-                            <Button
-                                key='submit'
-                                type='primary'
-                                htmlType='submit'
-                            >
-                                Submit
-                            </Button>,
-                        ]}
+                        footer={
+                            <ModalFooterButtons
+                                onCancel={handleCancel}
+                                onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit} />
+                        }
                     >
-                        <Form
-                            name='control-hooks'
-                            labelCol={{ span: 8 }}
-                            wrapperCol={{ span: 14 }}
-                            title='Cycle Details'
-                        >
-
-                        </Form>
+                        <form onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}>
+                            <hr></hr>
+                            <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                                <div className=' mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Equipment</label>
+                                    <input {...register("equipName")} name='equipName' defaultValue={!isUpdateModalOpen ? '' : tempData?.equipName} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
+                                <div className=' mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Model name</label>
+                                    <input {...register("modelName")} name='modelName' defaultValue={!isUpdateModalOpen ? '' : tempData?.modelName} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
+                                <div className=' mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
+                                    <input {...register("description")} name='description' defaultValue={!isUpdateModalOpen ? '' : tempData?.description} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
+                            </div>
+                        </form>
                     </Modal>
-
                 </div>
             </KTCardBody>
         </div>
@@ -186,3 +292,4 @@ const ProUnitComponet = (props: any) => {
 }
 
 export { ProUnitComponet }
+
