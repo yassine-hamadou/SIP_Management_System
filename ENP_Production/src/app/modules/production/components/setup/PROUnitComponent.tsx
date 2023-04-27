@@ -58,20 +58,6 @@ const ProUnitComponet = (props: any) => {
         },
 
         {
-            title: 'Manufacturer',
-            dataIndex: 'manufacturer',
-            sorter: (a: any, b: any) => {
-                if (a.manufacturer > b.manufacturer) {
-                    return 1
-                }
-                if (b.manufacturer > a.manufacturer) {
-                    return -1
-                }
-                return 0
-            },
-        },
-
-        {
             title: 'Action',
             fixed: 'right',
             width: 100,

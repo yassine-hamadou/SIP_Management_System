@@ -35,6 +35,7 @@ const initialValues = {
 export function Login() {
   const [loading, setLoading] = useState(false)
   const { saveAuth, setCurrentUser } = useAuth()
+  const [selectedCompany, setSelectedCompany] = useState('')
 
   const formik = useFormik({
     initialValues,
@@ -54,6 +55,7 @@ export function Login() {
          //now I have to assign the !
          const cuUser:any =  parseJwt(token)
         setCurrentUser(cuUser)
+        console.log('selected company: ', selectedCompany)
       } catch (error) {
         console.error(error)
         setStatus('The login detail is incorrect')
@@ -135,6 +137,7 @@ export function Login() {
               data-placeholder='Select option'
               data-allow-clear='true'
               {...formik.getFieldProps('tenantId')}
+              onChange={(e) => setSelectedCompany(e.target.value)}
             >
 
               {

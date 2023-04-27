@@ -1,8 +1,13 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
-import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
+import { Button, Divider, Input, Modal, Space, Table } from "antd"
+import { useEffect, useState } from "react"
+import { useForm } from 'react-hook-form'
+import { useMutation, useQueryClient } from "react-query"
+import { KTCardBody } from "../../../../../../_metronic/helpers"
+import { deleteItem, fetchDocument, postItem, updateItem } from "../../../urls"
+import { PageActionButtons } from "../../CommonComponents"
+
+
+
 
 const ActivityTable = () => {
   const [gridData, setGridData] = useState([])
@@ -10,7 +15,11 @@ const ActivityTable = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [form] = Form.useForm()
+  const [tempData, setTempData] = useState<any>()
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const queryClient = useQueryClient()
+  const { register, reset, handleSubmit } = useForm()
+
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -23,29 +32,40 @@ const ActivityTable = () => {
   }
 
   const handleCancel = () => {
-    form.resetFields()
+    reset()
     setIsModalOpen(false)
+    setIsUpdateModalOpen(false)
+    setTempData(null)
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
+  }
+
+
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['activity', tempData], data);
+      loadData()
+      setLoading(false)
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
     }
-  }
+  })
 
-  
 
   function handleDelete(element: any) {
-    deleteData(element)
+    setLoading(true)
+    const item = {
+      url: 'ProductionActivity',
+      data: element
+    }
+    deleteData(item)
   }
   const columns: any = [
-   
+
     {
       title: 'Name',
       dataIndex: 'name',
@@ -66,27 +86,23 @@ const ActivityTable = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
-          {/* <Link to={`/setup/sections/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Sections</span>
-          </Link> */}
-          <a href='#' className='btn btn-light-warning btn-sm'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-         
+
         </Space>
       ),
-      
+
     },
   ]
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await fetchDocument('ProductionActivity')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -120,26 +136,65 @@ const ActivityTable = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
-  const onFinish = async (values: any) => {
+  const OnSubmit = handleSubmit(async (values: any) => {
     setSubmitLoading(true)
-    const data = {
-      name: values.name,
+    const item = {
+      data: {
+        name: values.name,
+      },
+      url: 'ProductionActivity'
     }
 
-    console.log(data)
+    console.log(item.data)
+    postData(item)
+  })
 
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
-      form.resetFields()
-      setIsModalOpen(false)
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['activity', tempData], data);
+      reset()
+      setTempData({})
       loadData()
-      return response.statusText
-    } catch (error: any) {
       setSubmitLoading(false)
-      return error.statusText
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
+      setSubmitLoading(false)
     }
+  })
+
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['activity', tempData], data);
+      reset()
+      loadData()
+      setIsUpdateModalOpen(false)
+      setIsModalOpen(false)
+      setSubmitLoading(false)
+      setLoading(false)
+    },
+    onError: (error: any) => {
+      setSubmitLoading(false)
+      console.log('error: ', error)
+    }
+  })
+
+  const handleUpdate = async (values: any) => {
+    setSubmitLoading(true)
+    const item = {
+      url: 'ProductionActivity',
+      data: tempData
+    }
+    updateData(item)
+    console.log('update: ', item.data)
+    setSubmitLoading(false)
+  }
+
+  const showUpdateModal = (value: any) => {
+    showModal()
+    setTempData(value)
+    setIsUpdateModalOpen(true)
   }
 
   return (
@@ -154,76 +209,66 @@ const ActivityTable = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
+            <Space style={{ marginBottom: 16 }}>
               <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
+                value={searchText} size='large'
               />
-              <Button type='primary' onClick={globalSearch}>
+              <Button type='primary' onClick={globalSearch} size='large'>
                 Search
               </Button>
             </Space>
-            <Space style={{marginBottom: 16}}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
-
-              <button type='button' className='btn btn-light-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                Export
-            </button>
+            <Space style={{ marginBottom: 16 }}>
+              <PageActionButtons
+                onAddClick={showModal}
+                onExportClicked={() => { console.log('export clicked') }}
+                hasAddButton={true}
+                hasExportButton={true}
+              />
             </Space>
           </div>
           <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
           <Modal
-                title='Add Activity'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title={isUpdateModalOpen ? 'Update Activity' : 'Add Activity'}
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={isUpdateModalOpen ? handleUpdate : OnSubmit}
+              >
+                Submit
+              </Button>,
+            ]}
+          >
+            <Divider />
+            <form
+              onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
-                >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
-            </Modal>
+              <hr></hr>
+              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input type="text" {...register("name")} defaultValue={isUpdateModalOpen === true ? tempData.name : ''} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+              </div>
+            </form>
+          </Modal>
         </div>
       </KTCardBody>
     </div>
   )
 }
 
-export {ActivityTable}
+export { ActivityTable }
+

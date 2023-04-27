@@ -40,7 +40,6 @@ const PlannedOutputTable = () => {
 
   const showUploadModal = () => {
     setIsUploadModalOpen(true)
-    console.log('upload modal clicked')
   }
 
   const handleCancel = () => {
@@ -80,7 +79,7 @@ const PlannedOutputTable = () => {
           <PageActionButtons
             onAddClick={showModal}
             onExportClicked={() => { console.log('export clicked') }}
-            onUploadClicked={() => { console.log('upload clicked') }}
+            onUploadClicked={showUploadModal}
             hasAddButton={true}
             hasExportButton={true}
             hasUploadButton={true}

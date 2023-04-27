@@ -1,18 +1,25 @@
+import { UploadOutlined } from '@ant-design/icons';
 import {
     Button, DatePicker,
+    Divider,
     Form,
     Input,
     Modal,
     Space,
-    Table, TimePicker,
+    Table, TimePicker, Upload,
 } from 'antd';
 import { useState } from "react";
 import { Link } from 'react-router-dom';
 import { KTCardBody } from '../../../../../../_metronic/helpers';
 import { PageActionButtons } from '../../CommonComponents';
 
+
 const CycleDetailsTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+    const [uploadedFile, setUploadedFile] = useState<any>(null)
+
+
     const columns: any = [
         {
             title: 'Date',
@@ -99,10 +106,16 @@ const CycleDetailsTable = () => {
     const showModal = () => {
         setIsModalOpen(true)
     }
+    const showUploadModal = () => {
+        setIsUploadModalOpen(true)
+    }
 
     const handleCancel = () => {
         setIsModalOpen(false)
+        setIsUploadModalOpen(false)
+
     }
+
     return (
         <div
             style={{
@@ -129,7 +142,7 @@ const CycleDetailsTable = () => {
                             <PageActionButtons
                                 onAddClick={showModal}
                                 onExportClicked={() => { console.log('export clicked') }}
-                                onUploadClicked={() => { console.log('upload clicked') }}
+                                onUploadClicked={showUploadModal}
                                 hasAddButton={true}
                                 hasExportButton={true}
                                 hasUploadButton={true}
@@ -268,6 +281,46 @@ const CycleDetailsTable = () => {
                             >
                                 <Input />
                             </Form.Item>
+
+                        </Form>
+                    </Modal>
+                    {/* Modal to upload file */}
+                    <Modal
+                        title='Upload Planned Output'
+                        open={isUploadModalOpen}
+                        onCancel={handleCancel}
+                        closable={true}
+                        footer={[
+                            <Button key='back' onClick={handleCancel}>
+                                Cancel
+                            </Button>,
+                            <Button
+                                key='submit'
+                                type='primary'
+                                htmlType='submit'
+                            >
+                                Submit
+                            </Button>,
+                        ]}
+                    >
+                        <Divider />
+                        <Form
+                            name='control-hooks'
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 14 }}
+                            title='Add Fault'
+                        >
+                            <Space size='large'>
+                                <Upload>
+                                    <Button
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                        icon={<UploadOutlined />}>Click to Upload</Button>
+                                </Upload>
+                            </Space>
 
                         </Form>
                     </Modal>
