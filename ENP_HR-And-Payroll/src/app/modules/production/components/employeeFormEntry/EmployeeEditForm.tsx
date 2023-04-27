@@ -823,9 +823,8 @@ const EmployeeEditForm = () => {
     setImg(imageObjectURL);
   };
 
-  const [fileList, setFileList] = useState<UploadFile[]>([
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  ]);
 
   const loadSkills = async () => {
     setLoading(true)

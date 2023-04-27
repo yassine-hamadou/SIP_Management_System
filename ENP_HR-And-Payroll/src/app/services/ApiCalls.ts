@@ -17,7 +17,7 @@ export let axioInstance = axios.create({
 
 //dynamic fetch function
 export function fetchDocument(url: string) {
-    return axios.get(`${Api_Endpoint}/${url}/tenant/${tenantId}`)
+    return axios.get(`${Api_Endpoint}/${url}/`)
 }
 
 //dynamic update function

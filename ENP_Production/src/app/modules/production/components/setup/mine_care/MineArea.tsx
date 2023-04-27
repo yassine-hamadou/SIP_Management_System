@@ -5,9 +5,9 @@ import {
     Modal,
     Space,
     Table,
-} from 'antd'
-import {KTSVG} from '../../../../../../_metronic/helpers'
-import {useState} from "react";
+} from 'antd';
+import { useState } from "react";
+import { KTSVG } from '../../../../../../_metronic/helpers';
 
 const MineArea = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -43,29 +43,33 @@ const MineArea = () => {
             }}
         >
             <div className='d-flex justify-content-between'>
-                <Space style={{marginBottom: 16}}>
+                <Space style={{ marginBottom: 16 }}>
                     <Input
                         placeholder='Enter Search Text'
                         type='text'
-                        allowClear
+                        allowClear size='large'
                     />
-                    <Button type='primary'>
+                    <Button type='primary' size='large'>
                         Search
                     </Button>
                 </Space>
-                <Space style={{marginBottom: 16}}>
-                    {/* <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-                        <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                        Add
-                    </button> */}
-                    <button type='button' className='btn btn-light-primary me-3'>
+                <Space style={{ marginBottom: 16 }}>
+                    <Button type='primary' className='btn btn-light-primary me-3' style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }} size='large'>
                         <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                         Upload
-                    </button>
-                    <button type='button' className='btn btn-light-primary me-3'>
+                    </Button>
+                    <Button type='primary' className='btn btn-light-primary me-3' style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }} size='large'>
                         <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                         Export
-                    </button>
+                    </Button>
                 </Space>
             </div>
             <Table columns={columns} bordered />
@@ -91,21 +95,21 @@ const MineArea = () => {
             >
                 <Form
                     name='control-hooks'
-                    labelCol={{span: 8}}
-                    wrapperCol={{span: 14}}
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 14 }}
                     title='Add Fault'
                 >
                     <Form.Item
                         name='ID'
                         label='ID'
-                        rules={[{required: true, type: "number"}]}
+                        rules={[{ required: true, type: "number" }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
                         name='Name'
                         label='Name'
-                        rules={[{required: true}]}
+                        rules={[{ required: true }]}
                     >
                         <Input />
                     </Form.Item>
@@ -115,4 +119,4 @@ const MineArea = () => {
     )
 }
 
-export {MineArea}
+export { MineArea };

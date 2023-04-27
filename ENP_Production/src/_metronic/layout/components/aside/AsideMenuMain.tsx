@@ -1,97 +1,76 @@
 /* eslint-disable react/jsx-no-target-blank */
-import React from 'react'
-import {useIntl} from 'react-intl'
-import {KTSVG} from '../../../helpers'
-import {AsideMenuItemWithSub} from './AsideMenuItemWithSub'
-import {AsideMenuItem} from './AsideMenuItem'
+import { useIntl } from 'react-intl'
+import { AsideMenuItem } from './AsideMenuItem'
+import { AsideMenuItemWithSub } from './AsideMenuItemWithSub'
+import clsx from 'clsx'
+import { Link } from 'react-router-dom'
+import { KTSVG, checkIsActive } from '../../../helpers'
+import {useLocation} from 'react-router'
 
 export function AsideMenuMain() {
   const intl = useIntl()
-
+  const {pathname} = useLocation()
+  const isDashboardActive = checkIsActive(pathname, '/dashboard')
   return (
     <>
-      <AsideMenuItem
-        to='/dashboard'
-        icon='/media/icons/duotune/art/art002.svg'
-        title={intl.formatMessage({id: 'MENU.DASHBOARD'})}
-        fontIcon='bi-app-indicator'
-      />
+    <div className='menu-item'>
+        <Link
+          className={clsx('menu-link without-sub ml0', {active: isDashboardActive})}
+          to='/dashboard'
+        >
+          <span className='menu-icon'>
+            <KTSVG path='/media/icons/duotune/art/art002.svg' className='svg-icon-2'/>
+          </span>
+          <span className='menu-title'>{intl.formatMessage({id: 'MENU.DASHBOARD'})}</span>
+        </Link>
+      </div>
+      
       <AsideMenuItemWithSub
         to='#'
         title='Entries'
         fontIcon='bi-archive'
         icon='/media/icons/duotune/general/gen022.svg'
       >
-        <AsideMenuItem
-          to='production/entries/cycle-details'
-          hasBullet={true}
-          title='Cycle Details'
-        />
-        <AsideMenuItem to='production/entries/cycle-grade' hasBullet={true} title='Cycle Grade' />
-        <AsideMenuItem
-          to='production/entries/planned-output'
-          hasBullet={true}
-          title='Planned Output'
-        />
+        <AsideMenuItem to='production/entries/cycle-details' hasBullet={true} title='Cycle Details' />
+        {/* <AsideMenuItem to='production/entries/cycle-grade' hasBullet={true} title='Cycle Grade' /> */}
+        <AsideMenuItem to='production/entries/planned-output' hasBullet={true} title='Planned Output' />
+      </AsideMenuItemWithSub>
 
-        {/*<AsideMenuItemWithSub to='/crafted/pages/wizards' title='Wizards' hasBullet={true}>*/}
-        {/*  <AsideMenuItem*/}
-        {/*    to='/crafted/pages/wizards/horizontal'*/}
-        {/*    title='Horizontal'*/}
-        {/*    hasBullet={true}*/}
-        {/*  />*/}
-        {/*  <AsideMenuItem to='/crafted/pages/wizards/vertical' title='Vertical' hasBullet={true} />*/}
-        {/*</AsideMenuItemWithSub>*/}
-      </AsideMenuItemWithSub>
-      <AsideMenuItemWithSub
-        to='#'
-        title='Report'
-        fontIcon='bi-archive'
-        icon='/media/icons/duotune/general/gen028.svg'
+      <AsideMenuItemWithSub to='#' title='Report' fontIcon='bi-archive' icon='/media/icons/duotune/general/gen028.svg'
       >
-        <AsideMenuItem
-          to='production/report/production-report'
-          title='Production'
-          hasBullet={true}
-        />
+        <AsideMenuItem to='production/report/production-report' title='Production' hasBullet={true} />
         <AsideMenuItem to='production/report/fuel-report' title='Fuel Report' hasBullet={true} />
-        <AsideMenuItem
-          to='production/report/equipment-kpi'
-          title='Equipment KPI'
-          hasBullet={true}
-        />
-        <AsideMenuItem
-          to='production/report/activity-statistics'
-          title='Activity Statistics'
-          hasBullet={true}
-        />
+        <AsideMenuItem to='production/report/equipment-kpi' title='Equipment KPI' hasBullet={true} />
+        <AsideMenuItem to='production/report/activity-statistics' title='Activity Statistics' hasBullet={true} />
       </AsideMenuItemWithSub>
-      <AsideMenuItemWithSub
-        to='#'
-        title='Setup'
-        fontIcon='bi-archive'
-        icon='/media/icons/duotune/coding/cod009.svg'
+
+      <AsideMenuItemWithSub to='#' title='Setup' fontIcon='bi-archive' icon='/media/icons/duotune/coding/cod009.svg'
       >
         <AsideMenuItemWithSub to='#' title='Loader' hasBullet={true}>
           <AsideMenuItem to='/production/setup/loader/unit' title='Unit' hasBullet={true} />
           <AsideMenuItem to='/production/setup/loader/operator' title='Operator' hasBullet={true} />
-
-
         </AsideMenuItemWithSub>
+
         <AsideMenuItemWithSub to='#' title='Hauler' hasBullet={true}>
           <AsideMenuItem to='/production/setup/hauler/unit' title='Unit' hasBullet={true} />
           <AsideMenuItem to='/production/setup/hauler/operator' title='Operator' hasBullet={true} />
         </AsideMenuItemWithSub>
+
         <AsideMenuItem to='/production/setup/mine-area' title='Mine Area' hasBullet={true} />
+
         <AsideMenuItem to='/production/setup/origin' title='Origin' hasBullet={true} />
+
         <AsideMenuItem to='/production/setup/destination' title='Destination' hasBullet={true} />
         <AsideMenuItemWithSub to='#' title='Material' hasBullet={true}>
           <AsideMenuItem to='/production/setup/raw-material' title='Raw' hasBullet={true} />
           <AsideMenuItem to='/production/setup/processed-material' title='Processed' hasBullet={true} />
         </AsideMenuItemWithSub>
+
         <AsideMenuItem to='/production/setup/activity' title='Activity' hasBullet={true} />
+
         <AsideMenuItem to='/production/setup/shift' title='Shift' hasBullet={true} />
       </AsideMenuItemWithSub>
+
       <AsideMenuItemWithSub
         to='#'
         title='Configuration'
@@ -100,6 +79,8 @@ export function AsideMenuMain() {
       >
         <AsideMenuItem to='#' title='Edit' hasBullet={true} />
       </AsideMenuItemWithSub>
+
+
       {/*<AsideMenuItemWithSub*/}
       {/*  to='/crafted/accounts'*/}
       {/*  title='Accounts'*/}

@@ -5,7 +5,7 @@ import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
-import { deleteItem} from '../../../../../services/ApiCalls'
+import { deleteItem, fetchDocument, postItem, updateItem} from '../../../../../services/ApiCalls'
 
 const Overtime = () => {
   const [gridData, setGridData] = useState([])
@@ -102,6 +102,8 @@ const Overtime = () => {
   const loadData = async () => {
     setLoading(true)
     try {
+      const response = await fetchDocument('ProductionActivity')
+      setGridData(response.data)
       // const response = await fetchSmWebApiDocument('ProductionActivity')
       // setGridData(response.data)
       setLoading(false)
@@ -136,6 +138,19 @@ const Overtime = () => {
     setGridData(filteredData)
   }
 
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['ProductionActivity', tempData], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsUpdateModalOpen(false)
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
+    }
+  })
   // const { isLoading: updateLoading, mutate: updateData } = useMutation(updateSmWebApiItem, {
   //   onSuccess: (data) => {
   //     queryClient.setQueryData(['ProductionActivity', tempData], data);
@@ -183,6 +198,18 @@ const Overtime = () => {
     // postData(item)
   })
 
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['ProductionActivity', tempData], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
+    }
+  })
   // const { mutate: postData, isLoading: postLoading } = useMutation(postSmWebApiItem, {
   //   onSuccess: (data) => {
   //     queryClient.setQueryData(['ProductionActivity', tempData], data);

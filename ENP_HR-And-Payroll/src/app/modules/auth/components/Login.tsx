@@ -37,6 +37,7 @@ const initialValues = {
 export function Login() {
   const [loading, setLoading] = useState(false)
   const { saveAuth, setCurrentUser } = useAuth()
+  const [selectedCompany, setSelectedCompany] = useState('')
 
   const tenantId = localStorage.getItem('tenant')
   const formik = useFormik({
@@ -60,6 +61,7 @@ export function Login() {
          //now I have to assign the !
          const cuUser:any =  parseJwt(token)
         setCurrentUser(cuUser)
+        console.log('selected company: ', selectedCompany)
       } catch (error) {
         console.error(error)
         setStatus('The login detail is incorrect')
