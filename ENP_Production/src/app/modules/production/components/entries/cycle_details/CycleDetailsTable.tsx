@@ -377,21 +377,17 @@ const CycleDetailsTable = () => {
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Volume</label>
                                     <input type="text" {...register("volume")} name="volume" defaultValue={!isUpdateModalOpen ? '' : tempData?.volume} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                            </div>
-                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-12 mb-7'>
+                                <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Loads</label>
                                     <input type="text" {...register("loads")} name="loads" defaultValue={!isUpdateModalOpen ? '' : tempData?.loads} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-12 mb-7'>
+                                <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Time at Loader</label>
                                     <input type="text" {...register("timeAtLoader")} name="time_at_loader" defaultValue={!isUpdateModalOpen ? '' : tempData?.timeAtLoader} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                            </div>
-                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-12 mb-7'>
+                                <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Duration</label>
                                     <input type="text" {...register("duration")} name="duration" defaultValue={!isUpdateModalOpen ? '' : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
                                 </div>

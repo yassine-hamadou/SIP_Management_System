@@ -49,6 +49,7 @@ const DestinationTable = () => {
     },
     onError: (error) => {
       console.log('delete error: ', error)
+      message.error('Error deleting record')
     }
   })
 
@@ -147,6 +148,8 @@ const DestinationTable = () => {
     },
     onError: (error) => {
       console.log('error: ', error)
+      setIsUpdateModalOpen(false)
+      message.error('Something went wrong')
     }
   })
 
@@ -200,7 +203,9 @@ const DestinationTable = () => {
     },
     onError: (error) => {
       setSubmitLoading(false)
+      setIsModalOpen(false)
       console.log('post error: ', error)
+      message.error('Error while adding data')
     }
   })
 
@@ -255,11 +260,11 @@ const DestinationTable = () => {
               <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                  <input {...register("name")} name='name' defaultValue={!isUpdateModalOpen ? '' : tempData?.name} onChange={handleChange} className="form-control form-control-white" />
+                  <input {...register("name")} name='name' defaultValue={!isUpdateModalOpen ? '' : tempData?.locationCode} onChange={handleChange} className="form-control form-control-white" />
                 </div>
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
-                  <input {...register("description")} name='description' defaultValue={!isUpdateModalOpen ? '' : tempData?.decscription} onChange={handleChange} className="form-control form-control-white" />
+                  <input {...register("description")} name='description' defaultValue={!isUpdateModalOpen ? '' : tempData?.locationDesc} onChange={handleChange} className="form-control form-control-white" />
                 </div>
               </div>
             </form>

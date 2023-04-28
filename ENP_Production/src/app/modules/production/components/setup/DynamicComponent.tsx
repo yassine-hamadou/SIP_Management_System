@@ -1,13 +1,13 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Divider, Form, Input, Modal, Space, Table, Upload, } from 'antd';
-import { useEffect, useState } from "react";
-import { useForm } from 'react-hook-form';
-import { useMutation, useQueryClient } from 'react-query';
-import { KTCardBody } from '../../../../../../_metronic/helpers';
-import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
-import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents';
+import { Button, Input, Modal, Space, Table, message } from "antd"
+import { useEffect, useState } from "react"
+import { } from "react-bootstrap"
+import { useForm } from "react-hook-form"
+import { useMutation, useQueryClient } from "react-query"
+import { KTCardBody } from "../../../../../_metronic/helpers"
+import { deleteItem, fetchDocument, postItem, updateItem } from "../../urls"
+import { ModalFooterButtons, PageActionButtons } from "../CommonComponents"
 
-const MineArea = () => {
+const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
@@ -44,8 +44,8 @@ const MineArea = () => {
     }
 
     const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
-        onSuccess: (data) => {
-            queryClient.setQueryData(['mineArea', tempData], data);
+        onSuccess: (dataD) => {
+            queryClient.setQueryData([data.url, tempData], dataD);
             loadData()
         },
         onError: (error) => {
@@ -55,27 +55,54 @@ const MineArea = () => {
 
     function handleDelete(element: any) {
         const item = {
-            url: '',
+            url: data.url,
             data: element
         }
         deleteData(item)
     }
 
-
     const columns: any = [
-        // {
-        //     title: 'ID',
-        //     dataIndex: '',
-        //     key: 'key',
-        // },
+
         {
             title: 'Name',
-            dataIndex: 'vmModel',
+            dataIndex: data.nameDataIndex,
+            sorter: (a: any, b: any) => {
+                if (a[data.nameDataIndex] > b[data.nameDataIndex]) {
+                    return 1
+                }
+                if (b[data.nameDataIndex] > a[data.nameDataIndex]) {
+                    return -1
+                }
+                return 0
+            },
         },
         {
-            title: 'Action',
-            dataIndex: 'downType',
+            title: 'Description',
+            dataIndex: data.descDataIndex,
+            sorter: (a: any, b: any) => {
+                if (a[data.descDataIndex] > b[data.descDataIndex]) {
+                    return 1
+                }
+                if (b[data.descDataIndex] > a[data.descDataIndex]) {
+                    return -1
+                }
+                return 0
+            },
         },
+        {
+            title: 'Duration',
+            dataIndex: data.durationDataIndex,
+            sorter: (a: any, b: any) => {
+                if (a[data.durationDataIndex] > b[data.durationcDataIndex]) {
+                    return 1
+                }
+                if (b[data.durationDataIndex] > a[data.durationDataIndex]) {
+                    return -1
+                }
+                return 0
+            },
+        },
+
         {
             title: 'Action',
             fixed: 'right',
@@ -88,16 +115,25 @@ const MineArea = () => {
                     <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
                         Delete
                     </a>
-
                 </Space>
             ),
         },
     ]
 
+    // show columns if based on props of hasDescription and hasDuration
+    if (!hasDescription) {
+        columns.splice(1, 1)
+    }
+    if (!hasDuration) {
+        columns.splice(2, 1)
+    }
+
+
+
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument('')
+            const response = await fetchDocument(data.url)
             setGridData(response.data)
             setLoading(false)
         } catch (error) {
@@ -126,15 +162,15 @@ const MineArea = () => {
         // @ts-ignore
         filteredData = dataWithVehicleNum.filter((value) => {
             return (
-                value.name.toLowerCase().includes(searchText.toLowerCase())
+                value.fleetID.toLowerCase().includes(searchText.toLowerCase()) ||
+                value.modlName.toLowerCase().includes(searchText.toLowerCase())
             )
         })
         setGridData(filteredData)
     }
-
     const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
-        onSuccess: (data) => {
-            queryClient.setQueryData(['mineArea', tempData], data);
+        onSuccess: (dataU) => {
+            queryClient.setQueryData([data.url, tempData], dataU);
             reset()
             setTempData({})
             loadData()
@@ -149,7 +185,7 @@ const MineArea = () => {
     const handleUpdate = (e: any) => {
         e.preventDefault()
         const item = {
-            url: '',
+            url: data.url,
             data: tempData
         }
         updateData(item)
@@ -163,22 +199,23 @@ const MineArea = () => {
         console.log(values)
     }
 
-
     const OnSubmit = handleSubmit(async (values) => {
         setSubmitLoading(true)
         const item = {
             data: {
-                name: values.name,
+                name: values.destination,
+                activity: values.activity,
+                quantity: values.quantity,
             },
-            url: ''
+            url: data.url
         }
         console.log(item.data)
         postData(item)
     })
 
     const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
-        onSuccess: (data) => {
-            queryClient.setQueryData(['mineArea', tempData], data);
+        onSuccess: (dataP) => {
+            queryClient.setQueryData([data.url, tempData], dataP);
             reset()
             setTempData({})
             loadData()
@@ -209,7 +246,8 @@ const MineArea = () => {
                                 onChange={handleInputChange}
                                 type='text'
                                 allowClear
-                                value={searchText} size='large'
+                                value={searchText}
+                                size='large'
                             />
                             <Button type='primary' onClick={globalSearch} size='large'>
                                 Search
@@ -219,17 +257,15 @@ const MineArea = () => {
                             <PageActionButtons
                                 onAddClick={showModal}
                                 onExportClicked={() => { console.log('export clicked') }}
-                                onUploadClicked={showUploadModal}
-                                hasAddButton={false}
+                                hasAddButton={true}
                                 hasExportButton={true}
-                                hasUploadButton={true}
                             />
                         </Space>
                     </div>
                     <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
 
                     <Modal
-                        title={isUpdateModalOpen ? `Mine Area Update` : `Mine Area Setup`}
+                        title={isUpdateModalOpen ? `${data.title} Update` : `${data.title} Setup`}
                         open={isModalOpen}
                         onCancel={handleCancel}
                         closable={true}
@@ -243,57 +279,26 @@ const MineArea = () => {
                             <hr></hr>
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                                 <div className=' mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                                    <input {...register("name")} name='name' defaultValue={!isUpdateModalOpen ? '' : tempData?.name} onChange={handleChange} className="form-control form-control-white" />
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Equipment</label>
+                                    <input {...register("equipName")} name='equipName' defaultValue={!isUpdateModalOpen ? '' : tempData?.equipName} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
+                                <div className=' mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Model name</label>
+                                    <input {...register("modelName")} name='modelName' defaultValue={!isUpdateModalOpen ? '' : tempData?.modelName} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
+                                <div className=' mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
+                                    <input {...register("description")} name='description' defaultValue={!isUpdateModalOpen ? '' : tempData?.description} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                         </form>
-                    </Modal>
-                    {/* Modal to upload file */}
-                    <Modal
-                        title='Upload Mine Area'
-                        open={isUploadModalOpen}
-                        onCancel={handleCancel}
-                        closable={true}
-                        footer={[
-                            <Button key='back' onClick={handleCancel}>
-                                Cancel
-                            </Button>,
-                            <Button
-                                key='submit'
-                                type='primary'
-                                htmlType='submit'
-                            >
-                                Submit
-                            </Button>,
-                        ]}
-                    >
-                        <Divider />
-                        <Form
-                            name='control-hooks'
-                            labelCol={{ span: 8 }}
-                            wrapperCol={{ span: 14 }}
-                            title='Add Fault'
-                        >
-                            <Space size='large'>
-                                <Upload>
-                                    <Button
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                        }}
-                                        icon={<UploadOutlined />}>Click to Upload</Button>
-                                </Upload>
-                            </Space>
-
-                        </Form>
                     </Modal>
                 </div>
             </KTCardBody>
         </div>
     )
+
+
 }
 
-export { MineArea };
-
+export { SetupComponent }
