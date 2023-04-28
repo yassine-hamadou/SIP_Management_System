@@ -50,6 +50,7 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
         },
         onError: (error) => {
             console.log('delete error: ', error)
+            message.error('Error deleting record')
         }
     })
 
@@ -65,12 +66,12 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
 
         {
             title: 'Name',
-            dataIndex: data.nameDataIndex,
+            dataIndex: 'name',
             sorter: (a: any, b: any) => {
-                if (a[data.nameDataIndex] > b[data.nameDataIndex]) {
+                if (a.name > b.name) {
                     return 1
                 }
-                if (b[data.nameDataIndex] > a[data.nameDataIndex]) {
+                if (b.name > a.name) {
                     return -1
                 }
                 return 0
@@ -78,12 +79,12 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
         },
         {
             title: 'Description',
-            dataIndex: data.descDataIndex,
+            dataIndex: 'description',
             sorter: (a: any, b: any) => {
-                if (a[data.descDataIndex] > b[data.descDataIndex]) {
+                if (a.description > b.description) {
                     return 1
                 }
-                if (b[data.descDataIndex] > a[data.descDataIndex]) {
+                if (b.description > a.description) {
                     return -1
                 }
                 return 0
@@ -91,12 +92,12 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
         },
         {
             title: 'Duration',
-            dataIndex: data.durationDataIndex,
+            dataIndex: 'duration',
             sorter: (a: any, b: any) => {
-                if (a[data.durationDataIndex] > b[data.durationcDataIndex]) {
+                if (a.duration > b.duration) {
                     return 1
                 }
-                if (b[data.durationDataIndex] > a[data.durationDataIndex]) {
+                if (b.duration > a.duration) {
                     return -1
                 }
                 return 0
@@ -122,10 +123,10 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
 
     // show columns if based on props of hasDescription and hasDuration
     if (!hasDescription) {
-        columns.splice(1, 1)
+       delete columns[1]
     }
     if (!hasDuration) {
-        columns.splice(2, 1)
+        delete columns[2]
     }
 
 
@@ -139,6 +140,7 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
         } catch (error) {
             setLoading(false)
             console.log(error)
+            message.error('Error while fetching data')
         }
     }
 
@@ -177,8 +179,11 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
             setIsUpdateModalOpen(false)
             setIsModalOpen(false)
         },
-        onError: (error) => {
+        onError: (error) => { 
+            setIsUpdateModalOpen(false)
+            setIsModalOpen(false)
             console.log('error: ', error)
+            message.error('Error updating data')
         }
     })
 
@@ -203,11 +208,18 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
         setSubmitLoading(true)
         const item = {
             data: {
-                name: values.destination,
-                activity: values.activity,
-                quantity: values.quantity,
+                name: values.name,
+                description: values.description,
+                duration: values.duration,
             },
             url: data.url
+        }
+        // remove some properties from item.data based on props of hasDescription and hasDuration
+        if (!hasDescription) {
+            delete item.data.description
+        }
+        if (!hasDuration) {
+            delete item.data.duration
         }
         console.log(item.data)
         postData(item)
@@ -223,8 +235,11 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
             setSubmitLoading(false)
         },
         onError: (error) => {
+            reset()
             setSubmitLoading(false)
+            setIsModalOpen(false)
             console.log('post error: ', error)
+            message.error('Error adding record, please try again later')
         }
     })
 
@@ -279,17 +294,21 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
                             <hr></hr>
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                                 <div className=' mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="form-label">Equipment</label>
-                                    <input {...register("equipName")} name='equipName' defaultValue={!isUpdateModalOpen ? '' : tempData?.equipName} onChange={handleChange} className="form-control form-control-white" />
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                                    <input {...register("name")} name='name' defaultValue={!isUpdateModalOpen ? '' : tempData?.name} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                                <div className=' mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="form-label">Model name</label>
-                                    <input {...register("modelName")} name='modelName' defaultValue={!isUpdateModalOpen ? '' : tempData?.modelName} onChange={handleChange} className="form-control form-control-white" />
-                                </div>
-                                <div className=' mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
-                                    <input {...register("description")} name='description' defaultValue={!isUpdateModalOpen ? '' : tempData?.description} onChange={handleChange} className="form-control form-control-white" />
-                                </div>
+                                {
+                                    hasDescription && <div className=' mb-7'>
+                                        <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
+                                        <input {...register("description")} name='description' defaultValue={!isUpdateModalOpen ? '' : tempData?.description} onChange={handleChange} className="form-control form-control-white" />
+                                    </div>
+                                }
+                                {
+                                    hasDuration && <div className=' mb-7'>
+                                        <label htmlFor="exampleFormControlInput1" className="form-label">Duration</label>
+                                        <input type="number" {...register("duration")} min={0} name='duration' defaultValue={!isUpdateModalOpen ? '' : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
+                                    </div>
+                                }
                             </div>
                         </form>
                     </Modal>
