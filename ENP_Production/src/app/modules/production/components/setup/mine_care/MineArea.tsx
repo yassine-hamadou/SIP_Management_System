@@ -1,16 +1,67 @@
-import {
-    Button,
-    Form,
-    Input,
-    Modal,
-    Space,
-    Table,
-} from 'antd';
-import { useState } from "react";
-import { KTSVG } from '../../../../../../_metronic/helpers';
+import { UploadOutlined } from '@ant-design/icons';
+import { Button, Divider, Form, Input, Modal, Space, Table, Upload, } from 'antd';
+import { useEffect, useState } from "react";
+import { useForm } from 'react-hook-form';
+import { useMutation, useQueryClient } from 'react-query';
+import { KTCardBody } from '../../../../../../_metronic/helpers';
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
+import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents';
 
 const MineArea = () => {
+
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+    const [uploadedFile, setUploadedFile] = useState<any>(null)
+    const [gridData, setGridData] = useState([])
+    let [filteredData] = useState([])
+    const [submitLoading, setSubmitLoading] = useState(false)
+    const [searchText, setSearchText] = useState('')
+
+    const [loading, setLoading] = useState(false)
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+    const [tempData, setTempData] = useState<any>()
+    const { register, reset, handleSubmit } = useForm()
+    const queryClient = useQueryClient()
+
+    const handleChange = (event: any) => {
+        event.preventDefault()
+        setTempData({ ...tempData, [event.target.name]: event.target.value });
+    }
+
+    const showModal = () => {
+        setIsModalOpen(true)
+    }
+
+    const showUploadModal = () => {
+        setIsUploadModalOpen(true)
+    }
+
+    const handleCancel = () => {
+        reset()
+        setIsModalOpen(false)
+        setIsUploadModalOpen(false)
+        setIsUpdateModalOpen(false)
+    }
+
+    const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+        onSuccess: (data) => {
+            queryClient.setQueryData(['mineArea', tempData], data);
+            loadData()
+        },
+        onError: (error) => {
+            console.log('delete error: ', error)
+        }
+    })
+
+    function handleDelete(element: any) {
+        const item = {
+            url: '',
+            data: element
+        }
+        deleteData(item)
+    }
+
+
     const columns: any = [
         // {
         //     title: 'ID',
@@ -25,14 +76,121 @@ const MineArea = () => {
             title: 'Action',
             dataIndex: 'downType',
         },
+        {
+            title: 'Action',
+            fixed: 'right',
+            width: 100,
+            render: (_: any, record: any) => (
+                <Space size='middle'>
+                    <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
+                        Update
+                    </a>
+                    <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
+                        Delete
+                    </a>
+
+                </Space>
+            ),
+        },
     ]
-    const showModal = () => {
-        setIsModalOpen(true)
+
+    const loadData = async () => {
+        setLoading(true)
+        try {
+            const response = await fetchDocument('')
+            setGridData(response.data)
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            console.log(error)
+        }
     }
 
-    const handleCancel = () => {
-        setIsModalOpen(false)
+    useEffect(() => {
+        loadData()
+    }, [])
+
+    const dataWithIndex = gridData.map((item: any, index) => ({
+        ...item,
+        key: index,
+    }))
+
+    const handleInputChange = (e: any) => {
+        setSearchText(e.target.value)
+        if (e.target.value === '') {
+            loadData()
+        }
     }
+
+    const globalSearch = () => {
+        // @ts-ignore
+        filteredData = dataWithVehicleNum.filter((value) => {
+            return (
+                value.name.toLowerCase().includes(searchText.toLowerCase())
+            )
+        })
+        setGridData(filteredData)
+    }
+
+    const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+        onSuccess: (data) => {
+            queryClient.setQueryData(['mineArea', tempData], data);
+            reset()
+            setTempData({})
+            loadData()
+            setIsUpdateModalOpen(false)
+            setIsModalOpen(false)
+        },
+        onError: (error) => {
+            console.log('error: ', error)
+        }
+    })
+
+    const handleUpdate = (e: any) => {
+        e.preventDefault()
+        const item = {
+            url: '',
+            data: tempData
+        }
+        updateData(item)
+        console.log('update: ', item.data)
+    }
+
+    const showUpdateModal = (values: any) => {
+        showModal()
+        setIsUpdateModalOpen(true)
+        setTempData(values);
+        console.log(values)
+    }
+
+
+    const OnSubmit = handleSubmit(async (values) => {
+        setSubmitLoading(true)
+        const item = {
+            data: {
+                name: values.name,
+            },
+            url: ''
+        }
+        console.log(item.data)
+        postData(item)
+    })
+
+    const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+        onSuccess: (data) => {
+            queryClient.setQueryData(['mineArea', tempData], data);
+            reset()
+            setTempData({})
+            loadData()
+            setIsModalOpen(false)
+            setSubmitLoading(false)
+        },
+        onError: (error) => {
+            setSubmitLoading(false)
+            console.log('post error: ', error)
+        }
+    })
+
     return (
         <div
             style={{
@@ -42,81 +200,100 @@ const MineArea = () => {
                 boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
             }}
         >
-            <div className='d-flex justify-content-between'>
-                <Space style={{ marginBottom: 16 }}>
-                    <Input
-                        placeholder='Enter Search Text'
-                        type='text'
-                        allowClear size='large'
-                    />
-                    <Button type='primary' size='large'>
-                        Search
-                    </Button>
-                </Space>
-                <Space style={{ marginBottom: 16 }}>
-                    <Button type='primary' className='btn btn-light-primary me-3' style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }} size='large'>
-                        <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                        Upload
-                    </Button>
-                    <Button type='primary' className='btn btn-light-primary me-3' style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }} size='large'>
-                        <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                        Export
-                    </Button>
-                </Space>
-            </div>
-            <Table columns={columns} bordered />
+            <KTCardBody className='py-4 '>
+                <div className='table-responsive'>
+                    <div className='d-flex justify-content-between'>
+                        <Space style={{ marginBottom: 16 }}>
+                            <Input
+                                placeholder='Enter Search Text'
+                                onChange={handleInputChange}
+                                type='text'
+                                allowClear
+                                value={searchText} size='large'
+                            />
+                            <Button type='primary' onClick={globalSearch} size='large'>
+                                Search
+                            </Button>
+                        </Space>
+                        <Space style={{ marginBottom: 16 }}>
+                            <PageActionButtons
+                                onAddClick={showModal}
+                                onExportClicked={() => { console.log('export clicked') }}
+                                onUploadClicked={showUploadModal}
+                                hasAddButton={false}
+                                hasExportButton={true}
+                                hasUploadButton={true}
+                            />
+                        </Space>
+                    </div>
+                    <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
 
-            {/*Add Fault*/}
-            <Modal
-                title='Activity'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                        key='submit'
-                        type='primary'
-                        htmlType='submit'
+                    <Modal
+                        title={isUpdateModalOpen ? `Mine Area Update` : `Mine Area Setup`}
+                        open={isModalOpen}
+                        onCancel={handleCancel}
+                        closable={true}
+                        footer={
+                            <ModalFooterButtons
+                                onCancel={handleCancel}
+                                onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit} />
+                        }
                     >
-                        Submit
-                    </Button>,
-                ]}
-            >
-                <Form
-                    name='control-hooks'
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 14 }}
-                    title='Add Fault'
-                >
-                    <Form.Item
-                        name='ID'
-                        label='ID'
-                        rules={[{ required: true, type: "number" }]}
+                        <form onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}>
+                            <hr></hr>
+                            <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                                <div className=' mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                                    <input {...register("name")} name='name' defaultValue={!isUpdateModalOpen ? '' : tempData?.name} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
+                            </div>
+                        </form>
+                    </Modal>
+                    {/* Modal to upload file */}
+                    <Modal
+                        title='Upload Mine Area'
+                        open={isUploadModalOpen}
+                        onCancel={handleCancel}
+                        closable={true}
+                        footer={[
+                            <Button key='back' onClick={handleCancel}>
+                                Cancel
+                            </Button>,
+                            <Button
+                                key='submit'
+                                type='primary'
+                                htmlType='submit'
+                            >
+                                Submit
+                            </Button>,
+                        ]}
                     >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name='Name'
-                        label='Name'
-                        rules={[{ required: true }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
-            </Modal>
+                        <Divider />
+                        <Form
+                            name='control-hooks'
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 14 }}
+                            title='Add Fault'
+                        >
+                            <Space size='large'>
+                                <Upload>
+                                    <Button
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                        icon={<UploadOutlined />}>Click to Upload</Button>
+                                </Upload>
+                            </Space>
+
+                        </Form>
+                    </Modal>
+                </div>
+            </KTCardBody>
         </div>
     )
 }
 
 export { MineArea };
+

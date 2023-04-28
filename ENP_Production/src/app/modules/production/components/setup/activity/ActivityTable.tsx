@@ -4,9 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from "react-query"
 import { KTCardBody } from "../../../../../../_metronic/helpers"
 import { deleteItem, fetchDocument, postItem, updateItem } from "../../../urls"
-import { PageActionButtons } from "../../CommonComponents"
-
-
+import { ModalFooterButtons, PageActionButtons } from "../../CommonComponents"
 
 
 const ActivityTable = () => {
@@ -176,11 +174,13 @@ const ActivityTable = () => {
     },
     onError: (error: any) => {
       setSubmitLoading(false)
+      setLoading(false)
       console.log('error: ', error)
     }
   })
 
   const handleUpdate = async (values: any) => {
+    setLoading(true)
     setSubmitLoading(true)
     const item = {
       url: 'ProductionActivity',
@@ -236,27 +236,17 @@ const ActivityTable = () => {
             open={isModalOpen}
             onCancel={handleCancel}
             closable={true}
-            footer={[
-              <Button key='back' onClick={handleCancel}>
-                Cancel
-              </Button>,
-              <Button
-                key='submit'
-                type='primary'
-                htmlType='submit'
-                loading={submitLoading}
-                onClick={isUpdateModalOpen ? handleUpdate : OnSubmit}
-              >
-                Submit
-              </Button>,
-            ]}
+            footer={
+              <ModalFooterButtons
+                onCancel={handleCancel}
+                onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit} />
+            }
           >
-            <Divider />
             <form
               onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}
             >
               <hr></hr>
-              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+              <div className='row mb-0 mt-7'>
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                   <input type="text" {...register("name")} defaultValue={isUpdateModalOpen === true ? tempData.name : ''} onChange={handleChange} className="form-control form-control-solid" />

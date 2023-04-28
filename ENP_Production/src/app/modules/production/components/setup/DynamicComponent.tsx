@@ -1,13 +1,14 @@
-import { Button, Input, Modal, Space, Table, message } from 'antd'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useMutation, useQueryClient } from 'react-query'
-import { KTCardBody } from '../../../../../_metronic/helpers'
-import { deleteItem, fetchDocument, postItem, updateItem } from '../../urls'
-import { ModalFooterButtons, PageActionButtons } from '../CommonComponents'
+import { Button, Input, Modal, Space, Table, message } from "antd"
+import { useEffect, useState } from "react"
+import { } from "react-bootstrap"
+import { useForm } from "react-hook-form"
+import { useMutation, useQueryClient } from "react-query"
+import { KTCardBody } from "../../../../../_metronic/helpers"
+import { deleteItem, fetchDocument, postItem, updateItem } from "../../urls"
+import { ModalFooterButtons, PageActionButtons } from "../CommonComponents"
 
+const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
 
-const ProUnitComponet = (props: any) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
     const [uploadedFile, setUploadedFile] = useState<any>(null)
@@ -43,8 +44,8 @@ const ProUnitComponet = (props: any) => {
     }
 
     const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
-        onSuccess: (data) => {
-            queryClient.setQueryData([props.data.url, tempData], data);
+        onSuccess: (dataD) => {
+            queryClient.setQueryData([data.url, tempData], dataD);
             loadData()
         },
         onError: (error) => {
@@ -54,7 +55,7 @@ const ProUnitComponet = (props: any) => {
 
     function handleDelete(element: any) {
         const item = {
-            url: props.data.url,
+            url: data.url,
             data: element
         }
         deleteData(item)
@@ -63,33 +64,39 @@ const ProUnitComponet = (props: any) => {
     const columns: any = [
 
         {
-            title: 'Equipment ID',
-            dataIndex: 'fleetID',
+            title: 'Name',
+            dataIndex: data.nameDataIndex,
             sorter: (a: any, b: any) => {
-                if (a.fleetID > b.fleetID) {
+                if (a[data.nameDataIndex] > b[data.nameDataIndex]) {
                     return 1
                 }
-                if (b.fleetID > a.fleetID) {
+                if (b[data.nameDataIndex] > a[data.nameDataIndex]) {
                     return -1
                 }
                 return 0
             },
         },
-
-        {
-            title: 'Model Name',
-            dataIndex: 'modelName',
-            sorter: (a: any, b: any) => a.modlName - b.modlName,
-        },
-
         {
             title: 'Description',
-            dataIndex: 'description',
+            dataIndex: data.descDataIndex,
             sorter: (a: any, b: any) => {
-                if (a.description > b.description) {
+                if (a[data.descDataIndex] > b[data.descDataIndex]) {
                     return 1
                 }
-                if (b.description > a.description) {
+                if (b[data.descDataIndex] > a[data.descDataIndex]) {
+                    return -1
+                }
+                return 0
+            },
+        },
+        {
+            title: 'Duration',
+            dataIndex: data.durationDataIndex,
+            sorter: (a: any, b: any) => {
+                if (a[data.durationDataIndex] > b[data.durationcDataIndex]) {
+                    return 1
+                }
+                if (b[data.durationDataIndex] > a[data.durationDataIndex]) {
                     return -1
                 }
                 return 0
@@ -113,10 +120,20 @@ const ProUnitComponet = (props: any) => {
         },
     ]
 
+    // show columns if based on props of hasDescription and hasDuration
+    if (!hasDescription) {
+        columns.splice(1, 1)
+    }
+    if (!hasDuration) {
+        columns.splice(2, 1)
+    }
+
+
+
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument(props.data.url)
+            const response = await fetchDocument(data.url)
             setGridData(response.data)
             setLoading(false)
         } catch (error) {
@@ -152,8 +169,8 @@ const ProUnitComponet = (props: any) => {
         setGridData(filteredData)
     }
     const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
-        onSuccess: (data) => {
-            queryClient.setQueryData(['plannedOutput', tempData], data);
+        onSuccess: (dataU) => {
+            queryClient.setQueryData([data.url, tempData], dataU);
             reset()
             setTempData({})
             loadData()
@@ -166,17 +183,13 @@ const ProUnitComponet = (props: any) => {
     })
 
     const handleUpdate = (e: any) => {
-        if (tempData.destination === '' || tempData.activity === '' || tempData.quantity === '') {
-            message.error('Please fill all the fields')
-        } else {
-            e.preventDefault()
-            const item = {
-                url: props.data.url,
-                data: tempData
-            }
-            updateData(item)
-            console.log('update: ', item.data)
+        e.preventDefault()
+        const item = {
+            url: data.url,
+            data: tempData
         }
+        updateData(item)
+        console.log('update: ', item.data)
     }
 
     const showUpdateModal = (values: any) => {
@@ -186,28 +199,23 @@ const ProUnitComponet = (props: any) => {
         console.log(values)
     }
 
-
     const OnSubmit = handleSubmit(async (values) => {
         setSubmitLoading(true)
-        if (tempData.destination === '' || tempData.activity === '' || tempData.quantity === '') {
-            message.error('Please fill all the fields')
-        } else {
-            const item = {
-                data: {
-                    destination: values.destination,
-                    activity: values.activity,
-                    quantity: values.quantity,
-                },
-                url: props.data.url
-            }
-            console.log(item.data)
-            postData(item)
+        const item = {
+            data: {
+                name: values.destination,
+                activity: values.activity,
+                quantity: values.quantity,
+            },
+            url: data.url
         }
+        console.log(item.data)
+        postData(item)
     })
 
     const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
-        onSuccess: (data) => {
-            queryClient.setQueryData([props.data.url, tempData], data);
+        onSuccess: (dataP) => {
+            queryClient.setQueryData([data.url, tempData], dataP);
             reset()
             setTempData({})
             loadData()
@@ -257,7 +265,7 @@ const ProUnitComponet = (props: any) => {
                     <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
 
                     <Modal
-                        title={isUpdateModalOpen ? `${props.data.title} Update` : `${props.data.title} Setup`}
+                        title={isUpdateModalOpen ? `${data.title} Update` : `${data.title} Setup`}
                         open={isModalOpen}
                         onCancel={handleCancel}
                         closable={true}
@@ -289,7 +297,8 @@ const ProUnitComponet = (props: any) => {
             </KTCardBody>
         </div>
     )
+
+
 }
 
-export { ProUnitComponet }
-
+export { SetupComponent }

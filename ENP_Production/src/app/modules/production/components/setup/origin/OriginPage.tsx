@@ -1,14 +1,66 @@
-import { Button, Input, Space, Table } from 'antd'
+import { Button, Input, Modal, Space, Table, message } from 'antd'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
+import { ENP_URL, deleteItem, fetchDocument, postItem, updateItem } from '../../../urls'
+import { useForm } from 'react-hook-form'
+import { useQueryClient, useMutation } from 'react-query'
+import { Link } from 'react-router-dom'
+import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents'
 
 const OriginPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+  const [uploadedFile, setUploadedFile] = useState<any>(null)
   const [gridData, setGridData] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
+  const [submitLoading, setSubmitLoading] = useState(false)
+  const [searchText, setSearchText] = useState('')
+
+  const [loading, setLoading] = useState(false)
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const [tempData, setTempData] = useState<any>()
+  const { register, reset, handleSubmit } = useForm()
+  const queryClient = useQueryClient()
+
+  const handleChange = (event: any) => {
+    event.preventDefault()
+    setTempData({ ...tempData, [event.target.name]: event.target.value });
+  }
+
+  const showModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const showUploadModal = () => {
+    setIsUploadModalOpen(true)
+  }
+
+  const handleCancel = () => {
+    reset()
+    setIsModalOpen(false)
+    setIsUploadModalOpen(false)
+    setIsUpdateModalOpen(false)
+  }
+
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['Origin', tempData], data);
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
+      message.error('Error deleting record')
+    }
+  })
+
+  function handleDelete(element: any) {
+    const item = {
+      url: 'IclocsApi',
+      data: element
+    }
+    deleteData(item)
+  }
 
   const columns: any = [
 
@@ -33,6 +85,18 @@ const OriginPage = () => {
     },
     {
       title: 'Action',
+      fixed: 'right',
+      width: 100,
+      render: (_: any, record: any) => (
+        <Space size='middle'>
+          <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
+            Update
+          </a>
+          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
+            Delete
+          </a>
+        </Space>
+      ),
 
     },
   ]
@@ -40,10 +104,11 @@ const OriginPage = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/IclocsApi`)
+      const response = await fetchDocument('IclocsApi')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
+      setLoading(false)
       console.log(error)
     }
   }
@@ -68,12 +133,83 @@ const OriginPage = () => {
     // @ts-ignore
     filteredData = dataWithVehicleNum.filter((value) => {
       return (
-        value.locationCode.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.locationDesc.toLowerCase().includes(searchText.toLowerCase())
+        value.fleetID.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.modlName.toLowerCase().includes(searchText.toLowerCase())
       )
     })
     setGridData(filteredData)
   }
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['Origin', tempData], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsUpdateModalOpen(false)
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('error: ', error)
+      setIsUpdateModalOpen(false)
+      message.error('Something went wrong')
+    }
+  })
+
+  const handleUpdate = (e: any) => {
+    if (tempData.name === '' || tempData.description === '') {
+      message.error('Please fill all the fields')
+    } else {
+      e.preventDefault()
+      const item = {
+        url: 'IclocsApi',
+        data: tempData
+      }
+      updateData(item)
+      console.log('update: ', item.data)
+    }
+  }
+
+  const showUpdateModal = (values: any) => {
+    showModal()
+    setIsUpdateModalOpen(true)
+    setTempData(values);
+    console.log(values)
+  }
+
+
+  const OnSubmit = handleSubmit(async (values) => {
+    setSubmitLoading(true)
+    if (tempData.name === '' || tempData.description === '') {
+      message.error('Please fill all the fields')
+    } else {
+      const item = {
+        data: {
+          locationCode: values.name,
+          locationDesc: values.description,
+        },
+        url: 'IclocsApi'
+      }
+      console.log(item.data)
+      postData(item)
+    }
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['Origin', tempData], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsModalOpen(false)
+      setSubmitLoading(false)
+    },
+    onError: (error) => {
+      setSubmitLoading(false)
+      setIsModalOpen(false)
+      console.log('post error: ', error)
+      message.error('Error while adding data')
+    }
+  })
 
   return (
     <div
@@ -100,17 +236,41 @@ const OriginPage = () => {
               </Button>
             </Space>
             <Space style={{ marginBottom: 16 }}>
-              <Button type='primary' className='btn btn-primary' style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }} size='large'>
-                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                Export
-              </Button>
+              <PageActionButtons
+                onAddClick={showModal}
+                onExportClicked={() => { console.log('export clicked') }}
+                hasAddButton={true}
+                hasExportButton={true}
+              />
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
+          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
+
+          <Modal
+            title={isUpdateModalOpen ? `Origin Update` : `Origin Setup`}
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={
+              <ModalFooterButtons
+                onCancel={handleCancel}
+                onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit} />
+            }
+          >
+            <form onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}>
+              <hr></hr>
+              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
+                  <input {...register("name")} name='name' defaultValue={!isUpdateModalOpen ? '' : tempData?.locationCode} onChange={handleChange} className="form-control form-control-white" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
+                  <input {...register("description")} name='description' defaultValue={!isUpdateModalOpen ? '' : tempData?.locationDesc} onChange={handleChange} className="form-control form-control-white" />
+                </div>
+              </div>
+            </form>
+          </Modal>
         </div>
       </KTCardBody>
     </div>
