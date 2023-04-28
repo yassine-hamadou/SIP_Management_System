@@ -32,10 +32,10 @@ const PrivateRoutes = () => {
         <Route path='auth/*' element={<Navigate to='/hr-dashboard' />} />
         {/* Pages */}
         <Route path='dashboard' element={<DashboardWrapper />} />
+        
         {/* <Route path='dashboard' element={<DashboardWrapper />} /> */}
 
         <Route path='hr-dashboard' element={<HRDashboardWrapper />} />
-   
 
         {/* Employee  */}
 
@@ -75,6 +75,15 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}> User Applications</PageTitle>
              <UserApplication />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='application-company/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Application Companies</PageTitle>
+             <Companies />
            </SuspensedView>
          }
         />

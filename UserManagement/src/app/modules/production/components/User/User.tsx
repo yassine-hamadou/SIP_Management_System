@@ -138,9 +138,9 @@ const User = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          {/* <Link to={`/user-applications/${record.id}`}>
+          <Link to={`/user-applications/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Applications</span>
-          </Link> */}
+          </Link>
           <Link to={`/user-roles/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Roles</span>
           </Link>

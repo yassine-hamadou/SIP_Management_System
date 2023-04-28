@@ -171,7 +171,7 @@ const UserRole = () => {
 
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const endpoint = 'UserRoles'
+    const endpoint = 'UserApplications'
     if(!checkRole(values.roleId)){
       const item = {
         data: {
