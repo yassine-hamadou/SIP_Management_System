@@ -3,7 +3,7 @@ import { ProUnitComponet } from '../PROUnitComponent'
 const LoaderUnit = () => {
   const data = {
     title: 'Loader Unit',
-    url: 'VmequpsApi',
+    url: 'PROLoaderUnit',
   }
   return  (
       <ProUnitComponet data = {data}/>

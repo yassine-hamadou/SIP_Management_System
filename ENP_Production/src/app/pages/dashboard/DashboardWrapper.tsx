@@ -15,34 +15,27 @@ import {
   TablesWidget10,
   MixedWidget8,
 } from '../../../_metronic/partials/widgets'
+import { BarChart } from './BarChart'
+import { BarChart2 } from './BarChart2'
 
 const DashboardPage: FC = () => (
   <>
     {/* begin::Row */}
     <div className='row gy-5 g-xl-8'>
-      <div className='col-xxl-4'>
-        <MixedWidget2
-          className='card-xl-stretch mb-xl-8'
-          chartColor='danger'
-          chartHeight='200px'
-          strokeColor='#cb1e46'
+      <div className='col-xxl-6'>
+        <BarChart
+          className='card-xl-stretch'
+          chartColor='danger' 
+          chartHeight={''}         
         />
-      </div>
-      <div className='col-xxl-4'>
-        <ListsWidget5 className='card-xxl-stretch' />
-      </div>
-      <div className='col-xxl-4'>
-        <MixedWidget10
-          className='card-xxl-stretch-50 mb-5 mb-xl-8'
-          chartColor='primary'
-          chartHeight='150px'
+      </div>      
+      <div className='col-xxl-6'>
+        <BarChart2
+          className='card-xl-stretch'
+          chartColor='danger' 
+          chartHeight={''}         
         />
-        <MixedWidget11
-          className='card-xxl-stretch-50 mb-5 mb-xl-8'
-          chartColor='primary'
-          chartHeight='175px'
-        />
-      </div>
+      </div>      
     </div>
     {/* end::Row */}
   </>

@@ -140,7 +140,7 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
         } catch (error) {
             setLoading(false)
             console.log(error)
-            message.error('Error while fetching data')
+            message.error(`${error}`)
         }
     }
 
@@ -180,14 +180,14 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
             setIsModalOpen(false)
         },
         onError: (error) => { 
-            setIsUpdateModalOpen(false)
-            setIsModalOpen(false)
+            setSubmitLoading(false)
             console.log('error: ', error)
-            message.error('Error updating data')
+            message.error(`${error}`)
         }
     })
 
     const handleUpdate = (e: any) => {
+        setSubmitLoading(true)
         e.preventDefault()
         const item = {
             url: data.url,
@@ -235,11 +235,9 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
             setSubmitLoading(false)
         },
         onError: (error) => {
-            reset()
             setSubmitLoading(false)
-            setIsModalOpen(false)
             console.log('post error: ', error)
-            message.error('Error adding record, please try again later')
+            message.error(`${error}`)
         }
     })
 
