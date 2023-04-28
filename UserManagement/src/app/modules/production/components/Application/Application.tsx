@@ -2,7 +2,7 @@ import { Button, Input, Modal, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { Api_Endpoint, deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
 
@@ -19,8 +19,6 @@ const Applications = () => {
   const navigate = useNavigate();
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
-
-
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -61,7 +59,6 @@ const Applications = () => {
   }
   const columns: any = [
 
-
     {
       title: 'Application Name',
       dataIndex: 'name',
@@ -81,6 +78,9 @@ const Applications = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
+          <Link to={`/application-company/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Companies</span>
+          </Link>
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>

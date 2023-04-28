@@ -1,7 +1,7 @@
 import { Button, Input, Modal, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
@@ -19,7 +19,7 @@ const Companies = () => {
   const navigate = useNavigate();
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
-
+  let [applicationName, setApplicationName] = useState<any>("")
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -101,9 +101,21 @@ const Companies = () => {
           </a>
         </Space>
       ),
-
+ 
     },
   ]
+
+
+  const {data:Applications} = useQuery('applications',() => fetchDocument('Applications'), {cacheTime:5000})
+
+  const getApplication= async (id:any) =>{
+    let newName=null
+     const itemTest = await Applications?.data.find((item:any) =>
+      item.id.toString()===id
+    )
+     newName = await itemTest
+    return newName
+ }
 
   const loadData = async () => {
     setLoading(true)
@@ -117,6 +129,10 @@ const Companies = () => {
   }
   
   useEffect(() => {
+    (async ()=>{
+        let res = await getApplication(param.id)
+        setApplicationName(res?.name)
+      })();
     loadData()
   }, [])
 
@@ -170,7 +186,9 @@ const Companies = () => {
     setTempData(values);
     console.log(values)
   }
-
+  const dataByID = gridData.filter((section:any) =>{
+    return section.applicationId?.toString() === param.id
+  })
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
     const endpoint = 'Companies'
@@ -179,6 +197,7 @@ const Companies = () => {
       data: {
         name: values.name,
         description: values.description,
+        applicationId: parseInt(param.id)
       },
       url: endpoint
     }
@@ -210,6 +229,10 @@ const Companies = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <h3 style={{fontWeight:"bolder"}}>{applicationName} </h3>
+        <br></br>
+        <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        <br></br>
           <div className='d-flex justify-content-between'>
             <Space style={{ marginBottom: 16 }}>
               <Input

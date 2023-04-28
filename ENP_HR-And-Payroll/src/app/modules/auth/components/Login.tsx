@@ -40,6 +40,7 @@ export function Login() {
   const [selectedCompany, setSelectedCompany] = useState('')
 
   const tenantId = localStorage.getItem('tenant')
+  
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
