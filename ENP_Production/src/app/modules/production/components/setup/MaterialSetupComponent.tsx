@@ -42,13 +42,13 @@ const MatComponet = (props: any) => {
     }
   
     const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
-      onSuccess: (data) => {
-        queryClient.setQueryData([props.data.url, tempData], data);
+      onSuccess: (dataD) => {
+        queryClient.setQueryData([props.data.url, tempData], dataD);
         loadData()
       },
       onError: (error) => {
         console.log('delete error: ', error)
-        message.error('Error deleting record')
+        message.error(` ${error}`, )
       }
     })
   
@@ -66,10 +66,10 @@ const MatComponet = (props: any) => {
         title: 'Name',
         dataIndex: 'name',
         sorter: (a: any, b: any) => {
-          if (a.locationCode > b.locationCode) {
+          if (a.name > b.name) {
             return 1
           }
-          if (b.locationCode > a.locationCode) {
+          if (b.name > a.name) {
             return -1
           }
           return 0
@@ -143,7 +143,7 @@ const MatComponet = (props: any) => {
       onError: (error) => {
         console.log('error: ', error)
         setIsUpdateModalOpen(false)
-        message.error('Something went wrong')
+        message.error(` ${error}`, )
       }
     })
   
@@ -176,8 +176,7 @@ const MatComponet = (props: any) => {
       } else {
         const item = {
           data: {
-            locationCode: values.name,
-            locationDesc: values.description,
+            name: values.name,
           },
           url: props.data.url
         }
@@ -199,7 +198,7 @@ const MatComponet = (props: any) => {
         setSubmitLoading(false)
         setIsModalOpen(false)
         console.log('post error: ', error)
-        message.error('Error while adding data')
+        message.error(` ${error}`, )
       }
     })
   

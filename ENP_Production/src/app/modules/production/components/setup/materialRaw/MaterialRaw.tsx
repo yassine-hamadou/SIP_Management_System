@@ -2,7 +2,7 @@ import { MatComponet } from '../MaterialSetupComponent';
 
 const MaterialRaw = () => {
     const data = {
-        url: '',
+        url: 'prodRawMaterial',
         title: 'Raw Material'
     }
     return (

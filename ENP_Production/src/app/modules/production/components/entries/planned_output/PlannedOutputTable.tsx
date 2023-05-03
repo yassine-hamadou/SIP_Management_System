@@ -23,7 +23,7 @@ const PlannedOutputTable = () => {
   const { register, reset, handleSubmit } = useForm()
   const queryClient = useQueryClient()
 
-  const { data: destinations } = useQuery('destinations', () => fetchDocument('IclocsApi'), { cacheTime: 5000 })
+  const { data: destinations } = useQuery('destinations', () => fetchDocument('productionDestination'), { cacheTime: 5000 })
   const { data: productionActivities } = useQuery('activity', () => fetchDocument('ProductionActivity'), { cacheTime: 5000 })
 
   const handleChange = (event: any) => {
@@ -58,7 +58,7 @@ const PlannedOutputTable = () => {
 
   function handleDelete(element: any) {
     const item = {
-      url: '',
+      url: 'plannedOutput',
       data: element
     }
     deleteData(item)
@@ -67,12 +67,11 @@ const PlannedOutputTable = () => {
   const columns: any = [
     {
       title: 'Destinaton',
-      dataIndex: 'destination',
-      key: 'key',
+      dataIndex: 'destinationId',
     },
     {
       title: 'Activity',
-      dataIndex: 'activity',
+      dataIndex: 'activityId',
     },
     {
       title: 'Quantity',
@@ -99,7 +98,7 @@ const PlannedOutputTable = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument('')
+      const response = await fetchDocument('plannedOutput')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -151,7 +150,7 @@ const PlannedOutputTable = () => {
   const handleUpdate = (e: any) => {
     e.preventDefault()
     const item = {
-      url: '',
+      url: 'plannedOutput',
       data: tempData
     }
     updateData(item)
@@ -170,11 +169,11 @@ const PlannedOutputTable = () => {
     setSubmitLoading(true)
     const item = {
       data: {
-        destination: values.destination,
-        activity: values.activity,
+        destinationId: values.destinationId,
+        activityId: values.activityId,
         quantity: values.quantity,
       },
-      url: ''
+      url: 'plannedOutput'
     }
     console.log(item.data)
     postData(item)
@@ -230,7 +229,7 @@ const PlannedOutputTable = () => {
             </Space>
           </div>
 
-          <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
+          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
 
           <Modal
             title={isUpdateModalOpen ? 'Update Planned Output' : 'Add Planned Output'}
@@ -257,29 +256,29 @@ const PlannedOutputTable = () => {
                 <div className='mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="required form-label">Destination</label>
                   <select
-                    {...register("destination")}
+                    {...register("destinationId")}
                     onChange={handleChange}
                     className="form-select form-select-white" aria-label="Select example">
                     {!isUpdateModalOpen && <option>Select</option>}
                     {
                       destinations?.data.map((item: any) => (
                         <option
-                          selected={isUpdateModalOpen && item.locationCode === tempData.destination}
-                          value={item.locationCode}>{item.locationDesc}</option>
+                          selected={isUpdateModalOpen && item.id === tempData.destinationId}
+                          value={item.id}>{item.name}</option>
                       ))
                     }
                   </select>
                   <div className='mt-7'>
                     <label htmlFor="exampleFormControlInput1" className="required form-label">Activity</label>
                     <select
-                      {...register("activity")}
+                      {...register("activityId")}
                       onChange={handleChange}
                       className="form-select form-select-white" aria-label="Select example">
                       {!isUpdateModalOpen && <option>Select</option>}
                       {
                         productionActivities?.data.map((item: any) => (
                           <option
-                            selected={isUpdateModalOpen && item.id === tempData.quantity}
+                            selected={isUpdateModalOpen && item.id === tempData.activityId}
                             value={item.id}>{item.name}</option>
                         ))
                       }

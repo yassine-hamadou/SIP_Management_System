@@ -29,6 +29,7 @@ const CycleDetailsTable = () => {
     const queryClient = useQueryClient()
     const [uploadColumns, setUploadColumns] = useState<any>([])
     const [uploadData, setUploadData] = useState<any>([])
+    const [uploading, setUpLoading] = useState(false)
 
     const { data: destinations } = useQuery('destinations', () => fetchDocument('productionDestination'), { cacheTime: 5000 })
     const { data: productionActivities } = useQuery('activity', () => fetchDocument('ProductionActivity'), { cacheTime: 5000 })
@@ -220,6 +221,7 @@ const CycleDetailsTable = () => {
     }
 
     const handleUpload = () => {
+        setUpLoading(true)
         setIsUploadModalOpen(false)
         setIsFileUploaded(true)
         const reader = new FileReader()
@@ -252,7 +254,6 @@ const CycleDetailsTable = () => {
             // sets the range to be read from the excel file
             const range = "A13:ZZ100";
 
-            const arr = []
             const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range })
             const filteredData = data.map((row: any) => {
                 const filteredRow: any = {};
@@ -282,7 +283,7 @@ const CycleDetailsTable = () => {
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument('IclocsApi')
+            const response = await fetchDocument('cycleDetails')
             setGridData(response.data)
             setLoading(false)
         } catch (error) {
@@ -352,7 +353,6 @@ const CycleDetailsTable = () => {
     //hide Update table 
     const clearUpdateTable = () => {
         setIsFileUploaded(false)
-        // clear uploaded file from state
         setUploadedFile(null)
         loadData()
     }
@@ -663,7 +663,8 @@ const CycleDetailsTable = () => {
                         footer={
                             <ModalFooterButtons
                                 onCancel={handleCancel}
-                                onSubmit={handleUpload} />
+                                onSubmit={handleUpload} 
+                                />
                         }
                     >
                         <Divider />
