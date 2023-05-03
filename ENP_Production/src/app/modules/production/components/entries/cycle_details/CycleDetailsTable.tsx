@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
 import * as XLSX from 'xlsx';
+import moment from 'moment';
 import { title } from 'process';
 
 
@@ -88,6 +89,7 @@ const CycleDetailsTable = () => {
             dataIndex: 'cycleDate',
             key: 'date',
             fixed: 'left',
+            width: 80,
         },
         {
             title: 'Shift',
@@ -191,7 +193,32 @@ const CycleDetailsTable = () => {
             })
         }
     }
-    
+
+    //to convert excel date to js date
+    const excelDateToJSDate = (serial: number) => {
+        const utcDays = Math.floor(serial - 25569)
+        const utcValue = utcDays * 86400
+        const date = new Date(utcValue * 1000)
+
+        const fractionalDay = serial - Math.floor(serial) + 0.0000001
+
+        let hours = Math.floor(fractionalDay * 24)
+        let minutes = Math.floor(fractionalDay * 1440) - (hours * 60)
+        let seconds = Math.floor(fractionalDay * 86400) - (hours * 3600) - (minutes * 60)
+
+
+        date.setHours(hours)
+        date.setMinutes(minutes)
+        date.setSeconds(seconds)
+
+        return date
+    }
+
+    // round off to whole number
+    const roundOff = (num: number) => {
+        return Math.round((num + Number.EPSILON) * 100) / 100
+    }
+
     const handleUpload = () => {
         setIsUploadModalOpen(false)
         setIsFileUploaded(true)
@@ -204,7 +231,7 @@ const CycleDetailsTable = () => {
 
             const columnHeaders = ['Date', 'Shift', 'Time Start', 'Loading Unit', 'Truck', 'Origin', 'Material', 'Destination', 'Nominal Weight', 'Payload Weight', 'Reported Weight', 'Volume', 'Loads', 'Arrived', 'Travel Empty Duration'];
             const fileColumns = [
-                { title: 'Date', dataIndex: 'Date',  key: 'date', fixed: 'left',},
+                { title: 'Date', dataIndex: 'Date', key: 'date', fixed: 'left', width: 80 },
                 { title: 'Shift', dataIndex: 'Shift', },
                 { title: 'Time Start', dataIndex: 'Time Start', },
                 { title: 'Loading Unit', dataIndex: 'Loading Unit', },
@@ -235,10 +262,18 @@ const CycleDetailsTable = () => {
                 return filteredRow;
             });
 
+            const convertedData = filteredData.map((item: any) => ({
+                ...item,
+                Date: moment(excelDateToJSDate(item.Date), 'YYYY-MM-DD').format('DD/MM/YYYY'),
+                'Time Start': moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
+                'Arrived': moment(excelDateToJSDate(item['Arrived']), 'HH:mm:ss').format('HH:mm'),
+                Volume: roundOff(item.Volume),
+            }))
+
             setUploadColumns(fileColumns)
-            setUploadData(filteredData)
+            setUploadData(convertedData)
             setIsUploadModalOpen(false)
-            console.log('read data: ', filteredData)
+            console.log('read data: ', convertedData)
         }
         reader.readAsArrayBuffer(uploadedFile)
     }
@@ -314,6 +349,14 @@ const CycleDetailsTable = () => {
         console.log(values)
     }
 
+    //hide Update table 
+    const clearUpdateTable = () => {
+        setIsFileUploaded(false)
+        // clear uploaded file from state
+        setUploadedFile(null)
+        loadData()
+    }
+
 
     const OnSubmit = handleSubmit(async (values) => {
         setSubmitLoading(true)
@@ -384,21 +427,28 @@ const CycleDetailsTable = () => {
                             </Button>
                         </Space>
                         <Space style={{ marginBottom: 16 }}>
-                            <PageActionButtons
-                                onAddClick={showModal}
-                                onExportClicked={() => { console.log('export clicked') }}
-                                onUploadClicked={showUploadModal}
-                                hasAddButton={true}
-                                hasExportButton={true}
-                                hasUploadButton={true}
-                            />
+                            {
+                                isFileUploaded ?
+                                    <Button onClick={clearUpdateTable} type='primary' size='large'  className='btn btn-light-info btn-sm'>
+                                        Clear Upload table
+                                    </Button>
+                                    :
+                                    <PageActionButtons
+                                        onAddClick={showModal}
+                                        onExportClicked={() => { console.log('export clicked') }}
+                                        onUploadClicked={showUploadModal}
+                                        hasAddButton={true}
+                                        hasExportButton={true}
+                                        hasUploadButton={true}
+                                    />
+                            }
                         </Space>
                     </div>
 
                     <Table
-                        columns={ isFileUploaded ? uploadColumns : columns } 
-                        dataSource={isFileUploaded ? uploadData : gridData} 
-                         />
+                        columns={isFileUploaded ? uploadColumns : columns}
+                        dataSource={isFileUploaded ? uploadData : gridData}
+                    />
 
 
                     <Modal
