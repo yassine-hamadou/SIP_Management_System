@@ -32,7 +32,7 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
     const secondaryColor = getCSSVariableValue('--kt-gray-300')
     const baseColor = getCSSVariableValue('--kt-' + chartColor)
 
-    console.log('listOfDownTypes', faults)
+    console.log('listOfDownTypes: faults', faults)
     console.log('listOfDownTypes', category)
     return {
       series: [

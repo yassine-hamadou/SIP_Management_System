@@ -232,7 +232,6 @@ const PlannedOutputTable = () => {
 
           <Table columns={columns} dataSource={dataWithIndex} bordered loading={loading} />
 
-          {/*Add Fault*/}
           <Modal
             title={isUpdateModalOpen ? 'Update Planned Output' : 'Add Planned Output'}
             open={isModalOpen}

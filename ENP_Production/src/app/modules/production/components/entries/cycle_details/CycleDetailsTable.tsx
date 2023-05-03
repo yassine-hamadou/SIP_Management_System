@@ -1,12 +1,14 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Divider, Form, Input, Modal, Space, Table, TimePicker, Upload, message, } from 'antd';
+import { Button, DatePicker, Divider, Form, Input, Modal, Space, Table, TimePicker, Upload, UploadProps, message, } from 'antd';
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { KTCardBody } from '../../../../../../_metronic/helpers';
 import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents';
 import { useForm } from 'react-hook-form';
-import { useQueryClient, useMutation } from 'react-query';
+import { useQueryClient, useMutation, useQuery } from 'react-query';
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
+import * as XLSX from 'xlsx';
+import { title } from 'process';
 
 
 const CycleDetailsTable = () => {
@@ -17,12 +19,25 @@ const CycleDetailsTable = () => {
     let [filteredData] = useState([])
     const [submitLoading, setSubmitLoading] = useState(false)
     const [searchText, setSearchText] = useState('')
+    const [isFileUploaded, setIsFileUploaded] = useState(false)
 
     const [loading, setLoading] = useState(false)
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const [tempData, setTempData] = useState<any>()
     const { register, reset, handleSubmit } = useForm()
     const queryClient = useQueryClient()
+    const [uploadColumns, setUploadColumns] = useState<any>([])
+    const [uploadData, setUploadData] = useState<any>([])
+
+    const { data: destinations } = useQuery('destinations', () => fetchDocument('productionDestination'), { cacheTime: 5000 })
+    const { data: productionActivities } = useQuery('activity', () => fetchDocument('ProductionActivity'), { cacheTime: 5000 })
+    const { data: allHaulerUnits } = useQuery('hauler', () => fetchDocument('ProHaulerUnits'), { cacheTime: 5000 })
+    const { data: allHaulers } = useQuery('haulerOperator', () => fetchDocument('HaulerOperator'), { cacheTime: 5000 })
+    const { data: allLoaderUnits } = useQuery('allLoaders', () => fetchDocument('ProLoaderUnits'), { cacheTime: 5000 })
+    const { data: allLoaders } = useQuery('LoaderOperator', () => fetchDocument('LoaderOperator'), { cacheTime: 5000 })
+    const { data: allOrigins } = useQuery('allOrigins', () => fetchDocument('ProductionOrigin'), { cacheTime: 5000 })
+    const { data: allMaterials } = useQuery('allMaterials', () => fetchDocument('ProdProcessedMaterials'), { cacheTime: 5000 })
+    const { data: allShifts } = useQuery('shifts', () => fetchDocument('ProductionShifts'), { cacheTime: 5000 })
 
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -62,73 +77,89 @@ const CycleDetailsTable = () => {
         deleteData(item)
     }
 
+    const getItemName = async (data: any, field: any) => {
+        return data?.data.find((element: any) => element.id === field)
+    }
+
 
     const columns: any = [
         {
             title: 'Date',
-            dataIndex: '',
-            key: 'key',
+            dataIndex: 'cycleDate',
+            key: 'date',
+            fixed: 'left',
         },
         {
             title: 'Shift',
-            dataIndex: 'vmModel',
+            dataIndex: 'shiftId',
+            // render : (record: any) => {
+            //     return getItemName(allShifts, record.id)
+            // }
         },
         {
             title: 'Time',
-            dataIndex: 'vmClass',
+            dataIndex: 'cycleTime',
         },
         {
             title: 'Loader',
-            dataIndex: 'downType',
+            dataIndex: 'loader',
         },
         {
             title: 'Hauler',
-            dataIndex: 'formattedDate',
-            defaultSortOrder: 'descend'
+            dataIndex: 'hauler',
         },
         {
             title: 'Origin',
-            dataIndex: 'custodian',
+            dataIndex: 'originId',
+            // render : (record: any) => {
+            //     return getItemName(allOrigins, record.id)
+            // }
         },
         {
             title: 'Material',
-            dataIndex: 'locationId',
+            dataIndex: 'materialId',
+            // render : (record: any) => {
+            //     return getItemName(allMaterials, record.id)
+            // }
         },
         {
             title: 'Destination',
-            dataIndex: 'duration',
+            dataIndex: 'destinationId',
+            // render : (record: any) => {
+            //     return getItemName(destinations, record.id)
+            // }
         },
         {
-            title: 'Nominal',
-            dataIndex: 'action'
+            title: 'Nominal Weight',
+            dataIndex: 'nominalWeight'
         },
         {
             title: 'Weight',
-            dataIndex: 'action'
+            dataIndex: 'weight'
         },
         {
             title: 'Payload Weight',
-            dataIndex: 'action'
+            dataIndex: 'payloadWeight'
         },
         {
             title: 'Reported Weight',
-            dataIndex: 'action'
+            dataIndex: 'reportedWeight'
         },
         {
             title: 'Volume',
-            dataIndex: 'action'
+            dataIndex: 'volumes'
         },
         {
             title: 'Loads',
-            dataIndex: 'action'
+            dataIndex: 'loads'
         },
         {
             title: 'Time at loader',
-            dataIndex: 'action'
+            dataIndex: 'timeAtLoader'
         },
         {
             title: 'Duration',
-            dataIndex: 'action'
+            dataIndex: 'duration'
         },
         {
             title: 'Action',
@@ -136,16 +167,82 @@ const CycleDetailsTable = () => {
             width: 100,
             render: (_: any, record: any) => (
                 <Space size='middle'>
-                    <Link to='#'>
-                        <span className='btn btn-light-info btn-sm'>Update</span>
-                    </Link>
-                    <Link to='#'>
-                        <span className='btn btn-light-success btn-sm'>Delete</span>
-                    </Link>
+                    <a onClick={() => showUpdateModal(record)} className='btn btn-light-info btn-sm'>
+                        Update
+                    </a>
+                    <a onClick={() => handleDelete(record)} className='btn btn-light-success btn-sm'>
+                        Delete
+                    </a>
                 </Space>
             ),
         },
     ]
+
+
+    const uploadProps: UploadProps = {
+        name: 'file',
+        accept: '.xlsx, .xls',
+        action: '',
+        maxCount: 1,
+        beforeUpload: (file: any) => {
+            return new Promise((resolve, reject) => {
+                resolve(file)
+                setUploadedFile(file)
+            })
+        }
+    }
+    
+    const handleUpload = () => {
+        setIsUploadModalOpen(false)
+        setIsFileUploaded(true)
+        const reader = new FileReader()
+        reader.onload = (e: any) => {
+            const file = new Uint8Array(e.target.result)
+            const workBook = XLSX.read(file, { type: 'array' })
+            const workSheetName = workBook.SheetNames[0]
+            const workSheet: any = workBook.Sheets[workSheetName]
+
+            const columnHeaders = ['Date', 'Shift', 'Time Start', 'Loading Unit', 'Truck', 'Origin', 'Material', 'Destination', 'Nominal Weight', 'Payload Weight', 'Reported Weight', 'Volume', 'Loads', 'Arrived', 'Travel Empty Duration'];
+            const fileColumns = [
+                { title: 'Date', dataIndex: 'Date',  key: 'date', fixed: 'left',},
+                { title: 'Shift', dataIndex: 'Shift', },
+                { title: 'Time Start', dataIndex: 'Time Start', },
+                { title: 'Loading Unit', dataIndex: 'Loading Unit', },
+                { title: 'Hauler', dataIndex: 'Truck', },
+                { title: 'Origin', dataIndex: 'Origin', },
+                { title: 'Material', dataIndex: 'Material', },
+                { title: 'Destination', dataIndex: 'Destination', },
+                { title: 'Nominal Weight', dataIndex: 'Nominal Weight', },
+                { title: 'Payload Weight', dataIndex: 'Payload Weight', },
+                { title: 'Reported Weight', dataIndex: 'Reported Weight', },
+                { title: 'Volume', dataIndex: 'Volume', },
+                { title: 'Loads', dataIndex: 'Loads', },
+                { title: 'Arrived', dataIndex: 'Arrived', },
+                { title: 'Travel Empty Duration', dataIndex: 'Travel Empty Duration', },
+
+            ]
+
+            // sets the range to be read from the excel file
+            const range = "A13:ZZ100";
+
+            const arr = []
+            const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range })
+            const filteredData = data.map((row: any) => {
+                const filteredRow: any = {};
+                columnHeaders.forEach((column: string) => {
+                    filteredRow[column] = row[column];
+                });
+                return filteredRow;
+            });
+
+            setUploadColumns(fileColumns)
+            setUploadData(filteredData)
+            setIsUploadModalOpen(false)
+            console.log('read data: ', filteredData)
+        }
+        reader.readAsArrayBuffer(uploadedFile)
+    }
+
 
     const loadData = async () => {
         setLoading(true)
@@ -222,14 +319,16 @@ const CycleDetailsTable = () => {
         setSubmitLoading(true)
         const item = {
             data: {
-                date: values.date,
-                shift: values.shift,
-                time: values.time,
+                cycleDate: values.cycleDate,
+                shiftId: values.shiftId,
+                cycleTime: values.cycleTime,
                 loader: values.loader,
                 hauler: values.hauler,
-                origin: values.origin,
-                material: values.material,
-                destination: values.destination,
+                haulerUnitId: values.haulerUnitId,
+                loaderUnitId: values.loaderUnitId,
+                originId: values.originId,
+                materialId: values.materialId,
+                destinationId: values.destinationId,
                 nominal: values.nominal,
                 weight: values.weight,
                 payloadWeight: values.payloadWeight,
@@ -295,11 +394,15 @@ const CycleDetailsTable = () => {
                             />
                         </Space>
                     </div>
-                    <Table columns={columns} bordered />
 
-                    {/*Add Fault*/}
+                    <Table
+                        columns={ isFileUploaded ? uploadColumns : columns } 
+                        dataSource={isFileUploaded ? uploadData : gridData} 
+                         />
+
+
                     <Modal
-                        title={ isUpdateModalOpen ? 'Update Cycle Details' : 'Cycle Details Setup'}
+                        title={isUpdateModalOpen ? 'Update Cycle Details' : 'Cycle Details Setup'}
                         open={isModalOpen}
                         onCancel={handleCancel}
                         width={800}
@@ -319,7 +422,19 @@ const CycleDetailsTable = () => {
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Shift</label>
-                                    <input type="text" {...register("shift")} name="shift" defaultValue={!isUpdateModalOpen ? '' : tempData?.shift} onChange={handleChange} className="form-control form-control-white" />
+                                    <select
+                                        {...register("shiftId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            allShifts?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && item.name === tempData.shiftId}
+                                                    value={item.name}>{item.name}</option>
+                                            ))
+                                        }
+                                    </select>
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
@@ -329,67 +444,162 @@ const CycleDetailsTable = () => {
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Loader</label>
-                                    <input type="text" {...register("loader")} name="loader" defaultValue={!isUpdateModalOpen ? '' : tempData?.loader} onChange={handleChange} className="form-control form-control-white" />
+                                    <select
+                                        {...register("loader")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            allLoaders?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && item.modelName === tempData.loader}
+                                                    value={item.empCode}>{item.empCode}</option>
+                                            ))
+                                        }
+                                    </select>
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Hauler</label>
-                                    <input type="text" {...register("hauler")} name="hauler" defaultValue={!isUpdateModalOpen ? '' : tempData?.hauler} onChange={handleChange} className="form-control form-control-white" />
+                                    <select
+                                        {...register("hauler")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            allHaulers?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && item.modelName === tempData.hauler}
+                                                    value={item.empCode}>{item.empCode}</option>
+                                            ))
+                                        }
+                                    </select>
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Origin</label>
-                                    <input type="text" {...register("origin")} name="origin" defaultValue={!isUpdateModalOpen ? '' : tempData?.origin} onChange={handleChange} className="form-control form-control-white" />
+                                    <select
+                                        {...register("originId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            allOrigins?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && item.name === tempData.originId}
+                                                    value={item.id}>{item.name}</option>
+                                            ))
+                                        }
+                                    </select>
                                 </div>
+                            </div>
+                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
+                                <div className='col-6 mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Hauler Unit</label>
+                                    <select
+                                        {...register("haulerUnitId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            allHaulerUnits?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && item.id === tempData.haulerUnitId}
+                                                    value={item.id}>{item.modelname}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                                <div className='col-6 mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Loader Unit</label>
+                                    <select
+                                        {...register("haulerUnitId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            allLoaderUnits?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && item.id === tempData.loaderUnitId}
+                                                    value={item.id}>{item.modelname}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Material</label>
-                                    <input type="text" {...register("material")} name="material" defaultValue={!isUpdateModalOpen ? '' : tempData?.material} onChange={handleChange} className="form-control form-control-white" />
+                                    <select
+                                        {...register("materialId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            allMaterials?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && item.id === tempData.materialId}
+                                                    value={item.id}>{item.name}</option>
+                                            ))
+                                        }
+                                    </select>
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Destination</label>
-                                    <input type="text" {...register("destination")} name="destination" defaultValue={!isUpdateModalOpen ? '' : tempData?.destination} onChange={handleChange} className="form-control form-control-white" />
+                                    <select
+                                        {...register("destinationId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            destinations?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && item.id === tempData.destinationId}
+                                                    value={item.id}>{item.name}</option>
+                                            ))
+                                        }
+                                    </select>
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-6 mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Nominal</label>
-                                    <input type="text" {...register("nominal")} name="nominal" defaultValue={!isUpdateModalOpen ? '' : tempData?.nominal} onChange={handleChange} className="form-control form-control-white" />
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Nominal Weight</label>
+                                    <input type="number" {...register("nominalWeight")} name="nominal" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.nominalWeight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-6 mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Weigt</label>
-                                    <input type="text" {...register("weight")} name="weight" defaultValue={!isUpdateModalOpen ? '' : tempData?.weight} onChange={handleChange} className="form-control form-control-white" />
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Weight</label>
+                                    <input type="number" {...register("weight")} name="weight" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.weight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Payload Weight</label>
-                                    <input type="text" {...register("payloadWeight")} name="payload_weight" defaultValue={!isUpdateModalOpen ? '' : tempData?.payloadWeight} onChange={handleChange} className="form-control form-control-white" />
+                                    <input type="number" {...register("payloadWeight")} name="payload_weight" min={0} defaultValue={!isUpdateModalOpen ? '' : tempData?.payloadWeight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Reported Weight</label>
-                                    <input type="text" {...register("reportedWeight")} name="reported_weight" defaultValue={!isUpdateModalOpen ? '' : tempData?.reportedWeight} onChange={handleChange} className="form-control form-control-white" />
+                                    <input type="number" {...register("reportedWeight")} name="reported_weight" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.reportedWeight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Volume</label>
-                                    <input type="text" {...register("volume")} name="volume" defaultValue={!isUpdateModalOpen ? '' : tempData?.volume} onChange={handleChange} className="form-control form-control-white" />
+                                    <input type="number" {...register("volume")} name="volumes" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.volumes} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Loads</label>
-                                    <input type="text" {...register("loads")} name="loads" defaultValue={!isUpdateModalOpen ? '' : tempData?.loads} onChange={handleChange} className="form-control form-control-white" />
+                                    <input type="number" {...register("loads")} name="loads" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.loads} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Time at Loader</label>
-                                    <input type="text" {...register("timeAtLoader")} name="time_at_loader" defaultValue={!isUpdateModalOpen ? '' : tempData?.timeAtLoader} onChange={handleChange} className="form-control form-control-white" />
+                                    <input type="time" {...register("timeAtLoader")} name="time_at_loader" defaultValue={!isUpdateModalOpen ? '' : tempData?.timeAtLoader} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Duration</label>
-                                    <input type="text" {...register("duration")} name="duration" defaultValue={!isUpdateModalOpen ? '' : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
+                                    <input type="number" {...register("duration")} name="duration" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                         </form>
@@ -403,29 +613,23 @@ const CycleDetailsTable = () => {
                         footer={
                             <ModalFooterButtons
                                 onCancel={handleCancel}
-                                onSubmit={() => { }} />
+                                onSubmit={handleUpload} />
                         }
                     >
                         <Divider />
-                        <Form
-                            name='control-hooks'
-                            labelCol={{ span: 8 }}
-                            wrapperCol={{ span: 14 }}
-                            title='Add Fault'
-                        >
-                            <Space size='large'>
-                                <Upload>
-                                    <Button
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                        }}
-                                        icon={<UploadOutlined />}>Click to Upload</Button>
-                                </Upload>
-                            </Space>
-
-                        </Form>
+                        <Space size='large'>
+                            <Upload
+                                {...uploadProps}
+                            >
+                                <Button
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}
+                                    icon={<UploadOutlined />}>Click to Upload</Button>
+                            </Upload>
+                        </Space>
                     </Modal>
                 </div>
             </KTCardBody>

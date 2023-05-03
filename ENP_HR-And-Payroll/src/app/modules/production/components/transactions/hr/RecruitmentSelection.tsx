@@ -581,9 +581,9 @@ const OnSUbmit = handleSubmit(async (values) => {
               </div>
               <div className='col-6 mb-3' style={{ padding: "30px 20px 0 20px" }}>
                 <img src={tempImage} style={{height:"90px"}}  alt="" />
-                <input {...register("ImageFile")} className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' 
-                onChange={showPreview}
-                type="file" />
+                  <input {...register("ImageFile")} className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' 
+                  onChange={showPreview}
+                  type="file" />
                 
               </div>
             </div>
