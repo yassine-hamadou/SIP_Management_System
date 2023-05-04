@@ -3,7 +3,7 @@ import { OperatorComponent } from '../ProOperatorComponent'
 
 const LoaderOperator = () => {
   const data = {
-    url: 'VmemplsApi' ,
+    url: 'loaderOperator' ,
     title: 'Loader Operator',
   }
   return (

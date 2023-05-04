@@ -49,6 +49,7 @@ const ProUnitComponet = (props: any) => {
         },
         onError: (error) => {
             console.log('delete error: ', error)
+            message.error('Error deleting record')
         }
     })
 
@@ -64,7 +65,7 @@ const ProUnitComponet = (props: any) => {
 
         {
             title: 'Equipment ID',
-            dataIndex: 'fleetID',
+            dataIndex: 'equipmetID',
             sorter: (a: any, b: any) => {
                 if (a.fleetID > b.fleetID) {
                     return 1
@@ -122,6 +123,7 @@ const ProUnitComponet = (props: any) => {
         } catch (error) {
             setLoading(false)
             console.log(error)
+            message.error(`${error}`)
         }
     }
 
@@ -161,7 +163,9 @@ const ProUnitComponet = (props: any) => {
             setIsModalOpen(false)
         },
         onError: (error) => {
+            setSubmitLoading(false)
             console.log('error: ', error)
+            message.error(`${error}`)
         }
     })
 
@@ -194,9 +198,9 @@ const ProUnitComponet = (props: any) => {
         } else {
             const item = {
                 data: {
-                    destination: values.destination,
-                    activity: values.activity,
-                    quantity: values.quantity,
+                    equipmetID: values.equipmetID,
+                    modelName: values.modelName,
+                    description: values.description,
                 },
                 url: props.data.url
             }
@@ -217,6 +221,7 @@ const ProUnitComponet = (props: any) => {
         onError: (error) => {
             setSubmitLoading(false)
             console.log('post error: ', error)
+            message.error(`${error}`)
         }
     })
 
@@ -272,7 +277,7 @@ const ProUnitComponet = (props: any) => {
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                                 <div className=' mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Equipment</label>
-                                    <input {...register("equipName")} name='equipName' defaultValue={!isUpdateModalOpen ? '' : tempData?.equipName} onChange={handleChange} className="form-control form-control-white" />
+                                    <input {...register("equipName")} name='equipName' defaultValue={!isUpdateModalOpen ? '' : tempData?.equipmentId} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className=' mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Model name</label>

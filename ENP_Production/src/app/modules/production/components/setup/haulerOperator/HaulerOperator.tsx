@@ -2,7 +2,7 @@ import { OperatorComponent } from '../ProOperatorComponent'
 
 const HaulerOperator = () => {
   const data = {
-    url: 'VmemplsApi' ,
+    url: 'haulerOperator' ,
     title: 'Hauler Operator',
   }
   return (
