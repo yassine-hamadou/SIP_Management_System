@@ -39,6 +39,9 @@ export function postItem(item: any) {
 export const fetchUserRoles = () => {
     return axios.get(`${UsersEndpoint}/UserRoles`)
 }
+export const fetchUserApplications = () => {
+    return axios.get(`${UsersEndpoint}/UserApplications`)
+}
 
 export const fetchRoles = () => {
     return axios.get(`${UsersEndpoint}/Roles`)
@@ -52,6 +55,7 @@ export const fetchCompanies = () => {
 export const fetchDivisions = () => {
     return axios.get(`${Api_Endpoint}/Divisions`)
 }
+
 export const updateDivison = (data: any) => {
     return axios.put(`${Api_Endpoint}/Divisions/${data.id}`, data)
 }
@@ -225,8 +229,8 @@ export const updateServiceCost = (data: any) => {
     return axios.put(`${Api_Endpoint}/ServiceCosts/${data.id}`, data)
 }
 
-export const fetchRecruitmentTransactions = () => {
-    return axios.get(`${Api_Endpoint}/RecruitmentTransactions`)
+export const fetchRecruitmentTransactions = ( ) => {
+    return axios.get(`${Api_Endpoint}/RecruitmentTransactions/tenant/${tenantId}`)
 }
 
 export const fetchTrainingDevTransactions = () => {

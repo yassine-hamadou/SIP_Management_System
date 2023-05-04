@@ -7,7 +7,8 @@ import { useFormik } from 'formik'
 import { getUserByToken, login, parseJwt } from '../core/_requests'
 import { useAuth } from '../core/Auth'
 import { useQuery } from 'react-query'
-import { fetchCompanies } from '../../../services/ApiCalls'
+import { fetchCompanies, fetchUserApplications } from '../../../services/ApiCalls'
+import { message } from 'antd'
 
 const loginSchema = Yup.object().shape({
   username: Yup.string()
@@ -37,10 +38,14 @@ const initialValues = {
 export function Login() {
   const [loading, setLoading] = useState(false)
   const { saveAuth, setCurrentUser } = useAuth()
-  const [selectedCompany, setSelectedCompany] = useState('')
-
+  const {currentUser} = useAuth()
   const tenantId = localStorage.getItem('tenant')
-  
+
+  const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
+  // const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(currentUser?.id)).map((filteredItem:any) => {
+  //   return filteredItem.applicationId.toString()
+  // })
+ 
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
@@ -60,9 +65,34 @@ export function Login() {
          parseJwt(token)
         
          //now I have to assign the !
-         const cuUser:any =  parseJwt(token)
-        setCurrentUser(cuUser)
-        console.log('selected company: ', selectedCompany)
+         const curUser:any =  parseJwt(token)
+
+        //  if(appId===1){
+           setCurrentUser(curUser)
+        //  }else{
+        //   setStatus("you don't have access to this application")
+        //  }
+        console.log(curUser)
+        const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(curUser?.id)).map((filteredItem:any) => {
+          return filteredItem.applicationId.toString()
+        })
+
+        console.log('apps',userApp);
+
+        const newIt = userApp?.find((applicationId:any)=>{
+          return applicationId==='10'
+        })
+
+        console.log(newIt);
+        
+        if(!newIt)
+        {
+          setStatus("You can't access this application, contact your Admin!")
+          setSubmitting(false)
+          setLoading(false)
+        }
+        
+      
       } catch (error) {
         console.error(error)
         setStatus('The login detail is incorrect')
@@ -138,7 +168,7 @@ const { data: allCompanies } = useQuery('companies', fetchCompanies, { cacheTime
       </div>
       <div className='fv-row mb-10'>
         <div className='mb-10'>
-          <label className='form-label fw-bold'>Company:  {tenantId}</label>
+          <label className='form-label fw-bold'>Company:</label>
           <div>
             <select
               className='form-select form-select-solid'

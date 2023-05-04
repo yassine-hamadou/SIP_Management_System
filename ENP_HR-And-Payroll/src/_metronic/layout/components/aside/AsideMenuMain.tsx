@@ -5,11 +5,18 @@ import {AsideMenuItemWithSub} from './AsideMenuItemWithSub'
 import {AsideMenuItem} from './AsideMenuItem'
 import { useAuth } from '../../../../app/modules/auth'
 import { useQuery } from 'react-query'
-import { fetchRoles, fetchUserRoles } from '../../../../app/services/ApiCalls'
+import { fetchRoles, fetchUserApplications, fetchUserRoles } from '../../../../app/services/ApiCalls'
 
 export function AsideMenuMain() {
   const intl = useIntl()
   const {currentUser} = useAuth()
+  const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
+
+  const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(currentUser?.id)).map((filteredItem:any) => {
+    return filteredItem.applicationId.toString()
+})
+console.log(userApp);
+
   
   const [isHR, setIsHR] = useState(false)
   const [isPayroll, setIsPayroll] = useState(false)
