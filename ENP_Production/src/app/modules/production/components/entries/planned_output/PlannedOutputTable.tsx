@@ -1,5 +1,5 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Divider, Form, Input, Modal, Select, Space, Table, Upload } from 'antd';
+import { Button, Divider, Form, Input, Modal, Select, Space, Table, Upload, message } from 'antd';
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
@@ -53,6 +53,7 @@ const PlannedOutputTable = () => {
     },
     onError: (error) => {
       console.log('delete error: ', error)
+      message.error(`${error}`)
     }
   })
 
@@ -64,14 +65,30 @@ const PlannedOutputTable = () => {
     deleteData(item)
   }
 
+  const getRecordName = (id: any, data: any) => {
+    let name = ''
+    data.map((item: any) => {
+      if (item.id === id) {
+        name = item.name
+      }
+    })
+    return name
+  }
+
   const columns: any = [
     {
       title: 'Destinaton',
       dataIndex: 'destinationId',
+      render: (record: any) => {
+        return getRecordName(record, destinations?.data)
+      }
     },
     {
       title: 'Activity',
       dataIndex: 'activityId',
+      render: (record: any) => {
+        return getRecordName(record, productionActivities?.data)
+      }
     },
     {
       title: 'Quantity',
@@ -144,6 +161,7 @@ const PlannedOutputTable = () => {
     },
     onError: (error) => {
       console.log('error: ', error)
+      message.error(`${error}`)
     }
   })
 
@@ -191,6 +209,7 @@ const PlannedOutputTable = () => {
     onError: (error) => {
       setSubmitLoading(false)
       console.log('post error: ', error)
+      message.error(`${error}`)
     }
   })
 

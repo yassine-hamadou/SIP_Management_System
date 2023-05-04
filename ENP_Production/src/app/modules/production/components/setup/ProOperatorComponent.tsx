@@ -50,7 +50,7 @@ const OperatorComponent = (props: any) => {
         },
         onError: (error) => {
             console.log('delete error: ', error)
-            message.error('Error deleting record')
+            message.error(`${error}`)
         }
     })
 
@@ -117,7 +117,7 @@ const OperatorComponent = (props: any) => {
         } catch (error) {
             setLoading(false)
             console.log(error)
-            message.error('Error while fetching data')
+            message.error(`${error}`)
         }
     }
 
@@ -160,7 +160,7 @@ const OperatorComponent = (props: any) => {
             setIsUpdateModalOpen(false)
             setIsModalOpen(false)
             console.log('error: ', error)
-            message.error('Error updating data')
+            message.error(`${error}`)
         }
     })
 
@@ -209,7 +209,7 @@ const OperatorComponent = (props: any) => {
             setSubmitLoading(false)
             setIsModalOpen(false)
             console.log('post error: ', error)
-            message.error('Error adding record, please try again later')
+            message.error(`${error}`)
         }
     })
 

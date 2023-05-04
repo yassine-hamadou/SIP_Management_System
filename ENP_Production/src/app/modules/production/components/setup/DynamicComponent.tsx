@@ -50,7 +50,7 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
         },
         onError: (error) => {
             console.log('delete error: ', error)
-            message.error('Error deleting record')
+            message.error(`${error}`)
         }
     })
 

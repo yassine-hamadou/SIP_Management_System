@@ -1,7 +1,7 @@
 import { Button, Input, Modal, Space, Table, message } from 'antd'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { KTCardBody } from '../../../../../_metronic/helpers'
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../urls'
 import { ModalFooterButtons, PageActionButtons } from '../CommonComponents'
@@ -21,6 +21,9 @@ const ProUnitComponet = (props: any) => {
     const [tempData, setTempData] = useState<any>()
     const { register, reset, handleSubmit } = useForm()
     const queryClient = useQueryClient()
+
+    const { data: equipments } = useQuery('equipments', () => fetchDocument('equipments'), { cacheTime: 5000 })
+
 
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -65,7 +68,7 @@ const ProUnitComponet = (props: any) => {
 
         {
             title: 'Equipment ID',
-            dataIndex: 'equipmetID',
+            dataIndex: 'equipmentId',
             sorter: (a: any, b: any) => {
                 if (a.fleetID > b.fleetID) {
                     return 1
@@ -198,7 +201,7 @@ const ProUnitComponet = (props: any) => {
         } else {
             const item = {
                 data: {
-                    equipmetID: values.equipmetID,
+                    equipmentId: values.equipmentId,
                     modelName: values.modelName,
                     description: values.description,
                 },
@@ -275,9 +278,22 @@ const ProUnitComponet = (props: any) => {
                         <form onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}>
                             <hr></hr>
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
-                                <div className=' mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="form-label">Equipment</label>
-                                    <input {...register("equipName")} name='equipName' defaultValue={!isUpdateModalOpen ? '' : tempData?.equipmentId} onChange={handleChange} className="form-control form-control-white" />
+                                <div >
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label ">Equipment</label>
+
+                                    <select
+                                        {...register("equipmentId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white mb-7 " aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            equipments?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && item.equipmentId === tempData.equipmentId}
+                                                    value={item.equipmentId}>{item.equipmentId}</option>
+                                            ))
+                                        }
+                                    </select>
                                 </div>
                                 <div className=' mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Model name</label>
