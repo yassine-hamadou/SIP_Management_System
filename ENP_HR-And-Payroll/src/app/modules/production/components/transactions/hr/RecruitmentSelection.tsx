@@ -17,6 +17,7 @@ const tempImg = toAbsoluteUrl('/media/avatars/user.png')
 
 const RecruitmentSelection = () => {
   const [gridData, setGridData] = useState([])
+  const [recruitData, setRecruitData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
@@ -35,7 +36,7 @@ const RecruitmentSelection = () => {
   const [selectedGen, setSelectedGen] = useState<any>("");
   const [employeeRecord, setEmployeeRecord] = useState<any>(null)
   const [activeTab, setActiveTab] = useState("tab1");
-  const [tempImage, setTempImage] = useState(tempImg);
+  const [tempImage, setTempImage] = useState<any>();
   const tenantId = localStorage.getItem('tenant')
   const queryClient = useQueryClient()
   const showModal = () => {
@@ -152,16 +153,27 @@ const onRadio4Change = (e: RadioChangeEvent) => {
     event.preventDefault()
     setTempImage(event.target.value);
   }
-  const showPreview = (e:any)=>{
-    if (e.target.files && e.target.files[0]){
-      let imageFile = e.target.files[0]
-      const reader = new FileReader()
-      reader.onload = (x:any)=>{
-        setTempImage(x.target?.result)
-      }
-      reader.readAsDataURL(imageFile)
-    }
-  }
+  
+  // const showPreview = (e:any)=>{
+  //   if (e.target.files && e.target.files[0]){
+  //     let imageFile = e.target.files[0]
+  //     const reader = new FileReader()
+  //     reader.onload = (x:any)=>{
+  //       setTempImage({
+  //         imageFile,
+  //       //  imageFile: x.target.value
+  //       })
+  //     }
+  //     reader.readAsDataURL(imageFile)
+  //   }
+  // }
+
+  const onFileChange = (e:any) => {
+     
+    // Update the state
+    setTempImage({ imageFile: e.target.files[0] });
+   
+  };
 
   const columns: any = [
     {
@@ -264,7 +276,7 @@ const onRadio4Change = (e: RadioChangeEvent) => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/RecruitmentApplicants`)
+      const response = await axios.get(`${Api_Endpoint}/RecruitmentApplicants/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -275,12 +287,7 @@ const onRadio4Change = (e: RadioChangeEvent) => {
   const dataByID:any = gridData.filter((refId:any) =>{
     return  refId.recruitmentTransactionId===parseInt(selectedValue)
   })
-
-
-  useEffect(() => {
-    loadData()
-  }, [])
-
+  
   const dataWithIndex = dataByID.map((item: any, index:any) => ({
     ...item,
     key: index,
@@ -298,8 +305,15 @@ const onRadio4Change = (e: RadioChangeEvent) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
       loadData()
+      
     }
   }
+
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
 
   const globalSearch = () => {
     // @ts-ignore
@@ -310,18 +324,6 @@ const onRadio4Change = (e: RadioChangeEvent) => {
     })
     setGridData(filteredData)
   }
-
-  // const warnUser = () => {
-  //   messageApi.open({
-  //     type: 'error',
-  //     content: 'Select reference before adding!',
-  //     className: 'custom-class',
-  //     style: {
-  //       marginTop: '10vh',
-  //       fontSize:"18px"
-  //     }
-  //   });
-  // };
 
   const warning = () => {
     messageApi.open({
@@ -373,25 +375,43 @@ const OnSUbmit = handleSubmit(async (values) => {
   const url1 = `${Api_Endpoint}/RecruitmentApplicants`
   const submitApplicant = handleSubmit(async (values) => {
     setLoading(true)
-    const item = {
-      data: {
-      recruitmentTransactionId: parseInt(selectedValue),
-      firstName: values.firstName,
-      lastName: values.lastName,
-      dob: values.dob,
-      gender: selectedGen,
-      phone: values.phone,
-      email: values.email,
-      qualification: values.qualification,
-      ImageFile: tempImage,
-      tenantId: tenantId,
-    },
-    url: 'RecruitmentApplicants'
-  }
-    console.log(item.data)
-    postData(item)
+    const formData:any = new FormData();
+    formData.append('recruitmentTransactionId', selectedValue )
+    formData.append('firstName', values.firstName )
+    formData.append('lastName', values.lastName )
+    formData.append('dob', values.dob)
+    formData.append('gender', selectedGen)
+    formData.append('email', values.email)
+    formData.append('phone', values.phone)
+    formData.append('qualification', values.qualification)
+    // formData.append('imageFile', tempImage)
+    formData.append('imageFile', tempImage)
+    formData.append('tenantId', tenantId)
+
+  //   const item = {
+  //     data: formData,
+  //   url: 'RecruitmentApplicants1'
+  // }
+
+  const config = {
+    headers: {
+      'content-type': 'multipart/form-data',
+    },}
+
+    console.log(Object.fromEntries(formData))
+
+    axios.post(url1, formData, config).then((response) => {
+      console.log(response.data);
+      reset()
+      loadData()
+      setIsModalOpen(false)
+    });
+
+    // postData(item)
     
   })
+
+  console.log('new file', tempImage)
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
@@ -581,9 +601,10 @@ const OnSUbmit = handleSubmit(async (values) => {
               </div>
               <div className='col-6 mb-3' style={{ padding: "30px 20px 0 20px" }}>
                 <img src={tempImage} style={{height:"90px"}}  alt="" />
-                  <input {...register("ImageFile")} className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' 
-                  onChange={showPreview}
-                  type="file" />
+
+                <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' 
+                onChange={onFileChange}
+                type="file" />
                 
               </div>
             </div>
@@ -647,69 +668,7 @@ const OnSUbmit = handleSubmit(async (values) => {
                 </div>
               </div>
               <hr></hr>
-              {/* <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
-                <div className='col-6 mb-3'>
-                  <label style={{ padding: "0px 30px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Qualification</label>
-                  <Radio.Group onChange={onRadioChange} value={radioValue}>
-                    <Radio value={1}>1</Radio>
-                    <Radio value={2}>2</Radio>
-                    <Radio value={3}>3</Radio>
-                    <Radio value={4}>4</Radio>
-                    <Radio value={5}>5</Radio>
-                  </Radio.Group>
-                  <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on qualification (optional)' aria-label="With textarea"></textarea>
-                </div>
-                <div className='col-6 mb-3'>
-                  <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Work Skills</label>
-                  <Radio.Group onChange={onRadio1Change} value={radio1Value}>
-                    <Radio value={1}>1</Radio>
-                    <Radio value={2}>2</Radio>
-                    <Radio value={3}>3</Radio>
-                    <Radio value={4}>4</Radio>
-                    <Radio value={5}>5</Radio>
-                  </Radio.Group>
-                  <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on work skills (optional)' aria-label="With textarea"></textarea>
-                </div>
-              </div>
-              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
-                <div className='col-6 mb-3'>
-                  <label style={{ padding: "0px 36px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Experiences </label>
-                  <Radio.Group onChange={onRadio2Change} value={radio2Value}>
-                    <Radio value={1}>1</Radio>
-                    <Radio value={2}>2</Radio>
-                    <Radio value={3}>3</Radio>
-                    <Radio value={4}>4</Radio>
-                    <Radio value={5}>5</Radio>
-                  </Radio.Group>
-                  <br></br>
-                  <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on experiences (optional)' aria-label="With textarea"></textarea>
-                </div>
-                <div className='col-6 mb-3'>
-                  <label style={{ padding: "0px 48px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Reference</label>
-                  <Radio.Group onChange={onRadio3Change} value={radio3Value}>
-                    <Radio value={1}>1</Radio>
-                    <Radio value={2}>2</Radio>
-                    <Radio value={3}>3</Radio>
-                    <Radio value={4}>4</Radio>
-                    <Radio value={5}>5</Radio>
-                  </Radio.Group>
-                  <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on reference (optional)' aria-label="With textarea"></textarea>
-                </div>
-              </div>
-              <div style={{ padding: "20px 20px 0 20px" }} className='row mb-7 '>
-                <div className='col-6 mb-3'>
-                  <label style={{ padding: "0px 39px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Social Skills</label>
-                  <Radio.Group onChange={onRadio4Change} value={radio4Value}>
-                    <Radio value={1}>1</Radio>
-                    <Radio value={2}>2</Radio>
-                    <Radio value={3}>3</Radio>
-                    <Radio value={4}>4</Radio>
-                    <Radio value={5}>5</Radio>
-                  </Radio.Group>
-                  <textarea style={{ margin: "10px 0px 0 0px" }} className="form-control form-control-solid" placeholder='comments on social skills (optional)' aria-label="With textarea"></textarea>
-                </div>
 
-              </div> */}
               <div>
                 <div style={{display:"flex", }} className="tabs">
                   <div

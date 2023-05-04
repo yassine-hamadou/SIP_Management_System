@@ -13,6 +13,8 @@ import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
 import {getUserByToken, parseJwt} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
+import { useQuery } from 'react-query'
+import { fetchUserApplications } from '../../../services/ApiCalls'
 
 type AuthContextProps = {
   auth: AuthModel | undefined
@@ -64,6 +66,7 @@ const AuthInit: FC<WithChildren> = ({children}) => {
   const {auth, logout, setCurrentUser} = useAuth()
   const didRequest = useRef(false)
   const [showSplashScreen, setShowSplashScreen] = useState(true)
+  
   // We should request user by authToken (IN OUR EXAMPLE IT'S API_TOKEN) before rendering the application
   useEffect(() => {
     const requestUser = async (apiToken: string) => {
@@ -88,8 +91,9 @@ const AuthInit: FC<WithChildren> = ({children}) => {
     }
 
     if (auth && auth.jwtToken) {
-      requestUser(auth.jwtToken)
+       requestUser(auth.jwtToken)
     } else {
+      
       logout()
       setShowSplashScreen(false)
     }
