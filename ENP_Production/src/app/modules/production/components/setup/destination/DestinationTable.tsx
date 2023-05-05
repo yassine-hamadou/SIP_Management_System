@@ -1,11 +1,3 @@
-import { Button, Input, Modal, Space, Table, message } from 'antd'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
-import { ENP_URL, deleteItem, fetchDocument, postItem, updateItem } from '../../../urls'
-import { useForm } from 'react-hook-form'
-import { useQueryClient, useMutation } from 'react-query'
-import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents'
 import { SetupComponent } from '../DynamicComponent'
 
 // const DestinationTable = () => {

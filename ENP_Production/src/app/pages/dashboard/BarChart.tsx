@@ -5,6 +5,8 @@ import { useQuery } from "react-query";
 import axios from "axios";
 import { ENP_URL } from '../../modules/production/urls';
 import { useThemeMode } from '../../../_metronic/partials/layout/theme-mode/ThemeModeProvider';
+import { CycleDetailsData } from '../../data/DummyData';
+
 
 type Props = {
   className: string
@@ -19,6 +21,7 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
   const data: any = []
   const categories: any = []
   const monthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const haulers = ['Samuel Opoku', 'Unknown']
 
   const { data: listOfFaults } = useQuery('listOfFaults', () => {
     return axios.get(`${ENP_URL}/faultentriesapi`)
@@ -27,6 +30,7 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
   // const [data, setData]: any = useState([])
 
 
+  console.log('cycleDetails: ', CycleDetailsData)
   console.log('data', data)
   console.log('categories', categories)
   console.log('slice', data.slice(-12))

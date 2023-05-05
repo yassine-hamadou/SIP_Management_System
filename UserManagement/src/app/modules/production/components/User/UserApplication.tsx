@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { Api_Endpoint, fetchDocument, postItem } from '../../../../services/ApiCalls'
+import { Api_Endpoint, deleteItem, fetchDocument, postItem } from '../../../../services/ApiCalls'
 import { ENP_URL } from '../../urls'
 
 const UserApplication = () => {
@@ -36,16 +36,22 @@ const UserApplication = () => {
     setIsModalOpen(false)
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${Api_Endpoint}/UserApplications/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['applications', data], data);
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
     }
+  })
+
+  function handleDelete(element: any) {
+    const item = {
+      url: 'UserApplications',
+      data: element
+    }
+    deleteData(item)
   }
 
   const columns: any = [
@@ -73,9 +79,9 @@ const UserApplication = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <Link to={`/employee-details/${record.id}`}>
-            <span className='btn btn-light-success btn-sm'>Remove</span>
-          </Link>
+          <a onClick={() => handleDelete(record)} className='btn btn-light-success btn-sm'>
+          Remove
+          </a>
         </Space>
       ),
     },

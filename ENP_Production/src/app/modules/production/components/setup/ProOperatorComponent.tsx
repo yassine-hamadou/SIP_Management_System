@@ -50,7 +50,7 @@ const OperatorComponent = (props: any) => {
         },
         onError: (error) => {
             console.log('delete error: ', error)
-            message.error('Error deleting record')
+            message.error(`${error}`)
         }
     })
 
@@ -117,7 +117,7 @@ const OperatorComponent = (props: any) => {
         } catch (error) {
             setLoading(false)
             console.log(error)
-            message.error('Error while fetching data')
+            message.error(`${error}`)
         }
     }
 
@@ -160,7 +160,7 @@ const OperatorComponent = (props: any) => {
             setIsUpdateModalOpen(false)
             setIsModalOpen(false)
             console.log('error: ', error)
-            message.error('Error updating data')
+            message.error(`${error}`)
         }
     })
 
@@ -209,7 +209,7 @@ const OperatorComponent = (props: any) => {
             setSubmitLoading(false)
             setIsModalOpen(false)
             console.log('post error: ', error)
-            message.error('Error adding record, please try again later')
+            message.error(`${error}`)
         }
     })
 
@@ -263,11 +263,11 @@ const OperatorComponent = (props: any) => {
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                                 <div className=' mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                                    <input {...register("empCode")} name='empCode' defaultValue={!isUpdateModalOpen ? '' : tempData?.name} onChange={handleChange} className="form-control form-control-white" />
+                                    <input {...register("empCode")} name='empCode' defaultValue={!isUpdateModalOpen ? '' : tempData?.empCode} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className=' mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                                    <input {...register("empName")} name='empName' defaultValue={!isUpdateModalOpen ? '' : tempData?.name} onChange={handleChange} className="form-control form-control-white" />
+                                    <input {...register("empName")} name='empName' defaultValue={!isUpdateModalOpen ? '' : tempData?.empName} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
 
                             </div>
