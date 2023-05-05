@@ -43,10 +43,10 @@ const MedicalEntries = () => {
     setFileList(newFileList);
   };
 
-  const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
-  const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
-  const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
+  const {data:allEmployee} = useQuery('employee',()=> fetchEmployees(tenantId), {cacheTime:5000})
+  const {data:allMedicals} = useQuery('medicals', ()=> fetchMedicals(tenantId), {cacheTime:5000})
+  const { data: allPeriods } = useQuery('periods', ()=> fetchPeriods(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroup',()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
 
   // to preview the uploaded file
   const onPreview = async (file: UploadFile) => {
@@ -168,7 +168,7 @@ const MedicalEntries = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/MedicalTransactions`)
+      const response = await axios.get(`${Api_Endpoint}/MedicalTransactions/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {

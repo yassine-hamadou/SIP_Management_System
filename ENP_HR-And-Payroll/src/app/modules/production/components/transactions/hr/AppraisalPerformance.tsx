@@ -108,12 +108,12 @@ const AppraisalPerformance = () => {
   };
 
 
-  const { data: alEmployees } = useQuery('employees', fetchEmployees, { cacheTime: 5000 })
-  const { data: allAppraisals } = useQuery('appraisals', fetchAppraisals, { cacheTime: 5000 })
-  const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
-  const { data: allJobTitles } = useQuery('jobTitles', fetchJobTitles, { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('recruitments', fetchPaygroups, { cacheTime: 5000 })
-  const { data: allAppraisalTransactions } = useQuery('appraisalTransactions', fetchAppraisalTransactions, { cacheTime: 5000 })
+  const { data: alEmployees } = useQuery('employees', ()=>fetchEmployees(tenantId), { cacheTime: 5000 })
+  const { data: allAppraisals } = useQuery('appraisals', ()=>fetchAppraisals(tenantId), { cacheTime: 5000 })
+  const { data: allPeriods } = useQuery('periods', ()=>fetchPeriods(tenantId), { cacheTime: 5000 })
+  const { data: allJobTitles } = useQuery('jobTitles',()=> fetchJobTitles(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('recruitments',()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: allAppraisalTransactions } = useQuery('appraisalTransactions',()=> fetchAppraisalTransactions(tenantId), { cacheTime: 5000 })
 
   // to preview the uploaded file
   const onPreview = async (file: UploadFile) => {
@@ -306,18 +306,18 @@ const AppraisalPerformance = () => {
     return  refId.appraisalTypeId===parseInt(selectedValue2)
     })
 
-  const emplyeesByPaygroup:any = alEmployees?.data.filter((item:any) =>{
+  const emplyeesByPaygroup:any = alEmployees?.data?.filter((item:any) =>{
     return  item.paygroupId===parseInt(selectedValue1)
     })
 
-  const emplyeeDetails:any = allAppraisalTransactions?.data.find((item:any) =>{
+  const emplyeeDetails:any = allAppraisalTransactions?.data?.find((item:any) =>{
     return  item.id===employeeId
   })
 
     // console.log(emplyeeDetails)
 
   const onEmployeeChange = (objectId: any) => {
-    const newEmplo = alEmployees?.data.find((item:any)=>{
+    const newEmplo = alEmployees?.data?.find((item:any)=>{
       return item.id===parseInt(objectId)
     })
     setEmployeeRecord(newEmplo)

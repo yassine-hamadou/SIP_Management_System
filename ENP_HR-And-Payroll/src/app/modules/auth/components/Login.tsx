@@ -2,13 +2,11 @@
 import React, { useState } from 'react'
 import * as Yup from 'yup'
 import clsx from 'clsx'
-import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
-import { getUserByToken, login, parseJwt } from '../core/_requests'
+import { login, parseJwt } from '../core/_requests'
 import { useAuth } from '../core/Auth'
 import { useQuery } from 'react-query'
 import { fetchCompanies, fetchUserApplications } from '../../../services/ApiCalls'
-import { message } from 'antd'
 
 const loginSchema = Yup.object().shape({
   username: Yup.string()
@@ -38,7 +36,6 @@ const initialValues = {
 export function Login() {
   const [loading, setLoading] = useState(false)
   const { saveAuth, setCurrentUser } = useAuth()
-  const {currentUser} = useAuth()
   const tenantId = localStorage.getItem('tenant')
 
   const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
@@ -72,22 +69,17 @@ export function Login() {
         //  }else{
         //   setStatus("you don't have access to this application")
         //  }
-        console.log(curUser)
         const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(curUser?.id)).map((filteredItem:any) => {
           return filteredItem.applicationId.toString()
         })
 
-        console.log('apps',userApp);
-
         const newIt = userApp?.find((applicationId:any)=>{
           return applicationId==='10'
         })
-
-        console.log(newIt);
         
         if(!newIt)
         {
-          setStatus("You can't access this application, contact your Admin!")
+          setStatus("You can't access this application, contact your Administrator!")
           setSubmitting(false)
           setLoading(false)
         }
@@ -103,6 +95,7 @@ export function Login() {
   })
 
 localStorage.setItem('tenant', formik.values.tenantId)
+
 const { data: allCompanies } = useQuery('companies', fetchCompanies, { cacheTime: 5000 })
   return (
     <form
@@ -120,6 +113,7 @@ const { data: allCompanies } = useQuery('companies', fetchCompanies, { cacheTime
         <label className='form-label fs-6 fw-bolder text-dark'>Username</label>
         <input
           placeholder='Username'
+          
           {...formik.getFieldProps('username')}
           className={clsx(
             'form-control form-control-lg form-control-solid',

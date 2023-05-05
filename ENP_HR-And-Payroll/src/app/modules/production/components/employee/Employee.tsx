@@ -4,10 +4,9 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
 import { ENP_URL } from '../../urls'
 import { Link } from 'react-router-dom'
-import { employeedata } from '../../../../data/DummyData'
 import { useQuery } from 'react-query'
 import { Api_Endpoint, axioInstance, fetchDepartments, fetchEmployees, fetchGrades, fetchNotches, fetchPaygroups } from '../../../../services/ApiCalls'
-import { AUTH_LOCAL_STORAGE_KEY } from '../../../auth'
+
 
 const Employee = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -257,11 +256,11 @@ const Employee = () => {
     })
     return notchName
   } 
-
+  const tenantId = localStorage.getItem('tenant')
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axioInstance.get(`${Api_Endpoint}/Employees`,
+      const response = await axioInstance.get(`${Api_Endpoint}/Employees/tenant/${tenantId}`,
      
       )
       setGridData(response.data)
@@ -271,17 +270,13 @@ const Employee = () => {
     }
   }
 
-
   useEffect(() => {
     loadData()
     fetchImage()
   }, [])
 
-
-
   // const sortedEmployees = gridData.sort((a:any, b:any) => a?.departmentId.localeCompare(b?.departmentId));
   // const females = sortedEmployees.filter((employee:any) => employee.gender === 'female');
-  
   
   var out_data:any = {};
   

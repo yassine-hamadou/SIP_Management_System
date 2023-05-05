@@ -112,9 +112,9 @@ const GradeLeaves = () => {
   ]
 
 
-  const { data: allGrades } = useQuery('grades', fetchGrades, { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('paygroups', fetchPaygroups, { cacheTime: 5000 })
-  const { data: allLeaves } = useQuery('leaveTypes', fetchLeaveTypes, { cacheTime: 5000 })
+  const { data: allGrades } = useQuery('grades', ()=> fetchGrades(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: allLeaves } = useQuery('leaveTypes', ()=> fetchLeaveTypes(tenantId), { cacheTime: 5000 })
 
   const dataByID = gridData.filter((section: any) => {
     return section.gradeId.toString() === param.id

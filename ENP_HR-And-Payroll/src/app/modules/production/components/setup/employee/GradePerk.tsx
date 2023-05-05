@@ -105,9 +105,9 @@ const GradePerks = () => {
       console.log(error)
     }
   }
-  const { data: allGrades } = useQuery('grades', fetchGrades, { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('paygroups', fetchPaygroups, { cacheTime: 5000 })
-  const { data: allPerks } = useQuery('perks', fetchPerks, { cacheTime: 5000 })
+  const { data: allGrades } = useQuery('grades', ()=> fetchGrades(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: allPerks } = useQuery('perks', ()=> fetchPerks(tenantId), { cacheTime: 5000 })
 
 
   const getPerkName = (perkId: any) => {

@@ -33,7 +33,7 @@ const CompensationBenefit = () => {
   const [selectedValue1, setSelectedValue1] = useState<any>(null);
   const [selectedValue2, setSelectedValue2] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("tab1");
-  const tenantId = localStorage.getItem('tenant')
+  const tenantId:any = localStorage.getItem('tenant')
 
   const {register, reset, handleSubmit} = useForm()
   const showModal = () => {
@@ -260,13 +260,13 @@ const CompensationBenefit = () => {
     }
   }
 
-  const { data: allJobTitles } = useQuery('jobTitles', fetchJobTitles, { cacheTime: 5000 })
-  const { data: allEmployees } = useQuery('employees', fetchEmployees, { cacheTime: 5000 })
-  const { data: allUnits } = useQuery('units', fetchUnits, { cacheTime: 5000 })
-  const {data: allGradePerks} = useQuery('gradePerks', fetchGradePerks, {cacheTime:5000})
+  const { data: allJobTitles } = useQuery('jobTitles',()=> fetchJobTitles(tenantId), { cacheTime: 5000 })
+  const { data: allEmployees } = useQuery('employees', ()=>fetchEmployees(tenantId), { cacheTime: 5000 })
+  const { data: allUnits } = useQuery('units', ()=>fetchUnits(tenantId), { cacheTime: 5000 })
+  const {data: allGradePerks} = useQuery('gradePerks', ()=>fetchGradePerks(tenantId), {cacheTime:5000})
   // const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
-  const { data: allPerks } = useQuery('perks', fetchPerks, { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
+  const { data: allPerks } = useQuery('perks', ()=>fetchPerks(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroup', ()=>fetchPaygroups(tenantId), { cacheTime: 5000 })
 
   const getFirstName = (employeeId: any) => {
     let firstName = null
@@ -346,11 +346,11 @@ const CompensationBenefit = () => {
     setEmployeeRecord(newEmplo)
   }
 
-  const emplyeesByPaygroup:any = allEmployees?.data.filter((item:any) =>{
+  const emplyeesByPaygroup:any = allEmployees?.data?.filter((item:any) =>{
     return  item.paygroupId===parseInt(selectedValue1)
     })
 
-const allPerkByGrade:any = allGradePerks?.data.filter((item:any) =>{
+const allPerkByGrade:any = allGradePerks?.data?.filter((item:any) =>{
   return item.gradeId===employeeRecord?.gradeId
 })
 
@@ -382,6 +382,7 @@ const allPerkByGrade:any = allGradePerks?.data.filter((item:any) =>{
     }
   }
 
+  
   const globalSearch = () => {
     // @ts-ignore
     filteredData = dataWithVehicleNum.filter((value) => {

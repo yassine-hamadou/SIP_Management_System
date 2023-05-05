@@ -330,7 +330,7 @@ const TrainingDevelopment = () => {
   const loadTraineeData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Trainees`)
+      const response = await axios.get(`${Api_Endpoint}/Trainees/tenant/${tenantId}`)
       setTraineeData(response.data)
       setLoading(false)
     } catch (error) {
@@ -342,7 +342,7 @@ const TrainingDevelopment = () => {
   const loadTrainingScheduleData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/TrainingSchedules`)
+      const response = await axios.get(`${Api_Endpoint}/TrainingSchedules/tenant/${tenantId}`)
       setTrainingScheduleData(response.data)
       setLoading(false)
     } catch (error) {
@@ -350,12 +350,12 @@ const TrainingDevelopment = () => {
     }
   }
 
-  const { data: allTrainingDevTransactions } = useQuery('trainingDevTransactions', fetchTrainingDevTransactions, { cacheTime: 5000 })
-  const { data: allTrainingSchedules } = useQuery('trainingSchedules', fetchTrainingSchedules, { cacheTime: 5000 })
-  const { data: allTraininees } = useQuery('trainees', fetchTrainees, { cacheTime: 5000 })
-  const { data: allTraininings } = useQuery('trainings', fetchTrainings, { cacheTime: 5000 })
-  const { data: allEmployees } = useQuery('employees', fetchEmployees, { cacheTime: 5000 })
-  const { data: allJobTitles } = useQuery('jobTitles', fetchJobTitles, { cacheTime: 5000 })
+  const { data: allTrainingDevTransactions } = useQuery('trainingDevTransactions',()=> fetchTrainingDevTransactions(tenantId), { cacheTime: 5000 })
+  const { data: allTrainingSchedules } = useQuery('trainingSchedules',()=> fetchTrainingSchedules(tenantId), { cacheTime: 5000 })
+  const { data: allTraininees } = useQuery('trainees', ()=>fetchTrainees(tenantId), { cacheTime: 5000 })
+  const { data: allTraininings } = useQuery('trainings', ()=>fetchTrainings(tenantId), { cacheTime: 5000 })
+  const { data: allEmployees } = useQuery('employees',()=> fetchEmployees(tenantId), { cacheTime: 5000 })
+  const { data: allJobTitles } = useQuery('jobTitles', ()=>fetchJobTitles(tenantId), { cacheTime: 5000 })
 
 
   const getFirstName = (emId: any) => {
