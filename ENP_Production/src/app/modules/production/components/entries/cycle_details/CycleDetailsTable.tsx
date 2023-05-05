@@ -38,7 +38,7 @@ const CycleDetailsTable = () => {
     const { data: allLoaderUnits } = useQuery('allLoaders', () => fetchDocument('ProLoaderUnit'), { cacheTime: 5000 })
     const { data: allLoaders } = useQuery('LoaderOperator', () => fetchDocument('LoaderOperator'), { cacheTime: 5000 })
     const { data: allOrigins } = useQuery('allOrigins', () => fetchDocument('ProductionOrigin'), { cacheTime: 5000 })
-    const { data: allMaterials } = useQuery('allMaterials', () => fetchDocument('ProdProcessedMaterial'), { cacheTime: 5000 })
+    const { data: allMaterials } = useQuery('allMaterials', () => fetchDocument('ProdRawMaterial'), { cacheTime: 5000 })
     const { data: allShifts } = useQuery('shifts', () => fetchDocument('ProductionShift'), { cacheTime: 5000 })
 
     const handleChange = (event: any) => {
@@ -426,7 +426,7 @@ const CycleDetailsTable = () => {
         >
             <KTCardBody className='py-4 '>
                 <div className='table-responsive'>
-                    <div className='d-flex justify-content-between'>
+                    <div className='d-flex  justify-content-between'>
                         <Space style={{ marginBottom: 16 }}>
                             <Input
                                 placeholder='Enter Search Text'
@@ -479,7 +479,7 @@ const CycleDetailsTable = () => {
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Date</label>
-                                    <input type="date" {...register("cycleDate")} name="cycleDate" defaultValue={!isUpdateModalOpen ? '' : tempData?.cycaleDate} onChange={handleChange} className="form-control form-control-white" />
+                                    <input type="date" {...register("cycleDate")} name="cycleDate" defaultValue={!isUpdateModalOpen ? '' : tempData?.cycleDate} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Shift</label>
