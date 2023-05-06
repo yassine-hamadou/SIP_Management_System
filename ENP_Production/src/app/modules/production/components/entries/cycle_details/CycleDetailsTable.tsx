@@ -1,8 +1,8 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Divider, Form, Input, Modal, Space, Table, TimePicker, Upload, UploadProps, message, } from 'antd';
+import { Button, DatePicker, Divider, Form, Input, Modal, Space, Table, TabsProps, TimePicker, Upload, UploadProps, message, } from 'antd';
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { KTCardBody } from '../../../../../../_metronic/helpers';
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers';
 import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents';
 import { useForm } from 'react-hook-form';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
@@ -21,6 +21,7 @@ const CycleDetailsTable = () => {
     const [submitLoading, setSubmitLoading] = useState(false)
     const [searchText, setSearchText] = useState('')
     const [isFileUploaded, setIsFileUploaded] = useState(false)
+    const [isCheckDataModalOpen, setIsCheckDataModalOpen] = useState(false)
 
     const [loading, setLoading] = useState(false)
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -54,11 +55,16 @@ const CycleDetailsTable = () => {
         setIsUploadModalOpen(true)
     }
 
+    const showCheckDataModal = (values: any) => {
+        setIsCheckDataModalOpen(true)
+    }
+
     const handleCancel = () => {
         reset()
         setIsModalOpen(false)
         setIsUploadModalOpen(false)
         setIsUpdateModalOpen(false)
+        setIsCheckDataModalOpen(false)
     }
 
     const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
@@ -187,6 +193,30 @@ const CycleDetailsTable = () => {
         },
     ]
 
+    // find an item by its v and return the id of the item
+  
+
+    const onSummaryTabsChange = (key: string) => {
+        console.log(key);
+      };
+
+      const items: TabsProps['items'] = [
+        {
+          key: '1',
+          label: `Summary 1`,
+          children: `Content of Tab Summary 1`,
+        },
+        {
+          key: '2',
+          label: `Summary 2`,
+          children: `Content of Tab Summary 2`,
+        },
+        {
+          key: '3',
+          label: `Summary 3`,
+          children: `Content of Tab Summary 3`,
+        },
+      ];
 
     const uploadProps: UploadProps = {
         name: 'file',
@@ -226,7 +256,7 @@ const CycleDetailsTable = () => {
         return Math.round((num + Number.EPSILON) * 100) / 100
     }
 
-    const handleUpload = () => {
+    const handleUpload = async () => {
         message.loading({ content: 'Uploading...', key: 'uploading' })
         setLoading(true)
         setIsUploadModalOpen(false)
@@ -238,13 +268,20 @@ const CycleDetailsTable = () => {
             const workSheetName = workBook.SheetNames[0]
             const workSheet: any = workBook.Sheets[workSheetName]
 
-            const columnHeaders = ['Date', 'Shift', 'Time Start', 'Loading Unit', 'Truck', 'Origin', 'Material', 'Destination', 'Nominal Weight', 'Payload Weight', 'Reported Weight', 'Volume', 'Loads', 'Arrived', 'Travel Empty Duration'];
+            const columnHeaders = [
+                'Date', 'Shift', 'Time Start', 'Loading Unit', 'Loading Unit', 'Loader Operator',
+                'Truck', 'Hauler Operator', 'Origin', 'Material', 'Destination', 'Nominal Weight',
+                'Payload Weight', 'Reported Weight', 'Volume', 'Loads', 'Arrived', 'Travel Empty Duration',
+            ];
+
             const fileColumns = [
                 { title: 'Date', dataIndex: 'Date', key: 'date', fixed: 'left', width: 80 },
                 { title: 'Shift', dataIndex: 'Shift', },
                 { title: 'Time Start', dataIndex: 'Time Start', },
                 { title: 'Loading Unit', dataIndex: 'Loading Unit', },
+                { title: 'Loader Operator', dataIndex: 'Loader Operator', },
                 { title: 'Hauler', dataIndex: 'Truck', },
+                { title: 'Hauler Operator', dataIndex: 'Hauler Operator', },
                 { title: 'Origin', dataIndex: 'Origin', },
                 { title: 'Material', dataIndex: 'Material', },
                 { title: 'Destination', dataIndex: 'Destination', },
@@ -255,11 +292,10 @@ const CycleDetailsTable = () => {
                 { title: 'Loads', dataIndex: 'Loads', },
                 { title: 'Arrived', dataIndex: 'Arrived', },
                 { title: 'Travel Empty Duration', dataIndex: 'Travel Empty Duration', },
-
             ]
 
             // sets the range to be read from the excel file
-            const range = "A13:ZZ100";
+            const range = "A13:ZZ1000";
 
             const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range })
             const filteredData = data.map((row: any) => {
@@ -360,6 +396,8 @@ const CycleDetailsTable = () => {
         console.log(values)
     }
 
+
+
     //hide Update table 
     const clearUpdateTable = () => {
         setIsFileUploaded(false)
@@ -416,49 +454,76 @@ const CycleDetailsTable = () => {
 
 
     return (
-        <div
-            style={{
-                backgroundColor: 'white',
-                padding: '20px',
-                borderRadius: '5px',
-                boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-            }}
-        >
+        <div className="card card-custom card-flush" >
+            <div className="card-header mt-7">
+                <Space style={{ marginBottom: 16 }}>
+                    <Input
+                        placeholder='Enter Search Text'
+                        type='text'
+                        allowClear size='large'
+                    />
+                    <Button type='primary' size='large'>
+                        Search
+                    </Button>
+                </Space>
+                <div className="card-toolbar">
+                    <Space style={{ marginBottom: 16 }}>
+                        {
+                            isFileUploaded ?
+                                <Space>
+                                    <Button onClick={showCheckDataModal}
+                                        type='primary' size='large'
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                        className='btn btn-light-success btn-sm'
+                                    >
+                                        Check data
+                                    </Button>
+                                    <Button onClick={() => { }}
+                                        type='primary' size='large'
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }} className='btn btn-light-success btn-sm'>
+                                        Save
+                                    </Button>
+                                    <Button onClick={clearUpdateTable}
+                                        type='primary' size='large'
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }} className='btn btn-light-info btn-sm'>
+                                        Clear
+                                    </Button>
+                                </Space>
+                                :
+                                <PageActionButtons
+                                    onAddClick={showModal}
+                                    onExportClicked={() => { console.log('export clicked') }}
+                                    onUploadClicked={showUploadModal}
+                                    hasAddButton={true}
+                                    hasExportButton={true}
+                                    hasUploadButton={true}
+                                />
+                        }
+                    </Space>
+                </div>
+            </div>
             <KTCardBody className='py-4 '>
                 <div className='table-responsive'>
                     <div className='d-flex  justify-content-between'>
-                        <Space style={{ marginBottom: 16 }}>
-                            <Input
-                                placeholder='Enter Search Text'
-                                type='text'
-                                allowClear size='large'
-                            />
-                            <Button type='primary' size='large'>
-                                Search
-                            </Button>
-                        </Space>
-                        <Space style={{ marginBottom: 16 }}>
-                            {
-                                isFileUploaded ?
-                                    <Button onClick={clearUpdateTable} type='primary' size='large' className='btn btn-light-info btn-sm'>
-                                        Clear Upload table
-                                    </Button>
-                                    :
-                                    <PageActionButtons
-                                        onAddClick={showModal}
-                                        onExportClicked={() => { console.log('export clicked') }}
-                                        onUploadClicked={showUploadModal}
-                                        hasAddButton={true}
-                                        hasExportButton={true}
-                                        hasUploadButton={true}
-                                    />
-                            }
-                        </Space>
+
                     </div>
 
                     <Table
                         columns={isFileUploaded ? uploadColumns : columns}
                         dataSource={isFileUploaded ? uploadData : gridData}
+                        scroll={{ x: 1300 }}
                     />
 
 
@@ -694,6 +759,91 @@ const CycleDetailsTable = () => {
                             </Upload>
                         </Space>
                     </Modal>
+
+                    {/* check data modal */}
+                    <Modal
+                        title=''
+                        open={isCheckDataModalOpen}
+                        onCancel={handleCancel}
+                        width={800}
+                        closable={true}
+                        footer={
+                            <>
+                                <Button onClick={handleCancel}
+                                    type='primary' size='large'
+                                    className='btn btn-light btn-sm w'>
+                                    Ok
+                                </Button>
+                            </>}
+                    >
+                        <div className="card card-custom mt-2">
+                            <div className="card-header card-header-stretch">
+                                <h3 className="card-title">Check Data</h3>
+                                <div className="card-toolbar">
+                                    <ul className="nav nav-tabs nav-line-tabs nav-stretch fs-6 border-0">
+                                        <li className="nav-item">
+                                            <a
+                                                className="nav-link active"
+                                                data-bs-toggle="tab"
+                                                href="#kt_tab_pane_7"
+                                            >
+                                                {/* todo Link to summary fo hauler */}
+                                                Summary 1
+                                            </a>
+                                        </li>
+                                        <li className="nav-item">
+                                            <a
+                                                className="nav-link"
+                                                data-bs-toggle="tab"
+                                                href="#kt_tab_pane_8"
+                                            >
+                                                Summary 2
+                                            </a>
+                                        </li>
+                                        <li className="nav-item">
+                                            <a
+                                                className="nav-link"
+                                                data-bs-toggle={"tab"}
+                                                href={"#kt_tab_pane_9"}
+                                            
+                                            >
+                                                Summary 3
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="card-body">
+                                <div className="tab-content" id="myTabContent">
+                                    <div
+                                        className="tab-pane fade show active"
+                                        id="kt_tab_pane_7"
+                                        role="tabpanel"
+                                    >
+                                         Summary content 1
+                                    </div>
+                                    <div
+                                        className="tab-pane fade"
+                                        id={"kt_tab_pane_8"}
+                                        role="tabpanel"
+                                    >
+                                       Summary content 2
+
+                                    </div>
+                                    <div
+                                        className="tab-pane fade"
+                                        id={"kt_tab_pane_9"}
+                                        role="tabpanel"
+                                    >
+                                       Summary content 3
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </Modal>
+
                 </div>
             </KTCardBody>
         </div>

@@ -1,5 +1,5 @@
 
-// dummy data for testing ProLoaderUnit
+// dummy data for cycle details
 const dates = [
     '2021-01-01', '2021-01-02', '2021-01-03', '2021-01-04', '2021-01-05', '2021-01-06', '2021-01-07', '2021-01-08', '2021-01-09',
     '2021-01-10', '2021-01-11', '2021-01-12', '2021-01-13', '2021-01-14', '2021-01-15', '2021-01-16', '2021-01-17', '2021-01-18',
@@ -10,7 +10,7 @@ const dates = [
     '2021-02-28', '2021-01-28', '2021-01-29', '2021-01-30', '2021-01-31', 
 ]
 
-const shifts = ['Day', 'Night']
+const shifts = ['D', 'N']
 
 const times = [
     '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
@@ -20,7 +20,7 @@ const times = [
 ]
 
 const loaders = ['EX64', 'EX60', 'EX67',]
-const haulers = ['Samuel Opoku', 'Unknown']
+const haulers = ['Kofi', 'Yaseen', 'Rovincy', 'Giovani', 'Philip', 'Isaac' ]
 const origins = ['AK2207164951', 'AK3218183216', 'AK2207165948', 'AK2216165066',]
 const materials = ['A3HGL', 'WCPSTE', 'WASTE']
 const destinations = ['CR02', 'CUT-1-DUMP',]
@@ -28,7 +28,7 @@ const nominals = [130, 49]
 const weights = [130, 49]
 const payloadWeights = [130, 49]
 const reportedWeights = [130, 49]
-const volumes = [130, 49]
+const volumes = [33, 49]
 const loads = [1]
 const timeAtLoaders = [
     '00:00', '01:00', '02:00', '03:00', '04:00', '05:00',
@@ -36,31 +36,31 @@ const timeAtLoaders = [
     '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
     '18:00', '19:00', '20:00', '21:00', '22:00', '23:00',
 ]
-//seconds
+
 const durations = [
    0, 1425, 4103, 1317, 14400, 1723, 21600, 25200, 28800,
 ]
 
 
-
-//use the dummy data to create a list of ProLoaderUnit objects
-export const CycleDetailsData = dates.map((date, index) => {
+// for each date, select hauler, loader, origin, destination, material, nominal, weight, payloadWeight, shift,
+//reportedWeight, volume, load, timeAtLoader at duration at random 
+export const CycleDetailsDummyData = dates.map((date, index) => {
     return {
         date: date,
-        shift: shifts[index % 2],
-        time: times[index],
-        loader: loaders[index % 3],
-        hauler: haulers[index % 2],
-        origin: origins[index % 4],
-        material: materials[index % 3],
-        destination: destinations[index % 2],
-        nominal: nominals[index % 2],
-        weight: weights[index % 2],
-        payloadWeight: payloadWeights[index % 2],
-        reportedWeight: reportedWeights[index % 2],
-        volume: volumes[index % 2],
-        load: loads[index % 1],
-        timeAtLoader: timeAtLoaders[index],
-        duration: durations[index],
+        shift: shifts[Math.floor(Math.random() * shifts.length)],
+        loader: loaders[Math.floor(Math.random() * loaders.length)],
+        hauler: haulers[Math.floor(Math.random() * haulers.length)],
+        origin: origins[Math.floor(Math.random() * origins.length)],
+        material: materials[Math.floor(Math.random() * materials.length)],
+        destination: destinations[Math.floor(Math.random() * destinations.length)],
+        nominal: nominals[Math.floor(Math.random() * nominals.length)],
+        weight: weights[Math.floor(Math.random() * weights.length)],
+        payloadWeight: payloadWeights[Math.floor(Math.random() * payloadWeights.length)],
+        reportedWeight: reportedWeights[Math.floor(Math.random() * reportedWeights.length)],
+        volume: volumes[Math.floor(Math.random() * volumes.length)],
+        load: loads[Math.floor(Math.random() * loads.length)],
+        timeAtLoader: timeAtLoaders[Math.floor(Math.random() * timeAtLoaders.length)],
+        duration: durations[Math.floor(Math.random() * durations.length)],
     }
+    
 })
