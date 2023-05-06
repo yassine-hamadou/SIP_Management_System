@@ -194,29 +194,29 @@ const CycleDetailsTable = () => {
     ]
 
     // find an item by its v and return the id of the item
-  
+
 
     const onSummaryTabsChange = (key: string) => {
         console.log(key);
-      };
+    };
 
-      const items: TabsProps['items'] = [
+    const items: TabsProps['items'] = [
         {
-          key: '1',
-          label: `Summary 1`,
-          children: `Content of Tab Summary 1`,
+            key: '1',
+            label: `Summary 1`,
+            children: `Content of Tab Summary 1`,
         },
         {
-          key: '2',
-          label: `Summary 2`,
-          children: `Content of Tab Summary 2`,
+            key: '2',
+            label: `Summary 2`,
+            children: `Content of Tab Summary 2`,
         },
         {
-          key: '3',
-          label: `Summary 3`,
-          children: `Content of Tab Summary 3`,
+            key: '3',
+            label: `Summary 3`,
+            children: `Content of Tab Summary 3`,
         },
-      ];
+    ];
 
     const uploadProps: UploadProps = {
         name: 'file',
@@ -254,6 +254,45 @@ const CycleDetailsTable = () => {
     // round off to whole number
     const roundOff = (num: number) => {
         return Math.round((num + Number.EPSILON) * 100) / 100
+    }
+
+    // convert populated data from excel file to database 
+    const saveTableObjects = () => {
+
+        const saveData = uploadData.map((item: any) => {
+
+            const destinationId = destinations?.data.find((dest: any) => dest.name === item.Destination);
+            const haulerUnitId = allHaulerUnits?.data.find((unit: any) => unit.equipmentId === item.Truck);
+            const hauler = allHaulers?.data.find((op: any) => op.name === item['Hauler Operator']);
+            const loaderUnitId = allLoaderUnits?.data.find((unit: any) => unit.equipmentId === item['Loading Unit']);
+            const loader = allLoaders?.data.find((op: any) => op.name === item['Loader Operator']);
+            const originId = allOrigins?.data.find((ori: any) => ori.name === item.Origin);
+            const materialId = allMaterials?.data.find((mat: any) => mat.name === item.Material);
+            const shiftId = allShifts?.data.find((s: any) => s.name === item.Shift);
+
+            return {
+                cycleDate: item.Date,
+                cycleTime: item.Arrived,
+                loader: loader.empCode,
+                hauler: hauler.empCode,
+                loaderUnitId: parseInt(loaderUnitId.id), // replace with actual value
+                haulerUnitId: parseInt(haulerUnitId.id), // replace with actual value
+                originId: parseInt(originId.id), // replace with actual value
+                materialId: parseInt(materialId.id), // replace with actual value
+                destinationId: item.Destination,
+                nominalWeight: item['Nominal Weight'],
+                weight: item.weight,
+                payloadWeight: item.PayloadWeight,
+                reportedWeight: item.ReportedWeight,
+                volume: item.Volume,
+                loads: item.Loads,
+                timeAtLoader: item['Time Start'],
+                shiftId: parseInt(shiftId.id), // replace with actual value
+                duration: item['Travel Empty Duration'],
+                tenantId: 'string' // replace with actual value
+            };
+        });
+
     }
 
     const handleUpload = () => {
@@ -323,40 +362,6 @@ const CycleDetailsTable = () => {
         reader.readAsArrayBuffer(uploadedFile)
     }
 
-    // convert populated data from excel file to database 
-    const saveTableObjects = uploadData.map((item: any) => {
-
-        const destinationId = destinations?.data.find((dest: any) => dest.name === item.Destination);
-        const haulerUnitId = allHaulerUnits?.data.find((unit: any) => unit.equipmentId === item['Hauler Unit']);
-        const hauler = allHaulers?.data.find((op: any) => op.empCode === item['Hauler Operator']);
-        const loaderUnitId = allLoaderUnits?.data.find((unit: any) => unit.equipmentId === item['Loader Unit']);
-        const loader = allLoaders?.data.find((op: any) => op.empCode === item.LoaderOperator);
-        const originId = allOrigins?.data.find((ori: any) => ori.name === item.Origin);
-        const materialId = allMaterials?.data.find((mat: any) => mat.name === item.Material);
-        const shiftId = allShifts?.data.find((s: any) => s.name === item.Shift);
-
-        return {
-          cycleDate: item.Date,
-          cycleTime: item.Arrived,
-          loader: loader.empCode,
-          hauler: hauler.empCode,
-          loaderUnitId: parseInt(loaderUnitId.id), // replace with actual value
-          haulerUnitId: parseInt(haulerUnitId.id), // replace with actual value
-          originId: parseInt(originId.id), // replace with actual value
-          materialId: parseInt(materialId.id), // replace with actual value
-          destinationId: item.Destination,
-          nominalWeight: item['Nominal Weight'],
-          weight: item.weight,
-          payloadWeight: item.PayloadWeight,
-          reportedWeight: item.ReportedWeight,
-          volume: item.Volume,
-          loads: item.Loads,
-          timeAtLoader: item['Time Start'],
-          shiftId: parseInt(shiftId.id), // replace with actual value
-          duration: item['Travel Empty Duration'],
-          tenantId: 'string' // replace with actual value
-        };
-      });
 
 
     const loadData = async () => {
@@ -812,7 +817,7 @@ const CycleDetailsTable = () => {
                     >
                         <div className="card card-custom mt-2">
                             <div className="card-header card-header-stretch">
-                                <h3 className="card-title">Check Data</h3>
+                                <h3 className="card-title">Data Summaries</h3>
                                 <div className="card-toolbar">
                                     <ul className="nav nav-tabs nav-line-tabs nav-stretch fs-6 border-0">
                                         <li className="nav-item">
@@ -839,7 +844,7 @@ const CycleDetailsTable = () => {
                                                 className="nav-link"
                                                 data-bs-toggle={"tab"}
                                                 href={"#kt_tab_pane_9"}
-                                            
+
                                             >
                                                 Summary 3
                                             </a>
@@ -854,14 +859,14 @@ const CycleDetailsTable = () => {
                                         id="kt_tab_pane_7"
                                         role="tabpanel"
                                     >
-                                         Summary content 1
+                                        Summary content 1
                                     </div>
                                     <div
                                         className="tab-pane fade"
                                         id={"kt_tab_pane_8"}
                                         role="tabpanel"
                                     >
-                                       Summary content 2
+                                        Summary content 2
 
                                     </div>
                                     <div
@@ -869,7 +874,7 @@ const CycleDetailsTable = () => {
                                         id={"kt_tab_pane_9"}
                                         role="tabpanel"
                                     >
-                                       Summary content 3
+                                        Summary content 3
 
                                     </div>
                                 </div>
