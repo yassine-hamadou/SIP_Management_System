@@ -79,7 +79,7 @@ const CycleDetailsTable = () => {
 
     function handleDelete(element: any) {
         const item = {
-            url: '',
+            url: 'cycleDetails',
             data: element
         }
         deleteData(item)
@@ -256,7 +256,7 @@ const CycleDetailsTable = () => {
         return Math.round((num + Number.EPSILON) * 100) / 100
     }
 
-    const handleUpload = async () => {
+    const handleUpload = () => {
         message.loading({ content: 'Uploading...', key: 'uploading' })
         setLoading(true)
         setIsUploadModalOpen(false)
@@ -323,6 +323,41 @@ const CycleDetailsTable = () => {
         reader.readAsArrayBuffer(uploadedFile)
     }
 
+    // convert populated data from excel file to database 
+    const saveTableObjects = uploadData.map((item: any) => {
+
+        const destinationId = destinations?.data.find((dest: any) => dest.name === item.Destination);
+        const haulerUnitId = allHaulerUnits?.data.find((unit: any) => unit.equipmentId === item['Hauler Unit']);
+        const hauler = allHaulers?.data.find((op: any) => op.empCode === item['Hauler Operator']);
+        const loaderUnitId = allLoaderUnits?.data.find((unit: any) => unit.equipmentId === item['Loader Unit']);
+        const loader = allLoaders?.data.find((op: any) => op.empCode === item.LoaderOperator);
+        const originId = allOrigins?.data.find((ori: any) => ori.name === item.Origin);
+        const materialId = allMaterials?.data.find((mat: any) => mat.name === item.Material);
+        const shiftId = allShifts?.data.find((s: any) => s.name === item.Shift);
+
+        return {
+          cycleDate: item.Date,
+          cycleTime: item.Arrived,
+          loader: loader.empCode,
+          hauler: hauler.empCode,
+          loaderUnitId: parseInt(loaderUnitId.id), // replace with actual value
+          haulerUnitId: parseInt(haulerUnitId.id), // replace with actual value
+          originId: parseInt(originId.id), // replace with actual value
+          materialId: parseInt(materialId.id), // replace with actual value
+          destinationId: item.Destination,
+          nominalWeight: item['Nominal Weight'],
+          weight: item.weight,
+          payloadWeight: item.PayloadWeight,
+          reportedWeight: item.ReportedWeight,
+          volume: item.Volume,
+          loads: item.Loads,
+          timeAtLoader: item['Time Start'],
+          shiftId: parseInt(shiftId.id), // replace with actual value
+          duration: item['Travel Empty Duration'],
+          tenantId: 'string' // replace with actual value
+        };
+      });
+
 
     const loadData = async () => {
         setLoading(true)
@@ -381,12 +416,11 @@ const CycleDetailsTable = () => {
     const handleUpdate = (e: any) => {
         e.preventDefault()
         const item = {
-            url: '',
+            url: 'cycleDetails',
             data: tempData
         }
         updateData(item)
         console.log('update: ', item.data)
-
     }
 
     const showUpdateModal = (values: any) => {
