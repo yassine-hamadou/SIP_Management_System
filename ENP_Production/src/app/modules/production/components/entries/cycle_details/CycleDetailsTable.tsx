@@ -1,15 +1,13 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Divider, Form, Input, Modal, Space, Table, TabsProps, TimePicker, Upload, UploadProps, message, } from 'antd';
-import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
-import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers';
-import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents';
-import { useForm } from 'react-hook-form';
-import { useQueryClient, useMutation, useQuery } from 'react-query';
-import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
-import * as XLSX from 'xlsx';
+import { Button, Divider, Input, Modal, Space, Table, TabsProps, Upload, UploadProps, message } from 'antd';
 import moment from 'moment';
-import { title } from 'process';
+import { useEffect, useState } from "react";
+import { useForm } from 'react-hook-form';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import * as XLSX from 'xlsx';
+import { KTCardBody } from '../../../../../../_metronic/helpers';
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
+import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents';
 
 
 const CycleDetailsTable = () => {
@@ -95,6 +93,27 @@ const CycleDetailsTable = () => {
         return name
     }
 
+    const getUnitRecordName = (id: any, data: any) => {
+        let name = ''
+        data.map((item: any) => {
+            if (item.id === id) {
+                name = item.modelName
+            }
+        })
+        return name
+    }
+
+    const getOperatorRecordName = (id: any, data: any) => {
+        let name = ''
+        data.map((item: any) => {
+            if (item.empCode === id) {
+                name = item.empName
+            }
+        })
+        return name
+    }
+
+
 
     const columns: any = [
         {
@@ -107,6 +126,7 @@ const CycleDetailsTable = () => {
         {
             title: 'Shift',
             dataIndex: 'shiftId',
+            width: 80,
             render: (record: any) => {
                 return getRecordName(record, allShifts?.data)
             }
@@ -114,18 +134,44 @@ const CycleDetailsTable = () => {
         {
             title: 'Time',
             dataIndex: 'cycleTime',
+            width: 80,
         },
         {
-            title: 'Loader',
+            title: 'Loader Unit',
+            dataIndex: 'loaderUnitId',
+            width: 80,
+            render: (record: any) => {
+                return getUnitRecordName(record, allLoaderUnits?.data)
+            }
+        },
+        {
+            title: 'Loader Operator',
             dataIndex: 'loader',
+            width: 90,
+            render: (record: any) => {
+                return getOperatorRecordName(record, allLoaders?.data)
+            }
         },
         {
-            title: 'Hauler',
+            title: 'Hauler Unit',
+            dataIndex: 'haulerUnitId',
+            width: 80,
+            render: (record: any) => {
+                return getUnitRecordName(record, allHaulerUnits?.data)
+            }
+        },
+        {
+            title: 'Hauler Operator',
             dataIndex: 'hauler',
+            width: 90,
+            render: (record: any) => {
+                return getOperatorRecordName(record, allLoaders?.data)
+            }
         },
         {
             title: 'Origin',
             dataIndex: 'originId',
+            width: 90,
             render: (record: any) => {
                 return getRecordName(record, allOrigins?.data)
             }
@@ -133,6 +179,7 @@ const CycleDetailsTable = () => {
         {
             title: 'Material',
             dataIndex: 'materialId',
+            width: 90,
             render: (record: any) => {
                 return getRecordName(record, allMaterials?.data)
             }
@@ -140,46 +187,55 @@ const CycleDetailsTable = () => {
         {
             title: 'Destination',
             dataIndex: 'destinationId',
+            width: 90,
             render: (record: any) => {
                 return getRecordName(record, destinations?.data)
             }
         },
         {
             title: 'Nominal Weight',
-            dataIndex: 'nominalWeight'
+            dataIndex: 'nominalWeight',
+            width: 90,
         },
         {
             title: 'Weight',
-            dataIndex: 'weight'
+            dataIndex: 'weight',
+            width: 80,
         },
         {
             title: 'Payload Weight',
-            dataIndex: 'payloadWeight'
+            dataIndex: 'payloadWeight',
+            width: 90,
         },
         {
             title: 'Reported Weight',
-            dataIndex: 'reportedWeight'
+            dataIndex: 'reportedWeight',
+            width: 95,
         },
         {
             title: 'Volume',
-            dataIndex: 'volumes'
+            dataIndex: 'volumes',
+            width: 85,
         },
         {
             title: 'Loads',
-            dataIndex: 'loads'
+            dataIndex: 'loads',
+            width: 80,
         },
         {
             title: 'Time at loader',
-            dataIndex: 'timeAtLoader'
+            dataIndex: 'timeAtLoader',
+            width: 90,
         },
         {
             title: 'Duration',
-            dataIndex: 'duration'
+            dataIndex: 'duration',
+            width: 90,
         },
         {
             title: 'Action',
             fixed: 'right',
-            width: 100,
+            width: 120,
             render: (_: any, record: any) => (
                 <Space size='middle'>
                     <a onClick={() => showUpdateModal(record)} className='btn btn-light-info btn-sm'>
@@ -314,27 +370,27 @@ const CycleDetailsTable = () => {
             ];
 
             const fileColumns = [
-                { title: 'Date', dataIndex: 'Date', key: 'date', fixed: 'left', width: 80 },
-                { title: 'Shift', dataIndex: 'Shift', },
-                { title: 'Time Start', dataIndex: 'Time Start', },
-                { title: 'Loading Unit', dataIndex: 'Loading Unit', },
-                { title: 'Loader Operator', dataIndex: 'Loader Operator', },
-                { title: 'Hauler', dataIndex: 'Truck', },
-                { title: 'Hauler Operator', dataIndex: 'Hauler Operator', },
-                { title: 'Origin', dataIndex: 'Origin', },
-                { title: 'Material', dataIndex: 'Material', },
-                { title: 'Destination', dataIndex: 'Destination', },
-                { title: 'Nominal Weight', dataIndex: 'Nominal Weight', },
-                { title: 'Payload Weight', dataIndex: 'Payload Weight', },
-                { title: 'Reported Weight', dataIndex: 'Reported Weight', },
-                { title: 'Volume', dataIndex: 'Volume', },
-                { title: 'Loads', dataIndex: 'Loads', },
-                { title: 'Arrived', dataIndex: 'Arrived', },
-                { title: 'Travel Empty Duration', dataIndex: 'Travel Empty Duration', },
+                { title: 'Date', dataIndex: 'Date', key: 'date', fixed: 'left', width: 90 },
+                { title: 'Shift', dataIndex: 'Shift',  width: 90, },
+                { title: 'Time Start', dataIndex: 'Time Start',  width: 90, },
+                { title: 'Loading Unit', dataIndex: 'Loading Unit',  width: 90, },
+                { title: 'Loader Operator', dataIndex: 'Loader Operator',  width: 90, },
+                { title: 'Hauler', dataIndex: 'Truck',  width: 90, },
+                { title: 'Hauler Operator', dataIndex: 'Hauler Operator',  width: 90, },
+                { title: 'Origin', dataIndex: 'Origin',  width: 90, },
+                { title: 'Material', dataIndex: 'Material',  width: 90, },
+                { title: 'Destination', dataIndex: 'Destination',  width: 95, },
+                { title: 'Nominal Weight', dataIndex: 'Nominal Weight',  width: 90, },
+                { title: 'Payload Weight', dataIndex: 'Payload Weight',  width: 90, },
+                { title: 'Reported Weight', dataIndex: 'Reported Weight',  width: 95, },
+                { title: 'Volume', dataIndex: 'Volume',  width: 90, },
+                { title: 'Loads', dataIndex: 'Loads',  width: 90, },
+                { title: 'Arrived', dataIndex: 'Arrived',  width: 90, },
+                { title: 'Travel Empty Duration', dataIndex: 'Travel Empty Duration',  width: 90, },
             ]
 
             // sets the range to be read from the excel file
-            const range = "A13:ZZ1000";
+            const range = "A13:ZZ10000";
 
             const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range })
             const filteredData = data.map((row: any) => {
