@@ -50,6 +50,7 @@ const EmplyeeDetails= () =>{
   const [catName, setCatName] = useState<any>()
   const [notchName, setNotchName] = useState<any>()
   const [nation, setNation] = useState<any>()
+  const tenantId = localStorage.getItem('tenant')
 
   const deleteFamMem = async (element: any) => {
     try {
@@ -88,19 +89,19 @@ const EmplyeeDetails= () =>{
     }
                   
   }
-  const {data:allEmployees} = useQuery('employees', fetchEmployees, {cacheTime:5000})
-  const {data:allDepartments} = useQuery('departments', fetchDepartments, {cacheTime:5000})
-  const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
-  const {data:allCategories} = useQuery('categories', fetchCategories, {cacheTime:5000})
-  const {data:allPaygroups} = useQuery('paygroups', fetchPaygroups, {cacheTime:5000})
-  const {data:allUnits} = useQuery('units', fetchUnits, {cacheTime:5000})
-  const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
-  const {data:allNotches} = useQuery('notches', fetchNotches, {cacheTime:5000})
-  const {data:allNations} = useQuery('nations', fetchNationalities, {cacheTime:5000})
-  const {data:allSkills} = useQuery('skill', fetchSkills, {cacheTime:5000})
-  const {data:allQualifications} = useQuery('qualifications', fetchQualifications, {cacheTime:5000})
-  const {data:allExperiences} = useQuery('experiences', fetchExperiences, {cacheTime:5000})
-  const {data:allJobTitles} = useQuery('jobtitle', fetchJobTitles, {cacheTime:5000})
+  const {data:allEmployees} = useQuery('employees',()=> fetchEmployees(tenantId), {cacheTime:5000})
+  const {data:allDepartments} = useQuery('departments',()=> fetchDepartments(tenantId), {cacheTime:5000})
+  const {data:allDivisions} = useQuery('divisions',()=> fetchDivisions(tenantId), {cacheTime:5000})
+  const {data:allCategories} = useQuery('categories', ()=>fetchCategories(tenantId), {cacheTime:5000})
+  const {data:alPaygroups} = useQuery('paygroups',()=> fetchPaygroups(tenantId), {cacheTime:5000})
+  const {data:allUnits} = useQuery('units',()=> fetchUnits(tenantId), {cacheTime:5000})
+  const {data:allGrades} = useQuery('grades',()=> fetchGrades(tenantId), {cacheTime:5000})
+  const {data:allNotches} = useQuery('notches',()=> fetchNotches(tenantId), {cacheTime:5000})
+  const {data:allNations} = useQuery('nations',()=> fetchNationalities(tenantId), {cacheTime:5000})
+  const {data:allSkills} = useQuery('skill',()=> fetchSkills(tenantId), {cacheTime:5000})
+  const {data:allQualifications} = useQuery('qualifications',()=> fetchQualifications(tenantId), {cacheTime:5000})
+  const {data:allExperiences} = useQuery('experiences',()=> fetchExperiences(tenantId), {cacheTime:5000})
+  const {data:allJobTitles} = useQuery('jobtitle',()=> fetchJobTitles(tenantId), {cacheTime:5000})
 
 
   // const tempData = allEmployees?.data.find((employee:any) =>{
@@ -235,7 +236,7 @@ const EmplyeeDetails= () =>{
     } 
     const getPaygroupName = () => {
       let paygroupName = null
-      allPaygroups?.data.map((item: any) => {
+      alPaygroups?.data.map((item: any) => {
         if (item.id === tempData?.paygroupId) {
           paygroupName=item.name
         }

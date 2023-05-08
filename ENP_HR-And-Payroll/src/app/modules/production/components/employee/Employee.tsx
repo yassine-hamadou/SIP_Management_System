@@ -214,11 +214,11 @@ const Employee = () => {
     },
   ]
 
-  const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
-  const {data:allDepartments} = useQuery('department', fetchDepartments, {cacheTime:5000})
-  const {data:allPaygroups} = useQuery('paygroup', fetchPaygroups, {cacheTime:5000})
-  const {data:allNotches} = useQuery('notches', fetchNotches, {cacheTime:5000})
-  const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
+  const {data:allEmployee} = useQuery('employee',() =>fetchEmployees(tenantId), {cacheTime:5000})
+  const {data:allDepartments} = useQuery('department',() => fetchDepartments(tenantId), {cacheTime:5000})
+  const {data:allPaygroups} = useQuery('paygroup',() => fetchPaygroups(tenantId), {cacheTime:5000})
+  const {data:allNotches} = useQuery('notches',() => fetchNotches(tenantId), {cacheTime:5000})
+  const {data:allGrades} = useQuery('grades',() => fetchGrades(tenantId), {cacheTime:5000})
  
   const getDepartmentName = (departmentId: any) => {
     let departmentName = null

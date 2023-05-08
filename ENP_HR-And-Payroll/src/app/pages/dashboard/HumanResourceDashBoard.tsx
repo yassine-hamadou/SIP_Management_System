@@ -106,7 +106,8 @@ const columns: any = [
 ]
 
 const HRDashboardPage = () => {
-  const { data: dashboardData } = useQuery('dashboarddata', fetchDashBoardData, { cacheTime: 5000 })
+  const tenantId = localStorage.getItem('tenant')
+  const { data: dashboardData } = useQuery('dashboarddata',()=> fetchDashBoardData(tenantId), { cacheTime: 5000 })
   
 
   return(

@@ -31,6 +31,7 @@ const AppRoutes: FC = () => {
   })
 
 const hasApp = userApp?.find((applicationId:any)=>applicationId ==='10')
+const tenantId = localStorage.getItem('tenant')
 
   return (
     <BrowserRouter basename={PUBLIC_URL}>

@@ -24,16 +24,17 @@ const MultiTabForm= () =>{
   }
 
   const navigate = useNavigate();
+  const tenantId = localStorage.getItem('tenant')
 
-  const {data:allDepartments} = useQuery('departments', fetchDepartments, {cacheTime:5000})
-  const {data:allDivisions} = useQuery('divisions', fetchDivisions, {cacheTime:5000})
-  const {data:allCategories} = useQuery('categories', fetchCategories, {cacheTime:5000})
-  const {data:allPaygroups} = useQuery('paygroups', fetchPaygroups, {cacheTime:5000})
-  const {data:allUnits} = useQuery('units', fetchUnits, {cacheTime:5000})
-  const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
-  const {data:allNotches} = useQuery('notches', fetchNotches, {cacheTime:5000})
-  const {data:allNations} = useQuery('nations', fetchNationalities, {cacheTime:5000})
-  const {data:allJobTitles} = useQuery('jobtitle', fetchJobTitles, {cacheTime:5000})
+  const {data:allDepartments} = useQuery('departments',()=> fetchDepartments(tenantId), {cacheTime:5000})
+  const {data:allDivisions} = useQuery('divisions',()=> fetchDivisions(tenantId), {cacheTime:5000})
+  const {data:allCategories} = useQuery('categories', ()=>fetchCategories(tenantId), {cacheTime:5000})
+  const {data:allPaygroups} = useQuery('paygroups',()=> fetchPaygroups(tenantId), {cacheTime:5000})
+  const {data:allUnits} = useQuery('units', ()=>fetchUnits(tenantId), {cacheTime:5000})
+  const {data:allGrades} = useQuery('grades',()=> fetchGrades(tenantId), {cacheTime:5000})
+  const {data:allNotches} = useQuery('notches',()=> fetchNotches(tenantId), {cacheTime:5000})
+  const {data:allNations} = useQuery('nations', ()=>fetchNationalities(tenantId), {cacheTime:5000})
+  const {data:allJobTitles} = useQuery('jobtitle',()=> fetchJobTitles(tenantId), {cacheTime:5000})
 
   const handleTabChange = (newTab:any) => {
     setActiveTab(newTab);
