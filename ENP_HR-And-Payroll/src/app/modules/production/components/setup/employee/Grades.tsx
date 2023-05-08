@@ -145,8 +145,8 @@ const Grades = () => {
   ]
 
 
-  const { data: allPaygroups } = useQuery('paygroups', fetchPaygroups, { cacheTime: 5000 })
-  const { data: allGrades } = useQuery('grades', fetchGrades, { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: allGrades } = useQuery('grades',()=>  fetchGrades(tenantId), { cacheTime: 5000 })
   const getItemName = async (param: any) => {
 
     let newName = null

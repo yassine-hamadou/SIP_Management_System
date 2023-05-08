@@ -51,20 +51,6 @@ const JobTitleQualification = () => {
     deleteData(element)
   }
   const columns: any = [
-   
-    // {
-    //   title: 'Code',
-    //   dataIndex: 'code',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.code > b.code) {
-    //       return 1
-    //     }
-    //     if (b.code > a.code) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
     {
       title: 'Qualification Name',
       key:'qualificationId',
@@ -101,8 +87,8 @@ const JobTitleQualification = () => {
     },
   ]
 
-  const {data:allJobTitles} = useQuery('jobtitle', fetchJobTitles, {cacheTime:5000})
-  const {data:allQualifications} = useQuery('qualification', fetchQualifications, {cacheTime:5000})  
+  const {data:allJobTitles} = useQuery('jobtitle',()=>  fetchJobTitles(tenantId), {cacheTime:5000})
+  const {data:allQualifications} = useQuery('qualification',()=>  fetchQualifications(tenantId), {cacheTime:5000})  
 
   const getQualificationName = (qualificationId: any) => {
     let qualificationName = null

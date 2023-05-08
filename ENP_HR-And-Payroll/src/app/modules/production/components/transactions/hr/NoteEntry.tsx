@@ -53,11 +53,11 @@ const NoteEntry = () => {
     }
   }
 
-  const { data: allEmployees } = useQuery('employees', fetchEmployees, { cacheTime: 5000 })
-  const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
-  const {data:allNoteCategories} = useQuery('noteCategories', fetchNoteCategories, {cacheTime:5000})
-  const { data: allPeriods } = useQuery('periods', fetchPeriods, { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
+  const { data: allEmployees } = useQuery('employees',()=>fetchEmployees(tenantId), { cacheTime: 5000 })
+  const {data:allMedicals} = useQuery('medicals',()=> fetchMedicals(tenantId), {cacheTime:5000})
+  const {data:allNoteCategories} = useQuery('noteCategories',()=> fetchNoteCategories(tenantId), {cacheTime:5000})
+  const { data: allPeriods } = useQuery('periods', ()=>fetchPeriods(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroup',()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
 
   
   const [fileList, setFileList] = useState<UploadFile[]>([
@@ -217,7 +217,7 @@ const NoteEntry = () => {
   }, [])
 
 
-  const emplyeesByPaygroup:any = allEmployees?.data.filter((item:any) =>{
+  const emplyeesByPaygroup:any = allEmployees?.data?.filter((item:any) =>{
     return  item.paygroupId===parseInt(selectedValue1)
     })
 
@@ -226,7 +226,7 @@ const NoteEntry = () => {
     return  (item.paygroupId===parseInt(selectedValue1))&&(item.periodId===parseInt(selectedValue2))
     })
 
-  const noteCategoriesByType:any = allNoteCategories?.data.filter((item:any) =>{
+  const noteCategoriesByType:any = allNoteCategories?.data?.filter((item:any) =>{
     return  item.type===selectedType
     })
 

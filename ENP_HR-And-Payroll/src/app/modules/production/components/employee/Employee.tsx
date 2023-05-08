@@ -4,10 +4,9 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
 import { ENP_URL } from '../../urls'
 import { Link } from 'react-router-dom'
-import { employeedata } from '../../../../data/DummyData'
 import { useQuery } from 'react-query'
 import { Api_Endpoint, axioInstance, fetchDepartments, fetchEmployees, fetchGrades, fetchNotches, fetchPaygroups } from '../../../../services/ApiCalls'
-import { AUTH_LOCAL_STORAGE_KEY } from '../../../auth'
+
 
 const Employee = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -215,11 +214,11 @@ const Employee = () => {
     },
   ]
 
-  const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
-  const {data:allDepartments} = useQuery('department', fetchDepartments, {cacheTime:5000})
-  const {data:allPaygroups} = useQuery('paygroup', fetchPaygroups, {cacheTime:5000})
-  const {data:allNotches} = useQuery('notches', fetchNotches, {cacheTime:5000})
-  const {data:allGrades} = useQuery('grades', fetchGrades, {cacheTime:5000})
+  const {data:allEmployee} = useQuery('employee',() =>fetchEmployees(tenantId), {cacheTime:5000})
+  const {data:allDepartments} = useQuery('department',() => fetchDepartments(tenantId), {cacheTime:5000})
+  const {data:allPaygroups} = useQuery('paygroup',() => fetchPaygroups(tenantId), {cacheTime:5000})
+  const {data:allNotches} = useQuery('notches',() => fetchNotches(tenantId), {cacheTime:5000})
+  const {data:allGrades} = useQuery('grades',() => fetchGrades(tenantId), {cacheTime:5000})
  
   const getDepartmentName = (departmentId: any) => {
     let departmentName = null
@@ -257,11 +256,11 @@ const Employee = () => {
     })
     return notchName
   } 
-
+  const tenantId = localStorage.getItem('tenant')
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axioInstance.get(`${Api_Endpoint}/Employees`,
+      const response = await axioInstance.get(`${Api_Endpoint}/Employees/tenant/${tenantId}`,
      
       )
       setGridData(response.data)
@@ -271,17 +270,13 @@ const Employee = () => {
     }
   }
 
-
   useEffect(() => {
     loadData()
     fetchImage()
   }, [])
 
-
-
   // const sortedEmployees = gridData.sort((a:any, b:any) => a?.departmentId.localeCompare(b?.departmentId));
   // const females = sortedEmployees.filter((employee:any) => employee.gender === 'female');
-  
   
   var out_data:any = {};
   

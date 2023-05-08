@@ -15,7 +15,7 @@ export function AsideMenuMain() {
   const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(currentUser?.id)).map((filteredItem:any) => {
     return filteredItem.applicationId.toString()
 })
-console.log(userApp);
+
 
   
   const [isHR, setIsHR] = useState(false)

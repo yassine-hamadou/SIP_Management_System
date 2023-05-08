@@ -295,11 +295,11 @@ const onRadio4Change = (e: RadioChangeEvent) => {
   }))
 
 
-  const { data: allPaygroups } = useQuery('paygroup', fetchPaygroups, { cacheTime: 5000 })
-  const { data: allCategories } = useQuery('categories', fetchCategories, { cacheTime: 5000 })
-  const { data: allUnits } = useQuery('units', fetchUnits, { cacheTime: 5000 })
-  const { data: allJobTitles } = useQuery('jobtitles', fetchJobTitles, { cacheTime: 5000 })
-  const { data: allRecuitmentTransactions } = useQuery('recruitmentTransactions', fetchRecruitmentTransactions, { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroup', ()=>fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: allCategories } = useQuery('categories', ()=>fetchCategories(tenantId), { cacheTime: 5000 })
+  const { data: allUnits } = useQuery('units',()=> fetchUnits(tenantId), { cacheTime: 5000 })
+  const { data: allJobTitles } = useQuery('jobtitles',()=> fetchJobTitles(tenantId), { cacheTime: 5000 })
+  const { data: allRecuitmentTransactions } = useQuery('recruitmentTransactions',()=> fetchRecruitmentTransactions(tenantId), { cacheTime: 5000 })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
