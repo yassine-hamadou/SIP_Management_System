@@ -21,8 +21,34 @@ const ProUnitComponet = (props: any) => {
     const [tempData, setTempData] = useState<any>()
     const { register, reset, handleSubmit } = useForm()
     const queryClient = useQueryClient()
+    const [modelName, setModelName] = useState<any>(null)
+    const [equipmentId, setEquipmentId] = useState<any>(null)
 
     const { data: equipments } = useQuery('equipments', () => fetchDocument('equipments'), { cacheTime: 5000 })
+    const { data: models } = useQuery('models', () => fetchDocument('models'), { cacheTime: 5000 })
+
+    // get modelId from selected equipment
+    const getEquipmentModelId = (equipmentId: any) => {
+        const equipment = equipments?.data.find((equipment: any) => equipment.equipmentId === equipmentId)
+        console.log('modelId: ', equipment?.modelId)
+        return parseInt(equipment?.modelId)
+    }
+
+    // get model name from ewuipment modelId
+    const getModelName = (equipmentId: any) => {
+        const model = models?.data.find((model: any) => model.modelId === getEquipmentModelId(equipmentId))
+        return model?.name
+    }
+
+    // handle equipmentId change
+    const handleEquipmentIdChange = (event: any) => {
+        event.preventDefault()
+        setEquipmentId(event.target.value)
+        setModelName(getModelName(event.target.value))
+        setTempData({ ...tempData, [event.target.name]: event.target.value });
+        console.log('model name: ', modelName)
+        console.log('equipmentId: ', equipmentId)
+    }
 
 
     const handleChange = (event: any) => {
@@ -40,6 +66,9 @@ const ProUnitComponet = (props: any) => {
 
     const handleCancel = () => {
         reset()
+        setTempData({})
+        setEquipmentId(null)
+        setModelName(null)
         setIsModalOpen(false)
         setIsUploadModalOpen(false)
         setIsUpdateModalOpen(false)
@@ -64,6 +93,16 @@ const ProUnitComponet = (props: any) => {
         deleteData(item)
     }
 
+    const getRecordName = (id: any, data: any) => {
+        let name = ''
+        data.map((item: any) => {
+            if (item.id === id) {
+                name = item.name
+            }
+        })
+        return name
+    }
+
     const columns: any = [
 
         {
@@ -83,7 +122,7 @@ const ProUnitComponet = (props: any) => {
         {
             title: 'Model Name',
             dataIndex: 'modelName',
-            sorter: (a: any, b: any) => a.modlName - b.modlName,
+            sorter: (a: any, b: any) => a.modelName - b.modelName,
         },
 
         {
@@ -161,6 +200,8 @@ const ProUnitComponet = (props: any) => {
             queryClient.setQueryData(['plannedOutput', tempData], data);
             reset()
             setTempData({})
+            setEquipmentId(null)
+            setModelName(null)
             loadData()
             setIsUpdateModalOpen(false)
             setIsModalOpen(false)
@@ -173,17 +214,14 @@ const ProUnitComponet = (props: any) => {
     })
 
     const handleUpdate = (e: any) => {
-        if (tempData.destination === '' || tempData.activity === '' || tempData.quantity === '') {
-            message.error('Please fill all the fields')
-        } else {
-            e.preventDefault()
-            const item = {
-                url: props.data.url,
-                data: tempData
-            }
-            updateData(item)
-            console.log('update: ', item.data)
+        e.preventDefault()
+        const item = {
+            url: props.data.url,
+            data: tempData
         }
+        updateData(item)
+        console.log('update: ', item.data)
+
     }
 
     const showUpdateModal = (values: any) => {
@@ -196,20 +234,17 @@ const ProUnitComponet = (props: any) => {
 
     const OnSubmit = handleSubmit(async (values) => {
         setSubmitLoading(true)
-        if (tempData.destination === '' || tempData.activity === '' || tempData.quantity === '') {
-            message.error('Please fill all the fields')
-        } else {
-            const item = {
-                data: {
-                    equipmentId: values.equipmentId,
-                    modelName: values.modelName,
-                    description: values.description,
-                },
-                url: props.data.url
-            }
-            console.log(item.data)
-            postData(item)
+        const item = {
+            data: {
+                equipmentId: values.equipmentId,
+                modelName: values.modelName,
+                description: values.description,
+            },
+            url: props.data.url
         }
+        console.log(item.data)
+        postData(item)
+
     })
 
     const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
@@ -217,6 +252,8 @@ const ProUnitComponet = (props: any) => {
             queryClient.setQueryData([props.data.url, tempData], data);
             reset()
             setTempData({})
+            setEquipmentId(null)
+            setModelName(null)
             loadData()
             setIsModalOpen(false)
             setSubmitLoading(false)
@@ -283,7 +320,7 @@ const ProUnitComponet = (props: any) => {
 
                                     <select
                                         {...register("equipmentId")}
-                                        onChange={handleChange}
+                                        onChange={handleEquipmentIdChange}
                                         className="form-select form-select-white mb-7 " aria-label="Select example">
                                         {!isUpdateModalOpen && <option>Select</option>}
                                         {
@@ -297,7 +334,7 @@ const ProUnitComponet = (props: any) => {
                                 </div>
                                 <div className=' mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Model name</label>
-                                    <input {...register("modelName")} name='modelName' defaultValue={!isUpdateModalOpen ? '' : tempData?.modelName} onChange={handleChange} className="form-control form-control-white" />
+                                    <input {...register("modelName")} disabled={true} name='modelName' defaultValue={!isUpdateModalOpen ? modelName : tempData?.modelName} onChange={!isUpdateModalOpen ? handleEquipmentIdChange : handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className=' mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>

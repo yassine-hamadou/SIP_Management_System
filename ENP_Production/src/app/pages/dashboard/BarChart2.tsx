@@ -5,6 +5,7 @@ import {useQuery} from "react-query";
 import axios from "axios";
 import { useThemeMode } from '../../../_metronic/partials/layout/theme-mode/ThemeModeProvider';
 import { ENP_URL } from '../../modules/production/urls';
+import { CycleDetailsDummyData } from '../../data/DummyData';
 
 type Props = {
   className: string
@@ -32,8 +33,7 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
     const secondaryColor = getCSSVariableValue('--kt-gray-300')
     const baseColor = getCSSVariableValue('--kt-' + chartColor)
 
-    console.log('listOfDownTypes: faults', faults)
-    console.log('listOfDownTypes', category)
+  
     return {
       series: [
         {
@@ -151,19 +151,17 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
     return chart
   }
 
+  // group by hauler
+  const groupedByHauler: any = {};
+  CycleDetailsDummyData.forEach((item) => {
+    if (!groupedByHauler[item.hauler]) {
+      groupedByHauler[item.hauler] = [];
+    }
+    groupedByHauler[item.hauler].push(item);
+  });
 
-  listOfDownTypes?.data?.map((item: any) => {
-    const resolvedFaultsByDownType: any = listOfFaults?.data?.filter(
-      (fault: any) => fault.downType.trim() === item.faultDesc.trim() && fault.status === 1
-    )
+  
 
-    const downTimePerDownTypeHours = resolvedFaultsByDownType?.map((fault: any) => {
-      return new Date(fault.wtimeEnd).getTime() - new Date(fault.downtime).getTime()
-    })?.reduce((a: any, b: any) => a + b, 0) / 1000 / 60 / 60
-
-    category.push(item.faultDesc)
-    faults.push(Math.floor(downTimePerDownTypeHours))
-  })
   useEffect(() => {
     const chart = refreshChart()
 

@@ -5,7 +5,7 @@ import { useQuery } from "react-query";
 import axios from "axios";
 import { ENP_URL } from '../../modules/production/urls';
 import { useThemeMode } from '../../../_metronic/partials/layout/theme-mode/ThemeModeProvider';
-import { CycleDetailsData } from '../../data/DummyData';
+import { CycleDetailsDummyData } from '../../data/DummyData';
 
 
 type Props = {
@@ -20,20 +20,8 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
   const { mode } = useThemeMode()
   const data: any = []
   const categories: any = []
-  const monthArray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  const haulers = ['Samuel Opoku', 'Unknown']
-
-  const { data: listOfFaults } = useQuery('listOfFaults', () => {
-    return axios.get(`${ENP_URL}/faultentriesapi`)
-  })
-  // const [categories, setCategories]: any = useState([])
-  // const [data, setData]: any = useState([])
 
 
-  console.log('cycleDetails: ', CycleDetailsData)
-  console.log('data', data)
-  console.log('categories', categories)
-  console.log('slice', data.slice(-12))
   const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
     const labelColor = getCSSVariableValue('--kt-gray-500')
     const borderColor = getCSSVariableValue('--kt-gray-200')
@@ -43,7 +31,7 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
     return {
       series: [
         {
-          name: 'Total',
+          name: 'Total volumes',
           data: data?.slice(-12)
         },
       ],
@@ -58,7 +46,7 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
       plotOptions: {
         bar: {
           horizontal: false,
-          columnWidth: '70%',
+          columnWidth: '50%',
           borderRadius: 5,
         },
       },
@@ -126,7 +114,7 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
         },
         y: {
           formatter: function (val) {
-            return `${val} Hours`
+            return `${val}`
           },
         },
       },
@@ -144,6 +132,11 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
         },
       },
     }
+
+    // return a chart for cycle details per volumes per hauler
+
+
+
   }
   const refreshChart = () => {
     if (!chartRef.current) {
@@ -157,26 +150,35 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
     return chart
   }
 
-  //from now to last 12 months
-  for (let i = 0; i < 12; i++) {
-    const date = new Date()
-    date.setMonth(date.getMonth() - i)
-    const year = date.getFullYear()
-    const month = date.getMonth() + 1
-    const monthString = month < 10 ? `0${month}` : month
-    const dateString = `${year}-${monthString}`
-    // setCategories([...categories, monthArray[new Date(dateString).getMonth()]])
-    categories.push(monthArray[new Date(dateString).getMonth()])
-    const faultDuringTheMonth = listOfFaults?.data.filter((item: any) => {
-      if (item.status === 1 && item.downtime?.includes(dateString)) {
-        return item
-      }
-    })
-    const TDowntimeMillisecond = faultDuringTheMonth?.map((item: any) => new Date(item.wtimeEnd).getTime() - new Date(item.downtime).getTime()).reduce(
-      (a: any, b: any) => a + b, 0
-    )
-    data.push(Math.floor(TDowntimeMillisecond / 1000 / 60 / 60))
+// group by hauler
+  const groupedByHauler: any = {};
+  CycleDetailsDummyData.forEach((item) => {
+    if (!groupedByHauler[item.hauler]) {
+      groupedByHauler[item.hauler] = [];
+    }
+    groupedByHauler[item.hauler].push(item);
+  });
+
+// sum volumes per hauler
+  const newData = [];
+  for (const hauler in groupedByHauler) {
+    const volumes = groupedByHauler[hauler].map((item: { volume: any; }) => item.volume);
+    const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+    newData.push({ hauler, sum });
   }
+
+  newData.map((item: any) => {
+    categories.push(item.hauler)
+    data.push(item.sum)
+  })
+
+
+  console.log('groupedByHauler: ', groupedByHauler)
+  console.log('categories: ', categories)
+  console.log('data: ', data)
+  console.log('newData: ', newData)
+  console.log('dummyData: ', CycleDetailsDummyData)
+
   useEffect(() => {
 
     const chart = refreshChart()
