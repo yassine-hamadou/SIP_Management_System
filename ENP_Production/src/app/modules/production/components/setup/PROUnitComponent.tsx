@@ -23,6 +23,7 @@ const ProUnitComponet = (props: any) => {
     const queryClient = useQueryClient()
     const [modelName, setModelName] = useState<any>(null)
     const [equipmentId, setEquipmentId] = useState<any>(null)
+    const tenantId = localStorage.getItem('tenant')
 
     const { data: equipments } = useQuery('equipments', () => fetchDocument('equipments'), { cacheTime: 5000 })
     const { data: models } = useQuery('models', () => fetchDocument('models'), { cacheTime: 5000 })
@@ -159,7 +160,7 @@ const ProUnitComponet = (props: any) => {
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument(props.data.url)
+            const response = await fetchDocument(`${props.data.url}/tenant/${tenantId}`)
             setGridData(response.data)
             setLoading(false)
         } catch (error) {
@@ -239,6 +240,7 @@ const ProUnitComponet = (props: any) => {
                 equipmentId: values.equipmentId,
                 modelName: values.modelName,
                 description: values.description,
+                tenantId:tenantId,
             },
             url: props.data.url
         }

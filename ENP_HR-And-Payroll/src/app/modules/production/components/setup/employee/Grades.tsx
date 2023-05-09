@@ -145,16 +145,14 @@ const Grades = () => {
   ]
 
 
-  const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(`paygroups/tenant/${tenantId}`), { cacheTime: 5000 })
   const { data: allGrades } = useQuery('grades',()=>  fetchGrades(tenantId), { cacheTime: 5000 })
+  
   const getItemName = async (param: any) => {
-
     let newName = null
-
-    const itemTest = await allPaygroups?.data.find((item: any) =>
-      item.id?.toString() === param
-    )
-    newName = await itemTest
+    const itemTest = await allPaygroups?.data.find((item: any) => item.id === param)
+    console.log("itemTest: ",itemTest)
+    newName = itemTest?.name
     return newName
   }
 
@@ -177,7 +175,8 @@ const Grades = () => {
   useEffect(() => {
     (async () => {
       let res = await getItemName(param.id)
-      setItemName(res?.name)
+      setItemName(res)
+      console.log("grades name: ",res)
     })();
     loadData()
   }, [])

@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import { useQueryClient, useMutation } from "react-query"
 import { KTCardBody, KTSVG } from "../../../../../_metronic/helpers"
 import { deleteItem, fetchDocument, updateItem, postItem } from "../../../../services/ApiCalls"
+import { Link } from "react-router-dom"
 
 // common setup component
 const SetupComponent = (props: any) => {
@@ -92,6 +93,11 @@ const SetupComponent = (props: any) => {
             width: 100,
             render: (_: any, record: any) => (
                 <Space size='middle'>
+                    {
+                        props.data.title === 'Divisions' && <Link to={`/department/${record.id}`}>
+                        <span className='btn btn-light-info btn-sm'>Department</span>
+                      </Link>
+                    }
                     <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
                         Update
                     </a>

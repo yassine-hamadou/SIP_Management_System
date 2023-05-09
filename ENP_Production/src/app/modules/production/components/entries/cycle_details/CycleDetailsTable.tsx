@@ -31,15 +31,15 @@ const CycleDetailsTable = () => {
     const [uploadData, setUploadData] = useState<any>([])
     const [uploading, setUpLoading] = useState(false)
 
-    const { data: destinations } = useQuery('destinations', () => fetchDocument('productionDestination'), { cacheTime: 5000 })
-    const { data: productionActivities } = useQuery('activity', () => fetchDocument('ProductionActivity'), { cacheTime: 5000 })
-    const { data: allHaulerUnits } = useQuery('hauler', () => fetchDocument('ProHaulerUnit'), { cacheTime: 5000 })
-    const { data: allHaulers } = useQuery('haulerOperator', () => fetchDocument('HaulerOperator'), { cacheTime: 5000 })
-    const { data: allLoaderUnits } = useQuery('allLoaders', () => fetchDocument('ProLoaderUnit'), { cacheTime: 5000 })
-    const { data: allLoaders } = useQuery('LoaderOperator', () => fetchDocument('LoaderOperator'), { cacheTime: 5000 })
-    const { data: allOrigins } = useQuery('allOrigins', () => fetchDocument('ProductionOrigin'), { cacheTime: 5000 })
-    const { data: allMaterials } = useQuery('allMaterials', () => fetchDocument('ProdRawMaterial'), { cacheTime: 5000 })
-    const { data: allShifts } = useQuery('shifts', () => fetchDocument('ProductionShift'), { cacheTime: 5000 })
+    const { data: destinations } = useQuery('destinations', () => fetchDocument(`productionDestination/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: productionActivities } = useQuery('activity', () => fetchDocument(`ProductionActivity/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: allHaulerUnits } = useQuery('hauler', () => fetchDocument(`ProHaulerUnit/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: allHaulers } = useQuery('haulerOperator', () => fetchDocument(`HaulerOperator/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: allLoaderUnits } = useQuery('allLoaders', () => fetchDocument(`ProLoaderUnit/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: allLoaders } = useQuery('LoaderOperator', () => fetchDocument(`LoaderOperator/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: allOrigins } = useQuery('allOrigins', () => fetchDocument(`ProductionOrigin/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: allMaterials } = useQuery('allMaterials', () => fetchDocument(`ProdRawMaterial/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: allShifts } = useQuery('shifts', () => fetchDocument(`ProductionShift/tenant/${tenantId}`), { cacheTime: 5000 })
 
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -332,10 +332,10 @@ const CycleDetailsTable = () => {
                 cycleTime: item.Arrived,
                 loader: loader.empCode,
                 hauler: hauler.empCode,
-                loaderUnitId: parseInt(loaderUnitId.id), // replace with actual value
-                haulerUnitId: parseInt(haulerUnitId.id), // replace with actual value
-                originId: parseInt(originId.id), // replace with actual value
-                materialId: parseInt(materialId.id), // replace with actual value
+                loaderUnitId: parseInt(loaderUnitId.id), 
+                haulerUnitId: parseInt(haulerUnitId.id), 
+                originId: parseInt(originId.id), 
+                materialId: parseInt(materialId.id), 
                 destinationId: item.Destination,
                 nominalWeight: item['Nominal Weight'],
                 weight: item.weight,
@@ -344,7 +344,7 @@ const CycleDetailsTable = () => {
                 volume: item.Volume,
                 loads: item.Loads,
                 timeAtLoader: item['Time Start'],
-                shiftId: parseInt(shiftId.id), // replace with actual value
+                shiftId: parseInt(shiftId.id), 
                 duration: item['Travel Empty Duration'],
                 tenantId: tenantId,
             };
@@ -394,7 +394,14 @@ const CycleDetailsTable = () => {
             const range = "A13:ZZ10000";
 
             const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range })
-            const filteredData = data.map((row: any) => {
+            const filteredData = data
+            .filter((row: any) => {
+                // count the number of data columns in the row
+                const dataColumns = Object.values(row).filter((value) => value !== "");
+                // exclude the row if it has less than 3 data columns
+                return dataColumns.length >= 3;
+              })
+            .map((row: any) => {
                 const filteredRow: any = {};
                 columnHeaders.forEach((column: string) => {
                     filteredRow[column] = row[column];
@@ -881,7 +888,7 @@ const CycleDetailsTable = () => {
                                         <li className="nav-item">
                                             <a
                                                 className="nav-link active"
-                                                data-bs-toggle="tab"
+                                                //data-bs-toggle="tab"
                                                 href="#kt_tab_pane_7"
                                             >
                                                 {/* todo Link to summary fo hauler */}
@@ -891,7 +898,7 @@ const CycleDetailsTable = () => {
                                         <li className="nav-item">
                                             <a
                                                 className="nav-link"
-                                                data-bs-toggle="tab"
+                                                //data-bs-toggle="tab"
                                                 href="#kt_tab_pane_8"
                                             >
                                                 Summary 2
@@ -900,7 +907,7 @@ const CycleDetailsTable = () => {
                                         <li className="nav-item">
                                             <a
                                                 className="nav-link"
-                                                data-bs-toggle={"tab"}
+                                                //data-bs-toggle={"tab"}
                                                 href={"#kt_tab_pane_9"}
 
                                             >

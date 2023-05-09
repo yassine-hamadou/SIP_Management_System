@@ -22,9 +22,10 @@ const PlannedOutputTable = () => {
   const [tempData, setTempData] = useState<any>()
   const { register, reset, handleSubmit } = useForm()
   const queryClient = useQueryClient()
+  const tenantId = localStorage.getItem('tenant')
 
-  const { data: destinations } = useQuery('destinations', () => fetchDocument('productionDestination'), { cacheTime: 5000 })
-  const { data: productionActivities } = useQuery('activity', () => fetchDocument('ProductionActivity'), { cacheTime: 5000 })
+  const { data: destinations } = useQuery('destinations', () => fetchDocument(`productionDestination/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: productionActivities } = useQuery('activity', () => fetchDocument(`ProductionActivity/tenant/${tenantId}`), { cacheTime: 5000 })
 
   const handleChange = (event: any) => {
     event.preventDefault()
@@ -115,7 +116,7 @@ const PlannedOutputTable = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument('plannedOutput')
+      const response = await fetchDocument(`plannedOutput/tenant/${tenantId}`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -190,6 +191,7 @@ const PlannedOutputTable = () => {
         destinationId: values.destinationId,
         activityId: values.activityId,
         quantity: values.quantity,
+        tenantId: tenantId,
       },
       url: 'plannedOutput'
     }
