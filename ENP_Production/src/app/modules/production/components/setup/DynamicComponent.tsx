@@ -205,7 +205,7 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
         console.log(values)
     }
 
-    const OnSubmit = handleSubmit(async (values) => {
+    const OnSubmit = handleSubmit(async (values:any) => {
         setSubmitLoading(true)
         const item = {
             data: {
