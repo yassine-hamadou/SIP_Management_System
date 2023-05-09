@@ -4,25 +4,27 @@ import * as Yup from 'yup'
 import clsx from 'clsx'
 import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
-import {getUserByToken, login} from '../core/_requests'
+import {getUserByToken, login, parseJwt} from '../core/_requests'
 import {useAuth} from '../core/Auth'
+import { useQuery } from 'react-query'
+import { fetchCompanies, fetchUserApplications } from '../../production/urls'
 
 const loginSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Wrong ID')
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('ID is required'),
+  username: Yup.string()
+    
+    .min(3, 'Minimum 5 characters')
+    .max(50, 'Maximum 50 characters')
+    .required('Username is required'),
   password: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
     .required('Password is required'),
-  option: Yup.string().required('Company is required'),
+  // option: Yup.string().required('Company is required'),
   tenantId: Yup.string().required('Company is required'),
 })
 
 const initialValues = {
-  email: '',
+  username: '',
   password: '',
   tenantId: '',
 }
@@ -38,16 +40,27 @@ export function Login() {
   const {saveAuth, setCurrentUser} = useAuth()
   const tenantId = localStorage.getItem('tenant')
 
+  const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
+  const { data: allCompanies } = useQuery('companies', fetchCompanies, { cacheTime: 5000 })
+
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
     onSubmit: async (values, {setStatus, setSubmitting}) => {
       setLoading(true)
       try {
-        const {data: auth} = await login(values.email, values.password)
+        const {data: auth} = await login(values.username, values.password)
         saveAuth(auth)
-        const {data: user} = await getUserByToken(auth.api_token)
-        setCurrentUser(user)
+
+        const token:any = localStorage.getItem("accessToken")
+        // const {data: user} = await getUserByToken(auth.api_token)
+
+        //this goes to decode the token and return the user details!
+        parseJwt(token)
+        
+        //now I have to assign the !
+        const curUser:any =  parseJwt(token)
+        setCurrentUser(curUser)
       } catch (error) {
         console.error(error)
         saveAuth(undefined)
@@ -57,6 +70,9 @@ export function Login() {
       }
     },
   })
+
+  localStorage.setItem('tenant', formik.values.tenantId)
+  
 
   return (
     <form
@@ -85,24 +101,24 @@ export function Login() {
 
       {/* begin::Form group */}
       <div className='fv-row mb-10'>
-        <label className='form-label fs-6 fw-bolder text-dark'>USER ID</label>
+        <label className='form-label fs-6 fw-bolder text-dark'>Username</label>
         <input
-          placeholder='User ID'
-          {...formik.getFieldProps('email')}
+          placeholder='username'
+          {...formik.getFieldProps('username')}
           className={clsx(
             'form-control form-control-lg form-control-solid',
-            {'is-invalid': formik.touched.email && formik.errors.email},
+            {'is-invalid': formik.touched.username && formik.errors.username},
             {
-              'is-valid': formik.touched.email && !formik.errors.email,
+              'is-valid': formik.touched.username && !formik.errors.username,
             }
           )}
           type='text'
-          name='email'
+          name='username'
           autoComplete='off'
         />
-        {formik.touched.email && formik.errors.email && (
+        {formik.touched.username && formik.errors.username && (
           <div className='fv-plugins-message-container'>
-            <span role='alert'>{formik.errors.email}</span>
+            <span role='alert'>{formik.errors.username}</span>
           </div>
         )}
       </div>
@@ -116,13 +132,13 @@ export function Login() {
             <label className='form-label fw-bolder text-dark fs-6 mb-0'>Password</label>
             {/* end::Label */}
             {/* begin::Link */}
-            <Link
+            {/* <Link
               to='/auth/forgot-password'
               className='link-primary fs-6 fw-bolder'
               style={{marginLeft: '5px'}}
             >
               Forgot Password ?
-            </Link>
+            </Link> */}
             {/* end::Link */}
           </div>
         </div>
@@ -158,15 +174,28 @@ export function Login() {
               data-placeholder='Select option'
               data-allow-clear='true'
               defaultValue={''}
-              {...formik.getFieldProps('option')}
+              {...formik.getFieldProps('tenantId')}
             >
-              <option></option>
+              {/* <option></option>
               <option value='damangDivision'>Engineers and Planners - DAMANG DIVISION</option>
               <option value='dzataDivision'>Engineers and Planners - DZATA DIVISION</option>
               <option value='mpohorDivision'>Engineers and Planners - MPOHOR DIVISION</option>
               <option value='headOffice'>Engineers and Planners - HEAD OFFICE</option>
               <option value='salagaDivision'>Engineers and Planners - SALAGA DIVISION</option>
-              <option value='tarkwaDivision'>Engineers and Planners - TARKWA DIVISION</option>
+              <option value='tarkwaDivision'>Engineers and Planners - TARKWA DIVISION</option> */}
+
+{
+                formik.values.username === '' || formik.values.password === '' ?
+                  '' : 
+                  <>
+                    <option >Select Company</option>
+                    {
+                      allCompanies?.data.map((item:any)=>(
+                        <option value={item.name.toLowerCase()}>{item.description}</option>
+                      ))
+                    }
+                  </>
+              }
             </select>
           </div>
         </div>

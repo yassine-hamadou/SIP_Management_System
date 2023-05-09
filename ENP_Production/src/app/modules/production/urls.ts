@@ -5,6 +5,7 @@ import axios from 'axios';
 // export const ENP_URL = 'http://localhost:3001'
 // export const ENP_URL = 'https://cors-anywhere.herokuapp.com/http://208.117.44.15/SmWebApi/api'
 export const ENP_URL = 'http://208.117.44.15/SmWebApi/api'
+export const UsersEndpoint = "http://208.117.44.15/userapi/api";
 // export const ENP_URL = 'http://localhost:4192'
 
 
@@ -16,6 +17,22 @@ export const fetchLocations= ()=>{
 }
 export const fetchModels= ()=>{
     return axios.get(`${ENP_URL}/VmmodlsApi`)
+}
+
+export const fetchCompanies = () => {
+    return axios.get(`${UsersEndpoint}/Companies`)
+}
+
+export const fetchUserRoles = () => {
+    return axios.get(`${UsersEndpoint}/UserRoles`)
+}
+
+export const fetchUserApplications = () => {
+    return axios.get(`${UsersEndpoint}/UserApplications`)
+}
+
+export const fetchRoles = () => {
+    return axios.get(`${UsersEndpoint}/Roles`)
 }
 
 //dynamic fetch function
