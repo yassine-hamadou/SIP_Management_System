@@ -22,6 +22,7 @@ const OperatorComponent = (props: any) => {
     const [tempData, setTempData] = useState<any>()
     const { register, reset, handleSubmit } = useForm()
     const queryClient = useQueryClient()
+    const tenantId = localStorage.getItem('tenant')
 
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -111,7 +112,7 @@ const OperatorComponent = (props: any) => {
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument(props.data.url)
+            const response = await fetchDocument(`${props.data.url}/tenant/${tenantId}`)
             setGridData(response.data)
             setLoading(false)
         } catch (error) {
@@ -187,6 +188,7 @@ const OperatorComponent = (props: any) => {
             data: {
                 empCode: values.empCode,
                 descempNameription: values.empName,
+                tenantId:tenantId,
             },
             url: props.data.url
         }

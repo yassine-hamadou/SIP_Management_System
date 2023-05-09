@@ -20,6 +20,7 @@ const MatComponet = (props: any) => {
     const [tempData, setTempData] = useState<any>()
     const { register, reset, handleSubmit } = useForm()
     const queryClient = useQueryClient()
+    const tenantId = localStorage.getItem('tenant')
   
     const handleChange = (event: any) => {
       event.preventDefault()
@@ -55,7 +56,7 @@ const MatComponet = (props: any) => {
     function handleDelete(element: any) {
       const item = {
         url: props.data.url,
-        data: element
+        data: element,
       }
       deleteData(item)
     }
@@ -96,7 +97,7 @@ const MatComponet = (props: any) => {
     const loadData = async () => {
       setLoading(true)
       try {
-        const response = await fetchDocument(props.data.url)
+        const response = await fetchDocument(`${props.data.url}/tenant/${tenantId}`)
         setGridData(response.data)
         setLoading(false)
       } catch (error) {
@@ -177,6 +178,7 @@ const MatComponet = (props: any) => {
         const item = {
           data: {
             name: values.name,
+            tenantId:tenantId,
           },
           url: props.data.url
         }

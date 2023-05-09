@@ -20,6 +20,7 @@ const CycleDetailsTable = () => {
     const [searchText, setSearchText] = useState('')
     const [isFileUploaded, setIsFileUploaded] = useState(false)
     const [isCheckDataModalOpen, setIsCheckDataModalOpen] = useState(false)
+    const tenantId = localStorage.getItem('tenant')
 
     const [loading, setLoading] = useState(false)
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -345,7 +346,7 @@ const CycleDetailsTable = () => {
                 timeAtLoader: item['Time Start'],
                 shiftId: parseInt(shiftId.id), // replace with actual value
                 duration: item['Travel Empty Duration'],
-                tenantId: 'string' // replace with actual value
+                tenantId: tenantId,
             };
         });
 
@@ -423,7 +424,7 @@ const CycleDetailsTable = () => {
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument('cycleDetails')
+            const response = await fetchDocument(`cycleDetails/tenant/${tenantId}`)
             setGridData(response.data)
             setLoading(false)
         } catch (error) {
@@ -523,6 +524,7 @@ const CycleDetailsTable = () => {
                 loads: parseInt(values.loads),
                 timeAtLoader: values.timeAtLoader,
                 duration: parseInt(values.duration),
+                tenantId:tenantId,
             },
             url: 'cycleDetails'
         }

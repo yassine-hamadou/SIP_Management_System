@@ -18,11 +18,13 @@ const loginSchema = Yup.object().shape({
     .max(50, 'Maximum 50 symbols')
     .required('Password is required'),
   option: Yup.string().required('Company is required'),
+  tenantId: Yup.string().required('Company is required'),
 })
 
 const initialValues = {
-  email: 'User ID',
-  password: 'admin',
+  email: '',
+  password: '',
+  tenantId: '',
 }
 
 /*
@@ -34,6 +36,7 @@ const initialValues = {
 export function Login() {
   const [loading, setLoading] = useState(false)
   const {saveAuth, setCurrentUser} = useAuth()
+  const tenantId = localStorage.getItem('tenant')
 
   const formik = useFormik({
     initialValues,

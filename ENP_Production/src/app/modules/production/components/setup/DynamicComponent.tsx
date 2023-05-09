@@ -16,6 +16,7 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
     let [filteredData] = useState([])
     const [submitLoading, setSubmitLoading] = useState(false)
     const [searchText, setSearchText] = useState('')
+    const tenantId = localStorage.getItem('tenant')
 
     const [loading, setLoading] = useState(false)
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -123,7 +124,7 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
 
     // show columns if based on props of hasDescription and hasDuration
     if (!hasDescription) {
-       delete columns[1]
+        delete columns[1]
     }
     if (!hasDuration) {
         delete columns[2]
@@ -134,7 +135,7 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument(data.url)
+            const response = await fetchDocument(`${data.url}/tenant/${tenantId}`)
             setGridData(response.data)
             setLoading(false)
         } catch (error) {
@@ -179,7 +180,7 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
             setIsUpdateModalOpen(false)
             setIsModalOpen(false)
         },
-        onError: (error) => { 
+        onError: (error) => {
             setSubmitLoading(false)
             console.log('error: ', error)
             message.error(`${error}`)
@@ -211,6 +212,7 @@ const SetupComponent = ({ data, hasDescription, hasDuration }: any) => {
                 name: values.name,
                 description: values.description,
                 duration: values.duration,
+                tenantId: tenantId,
             },
             url: data.url
         }
