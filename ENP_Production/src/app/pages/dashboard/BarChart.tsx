@@ -46,7 +46,7 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
       plotOptions: {
         bar: {
           horizontal: false,
-          columnWidth: '50%',
+          columnWidth: '60%',
           borderRadius: 5,
         },
       },
@@ -62,7 +62,7 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
         colors: ['transparent'],
       },
       xaxis: {
-        categories: categories?.slice(-12),
+        categories: categories,
         axisBorder: {
           show: false,
         },
@@ -150,13 +150,13 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
     return chart
   }
 
-// group by hauler
+// group by hauler unit
   const groupedByHauler: any = {};
   CycleDetailsDummyData.forEach((item) => {
-    if (!groupedByHauler[item.hauler]) {
-      groupedByHauler[item.hauler] = [];
+    if (!groupedByHauler[item.haulerUnit]) {
+      groupedByHauler[item.haulerUnit] = [];
     }
-    groupedByHauler[item.hauler].push(item);
+    groupedByHauler[item.haulerUnit].push(item);
   });
 
 // sum volumes per hauler
@@ -190,9 +190,7 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartRef, mode, categories, data])
-  const todayDate = new Date()
-  const lastDate = new Date()
-  lastDate.setMonth(todayDate.getMonth() - 11)
+
 
   return (
     <div className={`card border border-gray-400 ${className}`}>

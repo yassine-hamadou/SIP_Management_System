@@ -32,7 +32,7 @@ const DashboardPage: FC = () => (
       <div className='col-xxl-6'>
         <BarChart2
           className='card-xl-stretch'
-          chartColor='danger' 
+          chartColor='primary' 
           chartHeight={''}         
         />
       </div>      

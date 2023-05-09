@@ -17,16 +17,10 @@ type Props = {
 const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
   const chartRef = useRef<HTMLDivElement | null>(null)
   const {mode} = useThemeMode()
+  const data: any = []
+  const categories: any = []
 
-  const {data: listOfFaults} = useQuery('listOfFaults', () => {
-    return axios.get(`${ENP_URL}/faultentriesapi`)
-  })
 
-  const {data: listOfDownTypes} = useQuery('listOfDownTypes', () => {
-    return axios.get(`${ENP_URL}/vmfaltsapi`)
-  })
-  const category: any = []
-  const faults: any = []
   const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
     const labelColor = getCSSVariableValue('--kt-gray-500')
     const borderColor = getCSSVariableValue('--kt-gray-200')
@@ -37,8 +31,8 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
     return {
       series: [
         {
-          name: 'Total',
-          data: faults ? faults : []
+          name: 'Total volumes',
+          data: data
         },
       ],
       chart: {
@@ -68,7 +62,7 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
         colors: ['transparent'],
       },
       xaxis: {
-        categories: category ? category : [],
+        categories: categories ,
         axisBorder: {
           show: false,
         },
@@ -120,7 +114,7 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
         },
         y: {
           formatter: function (val) {
-            return `${val} Hours`
+            return `${val}`
           },
         },
       },
@@ -151,14 +145,27 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
     return chart
   }
 
-  // group by hauler
-  const groupedByHauler: any = {};
+  // group by loader unit
+  const groupedByLoader: any = {};
   CycleDetailsDummyData.forEach((item) => {
-    if (!groupedByHauler[item.hauler]) {
-      groupedByHauler[item.hauler] = [];
+    if (!groupedByLoader[item.loaderUnit]) {
+      groupedByLoader[item.loaderUnit] = [];
     }
-    groupedByHauler[item.hauler].push(item);
+    groupedByLoader[item.loaderUnit].push(item);
   });
+
+  // sum volumes per hauler
+  const newData = [];
+  for (const loader in groupedByLoader) {
+    const volumes = groupedByLoader[loader].map((item: { volume: any; }) => item.volume);
+    const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+    newData.push({ loader: loader, sum });
+  }
+
+  newData.map((item: any) => {
+    categories.push(item.loader)
+    data.push(item.sum)
+  })
 
   
 
@@ -171,10 +178,8 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chartRef, mode, faults, category])
-  const todayDate = new Date()
-  const lastDate = new Date()
-  lastDate.setMonth(todayDate.getMonth() - 11)
+  }, [chartRef, mode, categories, data])
+
 
   return (
     <div className={`card border border-gray-400 ${className}`}>

@@ -19,8 +19,8 @@ const times = [
     '18:00', '19:00', '20:00', '21:00', '22:00', '23:00',
 ]
 
-const loaders = ['EX64', 'EX60', 'EX67',]
-const haulers = ['Kofi', 'Yaseen', 'Rovincy', 'Giovani', 'Philip', 'Isaac' ]
+const loaderUnit = ['EX60','EX63','EX64', 'EX60', 'EX67', 'EX71', 'EX53',]
+const haulerUnit = ['DT09', 'DT101', 'DT104', 'EDT131', 'EDT132', 'EDT134', 'RH100', 'RH03' ]
 const origins = ['AK2207164951', 'AK3218183216', 'AK2207165948', 'AK2216165066',]
 const materials = ['A3HGL', 'WCPSTE', 'WASTE']
 const destinations = ['CR02', 'CUT-1-DUMP',]
@@ -48,8 +48,8 @@ export const CycleDetailsDummyData = dates.map((date, index) => {
     return {
         date: date,
         shift: shifts[Math.floor(Math.random() * shifts.length)],
-        loader: loaders[Math.floor(Math.random() * loaders.length)],
-        hauler: haulers[Math.floor(Math.random() * haulers.length)],
+        loaderUnit: loaderUnit[Math.floor(Math.random() * loaderUnit.length)],
+        haulerUnit: haulerUnit[Math.floor(Math.random() * haulerUnit.length)],
         origin: origins[Math.floor(Math.random() * origins.length)],
         material: materials[Math.floor(Math.random() * materials.length)],
         destination: destinations[Math.floor(Math.random() * destinations.length)],

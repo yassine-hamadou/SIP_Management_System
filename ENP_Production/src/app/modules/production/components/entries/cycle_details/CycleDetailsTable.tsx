@@ -8,6 +8,8 @@ import * as XLSX from 'xlsx';
 import { KTCardBody } from '../../../../../../_metronic/helpers';
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
 import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents';
+import { Tabs } from 'antd';
+
 
 
 const CycleDetailsTable = () => {
@@ -28,6 +30,9 @@ const CycleDetailsTable = () => {
     const { register, reset, handleSubmit } = useForm()
     const queryClient = useQueryClient()
     const [uploadColumns, setUploadColumns] = useState<any>([])
+    const [haulerSummary, setHaulerSummary] = useState<any>([])
+    const [loaderSummary, setLoaderSummary] = useState<any>([])
+    const [originSummary, setOriginSummary] = useState<any>([])
     const [uploadData, setUploadData] = useState<any>([])
     const [uploading, setUpLoading] = useState(false)
 
@@ -41,10 +46,15 @@ const CycleDetailsTable = () => {
     const { data: allMaterials } = useQuery('allMaterials', () => fetchDocument(`ProdRawMaterial/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: allShifts } = useQuery('shifts', () => fetchDocument(`ProductionShift/tenant/${tenantId}`), { cacheTime: 5000 })
 
+    
     const handleChange = (event: any) => {
         event.preventDefault()
         setTempData({ ...tempData, [event.target.name]: event.target.value });
     }
+    
+    const onTabsChange = (key: string) => {
+        console.log(key);
+      };
 
     const showModal = () => {
         setIsModalOpen(true)
@@ -115,6 +125,45 @@ const CycleDetailsTable = () => {
     }
 
 
+    const tabItems: TabsProps['items'] = [
+        {
+          key: '1',
+          label: `Hauler Units`,
+          children: (
+            <>
+             <Table/>
+            </>
+          ),
+        },
+        {
+          key: '2',
+          label: `Loader Units`,
+          children: (
+            <>
+             <Table/>
+            </>
+          ),
+        },
+        {
+          key: '3',
+          label: `Origins`,
+          children: (
+            <>
+             <Table/>
+            </>
+          ),
+        },
+        {
+          key: '4',
+          label: `Destinations`,
+          children: (
+            <>
+             <Table/>
+            </>
+          ),
+        },
+      ];
+
 
     const columns: any = [
         {
@@ -122,12 +171,12 @@ const CycleDetailsTable = () => {
             dataIndex: 'cycleDate',
             key: 'date',
             fixed: 'left',
-            width: 80,
+            width: 150,
         },
         {
             title: 'Shift',
             dataIndex: 'shiftId',
-            width: 80,
+            width: 100,
             render: (record: any) => {
                 return getRecordName(record, allShifts?.data)
             }
@@ -135,12 +184,12 @@ const CycleDetailsTable = () => {
         {
             title: 'Time',
             dataIndex: 'cycleTime',
-            width: 80,
+            width: 100,
         },
         {
             title: 'Loader Unit',
             dataIndex: 'loaderUnitId',
-            width: 80,
+            width: 150,
             render: (record: any) => {
                 return getUnitRecordName(record, allLoaderUnits?.data)
             }
@@ -148,7 +197,7 @@ const CycleDetailsTable = () => {
         {
             title: 'Loader Operator',
             dataIndex: 'loader',
-            width: 90,
+            width: 150,
             render: (record: any) => {
                 return getOperatorRecordName(record, allLoaders?.data)
             }
@@ -156,7 +205,7 @@ const CycleDetailsTable = () => {
         {
             title: 'Hauler Unit',
             dataIndex: 'haulerUnitId',
-            width: 80,
+            width: 150,
             render: (record: any) => {
                 return getUnitRecordName(record, allHaulerUnits?.data)
             }
@@ -164,7 +213,7 @@ const CycleDetailsTable = () => {
         {
             title: 'Hauler Operator',
             dataIndex: 'hauler',
-            width: 90,
+            width: 150,
             render: (record: any) => {
                 return getOperatorRecordName(record, allLoaders?.data)
             }
@@ -172,7 +221,7 @@ const CycleDetailsTable = () => {
         {
             title: 'Origin',
             dataIndex: 'originId',
-            width: 90,
+            width: 150,
             render: (record: any) => {
                 return getRecordName(record, allOrigins?.data)
             }
@@ -180,7 +229,7 @@ const CycleDetailsTable = () => {
         {
             title: 'Material',
             dataIndex: 'materialId',
-            width: 90,
+            width: 120,
             render: (record: any) => {
                 return getRecordName(record, allMaterials?.data)
             }
@@ -188,7 +237,7 @@ const CycleDetailsTable = () => {
         {
             title: 'Destination',
             dataIndex: 'destinationId',
-            width: 90,
+            width: 150,
             render: (record: any) => {
                 return getRecordName(record, destinations?.data)
             }
@@ -196,42 +245,42 @@ const CycleDetailsTable = () => {
         {
             title: 'Nominal Weight',
             dataIndex: 'nominalWeight',
-            width: 90,
+            width: 100,
         },
         {
             title: 'Weight',
             dataIndex: 'weight',
-            width: 80,
+            width: 100,
         },
         {
             title: 'Payload Weight',
             dataIndex: 'payloadWeight',
-            width: 90,
+            width: 100,
         },
         {
             title: 'Reported Weight',
             dataIndex: 'reportedWeight',
-            width: 95,
+            width: 100,
         },
         {
             title: 'Volume',
             dataIndex: 'volumes',
-            width: 85,
+            width: 100,
         },
         {
             title: 'Loads',
             dataIndex: 'loads',
-            width: 80,
+            width: 100,
         },
         {
             title: 'Time at loader',
             dataIndex: 'timeAtLoader',
-            width: 90,
+            width: 100,
         },
         {
             title: 'Duration',
             dataIndex: 'duration',
-            width: 90,
+            width: 100,
         },
         {
             title: 'Action',
@@ -256,24 +305,6 @@ const CycleDetailsTable = () => {
     const onSummaryTabsChange = (key: string) => {
         console.log(key);
     };
-
-    const items: TabsProps['items'] = [
-        {
-            key: '1',
-            label: `Summary 1`,
-            children: `Content of Tab Summary 1`,
-        },
-        {
-            key: '2',
-            label: `Summary 2`,
-            children: `Content of Tab Summary 2`,
-        },
-        {
-            key: '3',
-            label: `Summary 3`,
-            children: `Content of Tab Summary 3`,
-        },
-    ];
 
     const uploadProps: UploadProps = {
         name: 'file',
@@ -332,10 +363,10 @@ const CycleDetailsTable = () => {
                 cycleTime: item.Arrived,
                 loader: loader.empCode,
                 hauler: hauler.empCode,
-                loaderUnitId: parseInt(loaderUnitId.id), 
-                haulerUnitId: parseInt(haulerUnitId.id), 
-                originId: parseInt(originId.id), 
-                materialId: parseInt(materialId.id), 
+                loaderUnitId: parseInt(loaderUnitId.id),
+                haulerUnitId: parseInt(haulerUnitId.id),
+                originId: parseInt(originId.id),
+                materialId: parseInt(materialId.id),
                 destinationId: item.Destination,
                 nominalWeight: item['Nominal Weight'],
                 weight: item.weight,
@@ -344,7 +375,7 @@ const CycleDetailsTable = () => {
                 volume: item.Volume,
                 loads: item.Loads,
                 timeAtLoader: item['Time Start'],
-                shiftId: parseInt(shiftId.id), 
+                shiftId: parseInt(shiftId.id),
                 duration: item['Travel Empty Duration'],
                 tenantId: tenantId,
             };
@@ -352,9 +383,8 @@ const CycleDetailsTable = () => {
 
     }
 
-    const handleUpload = () => {
-        message.loading({ content: 'Uploading...', key: 'uploading' })
-        setLoading(true)
+    const handleUpload = async () => {
+
         setIsUploadModalOpen(false)
         setIsFileUploaded(true)
         const reader = new FileReader()
@@ -371,43 +401,38 @@ const CycleDetailsTable = () => {
             ];
 
             const fileColumns = [
-                { title: 'Date', dataIndex: 'Date', key: 'date', fixed: 'left', width: 90 },
-                { title: 'Shift', dataIndex: 'Shift',  width: 90, },
-                { title: 'Time Start', dataIndex: 'Time Start',  width: 90, },
-                { title: 'Loading Unit', dataIndex: 'Loading Unit',  width: 90, },
-                { title: 'Loader Operator', dataIndex: 'Loader Operator',  width: 90, },
-                { title: 'Hauler', dataIndex: 'Truck',  width: 90, },
-                { title: 'Hauler Operator', dataIndex: 'Hauler Operator',  width: 90, },
-                { title: 'Origin', dataIndex: 'Origin',  width: 90, },
-                { title: 'Material', dataIndex: 'Material',  width: 90, },
-                { title: 'Destination', dataIndex: 'Destination',  width: 95, },
-                { title: 'Nominal Weight', dataIndex: 'Nominal Weight',  width: 90, },
-                { title: 'Payload Weight', dataIndex: 'Payload Weight',  width: 90, },
-                { title: 'Reported Weight', dataIndex: 'Reported Weight',  width: 95, },
-                { title: 'Volume', dataIndex: 'Volume',  width: 90, },
-                { title: 'Loads', dataIndex: 'Loads',  width: 90, },
-                { title: 'Arrived', dataIndex: 'Arrived',  width: 90, },
-                { title: 'Travel Empty Duration', dataIndex: 'Travel Empty Duration',  width: 90, },
+                { title: 'Date', dataIndex: 'Date', key: 'date', fixed: 'left', width: 120, },
+                { title: 'Shift', dataIndex: 'Shift', width:100 },
+                { title: 'Time Start', dataIndex: 'Time Start', width:120 },
+                { title: 'Loading Unit', dataIndex: 'Loading Unit', width:150 },
+                { title: 'Loader Operator', dataIndex: 'Loader Operator', width:150 },
+                { title: 'Hauler', dataIndex: 'Truck', width:100 },
+                { title: 'Hauler Operator', dataIndex: 'Hauler Operator', width:150 },
+                { title: 'Origin', dataIndex: 'Origin', width:150 },
+                { title: 'Material', dataIndex: 'Material', width:120 },
+                { title: 'Destination', dataIndex: 'Destination', width:150 },
+                { title: 'Nominal Weight', dataIndex: 'Nominal Weight', width:150 },
+                { title: 'Payload Weight', dataIndex: 'Payload Weight', width:150 },
+                { title: 'Reported Weight', dataIndex: 'Reported Weight', width:150 },
+                { title: 'Volume', dataIndex: 'Volume', width:100 },
+                { title: 'Loads', dataIndex: 'Loads', width:100 },
+                { title: 'Arrived', dataIndex: 'Arrived', width:100 },
+                { title: 'Travel Empty Duration', dataIndex: 'Travel Empty Duration', width:150 },
             ]
 
             // sets the range to be read from the excel file
-            const range = "A13:ZZ10000";
+            const range = "A13:ZZ1100";
 
             const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range })
             const filteredData = data
-            .filter((row: any) => {
-                // count the number of data columns in the row
-                const dataColumns = Object.values(row).filter((value) => value !== "");
-                // exclude the row if it has less than 3 data columns
-                return dataColumns.length >= 3;
-              })
-            .map((row: any) => {
-                const filteredRow: any = {};
-                columnHeaders.forEach((column: string) => {
-                    filteredRow[column] = row[column];
+                .map((row: any) => {
+                    setLoading(true)
+                    const filteredRow: any = {};
+                    columnHeaders.forEach((column: string) => {
+                        filteredRow[column] = row[column];
+                    });
+                    return filteredRow;
                 });
-                return filteredRow;
-            });
 
             const convertedData = filteredData.map((item: any) => ({
                 ...item,
@@ -531,7 +556,7 @@ const CycleDetailsTable = () => {
                 loads: parseInt(values.loads),
                 timeAtLoader: values.timeAtLoader,
                 duration: parseInt(values.duration),
-                tenantId:tenantId,
+                tenantId: tenantId,
             },
             url: 'cycleDetails'
         }
@@ -880,77 +905,12 @@ const CycleDetailsTable = () => {
                                 </Button>
                             </>}
                     >
-                        <div className="card card-custom mt-2">
-                            <div className="card-header card-header-stretch">
-                                <h3 className="card-title">Data Summaries</h3>
-                                <div className="card-toolbar">
-                                    <ul className="nav nav-tabs nav-line-tabs nav-stretch fs-6 border-0">
-                                        <li className="nav-item">
-                                            <a
-                                                className="nav-link active"
-                                                //data-bs-toggle="tab"
-                                                href="#kt_tab_pane_7"
-                                            >
-                                                {/* todo Link to summary fo hauler */}
-                                                Summary 1
-                                            </a>
-                                        </li>
-                                        <li className="nav-item">
-                                            <a
-                                                className="nav-link"
-                                                //data-bs-toggle="tab"
-                                                href="#kt_tab_pane_8"
-                                            >
-                                                Summary 2
-                                            </a>
-                                        </li>
-                                        <li className="nav-item">
-                                            <a
-                                                className="nav-link"
-                                                //data-bs-toggle={"tab"}
-                                                href={"#kt_tab_pane_9"}
-
-                                            >
-                                                Summary 3
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="card-body">
-                                <div className="tab-content" id="myTabContent">
-                                    <div
-                                        className="tab-pane fade show active"
-                                        id="kt_tab_pane_7"
-                                        role="tabpanel"
-                                    >
-                                        Summary content 1
-                                    </div>
-                                    <div
-                                        className="tab-pane fade"
-                                        id={"kt_tab_pane_8"}
-                                        role="tabpanel"
-                                    >
-                                        Summary content 2
-
-                                    </div>
-                                    <div
-                                        className="tab-pane fade"
-                                        id={"kt_tab_pane_9"}
-                                        role="tabpanel"
-                                    >
-                                        Summary content 3
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                       <Tabs defaultActiveKey="1" items={tabItems} onChange={onTabsChange} />
                     </Modal>
 
                 </div>
-            </KTCardBody>
-        </div>
+            </KTCardBody >
+        </div >
     )
 }
 
