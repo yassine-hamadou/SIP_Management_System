@@ -5,6 +5,7 @@ import {
   HeaderUserMenu,
 } from '../../../partials'
 import {useLayout} from '../../core'
+import { useAuth } from '../../../../app/modules/auth'
 
 const toolbarButtonMarginClass = 'ms-1 ms-lg-3',
   toolbarButtonHeightClass = 'w-30px h-30px w-md-40px h-md-40px',
@@ -12,10 +13,14 @@ const toolbarButtonMarginClass = 'ms-1 ms-lg-3',
 
 const Topbar: FC = () => {
   const {config} = useLayout()
+  const {currentUser} = useAuth()
+  const tenantId = localStorage.getItem('tenant')
 
   return (
     <div className='d-flex align-items-stretch flex-shrink-0'>
-
+      <div style={{paddingRight: "10px"}} className='d-flex align-items-center fs-5'>
+          Company: <strong style={{borderRight:"1px solid grey", paddingLeft: "8px",paddingRight:"25px"}}>{ tenantId?.toLocaleUpperCase()}</strong>
+      </div>
       <div
         className={clsx('d-flex align-items-center', toolbarButtonMarginClass)}
         id='kt_header_user_menu_toggle'
@@ -28,10 +33,15 @@ const Topbar: FC = () => {
           data-kt-menu-placement='bottom-end'
           data-kt-menu-flip='bottom'
         >
-          <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='ENP user Profile' />
+          {/* <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='ENP user Profile' /> */}
+          <img src={toAbsoluteUrl('/media/avatars/user.png')} alt='ENP user Profile' />
+          <p>{currentUser?.phone}</p>
         </div>
         <HeaderUserMenu />
         {/* end::Toggle */}
+      </div>
+      <div style={{paddingLeft: "20px"}} className='d-flex align-items-center fs-5'>
+          {currentUser?.username}
       </div>
       {/* end::User */}
 
