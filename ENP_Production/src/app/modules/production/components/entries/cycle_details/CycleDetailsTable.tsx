@@ -23,6 +23,7 @@ const CycleDetailsTable = () => {
     const [isFileUploaded, setIsFileUploaded] = useState(false)
     const [isCheckDataModalOpen, setIsCheckDataModalOpen] = useState(false)
     const tenantId = localStorage.getItem('tenant')
+    const [rowCount, setRowCount] = useState(0)
 
     const [loading, setLoading] = useState(false)
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -96,7 +97,7 @@ const CycleDetailsTable = () => {
 
     const getRecordName = (id: any, data: any) => {
         let name = ''
-        data.map((item: any) => {
+        data?.map((item: any) => {
             if (item.id === id) {
                 name = item.name
             }
@@ -106,7 +107,7 @@ const CycleDetailsTable = () => {
 
     const getUnitRecordName = (id: any, data: any) => {
         let name = ''
-        data.map((item: any) => {
+        data?.map((item: any) => {
             if (item.id === id) {
                 name = item.modelName
             }
@@ -116,7 +117,7 @@ const CycleDetailsTable = () => {
 
     const getOperatorRecordName = (id: any, data: any) => {
         let name = ''
-        data.map((item: any) => {
+        data?.map((item: any) => {
             if (item.empCode === id) {
                 name = item.empName
             }
@@ -442,8 +443,11 @@ const CycleDetailsTable = () => {
                 Volume: roundOff(item.Volume),
             }))
 
+            // set row count 
+            setRowCount(convertedData.length)
+
             setUploadColumns(fileColumns)
-            setUploadData(convertedData)
+            setUploadData(convertedData.slice(1))
             setLoading(false)
             setIsUploadModalOpen(false)
             console.log('read data: ', convertedData)
@@ -557,6 +561,7 @@ const CycleDetailsTable = () => {
                 timeAtLoader: values.timeAtLoader,
                 duration: parseInt(values.duration),
                 tenantId: tenantId,
+                batchNumber:`${values.haulerUnitId}-${moment().format('DDMMYYHHmmss')}`,
             },
             url: 'cycleDetails'
         }

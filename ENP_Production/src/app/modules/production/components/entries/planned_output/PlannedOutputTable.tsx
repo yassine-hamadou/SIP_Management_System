@@ -68,7 +68,7 @@ const PlannedOutputTable = () => {
 
   const getRecordName = (id: any, data: any) => {
     let name = ''
-    data.map((item: any) => {
+    data?.map((item: any) => {
       if (item.id === id) {
         name = item.name
       }
