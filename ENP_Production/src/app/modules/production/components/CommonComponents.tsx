@@ -82,4 +82,29 @@ const ModalFooterButtons = ({ onCancel, onSubmit }: any) => {
 
     )
 }
-export { PageActionButtons, ModalFooterButtons }
+
+ //to convert excel date to js date
+ const excelDateToJSDate = (serial: number) => {
+    const utcDays = Math.floor(serial - 25569)
+    const utcValue = utcDays * 86400
+    const date = new Date(utcValue * 1000)
+
+    const fractionalDay = serial - Math.floor(serial) + 0.0000001
+
+    let hours = Math.floor(fractionalDay * 24)
+    let minutes = Math.floor(fractionalDay * 1440) - (hours * 60)
+    let seconds = Math.floor(fractionalDay * 86400) - (hours * 3600) - (minutes * 60)
+
+
+    date.setHours(hours)
+    date.setMinutes(minutes)
+    date.setSeconds(seconds)
+
+    return date
+}
+
+// round off to whole number
+const roundOff = (num: number) => {
+    return Math.round((num + Number.EPSILON) * 100) / 100
+}
+export { PageActionButtons, ModalFooterButtons, excelDateToJSDate, roundOff }

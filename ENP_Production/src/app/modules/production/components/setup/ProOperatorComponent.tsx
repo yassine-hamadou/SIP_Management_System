@@ -187,7 +187,7 @@ const OperatorComponent = (props: any) => {
         const item = {
             data: {
                 empCode: values.empCode,
-                descempNameription: values.empName,
+                empName: values.empName,
                 tenantId:tenantId,
             },
             url: props.data.url

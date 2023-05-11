@@ -17,7 +17,8 @@ import { MineArea } from './components/setup/mine_care/MineArea';
 import { ProcessedMaterial } from './components/setup/materialProcessed/ProcessedMaterial';
 import { MaterialRaw } from './components/setup/materialRaw/MaterialRaw';
 import { LoaderOperator } from './components/setup/loaderOperator/LoaderOperator';
-
+import{EquipmentKpiReport} from "./components/report/EquipmentKpi";
+import { ActivityStatsReport } from './components/report/ActivityStatsReport';
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: 'Cycle Details',
@@ -226,7 +227,7 @@ const ProductionPage: React.FC = () => {
           element={
             <>
               <PageTitle breadcrumbs={accountBreadCrumbs}>Equipment KPI</PageTitle>
-              {/*<EquipmentTable />*/}
+              <EquipmentKpiReport/>
             </>
           }
         />
@@ -235,7 +236,7 @@ const ProductionPage: React.FC = () => {
           element={
             <>
               <PageTitle breadcrumbs={accountBreadCrumbs}>Activity Statistics</PageTitle>
-              {/*<StatisticsTable />*/}
+              <ActivityStatsReport/>
             </>
           }
         />

@@ -5,6 +5,7 @@ import {DetailsListHeader} from './components/header/UsersListHeader'
 import {DetailsTable} from './table/DetailsTable'
 import {UserEditModal} from './user-edit-modal/UserEditModal'
 import { KTCard } from '../../../../../../_metronic/helpers'
+import { ReportCard } from '../ReportCardItem'
 
 const CycleDetailsList = () => {
   const {itemIdForUpdate} = useListView()
@@ -19,14 +20,37 @@ const CycleDetailsList = () => {
   )
 }
 
-const ProductionReportTable = () => (
-  <QueryRequestProvider>
-    <QueryResponseProvider>
-      <ListViewProvider>
-        {/*<CycleDetailsList />*/}
-      </ListViewProvider>
-    </QueryResponseProvider>
-  </QueryRequestProvider>
-)
+
+const ProductionReportTable = () => {
+
+  const ProductionReportData = [
+    {
+      title: "Production Report",
+      reports: [
+        { title: "Report", link: "/" },
+        { title: "Report", link: "/" },
+        { title: "Report", link: "/" },
+      ]
+    },
+  ]
+
+  return (
+    <div>
+      <div className='row col-12 mb-10'>
+        {
+          ProductionReportData.map((report, index) => {
+            return (
+              <div className='col-4' key={index}>
+                <ReportCard data={report} />
+              </div>
+            )
+          })
+        }
+      </div>
+
+    </div>
+  )
+
+}
 
 export {ProductionReportTable}

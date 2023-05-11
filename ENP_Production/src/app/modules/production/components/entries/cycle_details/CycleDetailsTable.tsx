@@ -1,13 +1,13 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Divider, Input, Modal, Space, Table, TabsProps, Upload, UploadProps, message } from 'antd';
+import { Button, Divider, Input, Modal, Space, Table, TabsProps, Tag, Upload, UploadProps, message } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from "react";
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import * as XLSX from 'xlsx';
 import { KTCardBody } from '../../../../../../_metronic/helpers';
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
-import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents';
+import { ModalFooterButtons, PageActionButtons, excelDateToJSDate, roundOff } from '../../CommonComponents';
 import { Tabs } from 'antd';
 
 
@@ -24,6 +24,7 @@ const CycleDetailsTable = () => {
     const [isCheckDataModalOpen, setIsCheckDataModalOpen] = useState(false)
     const tenantId = localStorage.getItem('tenant')
     const [rowCount, setRowCount] = useState(0)
+    const [confirmUploadLoading, setConfirmUploading] = useState(false);
 
     const [loading, setLoading] = useState(false)
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -47,15 +48,15 @@ const CycleDetailsTable = () => {
     const { data: allMaterials } = useQuery('allMaterials', () => fetchDocument(`ProdRawMaterial/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: allShifts } = useQuery('shifts', () => fetchDocument(`ProductionShift/tenant/${tenantId}`), { cacheTime: 5000 })
 
-    
+
     const handleChange = (event: any) => {
         event.preventDefault()
         setTempData({ ...tempData, [event.target.name]: event.target.value });
     }
-    
+
     const onTabsChange = (key: string) => {
         console.log(key);
-      };
+    };
 
     const showModal = () => {
         setIsModalOpen(true)
@@ -128,42 +129,42 @@ const CycleDetailsTable = () => {
 
     const tabItems: TabsProps['items'] = [
         {
-          key: '1',
-          label: `Hauler Units`,
-          children: (
-            <>
-             <Table/>
-            </>
-          ),
+            key: '1',
+            label: `Hauler Units`,
+            children: (
+                <>
+                    <Table />
+                </>
+            ),
         },
         {
-          key: '2',
-          label: `Loader Units`,
-          children: (
-            <>
-             <Table/>
-            </>
-          ),
+            key: '2',
+            label: `Loader Units`,
+            children: (
+                <>
+                    <Table />
+                </>
+            ),
         },
         {
-          key: '3',
-          label: `Origins`,
-          children: (
-            <>
-             <Table/>
-            </>
-          ),
+            key: '3',
+            label: `Origins`,
+            children: (
+                <>
+                    <Table />
+                </>
+            ),
         },
         {
-          key: '4',
-          label: `Destinations`,
-          children: (
-            <>
-             <Table/>
-            </>
-          ),
+            key: '4',
+            label: `Destinations`,
+            children: (
+                <>
+                    <Table />
+                </>
+            ),
         },
-      ];
+    ];
 
 
     const columns: any = [
@@ -286,7 +287,7 @@ const CycleDetailsTable = () => {
         {
             title: 'Action',
             fixed: 'right',
-            width: 120,
+            width: 150,
             render: (_: any, record: any) => (
                 <Space size='middle'>
                     <a onClick={() => showUpdateModal(record)} className='btn btn-light-info btn-sm'>
@@ -300,8 +301,25 @@ const CycleDetailsTable = () => {
         },
     ]
 
-    // find an item by its v and return the id of the item
-
+    const uploadFileColumns = [
+        { title: 'Cyce Date', dataIndex: 'cycleDate', key: 'date', fixed: 'left', width: 120, },
+        { title: 'Shift', dataIndex: 'shift', width: 100 },
+        { title: 'Time Start', dataIndex: 'timeAtLoader', width: 120 },
+        { title: 'Loader Unit', dataIndex: 'loaderUnit', width: 150 },
+        { title: 'Loader Operator', dataIndex: 'loader', width: 150 },
+        { title: 'Hauler Unit', dataIndex: 'haulerUnit', width: 100 },
+        { title: 'Hauler Operator', dataIndex: 'hauler', width: 150 },
+        { title: 'Origin', dataIndex: 'origin', width: 150 },
+        { title: 'Material', dataIndex: 'material', width: 120 },
+        { title: 'Destination', dataIndex: 'destinationId', width: 150 },
+        { title: 'Nominal Weight', dataIndex: 'nominalWeight', width: 150 },
+        { title: 'Payload Weight', dataIndex: 'payloadWeight', width: 150 },
+        { title: 'Reported Weight', dataIndex: 'reportedWeight', width: 150 },
+        { title: 'Volume', dataIndex: 'volumes', width: 100 },
+        { title: 'Loads', dataIndex: 'loads', width: 100 },
+        { title: 'Cycle Time', dataIndex: 'cycleTime', width: 100 },
+        { title: 'Duration', dataIndex: 'duration', width: 150 },
+    ]
 
     const onSummaryTabsChange = (key: string) => {
         console.log(key);
@@ -320,71 +338,145 @@ const CycleDetailsTable = () => {
         },
     }
 
-    //to convert excel date to js date
-    const excelDateToJSDate = (serial: number) => {
-        const utcDays = Math.floor(serial - 25569)
-        const utcValue = utcDays * 86400
-        const date = new Date(utcValue * 1000)
+    const newUploadProps: UploadProps = {
+        name: 'file',
+        accept: '.xlsx, .xls',
+        action: '',
+        maxCount: 1,
+        beforeUpload: (file: any) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader()
+                reader.readAsArrayBuffer(file)
+                reader.onload = (e: any) => {
+                    const data = new Uint8Array(e.target.result)
+                    const workbook = XLSX.read(data, { type: 'array' })
+                    const sheetName = workbook.SheetNames[0]
+                    const sheet = workbook.Sheets[sheetName]
+                    const range = "A13:ZZ1100";
+                    const json = XLSX.utils.sheet_to_json(sheet, { header: 0, range: range, blankrows: false })
+                    const formattedData = json.map((item: any) => {
+                        return {
+                            cycleDate: moment(excelDateToJSDate(item.Date), 'YYYY-MM-DD').format('DD/MM/YYYY'),
+                            shift: item['Shift'],
+                            cycleTime: moment(excelDateToJSDate(item['Arrived']), 'HH:mm:ss').format('HH:mm'),
+                            loaderUnit: item['Loading Unit'],
+                            loader: item['Loader Operator'],
+                            hauler: item['Hauler Operator'],
+                            haulerUnit: item['Truck'],
+                            origin: item['Origin'],
+                            material: item['Material'],
+                            destination: item['Destination'],
+                            nominalWeight: item['Nominal Weight'],
+                            payloadWeight: item['Payload Weight'],
+                            reportedWeight: item['Reported Weight'],
+                            volumes: roundOff(item.Volume),
+                            loads: item['Loads'],
+                            timeAtLoader: moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
+                            duration: item['Travel Empty Duration'],
+                        }
+                    })
 
-        const fractionalDay = serial - Math.floor(serial) + 0.0000001
+                    const newCol = [
+                        { title: 'Cyce Date', dataIndex: 'cycleDate', key: 'date', fixed: 'left', width: 120, },
+                        { title: 'Shift', dataIndex: 'shift', width: 100 },
+                        { title: 'Time Start', dataIndex: 'timeAtLoader', width: 120 },
+                        { title: 'Loader Unit', dataIndex: 'loaderUnit', width: 150 },
+                        { title: 'Loader Operator', dataIndex: 'loader', width: 150 },
+                        { title: 'Hauler Unit', dataIndex: 'haulerUnit', width: 100 },
+                        { title: 'Hauler Operator', dataIndex: 'hauler', width: 150 },
+                        { title: 'Origin', dataIndex: 'origin', width: 150 },
+                        { title: 'Material', dataIndex: 'material', width: 120 },
+                        { title: 'Destination', dataIndex: 'destination', width: 150 },
+                        { title: 'Nominal Weight', dataIndex: 'nominalWeight', width: 150 },
+                        { title: 'Payload Weight', dataIndex: 'payloadWeight', width: 150 },
+                        { title: 'Reported Weight', dataIndex: 'reportedWeight', width: 150 },
+                        { title: 'Volume', dataIndex: 'volumes', width: 100 },
+                        { title: 'Loads', dataIndex: 'loads', width: 100 },
+                        { title: 'Cycle Time', dataIndex: 'cycleTime', width: 100 },
+                        { title: 'Duration', dataIndex: 'duration', width: 150 },
+                    ]
 
-        let hours = Math.floor(fractionalDay * 24)
-        let minutes = Math.floor(fractionalDay * 1440) - (hours * 60)
-        let seconds = Math.floor(fractionalDay * 86400) - (hours * 3600) - (minutes * 60)
 
-
-        date.setHours(hours)
-        date.setMinutes(minutes)
-        date.setSeconds(seconds)
-
-        return date
+                    setRowCount(formattedData.length)
+                    setIsFileUploaded(true)
+                    console.log('upload: ', formattedData.slice(0, 10))
+                    setUploadData(formattedData.slice(1))
+                    setUploadColumns(newCol)
+                }
+                resolve(file)
+            })
+        },
     }
 
-    // round off to whole number
-    const roundOff = (num: number) => {
-        return Math.round((num + Number.EPSILON) * 100) / 100
-    }
+
 
     // convert populated data from excel file to database 
     const saveTableObjects = () => {
 
-        const saveData = uploadData.map((item: any) => {
+        uploadData.map((item: any,) => {
 
-            const destinationId = destinations?.data.find((dest: any) => dest.name === item.Destination);
-            const haulerUnitId = allHaulerUnits?.data.find((unit: any) => unit.equipmentId === item.Truck);
-            const hauler = allHaulers?.data.find((op: any) => op.name === item['Hauler Operator']);
-            const loaderUnitId = allLoaderUnits?.data.find((unit: any) => unit.equipmentId === item['Loading Unit']);
-            const loader = allLoaders?.data.find((op: any) => op.name === item['Loader Operator']);
-            const originId = allOrigins?.data.find((ori: any) => ori.name === item.Origin);
-            const materialId = allMaterials?.data.find((mat: any) => mat.name === item.Material);
-            const shiftId = allShifts?.data.find((s: any) => s.name === item.Shift);
+            const destinationId = destinations?.data.find((dest: any) => dest.name.trim() === item.destination.trim());
+            const haulerUnitId = allHaulerUnits?.data.find((unit: any) => unit.equipmentId.trim() === item.haulerUnit.trim());
+            const hauler = allHaulers?.data.find((op: any) => op.empName.trim() === item.hauler.trim());
+            const loaderUnitId = allLoaderUnits?.data.find((unit: any) => unit.equipmentId.trim() === item.loaderUnit.trim());
+            const loader = allLoaders?.data.find((op: any) => op.empName.trim() === item.loader.trim());
+            const originId = allOrigins?.data.find((ori: any) => ori.name.trim() === item.origin.trim());
+            const materialId = allMaterials?.data.find((mat: any) => mat.name.trim() === item.material.trim());
+            const shiftId = allShifts?.data.find((s: any) => s.name.trim() === item.shift.trim());
 
-            return {
-                cycleDate: item.Date,
-                cycleTime: item.Arrived,
-                loader: loader.empCode,
-                hauler: hauler.empCode,
-                loaderUnitId: parseInt(loaderUnitId.id),
-                haulerUnitId: parseInt(haulerUnitId.id),
-                originId: parseInt(originId.id),
-                materialId: parseInt(materialId.id),
-                destinationId: item.Destination,
-                nominalWeight: item['Nominal Weight'],
-                weight: item.weight,
-                payloadWeight: item.PayloadWeight,
-                reportedWeight: item.ReportedWeight,
-                volume: item.Volume,
-                loads: item.Loads,
-                timeAtLoader: item['Time Start'],
-                shiftId: parseInt(shiftId.id),
-                duration: item['Travel Empty Duration'],
-                tenantId: tenantId,
-            };
+            // check if the id of any of the data is not found 
+                if (!destinationId || !haulerUnitId || !hauler || !loaderUnitId || !loader || !originId || !materialId || !shiftId) {
+                    //    if (!hasMissingIds) {
+                      //      message.error('Some columns have unfound values. Please check your data and try again')
+                    //        hasMissingIds = true;
+                    return
+                    // }
+                } else {
+                    //message.success('Data is valid')
+
+                    const obj = {
+                    data: {              
+                        cycleDate: item.cycleDate,
+                        cycleTime: item.cycleTime,
+                        loader: loader?.empCode,
+                        hauler: hauler?.empCode,
+                        loaderUnitId: parseInt(loaderUnitId?.id),
+                        haulerUnitId: parseInt(haulerUnitId?.id),
+                        originId: parseInt(originId?.id),
+                        materialId: parseInt(materialId?.id),
+                        destinationId: parseInt(destinationId?.id),
+                        nominalWeight: parseInt(item.nominalWeight),
+                        weight: parseInt(item.nominalWeight),
+                        payloadWeight: parseInt(item.payloadWeight),
+                        reportedWeight: parseInt(item.reportedWeight),
+                        volumes: parseInt(item.volumes),
+                        loads: parseInt(item.loads),
+                        timeAtLoader: item.timeAtLoader,
+                        shiftId: parseInt(shiftId?.id),
+                        duration: parseInt(item.duration),
+                        tenantId: tenantId,
+                        batchNumber: `${haulerUnitId?.id}-${moment().format('DDMMYYHHmmss')}`
+                    },
+                    url: 'cycleDetails',
+                }
+                console.log('dataToSave', obj.data);
+                postData(obj)
+            }          
+
         });
+
+        // dataToSave.map((item: any) => {
+        //     const data = {
+        //         data: item,
+        //         url: 'cycleDetails',
+        //     }
+        //     console.log('dataToSave', data);
+        //     //postData(data)
+        // });
 
     }
 
-    const handleUpload = async () => {
+    const handleUpload = () => {
 
         setIsUploadModalOpen(false)
         setIsFileUploaded(true)
@@ -395,66 +487,42 @@ const CycleDetailsTable = () => {
             const workSheetName = workBook.SheetNames[0]
             const workSheet: any = workBook.Sheets[workSheetName]
 
-            const columnHeaders = [
-                'Date', 'Shift', 'Time Start', 'Loading Unit', 'Loading Unit', 'Loader Operator',
-                'Truck', 'Hauler Operator', 'Origin', 'Material', 'Destination', 'Nominal Weight',
-                'Payload Weight', 'Reported Weight', 'Volume', 'Loads', 'Arrived', 'Travel Empty Duration',
-            ];
-
-            const fileColumns = [
-                { title: 'Date', dataIndex: 'Date', key: 'date', fixed: 'left', width: 120, },
-                { title: 'Shift', dataIndex: 'Shift', width:100 },
-                { title: 'Time Start', dataIndex: 'Time Start', width:120 },
-                { title: 'Loading Unit', dataIndex: 'Loading Unit', width:150 },
-                { title: 'Loader Operator', dataIndex: 'Loader Operator', width:150 },
-                { title: 'Hauler', dataIndex: 'Truck', width:100 },
-                { title: 'Hauler Operator', dataIndex: 'Hauler Operator', width:150 },
-                { title: 'Origin', dataIndex: 'Origin', width:150 },
-                { title: 'Material', dataIndex: 'Material', width:120 },
-                { title: 'Destination', dataIndex: 'Destination', width:150 },
-                { title: 'Nominal Weight', dataIndex: 'Nominal Weight', width:150 },
-                { title: 'Payload Weight', dataIndex: 'Payload Weight', width:150 },
-                { title: 'Reported Weight', dataIndex: 'Reported Weight', width:150 },
-                { title: 'Volume', dataIndex: 'Volume', width:100 },
-                { title: 'Loads', dataIndex: 'Loads', width:100 },
-                { title: 'Arrived', dataIndex: 'Arrived', width:100 },
-                { title: 'Travel Empty Duration', dataIndex: 'Travel Empty Duration', width:150 },
-            ]
-
             // sets the range to be read from the excel file
             const range = "A13:ZZ1100";
 
-            const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range })
+            const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range, blankrows: false })
             const filteredData = data
-                .map((row: any) => {
-                    setLoading(true)
-                    const filteredRow: any = {};
-                    columnHeaders.forEach((column: string) => {
-                        filteredRow[column] = row[column];
-                    });
-                    return filteredRow;
-                });
+                .map((item: any) => {
+                    return {
+                        cycleDate: moment(excelDateToJSDate(item.Date), 'YYYY-MM-DD').format('DD/MM/YYYY'),
+                        shift: item['Shift'],
+                        cycleTime: moment(excelDateToJSDate(item['Arrived']), 'HH:mm:ss').format('HH:mm'),
+                        loaderUnit: item['Loading Unit'],
+                        loader: item['Loader Operator'],
+                        hauler: item['Hauler Operator'],
+                        haulerUnit: item['Truck'],
+                        origin: item['Origin'],
+                        material: item['Material'],
+                        destination: item['Destination'],
+                        nominalWeight: item['Nominal Weight'],
+                        payloadWeight: item['Payload Weight'],
+                        reportedWeight: item['Reported Weight'],
+                        volumes: roundOff(item.Volume),
+                        loads: item['Loads'],
+                        timeAtLoader: moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
+                        duration: item['Travel Empty Duration'],
+                    }
+                })
 
-            const convertedData = filteredData.map((item: any) => ({
-                ...item,
-                Date: moment(excelDateToJSDate(item.Date), 'YYYY-MM-DD').format('DD/MM/YYYY'),
-                'Time Start': moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
-                'Arrived': moment(excelDateToJSDate(item['Arrived']), 'HH:mm:ss').format('HH:mm'),
-                Volume: roundOff(item.Volume),
-            }))
+            setRowCount(filteredData.length)
 
-            // set row count 
-            setRowCount(convertedData.length)
-
-            setUploadColumns(fileColumns)
-            setUploadData(convertedData.slice(1))
-            setLoading(false)
+            setUploadColumns(uploadFileColumns)
+            setUploadData(filteredData.slice(1))
             setIsUploadModalOpen(false)
-            console.log('read data: ', convertedData)
+            console.log('read data: ', filteredData.slice(0, 10))
         }
         reader.readAsArrayBuffer(uploadedFile)
     }
-
 
 
     const loadData = async () => {
@@ -561,7 +629,7 @@ const CycleDetailsTable = () => {
                 timeAtLoader: values.timeAtLoader,
                 duration: parseInt(values.duration),
                 tenantId: tenantId,
-                batchNumber:`${values.haulerUnitId}-${moment().format('DDMMYYHHmmss')}`,
+                batchNumber: `${values.haulerUnitId}-${moment().format('DDMMYYHHmmss')}`,
             },
             url: 'cycleDetails'
         }
@@ -616,7 +684,7 @@ const CycleDetailsTable = () => {
                                     >
                                         Check data
                                     </Button>
-                                    <Button onClick={() => { }}
+                                    <Button onClick={saveTableObjects}
                                         type='primary' size='large'
                                         style={{
                                             display: 'flex',
@@ -658,6 +726,7 @@ const CycleDetailsTable = () => {
                         columns={isFileUploaded ? uploadColumns : columns}
                         dataSource={isFileUploaded ? uploadData : gridData}
                         scroll={{ x: 1300 }}
+                        loading={loading}
                     />
 
 
@@ -865,17 +934,14 @@ const CycleDetailsTable = () => {
                         </form>
                     </Modal>
                     {/* Modal to upload file */}
+
                     <Modal
-                        title='Upload Planned Output'
+                        title='Upload Cycle Detail'
                         open={isUploadModalOpen}
+                        onOk={handleUpload}
+                        // confirmLoading={confirmUploadLoading}
                         onCancel={handleCancel}
                         closable={true}
-                        footer={
-                            <ModalFooterButtons
-                                onCancel={handleCancel}
-                                onSubmit={handleUpload}
-                            />
-                        }
                     >
                         <Divider />
                         <Space size='large'>
@@ -896,7 +962,7 @@ const CycleDetailsTable = () => {
 
                     {/* check data modal */}
                     <Modal
-                        title=''
+                        title='Data Summaries'
                         open={isCheckDataModalOpen}
                         onCancel={handleCancel}
                         width={800}
@@ -910,7 +976,15 @@ const CycleDetailsTable = () => {
                                 </Button>
                             </>}
                     >
-                       <Tabs defaultActiveKey="1" items={tabItems} onChange={onTabsChange} />
+
+                        <Tabs defaultActiveKey="1"
+                            items={tabItems}
+                            onChange={onTabsChange}
+                            tabBarExtraContent={
+                                <>
+                                    <Tag color="geekblue">{rowCount} rows </Tag>
+                                </>
+                            } />
                     </Modal>
 
                 </div>

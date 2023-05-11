@@ -22,11 +22,12 @@ const ProUnitComponet = (props: any) => {
     const { register, reset, handleSubmit } = useForm()
     const queryClient = useQueryClient()
     const [modelName, setModelName] = useState<any>(null)
+    const [equipmentDes, setEquipmentDes] = useState<any>(null)
     const [equipmentId, setEquipmentId] = useState<any>(null)
     const tenantId = localStorage.getItem('tenant')
 
-    const { data: equipments } = useQuery('equipments', () => fetchDocument('equipments'), { cacheTime: 5000 })
-    const { data: models } = useQuery('models', () => fetchDocument('models'), { cacheTime: 5000 })
+    const { data: equipments } = useQuery('equipments', () => fetchDocument(`equipments/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: models } = useQuery('models', () => fetchDocument(`models`), { cacheTime: 5000 })
 
     // get modelId from selected equipment
     const getEquipmentModelId = (equipmentId: any) => {
@@ -41,12 +42,19 @@ const ProUnitComponet = (props: any) => {
         return model?.name
     }
 
+    // get equipment description from equipmentId
+    const getEquipmentDes = (equipmentId: any) => {
+        const equipment = equipments?.data.find((equipment: any) => equipment.equipmentId === equipmentId)
+        return equipment?.description
+    }
+
     // handle equipmentId change
     const handleEquipmentIdChange = (event: any) => {
         event.preventDefault()
         setEquipmentId(event.target.value)
         setModelName(getModelName(event.target.value))
         setTempData({ ...tempData, [event.target.name]: event.target.value });
+        setEquipmentDes(getEquipmentDes(equipmentId))
         console.log('model name: ', modelName)
         console.log('equipmentId: ', equipmentId)
     }
@@ -54,7 +62,8 @@ const ProUnitComponet = (props: any) => {
 
     const handleChange = (event: any) => {
         event.preventDefault()
-        setTempData({ ...tempData, [event.target.name]: event.target.value });
+        setTempData({ ...tempData, [event.target.name]: event.target.value });      
+        setEquipmentDes(event.target.value)
     }
 
     const showModal = () => {
@@ -69,6 +78,7 @@ const ProUnitComponet = (props: any) => {
         reset()
         setTempData({})
         setEquipmentId(null)
+        setEquipmentDes(null)
         setModelName(null)
         setIsModalOpen(false)
         setIsUploadModalOpen(false)
@@ -203,6 +213,7 @@ const ProUnitComponet = (props: any) => {
             setTempData({})
             setEquipmentId(null)
             setModelName(null)
+            setEquipmentDes(null)
             loadData()
             setIsUpdateModalOpen(false)
             setIsModalOpen(false)
@@ -238,8 +249,8 @@ const ProUnitComponet = (props: any) => {
         const item = {
             data: {
                 equipmentId: values.equipmentId,
-                modelName: values.modelName,
-                description: values.description,
+                modelName: modelName,
+                description: equipmentDes ,
                 tenantId:tenantId,
             },
             url: props.data.url
@@ -256,6 +267,7 @@ const ProUnitComponet = (props: any) => {
             setTempData({})
             setEquipmentId(null)
             setModelName(null)
+            setEquipmentDes(null)
             loadData()
             setIsModalOpen(false)
             setSubmitLoading(false)
@@ -336,11 +348,11 @@ const ProUnitComponet = (props: any) => {
                                 </div>
                                 <div className=' mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Model name</label>
-                                    <input {...register("modelName")} disabled={true} name='modelName' defaultValue={!isUpdateModalOpen ? modelName : tempData?.modelName} onChange={!isUpdateModalOpen ? handleEquipmentIdChange : handleChange} className="form-control form-control-white" />
+                                    <input {...register("modelName")} disabled={true} name='modelName' defaultValue={!isUpdateModalOpen ? modelName : tempData?.modelName}  className="form-control form-control-white" />
                                 </div>
                                 <div className=' mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
-                                    <input {...register("description")} name='description' defaultValue={!isUpdateModalOpen ? '' : tempData?.description} onChange={handleChange} className="form-control form-control-white" />
+                                    <input {...register("description")} name='description' defaultValue={!isUpdateModalOpen ? equipmentDes : tempData?.description} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                         </form>
