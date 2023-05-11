@@ -66,6 +66,8 @@ const CycleDetailsTable = () => {
         setIsUploadModalOpen(true)
     }
 
+
+
     const showCheckDataModal = (values: any) => {
         setIsCheckDataModalOpen(true)
     }
@@ -338,77 +340,6 @@ const CycleDetailsTable = () => {
         },
     }
 
-    const newUploadProps: UploadProps = {
-        name: 'file',
-        accept: '.xlsx, .xls',
-        action: '',
-        maxCount: 1,
-        beforeUpload: (file: any) => {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader()
-                reader.readAsArrayBuffer(file)
-                reader.onload = (e: any) => {
-                    const data = new Uint8Array(e.target.result)
-                    const workbook = XLSX.read(data, { type: 'array' })
-                    const sheetName = workbook.SheetNames[0]
-                    const sheet = workbook.Sheets[sheetName]
-                    const range = "A13:ZZ1100";
-                    const json = XLSX.utils.sheet_to_json(sheet, { header: 0, range: range, blankrows: false })
-                    const formattedData = json.map((item: any) => {
-                        return {
-                            cycleDate: moment(excelDateToJSDate(item.Date), 'YYYY-MM-DD').format('DD/MM/YYYY'),
-                            shift: item['Shift'],
-                            cycleTime: moment(excelDateToJSDate(item['Arrived']), 'HH:mm:ss').format('HH:mm'),
-                            loaderUnit: item['Loading Unit'],
-                            loader: item['Loader Operator'],
-                            hauler: item['Hauler Operator'],
-                            haulerUnit: item['Truck'],
-                            origin: item['Origin'],
-                            material: item['Material'],
-                            destination: item['Destination'],
-                            nominalWeight: item['Nominal Weight'],
-                            payloadWeight: item['Payload Weight'],
-                            reportedWeight: item['Reported Weight'],
-                            volumes: roundOff(item.Volume),
-                            loads: item['Loads'],
-                            timeAtLoader: moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
-                            duration: item['Travel Empty Duration'],
-                        }
-                    })
-
-                    const newCol = [
-                        { title: 'Cyce Date', dataIndex: 'cycleDate', key: 'date', fixed: 'left', width: 120, },
-                        { title: 'Shift', dataIndex: 'shift', width: 100 },
-                        { title: 'Time Start', dataIndex: 'timeAtLoader', width: 120 },
-                        { title: 'Loader Unit', dataIndex: 'loaderUnit', width: 150 },
-                        { title: 'Loader Operator', dataIndex: 'loader', width: 150 },
-                        { title: 'Hauler Unit', dataIndex: 'haulerUnit', width: 100 },
-                        { title: 'Hauler Operator', dataIndex: 'hauler', width: 150 },
-                        { title: 'Origin', dataIndex: 'origin', width: 150 },
-                        { title: 'Material', dataIndex: 'material', width: 120 },
-                        { title: 'Destination', dataIndex: 'destination', width: 150 },
-                        { title: 'Nominal Weight', dataIndex: 'nominalWeight', width: 150 },
-                        { title: 'Payload Weight', dataIndex: 'payloadWeight', width: 150 },
-                        { title: 'Reported Weight', dataIndex: 'reportedWeight', width: 150 },
-                        { title: 'Volume', dataIndex: 'volumes', width: 100 },
-                        { title: 'Loads', dataIndex: 'loads', width: 100 },
-                        { title: 'Cycle Time', dataIndex: 'cycleTime', width: 100 },
-                        { title: 'Duration', dataIndex: 'duration', width: 150 },
-                    ]
-
-
-                    setRowCount(formattedData.length)
-                    setIsFileUploaded(true)
-                    console.log('upload: ', formattedData.slice(0, 10))
-                    setUploadData(formattedData.slice(1))
-                    setUploadColumns(newCol)
-                }
-                resolve(file)
-            })
-        },
-    }
-
-
 
     // convert populated data from excel file to database 
     const saveTableObjects = () => {
@@ -425,17 +356,17 @@ const CycleDetailsTable = () => {
             const shiftId = allShifts?.data.find((s: any) => s.name.trim() === item.shift.trim());
 
             // check if the id of any of the data is not found 
-                if (!destinationId || !haulerUnitId || !hauler || !loaderUnitId || !loader || !originId || !materialId || !shiftId) {
-                    //    if (!hasMissingIds) {
-                      //      message.error('Some columns have unfound values. Please check your data and try again')
-                    //        hasMissingIds = true;
-                    return
-                    // }
-                } else {
-                    //message.success('Data is valid')
+            if (!destinationId || !haulerUnitId || !hauler || !loaderUnitId || !loader || !originId || !materialId || !shiftId) {
+                //    if (!hasMissingIds) {
+                //      message.error('Some columns have unfound values. Please check your data and try again')
+                //        hasMissingIds = true;
+                return
+                // }
+            } else {
+                //message.success('Data is valid')
 
-                    const obj = {
-                    data: {              
+                const obj = {
+                    data: {
                         cycleDate: item.cycleDate,
                         cycleTime: item.cycleTime,
                         loader: loader?.empCode,
@@ -461,7 +392,7 @@ const CycleDetailsTable = () => {
                 }
                 console.log('dataToSave', obj.data);
                 postData(obj)
-            }          
+            }
 
         });
 
@@ -478,51 +409,77 @@ const CycleDetailsTable = () => {
 
     const handleUpload = () => {
 
-        setIsUploadModalOpen(false)
-        setIsFileUploaded(true)
         const reader = new FileReader()
-        reader.onload = (e: any) => {
-            const file = new Uint8Array(e.target.result)
-            const workBook = XLSX.read(file, { type: 'array' })
-            const workSheetName = workBook.SheetNames[0]
-            const workSheet: any = workBook.Sheets[workSheetName]
+        try {
+            setLoading(true)
+            reader.onload = (e: any) => {
 
-            // sets the range to be read from the excel file
-            const range = "A13:ZZ1100";
+                const file = new Uint8Array(e.target.result)
+                const workBook = XLSX.read(file, { type: 'array' })
+                const workSheetName = workBook.SheetNames[0]
+                const workSheet: any = workBook.Sheets[workSheetName]
 
-            const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range, blankrows: false })
-            const filteredData = data
-                .map((item: any) => {
-                    return {
-                        cycleDate: moment(excelDateToJSDate(item.Date), 'YYYY-MM-DD').format('DD/MM/YYYY'),
-                        shift: item['Shift'],
-                        cycleTime: moment(excelDateToJSDate(item['Arrived']), 'HH:mm:ss').format('HH:mm'),
-                        loaderUnit: item['Loading Unit'],
-                        loader: item['Loader Operator'],
-                        hauler: item['Hauler Operator'],
-                        haulerUnit: item['Truck'],
-                        origin: item['Origin'],
-                        material: item['Material'],
-                        destination: item['Destination'],
-                        nominalWeight: item['Nominal Weight'],
-                        payloadWeight: item['Payload Weight'],
-                        reportedWeight: item['Reported Weight'],
-                        volumes: roundOff(item.Volume),
-                        loads: item['Loads'],
-                        timeAtLoader: moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
-                        duration: item['Travel Empty Duration'],
-                    }
-                })
+                // sets the range to be read from the excel file
+                const range = "A13:ZZ1100";
 
-            setRowCount(filteredData.length)
+                const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range, blankrows: false })
 
-            setUploadColumns(uploadFileColumns)
-            setUploadData(filteredData.slice(1))
+                const filteredData: any = data
+                    .map((item: any) => {
+                        return {
+                            cycleDate: moment(excelDateToJSDate(item.Date), 'YYYY-MM-DD').format('DD/MM/YYYY'),
+                            shift: item['Shift'],
+                            cycleTime: moment(excelDateToJSDate(item['Arrived']), 'HH:mm:ss').format('HH:mm'),
+                            loaderUnit: item['Loading Unit'],
+                            loader: item['Loader Operator'],
+                            hauler: item['Hauler Operator'],
+                            haulerUnit: item['Truck'],
+                            origin: item['Origin'],
+                            material: item['Material'],
+                            destination: item['Destination'],
+                            nominalWeight: item['Nominal Weight'],
+                            payloadWeight: item['Payload Weight'],
+                            reportedWeight: item['Reported Weight'],
+                            volumes: roundOff(item.Volume),
+                            loads: item['Loads'],
+                            timeAtLoader: moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
+                            duration: item['Travel Empty Duration'],
+                        }
+                    })
+
+                setLoading(false)
+                setIsUploadModalOpen(false)
+                setIsFileUploaded(true)
+                setRowCount(filteredData.length)
+                setUploadColumns(uploadFileColumns)
+                setUploadData(filteredData.slice(1))
+
+                console.log('read data: ', filteredData.slice(0, 10))
+            }
+        } catch (error) {
             setIsUploadModalOpen(false)
-            console.log('read data: ', filteredData.slice(0, 10))
         }
         reader.readAsArrayBuffer(uploadedFile)
     }
+
+    // group by hauler unit
+    const groupedByHauler: any = {};
+    uploadData.forEach((item: any) => {
+        if (!groupedByHauler[item.haulerUnit]) {
+            groupedByHauler[item.haulerUnit] = [];
+        }
+        groupedByHauler[item.haulerUnit].push(item);
+    });
+    console.log("groupedByHauler", groupedByHauler)
+
+    // sum volumes per hauler
+    const newData = [];
+    for (const hauler in groupedByHauler) {
+        const volumes = groupedByHauler[hauler].map((item: { volumes: any; }) => item.volumes);
+        const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        newData.push({ hauler, sum });
+    }
+    console.log("newData", newData)
 
 
     const loadData = async () => {
@@ -728,7 +685,6 @@ const CycleDetailsTable = () => {
                         scroll={{ x: 1300 }}
                         loading={loading}
                     />
-
 
                     <Modal
                         title={isUpdateModalOpen ? 'Update Cycle Details' : 'Cycle Details Setup'}
@@ -939,7 +895,7 @@ const CycleDetailsTable = () => {
                         title='Upload Cycle Detail'
                         open={isUploadModalOpen}
                         onOk={handleUpload}
-                        // confirmLoading={confirmUploadLoading}
+                        confirmLoading={loading}
                         onCancel={handleCancel}
                         closable={true}
                     >
