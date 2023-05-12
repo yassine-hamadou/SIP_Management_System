@@ -1,5 +1,5 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Divider, Input, Modal, Space, Table, TabsProps, Tag, Upload, UploadProps, message } from 'antd';
+import { Button, Divider, Input, Modal, Space, Table, TabsProps, Tag, Upload, UploadFile, UploadProps, message } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from "react";
 import { set, useForm } from 'react-hook-form';
@@ -9,37 +9,34 @@ import { KTCardBody } from '../../../../../../_metronic/helpers';
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
 import { ModalFooterButtons, PageActionButtons, excelDateToJSDate, roundOff } from '../../CommonComponents';
 import { Tabs } from 'antd';
+import { TableProps } from 'react-bootstrap';
+import { UploadChangeParam } from 'antd/es/upload';
 
 
 
 const CycleDetailsTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false) // to show the upload modal
     const [uploadedFile, setUploadedFile] = useState<any>(null)
     const [gridData, setGridData] = useState([])
     let [filteredData] = useState([])
     const [submitLoading, setSubmitLoading] = useState(false)
     const [searchText, setSearchText] = useState('')
-    const [isFileUploaded, setIsFileUploaded] = useState(false)
-    const [isCheckDataModalOpen, setIsCheckDataModalOpen] = useState(false)
+    const [isFileUploaded, setIsFileUploaded] = useState(false) // to check if the file is uploaded
+    const [isCheckDataModalOpen, setIsCheckDataModalOpen] = useState(false)  // to show the modal to check the data summaries from the uploaded file
     const tenantId = localStorage.getItem('tenant')
-    const [rowCount, setRowCount] = useState(0)
-    const [confirmUploadLoading, setConfirmUploading] = useState(false);
+    const [rowCount, setRowCount] = useState(0) // to hold the number of rows read from the uploaded file
+    const [savedCount, setSavedCount] = useState(0) // to hold the number of rows saved from the uploaded file
 
     const [loading, setLoading] = useState(false)
-    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false) //  to show the update modal
     const [tempData, setTempData] = useState<any>()
     const { register, reset, handleSubmit } = useForm()
     const queryClient = useQueryClient()
-    const [uploadColumns, setUploadColumns] = useState<any>([])
-    const [haulerSummary, setHaulerSummary] = useState<any>([])
-    const [loaderSummary, setLoaderSummary] = useState<any>([])
-    const [originSummary, setOriginSummary] = useState<any>([])
-    const [uploadData, setUploadData] = useState<any>([])
-    const [uploading, setUpLoading] = useState(false)
+    const [uploadColumns, setUploadColumns] = useState<any>([]) //to hold the table columns of the uploaded file
+    const [uploadData, setUploadData] = useState<any>([]) // to hold the data read from the uploaded file
 
     const { data: destinations } = useQuery('destinations', () => fetchDocument(`productionDestination/tenant/${tenantId}`), { cacheTime: 5000 })
-    const { data: productionActivities } = useQuery('activity', () => fetchDocument(`ProductionActivity/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: allHaulerUnits } = useQuery('hauler', () => fetchDocument(`ProHaulerUnit/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: allHaulers } = useQuery('haulerOperator', () => fetchDocument(`HaulerOperator/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: allLoaderUnits } = useQuery('allLoaders', () => fetchDocument(`ProLoaderUnit/tenant/${tenantId}`), { cacheTime: 5000 })
@@ -66,11 +63,10 @@ const CycleDetailsTable = () => {
         setIsUploadModalOpen(true)
     }
 
-
-
     const showCheckDataModal = (values: any) => {
         setIsCheckDataModalOpen(true)
     }
+
 
     const handleCancel = () => {
         reset()
@@ -78,6 +74,8 @@ const CycleDetailsTable = () => {
         setIsUploadModalOpen(false)
         setIsUpdateModalOpen(false)
         setIsCheckDataModalOpen(false)
+        setIsFileUploaded(false)
+        setSavedCount(0)
     }
 
     const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
@@ -127,46 +125,6 @@ const CycleDetailsTable = () => {
         })
         return name
     }
-
-
-    const tabItems: TabsProps['items'] = [
-        {
-            key: '1',
-            label: `Hauler Units`,
-            children: (
-                <>
-                    <Table />
-                </>
-            ),
-        },
-        {
-            key: '2',
-            label: `Loader Units`,
-            children: (
-                <>
-                    <Table />
-                </>
-            ),
-        },
-        {
-            key: '3',
-            label: `Origins`,
-            children: (
-                <>
-                    <Table />
-                </>
-            ),
-        },
-        {
-            key: '4',
-            label: `Destinations`,
-            children: (
-                <>
-                    <Table />
-                </>
-            ),
-        },
-    ];
 
 
     const columns: any = [
@@ -289,7 +247,7 @@ const CycleDetailsTable = () => {
         {
             title: 'Action',
             fixed: 'right',
-            width: 150,
+            width: 200,
             render: (_: any, record: any) => (
                 <Space size='middle'>
                     <a onClick={() => showUpdateModal(record)} className='btn btn-light-info btn-sm'>
@@ -323,15 +281,11 @@ const CycleDetailsTable = () => {
         { title: 'Duration', dataIndex: 'duration', width: 150 },
     ]
 
-    const onSummaryTabsChange = (key: string) => {
-        console.log(key);
-    };
-
     const uploadProps: UploadProps = {
         name: 'file',
         accept: '.xlsx, .xls',
-        action: '',
         maxCount: 1,
+
         beforeUpload: (file: any) => {
             return new Promise((resolve, reject) => {
                 resolve(file)
@@ -343,68 +297,62 @@ const CycleDetailsTable = () => {
 
     // convert populated data from excel file to database 
     const saveTableObjects = () => {
+        setSavedCount(0)
+        try {
+            setLoading(true)
+            uploadData.map((item: any,) => {
 
-        uploadData.map((item: any,) => {
+                const destinationId = destinations?.data.find((dest: any) => dest.name.trim() === item.destination.trim());
+                const haulerUnitId = allHaulerUnits?.data.find((unit: any) => unit.equipmentId.trim() === item.haulerUnit.trim());
+                const hauler = allHaulers?.data.find((op: any) => op.empName.trim() === item.hauler.trim());
+                const loaderUnitId = allLoaderUnits?.data.find((unit: any) => unit.equipmentId.trim() === item.loaderUnit.trim());
+                const loader = allLoaders?.data.find((op: any) => op.empName.trim() === item.loader.trim());
+                const originId = allOrigins?.data.find((ori: any) => ori.name.trim() === item.origin.trim());
+                const materialId = allMaterials?.data.find((mat: any) => mat.name.trim() === item.material.trim());
+                const shiftId = allShifts?.data.find((s: any) => s.name.trim() === item.shift.trim());
 
-            const destinationId = destinations?.data.find((dest: any) => dest.name.trim() === item.destination.trim());
-            const haulerUnitId = allHaulerUnits?.data.find((unit: any) => unit.equipmentId.trim() === item.haulerUnit.trim());
-            const hauler = allHaulers?.data.find((op: any) => op.empName.trim() === item.hauler.trim());
-            const loaderUnitId = allLoaderUnits?.data.find((unit: any) => unit.equipmentId.trim() === item.loaderUnit.trim());
-            const loader = allLoaders?.data.find((op: any) => op.empName.trim() === item.loader.trim());
-            const originId = allOrigins?.data.find((ori: any) => ori.name.trim() === item.origin.trim());
-            const materialId = allMaterials?.data.find((mat: any) => mat.name.trim() === item.material.trim());
-            const shiftId = allShifts?.data.find((s: any) => s.name.trim() === item.shift.trim());
-
-            // check if the id of any of the data is not found 
-            if (!destinationId || !haulerUnitId || !hauler || !loaderUnitId || !loader || !originId || !materialId || !shiftId) {
-                //    if (!hasMissingIds) {
-                //      message.error('Some columns have unfound values. Please check your data and try again')
-                //        hasMissingIds = true;
-                return
-                // }
-            } else {
-                //message.success('Data is valid')
-
-                const obj = {
-                    data: {
-                        cycleDate: item.cycleDate,
-                        cycleTime: item.cycleTime,
-                        loader: loader?.empCode,
-                        hauler: hauler?.empCode,
-                        loaderUnitId: parseInt(loaderUnitId?.id),
-                        haulerUnitId: parseInt(haulerUnitId?.id),
-                        originId: parseInt(originId?.id),
-                        materialId: parseInt(materialId?.id),
-                        destinationId: parseInt(destinationId?.id),
-                        nominalWeight: parseInt(item.nominalWeight),
-                        weight: parseInt(item.nominalWeight),
-                        payloadWeight: parseInt(item.payloadWeight),
-                        reportedWeight: parseInt(item.reportedWeight),
-                        volumes: parseInt(item.volumes),
-                        loads: parseInt(item.loads),
-                        timeAtLoader: item.timeAtLoader,
-                        shiftId: parseInt(shiftId?.id),
-                        duration: parseInt(item.duration),
-                        tenantId: tenantId,
-                        batchNumber: `${haulerUnitId?.id}-${moment().format('DDMMYYHHmmss')}`
-                    },
-                    url: 'cycleDetails',
+                // check if the id of any of the data is not found 
+                if (!destinationId || !haulerUnitId || !hauler || !loaderUnitId || !loader || !originId || !materialId || !shiftId) {
+                    return
+                } else {
+                    const obj = {
+                        data: {
+                            cycleDate: item.cycleDate,
+                            cycleTime: item.cycleTime,
+                            loader: loader?.empCode,
+                            hauler: hauler?.empCode,
+                            loaderUnitId: parseInt(loaderUnitId?.id),
+                            haulerUnitId: parseInt(haulerUnitId?.id),
+                            originId: parseInt(originId?.id),
+                            materialId: parseInt(materialId?.id),
+                            destinationId: parseInt(destinationId?.id),
+                            nominalWeight: parseInt(item.nominalWeight),
+                            weight: parseInt(item.nominalWeight),
+                            payloadWeight: parseInt(item.payloadWeight),
+                            reportedWeight: parseInt(item.reportedWeight),
+                            volumes: parseInt(item.volumes),
+                            loads: parseInt(item.loads),
+                            timeAtLoader: item.timeAtLoader,
+                            shiftId: parseInt(shiftId?.id),
+                            duration: parseInt(item.duration),
+                            tenantId: tenantId,
+                            batchNumber: `${haulerUnitId?.id}-${moment().format('DDMMYYHHmmss')}`
+                        },
+                        url: 'cycleDetails',
+                    }
+                    console.log('dataToSave', obj.data);
+                    postData(obj)
                 }
-                console.log('dataToSave', obj.data);
-                postData(obj)
-            }
-
-        });
-
-        // dataToSave.map((item: any) => {
-        //     const data = {
-        //         data: item,
-        //         url: 'cycleDetails',
-        //     }
-        //     console.log('dataToSave', data);
-        //     //postData(data)
-        // });
-
+            });
+            setLoading(false)
+            setIsFileUploaded(false)
+            message.success(`${savedCount} ${savedCount > 1 ? 'records' : 'record'} of ${uploadData.length} saved successfully`, 5)
+            handleCancel()
+            
+        } catch (err) {
+            console.log('fileSaveError: ', err)
+            setLoading(false)
+        }
     }
 
     const handleUpload = () => {
@@ -473,13 +421,117 @@ const CycleDetailsTable = () => {
     console.log("groupedByHauler", groupedByHauler)
 
     // sum volumes per hauler
-    const newData = [];
+    const volumesByHauler = [];
     for (const hauler in groupedByHauler) {
         const volumes = groupedByHauler[hauler].map((item: { volumes: any; }) => item.volumes);
         const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
-        newData.push({ hauler, sum });
+        volumesByHauler.push({ hauler, sum });
     }
-    console.log("newData", newData)
+    console.log("volumesByHauler", volumesByHauler)
+
+    // group by loader unit
+    const groupedByLoader: any = {};
+    uploadData.forEach((item: any) => {
+        if (!groupedByLoader[item.loaderUnit]) {
+            groupedByLoader[item.loaderUnit] = [];
+        }
+        groupedByLoader[item.loaderUnit].push(item);
+    });
+    console.log("groupedByLoader", groupedByLoader)
+
+    // sum volumes per loader
+    const volumesByLoader = [];
+    for (const loader in groupedByLoader) {
+        const volumes = groupedByLoader[loader].map((item: { volumes: any; }) => item.volumes);
+        const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        volumesByLoader.push({ loader, sum });
+    }
+    console.log("volumesByLoader", volumesByLoader)
+
+    // group by origin
+    const groupedByOrigin: any = {};
+    uploadData.forEach((item: any) => {
+        if (!groupedByOrigin[item.origin]) {
+            groupedByOrigin[item.origin] = [];
+        }
+        groupedByOrigin[item.origin].push(item);
+    });
+
+    // sum volumes per origin
+    const volumesByOrigin = [];
+    for (const origin in groupedByOrigin) {
+        const volumes = groupedByOrigin[origin].map((item: { volumes: any; }) => item.volumes);
+        const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        volumesByOrigin.push({ origin, sum });
+    }
+    console.log("volumesByOrigin", volumesByOrigin)
+
+    // group by destination
+    const groupedByDestination: any = {};
+    uploadData.forEach((item: any) => {
+        if (!groupedByDestination[item.destination]) {
+            groupedByDestination[item.destination] = [];
+        }
+        groupedByDestination[item.destination].push(item);
+    });
+
+    // sum volumes per destination
+    const volumesByDestination = [];
+    for (const destination in groupedByDestination) {
+        const volumes = groupedByDestination[destination].map((item: { volumes: any; }) => item.volumes);
+        const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        volumesByDestination.push({ destination, sum });
+    }
+    console.log("volumesByDestination", volumesByDestination)
+
+    const dynamicColumns = (title: any, dataIndex: any) => {
+        const columns = [
+            { title: title, dataIndex: dataIndex, },
+            { title: 'Sum of Volumes', dataIndex: 'sum', render: (value: any) => <a>{roundOff(value)}</a> },
+        ];
+        return columns;
+    }
+
+
+    const summaryFooter = (data: any) => <Tag color="error">{data} rows </Tag>
+
+    const tabItems: TabsProps['items'] = [
+        {
+            key: '1', label: `Hauler Units`,
+            children: (
+                <><Table dataSource={volumesByHauler} columns={dynamicColumns('Hauler', 'hauler')}
+                    pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
+                    footer={() => summaryFooter(volumesByHauler.length)}
+                /></>
+            ),
+        },
+        {
+            key: '2', label: `Loader Units`,
+            children: (
+                <><Table dataSource={volumesByLoader} columns={dynamicColumns('Loader', 'loader')}
+                    pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
+                    footer={() => summaryFooter(volumesByLoader.length)}
+                /></>
+            ),
+        },
+        {
+            key: '3', label: `Origins`, children: (
+                <><Table dataSource={volumesByOrigin} columns={dynamicColumns('Origin', 'origin')}
+                    pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
+                    footer={() => summaryFooter(volumesByLoader.length)}
+                /></>
+            ),
+        },
+        {
+            key: '4', label: `Destinations`, children: (
+                <><Table dataSource={volumesByDestination} columns={dynamicColumns('Destination', 'destination')}
+                    pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
+                    footer={() => summaryFooter(volumesByLoader.length)}
+                /></>
+            ),
+        },
+    ];
+
 
 
     const loadData = async () => {
@@ -553,8 +605,6 @@ const CycleDetailsTable = () => {
         console.log(values)
     }
 
-
-
     //hide Update table 
     const clearUpdateTable = () => {
         setIsFileUploaded(false)
@@ -598,6 +648,7 @@ const CycleDetailsTable = () => {
     const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
         onSuccess: (data) => {
             queryClient.setQueryData(['cycleDetails', tempData], data);
+            setSavedCount(isFileUploaded ? savedCount + 1 : 0)
             reset()
             setTempData({})
             loadData()
@@ -606,8 +657,8 @@ const CycleDetailsTable = () => {
         },
         onError: (error) => {
             setSubmitLoading(false)
-            console.log('post error: ', error)
-            message.error(`${error}`)
+            console.log('post error: ',  error)
+            message.error( isFileUploaded ? 'Saving failed, check your data and try again ' :  `${error}`)
         }
     })
 
