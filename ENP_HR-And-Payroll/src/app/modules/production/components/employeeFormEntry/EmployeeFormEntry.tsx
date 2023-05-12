@@ -47,7 +47,6 @@ const MultiTabForm= () =>{
   const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
-
     // to preview the uploaded file
     const onPreview = async (file: UploadFile) => {
       let src = file.url as string;
@@ -127,9 +126,6 @@ const MultiTabForm= () =>{
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-
-
-      
       <Link to="/employee">
         <a style={{fontSize:"16px", fontWeight: "500"}} className='mb-7 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>
           Back to list
