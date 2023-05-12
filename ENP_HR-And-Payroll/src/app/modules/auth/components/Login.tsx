@@ -39,6 +39,7 @@ export function Login() {
   const tenantId = localStorage.getItem('tenant')
 
   const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
+  const { data: allCompanies } = useQuery('companies', fetchCompanies, { cacheTime: 5000 })
   // const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(currentUser?.id)).map((filteredItem:any) => {
   //   return filteredItem.applicationId.toString()
   // })
@@ -96,7 +97,7 @@ export function Login() {
 
 localStorage.setItem('tenant', formik.values.tenantId)
 
-const { data: allCompanies } = useQuery('companies', fetchCompanies, { cacheTime: 5000 })
+
   return (
     <form
       className='form w-100'

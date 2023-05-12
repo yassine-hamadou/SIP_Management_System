@@ -1,35 +1,50 @@
-import React from "react";
+import { useEffect, useRef } from 'react';
+import { DxReportViewer} from 'devexpress-reporting/dx-webdocumentviewer';
+import "@grapecity/activereports/styles/ar-js-ui.css";
+import "@grapecity/activereports/styles/ar-js-viewer.css";
+import "@grapecity/activereports/styles/ar-js-designer.css";
+import "@grapecity/activereports/pdfexport";
+import "@grapecity/activereports/htmlexport";
+import "@grapecity/activereports/tabulardataexport";
 import ko from "knockout";
 import "devexpress-reporting/dx-webdocumentviewer";
-// import "../../../../../../node_modules/";
-// import "../../../../../../node_modules/jquery-ui/themes/base/all.css";
 import "../../../../../../node_modules/devextreme/dist/css/dx.light.css";
 import "../../../../../../node_modules/devexpress-reporting/dist/css/dx-webdocumentviewer.css";
 import "../../../../../../node_modules/@devexpress/analytics-core/dist/css/dx-analytics.common.css";
 import "../../../../../../node_modules/@devexpress/analytics-core/dist/css/dx-analytics.light.css";
 
-class ReportViewer extends React.Component {
-constructor(props) {
-    super(props);
-    this.reportUrl = ko.observable("BenefitTransactionInputReport");
-    this.requestOptions = {
-        host: "http://208.117.44.15/serverside/",
-        invokeAction: "DXXRDV"
+
+const ReportViewer = () => {
+    const reportUrl = ko.observable(`BenefitTransactionInputReport`);
+    const viewerRef = useRef();
+    const requestOptions = {
+      host: "http://208.117.44.15/serverside/",
+      invokeAction: "DXXRDV"
     };
-}
-render() {
-    return (<div ref="viewer" data-bind="dxReportViewer: $data"></div>);
-}
-componentDidMount() {
-    ko.applyBindings({
-    reportUrl: this.reportUrl,
-    requestOptions: this.requestOptions
-    }, this.refs.viewer);
-}
-componentWillUnmount() {
-    ko.cleanNode(this.refs.viewer);
-}
-};
+
+    useEffect(() => {
+    
+      const viewer = new DxReportViewer(viewerRef.current, 
+        { reportUrl, 
+          requestOptions,
+          callbacks: {
+          
+            customizeParameterLookUpSource: function(s, e) { 
+              const tenantId = localStorage.getItem('tenant')
+              if(s.name==='tenantid'){
+                 var parametersModel = e.filter(x=>x.value===tenantId); 
+                 console.log(parametersModel);
+                 
+                return parametersModel
+              }
+            },
+          }
+        });
+      viewer.render(); 
+      return () => viewer.dispose();
+    })
+    return (<div ref={viewerRef}></div>);
+  }
 
 function BenefitTransactionInputReport() {
 return (<div style={{ width: "100%", height: "1000px" }}>

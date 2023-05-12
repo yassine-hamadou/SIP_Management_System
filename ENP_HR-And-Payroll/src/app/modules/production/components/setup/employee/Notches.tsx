@@ -147,10 +147,10 @@ const Notches = () => {
       console.log(error)
     }
   }
-  const { data: allGrades } = useQuery('grades', fetchGrades, { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('paygroups', fetchPaygroups, { cacheTime: 5000 })
-  const { data: allCurrencies } = useQuery('currencies', fetchCurrencies, { cacheTime: 5000 })
 
+  const { data: allGrades } = useQuery('grades',()=> fetchGrades(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroups',()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: allCurrencies } = useQuery('currencies',()=> fetchCurrencies(tenantId), { cacheTime: 5000 })
 
   const getCurrencyName = (id: any) => {
     let CurrencyName = null

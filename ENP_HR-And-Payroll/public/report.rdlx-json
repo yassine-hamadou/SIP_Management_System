@@ -1,0 +1,18 @@
+{
+  "Name": "Report",
+  "Body": {
+    "ReportItems": [
+      {
+        "Type": "textbox",
+        "Name": "TextBox1",
+        "Value": "Test From SIP Consult",
+        "Style": {
+          "Justify-Content": "center",
+          "FontSize": "18pt"
+        },
+        "Width": "8.5in",
+        "Height": "0.5in"
+      }
+    ]
+  }
+}

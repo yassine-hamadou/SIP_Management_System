@@ -5,6 +5,7 @@ import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
 import { ENP_URL } from '../../urls'
 import { Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
+import {read, utils, writeFile} from "xlsx"
 import { Api_Endpoint, axioInstance, fetchDepartments, fetchEmployees, fetchGrades, fetchNotches, fetchPaygroups } from '../../../../services/ApiCalls'
 
 
@@ -261,7 +262,6 @@ const Employee = () => {
     setLoading(true)
     try {
       const response = await axioInstance.get(`${Api_Endpoint}/Employees/tenant/${tenantId}`,
-     
       )
       setGridData(response.data)
       setLoading(false)
@@ -287,6 +287,16 @@ const Employee = () => {
       out_data[row.departmentId] = [row];
     }
   });
+
+  const handleExport = ()=>{
+    const headings = [["FirstName", "Surname","Gender", "Paygroup", "Salary-Grade", "Unit"]]
+    const wb = utils.book_new()
+    const ws = utils.json_to_sheet([])
+    utils.sheet_add_aoa(ws, headings)
+    utils.sheet_add_json(ws, gridData, {origin: "A2", skipHeader: true})
+    utils.book_append_sheet(wb,ws, "Report")
+    writeFile(wb, "Report.xlsx")
+  }
   
   const dataWithIndex = gridData.map((item: any, index:any) => ({
     ...item,
@@ -344,8 +354,8 @@ const Employee = () => {
                 Add
               </button>
               </Link>
-
-              <button type='button' className='btn btn-light-primary me-3'>
+              {/* <a onClick={handleExport} className='btn btn-light-primary me-3'>Export Data</a> */}
+              <button onClick={handleExport} type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
             </button>
