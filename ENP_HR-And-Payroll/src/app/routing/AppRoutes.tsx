@@ -39,7 +39,8 @@ const tenantId = localStorage.getItem('tenant')
         <Route element={<App />}>
           <Route path='error/*' element={<ErrorsPage />} />
           <Route path='logout' element={<Logout />} />
-          {currentUser && hasApp? (
+          {/* {currentUser && hasApp &&tenantId? ( */}
+          {currentUser && hasApp && tenantId? (
             <>
               
               <Route path='/*' element={<PrivateRoutes />} />
