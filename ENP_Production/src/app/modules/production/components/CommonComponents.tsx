@@ -83,8 +83,8 @@ const ModalFooterButtons = ({ onCancel, onSubmit }: any) => {
     )
 }
 
- //to convert excel date to js date
- const excelDateToJSDate = (serial: number) => {
+//to convert excel date to js date
+const excelDateToJSDate = (serial: number) => {
     const utcDays = Math.floor(serial - 25569)
     const utcValue = utcDays * 86400
     const date = new Date(utcValue * 1000)
@@ -103,8 +103,24 @@ const ModalFooterButtons = ({ onCancel, onSubmit }: any) => {
     return date
 }
 
+const timeStamp = () => {
+    const date = new Date();
+    const timestamp = date.getTime() * 1000 + date.getMilliseconds();
+    const batchNumber = timestamp.toString();
+    return batchNumber;
+}
+
 // round off to whole number
 const roundOff = (num: number) => {
-    return Math.round((num + Number.EPSILON) * 100) / 100
+    if (Number.isFinite(num)) {
+        const isDecimal = Number.isInteger(num) === false;
+        if (isDecimal) {
+          return Math.round(num * 1000) / 1000;
+        } else {
+          return num;
+        }
+      } else {
+        return NaN;
+      }
 }
-export { PageActionButtons, ModalFooterButtons, excelDateToJSDate, roundOff }
+export { PageActionButtons, ModalFooterButtons, excelDateToJSDate, roundOff, timeStamp }

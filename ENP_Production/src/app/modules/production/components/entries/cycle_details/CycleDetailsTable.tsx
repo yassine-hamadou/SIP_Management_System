@@ -7,10 +7,11 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import * as XLSX from 'xlsx';
 import { KTCardBody } from '../../../../../../_metronic/helpers';
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
-import { ModalFooterButtons, PageActionButtons, excelDateToJSDate, roundOff } from '../../CommonComponents';
+import { ModalFooterButtons, PageActionButtons, excelDateToJSDate, roundOff, timeStamp } from '../../CommonComponents';
 import { Tabs } from 'antd';
 import { TableProps } from 'react-bootstrap';
 import { UploadChangeParam } from 'antd/es/upload';
+import { time } from 'console';
 
 
 
@@ -35,6 +36,7 @@ const CycleDetailsTable = () => {
     const queryClient = useQueryClient()
     const [uploadColumns, setUploadColumns] = useState<any>([]) //to hold the table columns of the uploaded file
     const [uploadData, setUploadData] = useState<any>([]) // to hold the data read from the uploaded file
+    const [dataToSave, setDataToSave] = useState<any>([]) // to hold the data to be saved from the uploaded file
 
     const { data: destinations } = useQuery('destinations', () => fetchDocument(`productionDestination/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: allHaulerUnits } = useQuery('hauler', () => fetchDocument(`ProHaulerUnit/tenant/${tenantId}`), { cacheTime: 5000 })
@@ -52,7 +54,7 @@ const CycleDetailsTable = () => {
     }
 
     const onTabsChange = (key: string) => {
-        console.log(key);
+        //console.log(key);
     };
 
     const showModal = () => {
@@ -72,11 +74,14 @@ const CycleDetailsTable = () => {
         reset()
         setIsModalOpen(false)
         setIsUploadModalOpen(false)
-        setIsUpdateModalOpen(false)
-        setIsCheckDataModalOpen(false)
         setIsFileUploaded(false)
         setSavedCount(0)
     }
+
+    const handleCheckDataCancel = () => {
+        setIsCheckDataModalOpen(false)
+    }
+
 
     const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
         onSuccess: (data) => {
@@ -300,55 +305,22 @@ const CycleDetailsTable = () => {
         setSavedCount(0)
         try {
             setLoading(true)
-            uploadData.map((item: any,) => {
-
-                const destinationId = destinations?.data.find((dest: any) => dest.name.trim() === item.destination.trim());
-                const haulerUnitId = allHaulerUnits?.data.find((unit: any) => unit.equipmentId.trim() === item.haulerUnit.trim());
-                const hauler = allHaulers?.data.find((op: any) => op.empName.trim() === item.hauler.trim());
-                const loaderUnitId = allLoaderUnits?.data.find((unit: any) => unit.equipmentId.trim() === item.loaderUnit.trim());
-                const loader = allLoaders?.data.find((op: any) => op.empName.trim() === item.loader.trim());
-                const originId = allOrigins?.data.find((ori: any) => ori.name.trim() === item.origin.trim());
-                const materialId = allMaterials?.data.find((mat: any) => mat.name.trim() === item.material.trim());
-                const shiftId = allShifts?.data.find((s: any) => s.name.trim() === item.shift.trim());
-
-                // check if the id of any of the data is not found 
-                if (!destinationId || !haulerUnitId || !hauler || !loaderUnitId || !loader || !originId || !materialId || !shiftId) {
+            dataToSave.map(async (data: any) => {
+                if (data === null || data === undefined) {
                     return
                 } else {
-                    const obj = {
-                        data: {
-                            cycleDate: item.cycleDate,
-                            cycleTime: item.cycleTime,
-                            loader: loader?.empCode,
-                            hauler: hauler?.empCode,
-                            loaderUnitId: parseInt(loaderUnitId?.id),
-                            haulerUnitId: parseInt(haulerUnitId?.id),
-                            originId: parseInt(originId?.id),
-                            materialId: parseInt(materialId?.id),
-                            destinationId: parseInt(destinationId?.id),
-                            nominalWeight: parseInt(item.nominalWeight),
-                            weight: parseInt(item.nominalWeight),
-                            payloadWeight: parseInt(item.payloadWeight),
-                            reportedWeight: parseInt(item.reportedWeight),
-                            volumes: parseInt(item.volumes),
-                            loads: parseInt(item.loads),
-                            timeAtLoader: item.timeAtLoader,
-                            shiftId: parseInt(shiftId?.id),
-                            duration: parseInt(item.duration),
-                            tenantId: tenantId,
-                            batchNumber: `${haulerUnitId?.id}-${moment().format('DDMMYYHHmmss')}`
-                        },
+                    const item = {
+                        data: data,
                         url: 'cycleDetails',
                     }
-                    console.log('dataToSave', obj.data);
-                    postData(obj)
+                    postData(item)
                 }
-            });
+            })
             setLoading(false)
             setIsFileUploaded(false)
             message.success(`${savedCount} ${savedCount > 1 ? 'records' : 'record'} of ${uploadData.length} saved successfully`, 5)
             handleCancel()
-            
+
         } catch (err) {
             console.log('fileSaveError: ', err)
             setLoading(false)
@@ -395,13 +367,57 @@ const CycleDetailsTable = () => {
                         }
                     })
 
+                let timeStamp = new Date().getTime()
+                const saveData = filteredData.slice(1).map((item: any,) => {
+
+                    const destinationId = destinations?.data.find((dest: any) => dest.name.trim() === item.destination.trim());
+                    const haulerUnitId = allHaulerUnits?.data.find((unit: any) => unit.equipmentId.trim() === item.haulerUnit.trim());
+                    const hauler = allHaulers?.data.find((op: any) => op.empName.trim() === item.hauler.trim());
+                    const loaderUnitId = allLoaderUnits?.data.find((unit: any) => unit.equipmentId.trim() === item.loaderUnit.trim());
+                    const loader = allLoaders?.data.find((op: any) => op.empName.trim() === item.loader.trim());
+                    const originId = allOrigins?.data.find((ori: any) => ori.name.trim() === item.origin.trim());
+                    const materialId = allMaterials?.data.find((mat: any) => mat.name === item.material);
+                    const shiftId = allShifts?.data.find((s: any) => s.name === item.shift);
+
+                    // check if the id of any of the data is not found 
+                    if (!destinationId || !haulerUnitId || !loaderUnitId || !originId) {
+                        return
+                    } else {
+
+                        return {
+                            cycleDate: item.cycleDate,
+                            cycleTime: item.cycleTime,
+                            loader: loader?.empCode,
+                            hauler: hauler?.empCode,
+                            loaderUnitId: parseInt(loaderUnitId?.id),
+                            haulerUnitId: parseInt(haulerUnitId?.id),
+                            originId: parseInt(originId?.id),
+                            materialId: parseInt(materialId?.id),
+                            destinationId: parseInt(destinationId?.id),
+                            nominalWeight: parseInt(item.nominalWeight),
+                            weight: parseInt(item.nominalWeight),
+                            payloadWeight: parseInt(item.payloadWeight),
+                            reportedWeight: parseInt(item.reportedWeight),
+                            volumes: parseInt(item.volumes),
+                            loads: parseInt(item.loads),
+                            timeAtLoader: item.timeAtLoader,
+                            shiftId: parseInt(shiftId?.id),
+                            duration: parseInt(item.duration),
+                            tenantId: tenantId,
+                            batchNumber: `${timeStamp++}`,
+                        }
+                    }
+                });
+                console.log('saveData: ', saveData)
+                setDataToSave(saveData)
+
+
                 setLoading(false)
                 setIsUploadModalOpen(false)
                 setIsFileUploaded(true)
+                setUploadData(filteredData.slice(1))
                 setRowCount(filteredData.length)
                 setUploadColumns(uploadFileColumns)
-                setUploadData(filteredData.slice(1))
-
                 console.log('read data: ', filteredData.slice(0, 10))
             }
         } catch (error) {
@@ -418,16 +434,20 @@ const CycleDetailsTable = () => {
         }
         groupedByHauler[item.haulerUnit].push(item);
     });
-    console.log("groupedByHauler", groupedByHauler)
 
     // sum volumes per hauler
     const volumesByHauler = [];
     for (const hauler in groupedByHauler) {
         const volumes = groupedByHauler[hauler].map((item: { volumes: any; }) => item.volumes);
+        const loads = groupedByHauler[hauler].map((item: { loads: any; }) => item.loads);
+        const nominalWeights = groupedByHauler[hauler].map((item: { nominalWeight: any; }) => item.nominalWeight);
+        const payloadWeights = groupedByHauler[hauler].map((item: { payloadWeight: any; }) => item.payloadWeight);
         const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
-        volumesByHauler.push({ hauler, sum });
+        const sumLoads = loads.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        const sumNominalWeights = nominalWeights.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        const sumPayloadWeights = payloadWeights.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        volumesByHauler.push({ hauler, sum, sumLoads, sumNominalWeights, sumPayloadWeights });
     }
-    console.log("volumesByHauler", volumesByHauler)
 
     // group by loader unit
     const groupedByLoader: any = {};
@@ -437,16 +457,20 @@ const CycleDetailsTable = () => {
         }
         groupedByLoader[item.loaderUnit].push(item);
     });
-    console.log("groupedByLoader", groupedByLoader)
 
     // sum volumes per loader
     const volumesByLoader = [];
     for (const loader in groupedByLoader) {
         const volumes = groupedByLoader[loader].map((item: { volumes: any; }) => item.volumes);
+        const loads = groupedByLoader[loader].map((item: { loads: any; }) => item.loads);
+        const nominalWeights = groupedByLoader[loader].map((item: { nominalWeight: any; }) => item.nominalWeight);
+        const payloadWeights = groupedByLoader[loader].map((item: { payloadWeight: any; }) => item.payloadWeight);
         const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
-        volumesByLoader.push({ loader, sum });
+        const sumLoads = loads.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        const sumNominalWeights = nominalWeights.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        const sumPayloadWeights = payloadWeights.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        volumesByLoader.push({ loader, sum, sumLoads, sumNominalWeights, sumPayloadWeights });
     }
-    console.log("volumesByLoader", volumesByLoader)
 
     // group by origin
     const groupedByOrigin: any = {};
@@ -461,10 +485,15 @@ const CycleDetailsTable = () => {
     const volumesByOrigin = [];
     for (const origin in groupedByOrigin) {
         const volumes = groupedByOrigin[origin].map((item: { volumes: any; }) => item.volumes);
+        const loads = groupedByOrigin[origin].map((item: { loads: any; }) => item.loads);
+        const nominalWeights = groupedByOrigin[origin].map((item: { nominalWeight: any; }) => item.nominalWeight);
+        const payloadWeights = groupedByOrigin[origin].map((item: { payloadWeight: any; }) => item.payloadWeight);
         const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
-        volumesByOrigin.push({ origin, sum });
+        const sumLoads = loads.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        const sumNominalWeights = nominalWeights.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        const sumPayloadWeights = payloadWeights.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        volumesByOrigin.push({ origin, sum, sumLoads, sumNominalWeights, sumPayloadWeights });
     }
-    console.log("volumesByOrigin", volumesByOrigin)
 
     // group by destination
     const groupedByDestination: any = {};
@@ -479,19 +508,30 @@ const CycleDetailsTable = () => {
     const volumesByDestination = [];
     for (const destination in groupedByDestination) {
         const volumes = groupedByDestination[destination].map((item: { volumes: any; }) => item.volumes);
+        const loads = groupedByDestination[destination].map((item: { loads: any; }) => item.loads);
+        const nominalWeights = groupedByDestination[destination].map((item: { nominalWeight: any; }) => item.nominalWeight);
+        const payloadWeights = groupedByDestination[destination].map((item: { payloadWeight: any; }) => item.payloadWeight);
         const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
-        volumesByDestination.push({ destination, sum });
+        const sumLoads = loads.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        const sumNominalWeights = nominalWeights.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        const sumPayloadWeights = payloadWeights.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+        volumesByDestination.push({ destination, sum, sumLoads, sumNominalWeights, sumPayloadWeights });
     }
-    console.log("volumesByDestination", volumesByDestination)
 
     const dynamicColumns = (title: any, dataIndex: any) => {
         const columns = [
-            { title: title, dataIndex: dataIndex, },
-            { title: 'Sum of Volumes', dataIndex: 'sum', render: (value: any) => <a>{roundOff(value)}</a> },
+            { title: title, dataIndex: dataIndex, render: (text: any) => <span style={{ color: '#3699FF' }}>{text}</span>, },
+            {
+                title: 'Sum', children: [
+                    { title: 'Volumes', dataIndex: 'sum', render: (value: any) => <span>{roundOff(value)}</span> },
+                    { title: 'Loads', dataIndex: 'sumLoads', render: (value: any) => <span>{roundOff(value)}</span> },
+                    { title: 'Nominal Weights', dataIndex: 'sumNominalWeights', render: (value: any) => <span>{roundOff(value)}</span> },
+                    { title: 'Payload Weights', dataIndex: 'sumPayloadWeights', render: (value: any) => <span>{roundOff(value)}</span> },
+                ]
+            }
         ];
         return columns;
     }
-
 
     const summaryFooter = (data: any) => <Tag color="error">{data} rows </Tag>
 
@@ -502,6 +542,8 @@ const CycleDetailsTable = () => {
                 <><Table dataSource={volumesByHauler} columns={dynamicColumns('Hauler', 'hauler')}
                     pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
                     footer={() => summaryFooter(volumesByHauler.length)}
+                    bordered
+                    size="middle"
                 /></>
             ),
         },
@@ -511,6 +553,8 @@ const CycleDetailsTable = () => {
                 <><Table dataSource={volumesByLoader} columns={dynamicColumns('Loader', 'loader')}
                     pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
                     footer={() => summaryFooter(volumesByLoader.length)}
+                    bordered
+                    size="middle"
                 /></>
             ),
         },
@@ -519,6 +563,8 @@ const CycleDetailsTable = () => {
                 <><Table dataSource={volumesByOrigin} columns={dynamicColumns('Origin', 'origin')}
                     pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
                     footer={() => summaryFooter(volumesByLoader.length)}
+                    bordered
+                    size="middle"
                 /></>
             ),
         },
@@ -527,6 +573,8 @@ const CycleDetailsTable = () => {
                 <><Table dataSource={volumesByDestination} columns={dynamicColumns('Destination', 'destination')}
                     pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
                     footer={() => summaryFooter(volumesByLoader.length)}
+                    bordered
+                    size="middle"
                 /></>
             ),
         },
@@ -609,9 +657,9 @@ const CycleDetailsTable = () => {
     const clearUpdateTable = () => {
         setIsFileUploaded(false)
         setUploadedFile(null)
+        setLoading(false)
         loadData()
     }
-
 
     const OnSubmit = handleSubmit(async (values) => {
         setSubmitLoading(true)
@@ -631,12 +679,12 @@ const CycleDetailsTable = () => {
                 weight: parseInt(values.weight),
                 payloadWeight: parseInt(values.payloadWeight),
                 reportedWeight: parseInt(values.reportedWeight),
-                volume: parseInt(values.volume),
+                volumes: parseInt(values.volumes),
                 loads: parseInt(values.loads),
                 timeAtLoader: values.timeAtLoader,
                 duration: parseInt(values.duration),
                 tenantId: tenantId,
-                batchNumber: `${values.haulerUnitId}-${moment().format('DDMMYYHHmmss')}`,
+                batchNumber: Date.now(),
             },
             url: 'cycleDetails'
         }
@@ -657,8 +705,8 @@ const CycleDetailsTable = () => {
         },
         onError: (error) => {
             setSubmitLoading(false)
-            console.log('post error: ',  error)
-            message.error( isFileUploaded ? 'Saving failed, check your data and try again ' :  `${error}`)
+            console.log('post error: ', error)
+            message.error(isFileUploaded ? 'Saving failed, check your data and try again ' : `${error}`)
         }
     })
 
@@ -921,7 +969,7 @@ const CycleDetailsTable = () => {
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Volume</label>
-                                    <input type="number" {...register("volume")} name="volumes" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.volumes} onChange={handleChange} className="form-control form-control-white" />
+                                    <input type="number" {...register("volumes")} name="volumes" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.volumes} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Loads</label>
@@ -971,12 +1019,12 @@ const CycleDetailsTable = () => {
                     <Modal
                         title='Data Summaries'
                         open={isCheckDataModalOpen}
-                        onCancel={handleCancel}
+                        onCancel={handleCheckDataCancel}
                         width={800}
                         closable={true}
                         footer={
                             <>
-                                <Button onClick={handleCancel}
+                                <Button onClick={handleCheckDataCancel}
                                     type='primary' size='large'
                                     className='btn btn-light btn-sm w'>
                                     Ok
@@ -989,7 +1037,7 @@ const CycleDetailsTable = () => {
                             onChange={onTabsChange}
                             tabBarExtraContent={
                                 <>
-                                    <Tag color="geekblue">{rowCount} rows </Tag>
+                                    <Tag color="geekblue">{rowCount} records </Tag>
                                 </>
                             } />
                     </Modal>
