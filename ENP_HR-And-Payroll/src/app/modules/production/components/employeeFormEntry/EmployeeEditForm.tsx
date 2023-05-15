@@ -1369,7 +1369,7 @@ const EmployeeEditForm = () => {
               <div className='row mb-0'>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Email</label>
-                  <input type="email" name="email" value={tempData?.email.toLowerCase()} onChange={handleChange} className="form-control form-control-solid" />
+                  <input type="email" name="email" value={tempData?.email?.toLowerCase()} onChange={handleChange} className="form-control form-control-solid" />
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Personal Email</label>
