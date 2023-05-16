@@ -303,19 +303,14 @@ const CycleDetailsTable = () => {
     // convert populated data from excel file to database 
     const saveTableObjects = () => {
         setSavedCount(0)
-        try {
+        try {            
             setLoading(true)
-            dataToSave.map(async (data: any) => {
-                if (data === null || data === undefined) {
-                    return
-                } else {
-                    const item = {
-                        data: data,
-                        url: 'cycleDetails',
-                    }
-                    postData(item)
-                }
-            })
+            const filteredSavedData = dataToSave.filter((data: any) => data !== null && data !== undefined)
+            const item = {  
+                data: filteredSavedData,
+                url: 'cycleDetails',
+            }
+            postData(item)
             setLoading(false)
             setIsFileUploaded(false)
             message.success(`${savedCount} ${savedCount > 1 ? 'records' : 'record'} of ${uploadData.length} saved successfully`, 5)
@@ -383,7 +378,6 @@ const CycleDetailsTable = () => {
                     if (!destinationId || !haulerUnitId || !loaderUnitId || !originId) {
                         return
                     } else {
-
                         return {
                             cycleDate: item.cycleDate,
                             cycleTime: item.cycleTime,
@@ -664,7 +658,8 @@ const CycleDetailsTable = () => {
     const OnSubmit = handleSubmit(async (values) => {
         setSubmitLoading(true)
         const item = {
-            data: {
+            data: [
+                {
                 cycleDate: values.cycleDate,
                 shiftId: parseInt(values.shiftId),
                 cycleTime: values.cycleTime,
@@ -684,8 +679,9 @@ const CycleDetailsTable = () => {
                 timeAtLoader: values.timeAtLoader,
                 duration: parseInt(values.duration),
                 tenantId: tenantId,
-                batchNumber: Date.now(),
+                batchNumber: `${Date.now()}`,
             },
+        ],
             url: 'cycleDetails'
         }
         console.log(item.data)
@@ -695,7 +691,7 @@ const CycleDetailsTable = () => {
 
     const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
         onSuccess: (data) => {
-            queryClient.setQueryData(['cycleDetails', tempData], data);
+            queryClient.setQueryData(['cycleDetails'], data);
             setSavedCount(isFileUploaded ? savedCount + 1 : 0)
             reset()
             setTempData({})
@@ -889,7 +885,7 @@ const CycleDetailsTable = () => {
                                             allHaulerUnits?.data.map((item: any) => (
                                                 <option
                                                     selected={isUpdateModalOpen && item.id === tempData.haulerUnitId}
-                                                    value={item.id}>{item.modelName}</option>
+                                                    value={item.id}>{item.equipmentId}</option>
                                             ))
                                         }
                                     </select>
@@ -905,7 +901,7 @@ const CycleDetailsTable = () => {
                                             allLoaderUnits?.data.map((item: any) => (
                                                 <option
                                                     selected={isUpdateModalOpen && item.id === tempData.loaderUnitId}
-                                                    value={item.id}>{item.modelName}</option>
+                                                    value={item.id}>{item.equipmentId}</option>
                                             ))
                                         }
                                     </select>

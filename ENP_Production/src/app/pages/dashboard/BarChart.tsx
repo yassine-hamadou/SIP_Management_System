@@ -3,7 +3,7 @@ import ApexCharts, { ApexOptions } from 'apexcharts'
 import { getCSSVariableValue } from '../../../_metronic/assets/ts/_utils'
 import { useQuery } from "react-query";
 import axios from "axios";
-import { ENP_URL } from '../../modules/production/urls';
+import { ENP_URL, fetchDocument } from '../../modules/production/urls';
 import { useThemeMode } from '../../../_metronic/partials/layout/theme-mode/ThemeModeProvider';
 import { CycleDetailsDummyData } from '../../data/DummyData';
 
@@ -18,8 +18,11 @@ type Props = {
 const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
   const chartRef = useRef<HTMLDivElement | null>(null)
   const { mode } = useThemeMode()
+  const tenantId = localStorage.getItem('tenant')
   const data: any = []
   const categories: any = []
+  const { data: cycleDetails } = useQuery('cycledetails', () => fetchDocument(`cycleDetails/tenant/${tenantId}`), { cacheTime: 5000 })
+console.log('cycleDetails: ', cycleDetails?.data)
 
 
   const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
