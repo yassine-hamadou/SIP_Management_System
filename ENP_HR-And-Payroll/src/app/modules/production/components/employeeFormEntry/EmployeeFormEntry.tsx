@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Upload } from 'antd';
-import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, GRADES, NOTCHES, NOTES, PAYGROUP, UNITS } from '../../../../data/DummyData';
+import {  Upload } from 'antd';
+import { BANKS,} from '../../../../data/DummyData';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchGrades, fetchJobTitles, fetchNationalities, fetchNotches, fetchPaygroups, fetchUnits } from '../../../../services/ApiCalls';
@@ -22,6 +22,9 @@ const MultiTabForm= () =>{
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
   }
+
+  const defaultImg = '/public/media/avatars/user.png'
+  const [tempImage, setTempImage] = useState<any>(null);
 
   const navigate = useNavigate();
   const tenantId = localStorage.getItem('tenant')
@@ -63,55 +66,148 @@ const MultiTabForm= () =>{
       imgWindow?.document.write(image.outerHTML);
     };
 
-    const url = `${Api_Endpoint}/Employees1`
+      const showPreview = (e:any)=>{
+    if (e.target.files && e.target.files[0]){
+      let imageFile = e.target.files[0]
+      const reader = new FileReader()
+      reader.onload = (x:any)=>{
+        setTempImage({
+          imageFile,
+        //  imageFile: x.target.value
+        })
+      }
+      reader.readAsDataURL(imageFile)
+    }
+  }
+
+  const onFileChange = (e:any) => {
+     
+    // Update the state
+    setTempImage(e.target.files[0] );
+   
+  };
+
+  // const submitApplicant = handleSubmit(async (values) => {
+  //   setLoading(true)
+  //   const formData:any = new FormData();
+  //   formData.append('recruitmentTransactionId', selectedValue )
+  //   formData.append('firstName', values.firstName)
+  //   formData.append('lastName', values.lastName)
+  //   formData.append('dob', values.dob)
+  //   formData.append('gender', selectedGen)
+  //   formData.append('email', values.email)
+  //   formData.append('phone', values.phone)
+  //   formData.append('qualification', values.qualification)
+  //   formData.append('imageFile', tempImage)
+  //   formData.append('tenantId', tenantId)
+  //     const config = {
+  //       headers: {
+  //         'content-type': 'multipart/form-data',
+  //       },}
+
+  //   console.log(Object.fromEntries(formData))
+
+  //   axios.post(url1, formData, config).then((response) => {
+  //     console.log(response.data);
+  //     reset()
+  //     loadData()
+  //     setIsModalOpen(false)
+  //   });
+  // })
+
+
+    const url = `${Api_Endpoint}/Employees`
     const OnSUbmit = handleSubmit( async (values, event)=> {
       event?.preventDefault();
       setLoading(true)
-      const data = {
-        firstName: values.firstName,
-        surname: values.surname,
-        otherName: values.otherName,
-        dob: values.dob,
-        gender: values.gender,
-        maritalStatus: values.maritalStatus,
-        nationality: values.nationalId,
-        nationalId: values.nationalId,
-        phone: values.phone,
-        alternativePhone: values.alternativePhone,
-        address: values.address,
-        residentialAddress: values.residentialAddress,
-        email: values.email,
-        personalEmail: values.personalEmail,
-        nextOfKin: values.nextOfKin,
-        guarantor: values.guarantor,
-        paygroupId: parseInt(values.paygroupId),
-        categoryId: parseInt(values.categoryId),
-        divisionId: parseInt(values.divisionId),
-        departmentId: parseInt(values.departmentId),
-        gradeId: parseInt(values.gradeId),
-        notchId: parseInt(values.notchId),
-        employmentDate: values.employmentDate,
-        payType: values.payType,
-        paymentMethod: selectedPaymentMethod,
-        bankId: parseInt(values.bankId),
-        account: values.account,
-        tin: values.tin,
-        ssf: values.ssf,
-          }
-          console.log(data)
-      try {
-        console.log(data)
-        const response = await axios.post(url, data)
-        setSubmitLoading(false)
-        reset()
-        navigate('/employee', {replace: true})
-        // loadData()
-        // console.log(response.status) response.status===201? <Navigate to="/employee"/>: 
-        return response.statusText
-      } catch (error: any) {
-        setSubmitLoading(false)
-        return error.statusText
-      }
+      const formData:any = new FormData();
+      formData.append('firstName', values.firstName)
+      formData.append('surname', values.surname)
+      formData.append('otherName', values.otherName)
+      formData.append('dob', values.dob)
+      formData.append('gender', values.gender)
+      formData.append('maritalStatus', values.maritalStatus)
+      formData.append('nationality', values.nationality)
+      formData.append('nationalId', values.nationalId)
+      formData.append('phone', values.phone)
+      formData.append('alternativePhone', values.alternativePhone)
+      formData.append('address', values.address)
+      formData.append('residentialAddress', values.residentialAddress)
+      formData.append('email', values.email)
+      formData.append('personalEmail', values.personalEmail)
+      formData.append('nextOfKin', values.nextOfKin)
+      formData.append('guarantor', values.guarantor)
+      formData.append('paygroupId', parseInt(values.paygroupId))
+      formData.append('categoryId', parseInt(values.categoryId))
+      formData.append('divisionId', parseInt(values.divisionId))
+      formData.append('departmentId', parseInt(values.departmentId))
+      formData.append('gradeId', parseInt(values.gradeId))
+      formData.append('notchId', parseInt(values.categoryId))
+      formData.append('employmentDate', values.employmentDate)
+      formData.append('payType', values.payType)
+      formData.append('paymentMethod', selectedPaymentMethod)
+      formData.append('bankId', parseInt(values.bankId))
+      formData.append('account', values.account)
+      formData.append('tin', values.tin)
+      formData.append('ssf', values.ssf)
+      formData.append('imageUrl', tempImage)
+      // const data = {
+      //   firstName: values.firstName,
+      //   surname: values.surname,
+      //   otherName: values.otherName,
+      //   dob: values.dob,
+      //   gender: values.gender,
+      //   maritalStatus: values.maritalStatus,
+      //   nationality: values.nationalId,
+      //   nationalId: values.nationalId,
+      //   phone: values.phone,
+      //   alternativePhone: values.alternativePhone,
+      //   address: values.address,
+      //   residentialAddress: values.residentialAddress,
+      //   email: values.email,
+      //   personalEmail: values.personalEmail,
+      //   nextOfKin: values.nextOfKin,
+      //   guarantor: values.guarantor,
+      //   paygroupId: parseInt(values.paygroupId),
+      //   categoryId: parseInt(values.categoryId),
+      //   divisionId: parseInt(values.divisionId),
+      //   departmentId: parseInt(values.departmentId),
+      //   gradeId: parseInt(values.gradeId),
+      //   notchId: parseInt(values.notchId),
+      //   employmentDate: values.employmentDate,
+      //   payType: values.payType,
+      //   paymentMethod: selectedPaymentMethod,
+      //   bankId: parseInt(values.bankId),
+      //   account: values.account,
+      //   tin: values.tin,
+      //   ssf: values.ssf,
+      //     }
+
+      const config = {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },}
+
+      console.log(Object.fromEntries(formData))
+      axios.post(url, formData, config).then((response) => {
+            console.log(response.data);
+            setSubmitLoading(false)
+            reset()
+            navigate('/employee', {replace: true})
+          });
+      // try {
+        
+      //   const response = await axios.post(url, formData, config)
+      //   setSubmitLoading(false)
+      //   reset()
+      //   navigate('/employee', {replace: true})
+      //   // loadData()
+      //   // console.log(response.status) response.status===201? <Navigate to="/employee"/>: 
+      //   return response.statusText
+      // } catch (error: any) {
+      //   setSubmitLoading(false)
+      //   return error.statusText
+      // }
     })
   
 
@@ -170,7 +266,7 @@ const MultiTabForm= () =>{
           <div className='col-8'>
             <div className='row mb-0'>
               <div className='col-6 mb-7'>
-                <Upload
+                {/* <Upload
                       
                   listType="picture-card"
                   fileList={fileList}
@@ -178,7 +274,11 @@ const MultiTabForm= () =>{
                   onPreview={onPreview}
                 > 
                   <UploadOutlined />
-                </Upload>
+                </Upload> */}
+                <img src={tempImage===null? defaultImg: tempImage} style={{height:"90px"}}  alt="" />
+                <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' 
+                  onChange={onFileChange}
+                  type="file" />
               </div>
               
             </div>
@@ -419,7 +519,6 @@ const MultiTabForm= () =>{
               <div  className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Bank</label>
                 <br></br>
-                {/* <span>(leave empty if you selected cash as payment method)</span> */}
                 <select {...register("bankId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {BANKS.map((item: any) => (
@@ -429,7 +528,6 @@ const MultiTabForm= () =>{
               <div className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Account  </label>
                 <br></br>
-                {/* <span>(leave empty if you selected cash as payment method)</span> */}
                 <input type="text" {...register("account")}  className="form-control form-control-solid" />
               </div>
             </div>:
@@ -443,12 +541,8 @@ const MultiTabForm= () =>{
               </div>
               <div  className='col-6 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">SSF</label>
-                <select {...register("ssf")} className="form-select form-select-solid" aria-label="Select example">
-                  <option>select </option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
-                </select>
+                <input type="text" {...register("ssf")} className="form-control form-control-solid" />
+                
               </div>
               
             </div>
