@@ -171,7 +171,7 @@ const onRadio4Change = (e: RadioChangeEvent) => {
   const onFileChange = (e:any) => {
      
     // Update the state
-    setTempImage({ imageFile: e.target.files[0] });
+    setTempImage(e.target.files[0] );
    
   };
 
@@ -371,32 +371,25 @@ const OnSUbmit = handleSubmit(async (values) => {
   }
 })
 
-  // const url1 = "https://localhost:5001/api/RecruitmentApplicants"
+
   const url1 = `${Api_Endpoint}/RecruitmentApplicants`
   const submitApplicant = handleSubmit(async (values) => {
     setLoading(true)
     const formData:any = new FormData();
     formData.append('recruitmentTransactionId', selectedValue )
-    formData.append('firstName', values.firstName )
-    formData.append('lastName', values.lastName )
+    formData.append('firstName', values.firstName)
+    formData.append('lastName', values.lastName)
     formData.append('dob', values.dob)
     formData.append('gender', selectedGen)
     formData.append('email', values.email)
     formData.append('phone', values.phone)
     formData.append('qualification', values.qualification)
-    // formData.append('imageFile', tempImage)
     formData.append('imageFile', tempImage)
     formData.append('tenantId', tenantId)
-
-  //   const item = {
-  //     data: formData,
-  //   url: 'RecruitmentApplicants1'
-  // }
-
-  const config = {
-    headers: {
-      'content-type': 'multipart/form-data',
-    },}
+      const config = {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },}
 
     console.log(Object.fromEntries(formData))
 
@@ -406,26 +399,7 @@ const OnSUbmit = handleSubmit(async (values) => {
       loadData()
       setIsModalOpen(false)
     });
-
-    // postData(item)
-    
   })
-
-  console.log('new file', tempImage)
-
-  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(['Parameters', data], data);
-      reset()
-      loadData()
-      setIsModalOpen(false)
-    },
-    onError: (error) => {
-      console.log('post error: ', error)
-    }
-  })
-
- 
 
   return (
 
@@ -437,9 +411,6 @@ const OnSUbmit = handleSubmit(async (values) => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-      {/* <RecruitmentUpform/>
-      <hr></hr>
-      <br></br> */}
       <br></br>
       <div className='col-12 row'>
         <h4></h4> 
