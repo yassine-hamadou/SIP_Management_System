@@ -1,10 +1,10 @@
-import React, {useEffect, useRef} from 'react'
-import ApexCharts, {ApexOptions} from 'apexcharts'
-import {getCSSVariableValue} from '../../../_metronic/assets/ts/_utils'
-import {useQuery} from "react-query";
+import React, { useEffect, useRef } from 'react'
+import ApexCharts, { ApexOptions } from 'apexcharts'
+import { getCSSVariableValue } from '../../../_metronic/assets/ts/_utils'
+import { useQuery } from "react-query";
 import axios from "axios";
 import { useThemeMode } from '../../../_metronic/partials/layout/theme-mode/ThemeModeProvider';
-import { ENP_URL } from '../../modules/production/urls';
+import { ENP_URL, fetchDocument } from '../../modules/production/urls';
 import { CycleDetailsDummyData } from '../../data/DummyData';
 
 type Props = {
@@ -14,12 +14,14 @@ type Props = {
 }
 
 
-const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
+const BarChart2: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
   const chartRef = useRef<HTMLDivElement | null>(null)
-  const {mode} = useThemeMode()
+  const { mode } = useThemeMode()
   const data: any = []
   const categories: any = []
-
+  const tenantId = localStorage.getItem('tenant')
+  const { data: cycleDetails } = useQuery('cycledetails', () => fetchDocument(`cycleDetails/tenant/${tenantId}`), { cacheTime: 5000 })
+  console.log('cycleDetails: ', cycleDetails?.data)
 
   const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
     const labelColor = getCSSVariableValue('--kt-gray-500')
@@ -27,7 +29,7 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
     const secondaryColor = getCSSVariableValue('--kt-gray-300')
     const baseColor = getCSSVariableValue('--kt-' + chartColor)
 
-  
+
     return {
       series: [
         {
@@ -62,7 +64,7 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
         colors: ['transparent'],
       },
       xaxis: {
-        categories: categories ,
+        categories: categories,
         axisBorder: {
           show: false,
         },
@@ -147,17 +149,18 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
 
   // group by loader unit
   const groupedByLoader: any = {};
-  CycleDetailsDummyData.forEach((item) => {
-    if (!groupedByLoader[item.loaderUnit]) {
-      groupedByLoader[item.loaderUnit] = [];
+  cycleDetails?.data.forEach((item: any) => {
+    if (!groupedByLoader[item.loaderUnit.equipmentId]) {
+      groupedByLoader[item.loaderUnit.equipmentId] = [];
     }
-    groupedByLoader[item.loaderUnit].push(item);
+    groupedByLoader[item.loaderUnit.equipmentId].push(item);
   });
+  console.log('groupedByLoader: ', groupedByLoader)
 
   // sum volumes per hauler
   const newData = [];
   for (const loader in groupedByLoader) {
-    const volumes = groupedByLoader[loader].map((item: { volume: any; }) => item.volume);
+    const volumes = groupedByLoader[loader].map((item: { volumes: any; }) => item.volumes);
     const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
     newData.push({ loader: loader, sum });
   }
@@ -167,7 +170,10 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
     data.push(item.sum)
   })
 
-  
+  console.log('categories: ', categories)
+  console.log('data: ', data)
+  console.log('newData: ', newData)
+
 
   useEffect(() => {
     const chart = refreshChart()
@@ -208,4 +214,4 @@ const BarChart2: React.FC<Props> = ({className, chartColor, chartHeight}) => {
 }
 
 
-export {BarChart2}
+export { BarChart2 }

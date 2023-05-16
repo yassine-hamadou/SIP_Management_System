@@ -142,11 +142,9 @@ const CycleDetailsTable = () => {
         },
         {
             title: 'Shift',
-            dataIndex: 'shiftId',
+            dataIndex: 'shift',
             width: 100,
-            render: (record: any) => {
-                return getRecordName(record, allShifts?.data)
-            }
+            render: (text: any) => <span>{text?.name}</span>
         },
         {
             title: 'Time',
@@ -155,59 +153,45 @@ const CycleDetailsTable = () => {
         },
         {
             title: 'Loader Unit',
-            dataIndex: 'loaderUnitId',
+            dataIndex: 'loaderUnit',
             width: 150,
-            render: (record: any) => {
-                return getUnitRecordName(record, allLoaderUnits?.data)
-            }
+            render: (text: any) => <span>{text?.equipmentId}</span>
         },
         {
             title: 'Loader Operator',
-            dataIndex: 'loader',
+            dataIndex: 'loaderNavigation',
             width: 150,
-            render: (record: any) => {
-                return getOperatorRecordName(record, allLoaders?.data)
-            }
+            render: (text: any) => <span>{text?.empName}</span>
         },
         {
             title: 'Hauler Unit',
-            dataIndex: 'haulerUnitId',
+            dataIndex: 'haulerUnit',
             width: 150,
-            render: (record: any) => {
-                return getUnitRecordName(record, allHaulerUnits?.data)
-            }
+            render: (text: any) => <span>{text?.equipmentId}</span>
         },
         {
             title: 'Hauler Operator',
-            dataIndex: 'hauler',
+            dataIndex: 'haulerNavigation',
             width: 150,
-            render: (record: any) => {
-                return getOperatorRecordName(record, allLoaders?.data)
-            }
+            render: (text: any) => <span>{text?.empName}</span>
         },
         {
             title: 'Origin',
-            dataIndex: 'originId',
+            dataIndex: 'origin',
             width: 150,
-            render: (record: any) => {
-                return getRecordName(record, allOrigins?.data)
-            }
+            render: (text: any) => <span>{text?.name}</span>
         },
         {
             title: 'Material',
-            dataIndex: 'materialId',
+            dataIndex: 'material',
             width: 120,
-            render: (record: any) => {
-                return getRecordName(record, allMaterials?.data)
-            }
+            render: (text: any) => <span>{text?.name}</span>
         },
         {
             title: 'Destination',
-            dataIndex: 'destinationId',
+            dataIndex: 'destination',
             width: 150,
-            render: (record: any) => {
-                return getRecordName(record, destinations?.data)
-            }
+            render: (text: any) => <span>{text?.name}</span>
         },
         {
             title: 'Nominal Weight',
@@ -313,8 +297,8 @@ const CycleDetailsTable = () => {
             postData(item)
             setLoading(false)
             setIsFileUploaded(false)
-            message.success(`${savedCount} ${savedCount > 1 ? 'records' : 'record'} of ${uploadData.length} saved successfully`, 5)
-            handleCancel()
+            // message.success(`${savedCount} ${savedCount > 1 ? 'records' : 'record'} of ${uploadData.length} saved successfully`, 5)
+            // handleCancel()
 
         } catch (err) {
             console.log('fileSaveError: ', err)
@@ -340,7 +324,7 @@ const CycleDetailsTable = () => {
                 const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range, blankrows: false })
 
                 const filteredData: any = data
-                    .map((item: any) => {
+                    .map((item: any) => {                        
                         return {
                             cycleDate: moment(excelDateToJSDate(item.Date), 'YYYY-MM-DD').format('DD/MM/YYYY'),
                             shift: item['Shift'],
@@ -581,6 +565,7 @@ const CycleDetailsTable = () => {
         try {
             const response = await fetchDocument(`cycleDetails/tenant/${tenantId}`)
             setGridData(response.data)
+            console.log('cycledetails: ', response.data)
             setLoading(false)
         } catch (error) {
             setLoading(false)

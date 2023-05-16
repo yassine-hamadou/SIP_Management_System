@@ -22,7 +22,7 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
   const data: any = []
   const categories: any = []
   const { data: cycleDetails } = useQuery('cycledetails', () => fetchDocument(`cycleDetails/tenant/${tenantId}`), { cacheTime: 5000 })
-console.log('cycleDetails: ', cycleDetails?.data)
+  console.log('cycleDetails: ', cycleDetails?.data)
 
 
   const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
@@ -35,7 +35,7 @@ console.log('cycleDetails: ', cycleDetails?.data)
       series: [
         {
           name: 'Total volumes',
-          data: data?.slice(-12)
+          data: data
         },
       ],
       chart: {
@@ -136,10 +136,6 @@ console.log('cycleDetails: ', cycleDetails?.data)
       },
     }
 
-    // return a chart for cycle details per volumes per hauler
-
-
-
   }
   const refreshChart = () => {
     if (!chartRef.current) {
@@ -153,19 +149,21 @@ console.log('cycleDetails: ', cycleDetails?.data)
     return chart
   }
 
-// group by hauler unit
+
+
+  // group by hauler unit
   const groupedByHauler: any = {};
-  CycleDetailsDummyData.forEach((item) => {
-    if (!groupedByHauler[item.haulerUnit]) {
-      groupedByHauler[item.haulerUnit] = [];
+  cycleDetails?.data.forEach((item: any) => {
+    if (!groupedByHauler[item.haulerUnit.equipmentId]) {
+      groupedByHauler[item.haulerUnit.equipmentId] = [];
     }
-    groupedByHauler[item.haulerUnit].push(item);
+    groupedByHauler[item.haulerUnit.equipmentId].push(item);
   });
 
-// sum volumes per hauler
+  // sum volumes per hauler
   const newData = [];
   for (const hauler in groupedByHauler) {
-    const volumes = groupedByHauler[hauler].map((item: { volume: any; }) => item.volume);
+    const volumes = groupedByHauler[hauler].map((item: { volumes: any; }) => item.volumes);
     const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
     newData.push({ hauler, sum });
   }
@@ -180,7 +178,6 @@ console.log('cycleDetails: ', cycleDetails?.data)
   console.log('categories: ', categories)
   console.log('data: ', data)
   console.log('newData: ', newData)
-  console.log('dummyData: ', CycleDetailsDummyData)
 
   useEffect(() => {
 
