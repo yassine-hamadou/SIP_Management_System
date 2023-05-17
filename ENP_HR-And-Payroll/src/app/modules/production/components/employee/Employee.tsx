@@ -17,6 +17,7 @@ const Employee = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
   const [img, setImg] = useState();
+  const [imgNew, setImgNew] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false)
 
 
@@ -46,10 +47,19 @@ const Employee = () => {
   }
 
   const fetchImage = async () => {
-    const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
+    const res = await fetch("http://208.117.44.15/hrwebapi/uploads/employee/phil.jpeg");
+    // const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
     const imageBlob = await res.blob();
     const imageObjectURL:any  = URL.createObjectURL(imageBlob);
     setImg(imageObjectURL);
+  };
+  const getImage = async (imgUrl:any) => {
+    const res = await fetch(`http://208.117.44.15/hrwebapi/uploads/employee/${imgUrl}`);
+    const imageBlob = await res.blob();
+    const imageObjectURL:any  = URL.createObjectURL(imageBlob);
+    // return imageObjectURL
+    setImgNew(imageObjectURL);
+    // return <img style={{borderRadius:"10px"}} src={imageObjectURL} width={50} height={50}></img>
   };
   
 
@@ -59,9 +69,14 @@ const Employee = () => {
   const columns: any = [
    {
       title: 'Profile',
-      dataIndex: 'name',
-      render: (a: any, b: any) => {
-        return  <img style={{borderRadius:"10px"}} src={img} width={50} height={50}></img>
+      key: 'imageUrl',
+      render: (row:any) => {
+       
+        return  (
+          row.imageUrl!==null?  
+          <img style={{borderRadius:"10px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/${row.imageUrl}`} width={50} height={50}></img>:
+          <img style={{borderRadius:"10px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={50} height={50}></img>
+        )
       }
     },
     {
@@ -273,6 +288,7 @@ const Employee = () => {
   useEffect(() => {
     loadData()
     fetchImage()
+    getImage('phil.jpeg')
   }, [])
 
   // const sortedEmployees = gridData.sort((a:any, b:any) => a?.departmentId.localeCompare(b?.departmentId));
