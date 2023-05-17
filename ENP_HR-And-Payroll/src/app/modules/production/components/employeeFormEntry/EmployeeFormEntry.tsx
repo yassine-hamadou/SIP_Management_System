@@ -24,7 +24,7 @@ const MultiTabForm= () =>{
   }
 
   const defaultImg = '/public/media/avatars/user.png'
-  const [tempImage, setTempImage] = useState<any>(null);
+  const [tempImage, setTempImage] = useState<any>();
 
   const navigate = useNavigate();
   const tenantId = localStorage.getItem('tenant')
@@ -47,8 +47,8 @@ const MultiTabForm= () =>{
     
   ]);
 
-  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
+  const onChange: UploadProps['onChange'] = (file:any) => {
+    setTempImage(file);
   };
     // to preview the uploaded file
     const onPreview = async (file: UploadFile) => {
@@ -71,10 +71,9 @@ const MultiTabForm= () =>{
       let imageFile = e.target.files[0]
       const reader = new FileReader()
       reader.onload = (x:any)=>{
-        setTempImage({
-          imageFile,
-        //  imageFile: x.target.value
-        })
+        setTempImage(
+          imageFile
+        )
       }
       reader.readAsDataURL(imageFile)
     }
@@ -87,33 +86,6 @@ const MultiTabForm= () =>{
    
   };
 
-  // const submitApplicant = handleSubmit(async (values) => {
-  //   setLoading(true)
-  //   const formData:any = new FormData();
-  //   formData.append('recruitmentTransactionId', selectedValue )
-  //   formData.append('firstName', values.firstName)
-  //   formData.append('lastName', values.lastName)
-  //   formData.append('dob', values.dob)
-  //   formData.append('gender', selectedGen)
-  //   formData.append('email', values.email)
-  //   formData.append('phone', values.phone)
-  //   formData.append('qualification', values.qualification)
-  //   formData.append('imageFile', tempImage)
-  //   formData.append('tenantId', tenantId)
-  //     const config = {
-  //       headers: {
-  //         'content-type': 'multipart/form-data',
-  //       },}
-
-  //   console.log(Object.fromEntries(formData))
-
-  //   axios.post(url1, formData, config).then((response) => {
-  //     console.log(response.data);
-  //     reset()
-  //     loadData()
-  //     setIsModalOpen(false)
-  //   });
-  // })
 
 
     const url = `${Api_Endpoint}/Employees`
@@ -150,7 +122,8 @@ const MultiTabForm= () =>{
       formData.append('account', values.account)
       formData.append('tin', values.tin)
       formData.append('ssf', values.ssf)
-      formData.append('imageUrl', tempImage)
+      formData.append('imageFile', tempImage)
+      formData.append('tenantId', tenantId)
       // const data = {
       //   firstName: values.firstName,
       //   surname: values.surname,
@@ -189,25 +162,17 @@ const MultiTabForm= () =>{
         },}
 
       console.log(Object.fromEntries(formData))
-      axios.post(url, formData, config).then((response) => {
-            console.log(response.data);
-            setSubmitLoading(false)
-            reset()
-            navigate('/employee', {replace: true})
-          });
-      // try {
-        
-      //   const response = await axios.post(url, formData, config)
-      //   setSubmitLoading(false)
-      //   reset()
-      //   navigate('/employee', {replace: true})
-      //   // loadData()
-      //   // console.log(response.status) response.status===201? <Navigate to="/employee"/>: 
-      //   return response.statusText
-      // } catch (error: any) {
-      //   setSubmitLoading(false)
-      //   return error.statusText
-      // }
+      try {
+        const response = await axios.post(url, formData, config)
+        setSubmitLoading(false)
+        reset()
+        navigate('/employee', {replace: true})
+      
+        return response.statusText
+      } catch (error: any) {
+        setSubmitLoading(false)
+        return error.statusText
+      }
     })
   
 
@@ -265,7 +230,7 @@ const MultiTabForm= () =>{
           {activeTab === 'tab1' && 
           <div className='col-8'>
             <div className='row mb-0'>
-              <div className='col-6 mb-7'>
+              <div className='col-2 mb-7'>
                 {/* <Upload
                       
                   listType="picture-card"
@@ -275,7 +240,7 @@ const MultiTabForm= () =>{
                 > 
                   <UploadOutlined />
                 </Upload> */}
-                <img src={tempImage===null? defaultImg: tempImage} style={{height:"90px"}}  alt="" />
+                {/* <img src={tempImage} style={{height:"90px"}}  alt="profImg" /> */}
                 <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' 
                   onChange={onFileChange}
                   type="file" />
