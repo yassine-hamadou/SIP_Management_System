@@ -103,6 +103,17 @@ const excelDateToJSDate = (serial: number) => {
     return date
 }
 
+function extractDateFromTimestamp(timestamp: any) {
+    const date = new Date(timestamp);
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${day}-${month}-${year}`;
+  }
+  
+
 const timeStamp = () => {
     const date = new Date();
     const timestamp = date.getTime() * 1000 + date.getMilliseconds();
@@ -123,4 +134,26 @@ const roundOff = (num: number) => {
         return NaN;
       }
 }
-export { PageActionButtons, ModalFooterButtons, excelDateToJSDate, roundOff, timeStamp }
+
+// calculate volumes by field for cycle details
+function calculateVolumesByField(groupedByField: any) {
+    const volumesByField = [];
+  
+    for (const field in groupedByField) {
+      const volumes = groupedByField[field].map((item: any) => item.volumes);
+      const loads = groupedByField[field].map((item: any) => item.loads);
+      const nominalWeights = groupedByField[field].map((item: any) => item.nominalWeight);
+      const payloadWeights = groupedByField[field].map((item: any) => item.payloadWeight);
+      const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+      const sumLoads = loads.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+      const sumNominalWeights = nominalWeights.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+      const sumPayloadWeights = payloadWeights.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
+      volumesByField.push({ field, sum, sumLoads, sumNominalWeights, sumPayloadWeights });
+    }
+  
+    return volumesByField;
+  }
+
+export { PageActionButtons, ModalFooterButtons, excelDateToJSDate, 
+    roundOff, timeStamp, calculateVolumesByField,
+    extractDateFromTimestamp }
