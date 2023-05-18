@@ -48,10 +48,10 @@ const CycleDetailsTable = () => {
     const { data: allMaterials } = useQuery('allMaterials', () => fetchDocument(`ProdRawMaterial/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: allShifts } = useQuery('shifts', () => fetchDocument(`ProductionShift/tenant/${tenantId}`), { cacheTime: 5000 })
 
-    let [batchVolumesByHauler] = useState<any>([]) // to hold the volumes by hauler
-    let [batchVolumesByLoader] = useState<any>([]) // to hold the volumes by loader
-    let [batchVolumesByOrigin] = useState<any>([]) // to hold the volumes by origin
-    let [batchVolumesByDestination] = useState<any>([]) // to hold the volumes by destination
+    let [batchVolumesByHauler, setBatchVolumesByHauler ] = useState<any>([]) // to hold the volumes by hauler
+    let [batchVolumesByLoader, setBatchVolumesByLoader] = useState<any>([]) // to hold the volumes by loader
+    let [batchVolumesByOrigin, setBatchVolumesByOrigin] = useState<any>([]) // to hold the volumes by origin
+    let [batchVolumesByDestination, setBatchVolumesByDestination] = useState<any>([]) // to hold the volumes by destination
 
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -74,50 +74,52 @@ const CycleDetailsTable = () => {
         setIsCheckDataModalOpen(true)
     }
 
+    const populateBatchData = (values: any) => {
+         // group by hauler unit
+         const groupedByHauler: any = {};
+         values?.forEach((item: any) => {
+             if (!groupedByHauler[item.haulerUnit.equipmentId]) {
+                 groupedByHauler[item.haulerUnit.equipmentId] = [];
+             }
+             groupedByHauler[item.haulerUnit.equipmentId].push(item);
+         });
+ 
+         const groupedByLoader: any = {};
+         values?.forEach((item: any) => {
+             if (!groupedByLoader[item.loaderUnit.equipmentId]) {
+                 groupedByLoader[item.loaderUnit.equipmentId] = [];
+             }
+             groupedByLoader[item.loaderUnit.equipmentId].push(item);
+         });
+ 
+         const groupedByOrigin: any = {};
+         values?.forEach((item: any) => {
+             if (!groupedByOrigin[item.origin.name]) {
+                 groupedByOrigin[item.origin.name] = [];
+             }
+             groupedByOrigin[item.origin.name].push(item);
+         });
+ 
+         const groupedByDestination: any = {};
+         values?.forEach((item: any) => {
+             if (!groupedByDestination[item.destination.name]) {
+                 groupedByDestination[item.destination.name] = [];
+             }
+             groupedByDestination[item.destination.name].push(item);
+         });
+         setBatchRowsCount(values.length)
+ 
+         setBatchVolumesByDestination(calculateVolumesByField(groupedByDestination))
+         setBatchVolumesByOrigin(calculateVolumesByField(groupedByOrigin))
+         setBatchVolumesByLoader(calculateVolumesByField(groupedByLoader))
+         setBatchVolumesByHauler(calculateVolumesByField(groupedByHauler))
+    }
+
     const showBatchDataCheckModal = (values: any) => {
         setIsBatchDataCheckModalOpen(true)
         setIsCheckDataModalOpen(true)
         console.log('batchValues: ', values)
-
-        // group by hauler unit
-        const groupedByHauler: any = {};
-        values?.forEach((item: any) => {
-            if (!groupedByHauler[item.haulerUnit.equipmentId]) {
-                groupedByHauler[item.haulerUnit.equipmentId] = [];
-            }
-            groupedByHauler[item.haulerUnit.equipmentId].push(item);
-        });
-
-        const groupedByLoader: any = {};
-        values?.forEach((item: any) => {
-            if (!groupedByLoader[item.loaderUnit.equipmentId]) {
-                groupedByLoader[item.loaderUnit.equipmentId] = [];
-            }
-            groupedByLoader[item.loaderUnit.equipmentId].push(item);
-        });
-
-        const groupedByOrigin: any = {};
-        values?.forEach((item: any) => {
-            if (!groupedByOrigin[item.origin]) {
-                groupedByOrigin[item.origin] = [];
-            }
-            groupedByOrigin[item.origin].push(item);
-        });
-
-        const groupedByDestination: any = {};
-        values?.forEach((item: any) => {
-            if (!groupedByDestination[item.destination]) {
-                groupedByDestination[item.destination] = [];
-            }
-            groupedByDestination[item.destination].push(item);
-        });
-        setBatchRowsCount(values.length)
-
-        batchVolumesByDestination = calculateVolumesByField(groupedByDestination)
-        batchVolumesByOrigin = calculateVolumesByField(groupedByOrigin)
-        batchVolumesByLoader = calculateVolumesByField(groupedByLoader)
-        batchVolumesByHauler = calculateVolumesByField(groupedByHauler)
-        console.log('groupedByHauler: ', batchVolumesByHauler)
+        populateBatchData(values)       
     }
 
     const handleCancel = () => {
@@ -133,12 +135,11 @@ const CycleDetailsTable = () => {
     const handleCheckDataCancel = () => {
         setIsCheckDataModalOpen(false)
         setIsBatchDataCheckModalOpen(false)
-        batchVolumesByDestination = []
-        batchVolumesByOrigin = []
-        batchVolumesByLoader = []
-        batchVolumesByHauler = []
+        setBatchVolumesByDestination([])
+        setBatchVolumesByOrigin([])
+        setBatchVolumesByLoader([])
+        setBatchVolumesByHauler([])
     }
-
 
     const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
         onSuccess: (data) => {
@@ -558,6 +559,7 @@ const CycleDetailsTable = () => {
     const volumesByDestination = calculateVolumesByField(groupedByDestination);
 
 
+    // columns for checking data summary
    const dynamicColumns = (title: any) => {
         const columns = [
             { title: title, dataIndex: 'field', render: (text: any) => <span style={{ color: '#3699FF' }}>{text}</span>, },

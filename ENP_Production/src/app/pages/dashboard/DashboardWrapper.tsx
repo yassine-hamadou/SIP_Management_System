@@ -39,7 +39,7 @@ const DashboardPage = () => {
   }, [])
 
   const columns: any = [
-    { title: 'BatchNumber', dataIndex: 'batchNumber', },
+    { title: 'BatchNumber', dataIndex: 'batchNumber',render: (text: any) => <span style={{ color: '#3699FF' }}>{text}</span>,  },
     { title: 'Volumes', dataIndex: 'sumVolumes', render: (value: any) => <span>{roundOff(value)}</span> },
     { title: 'Loads', dataIndex: 'sumLoads', render: (value: any) => <span>{roundOff(value)}</span> },
     { title: 'Nominal Weights', dataIndex: 'sumNominalWeights', render: (value: any) => <span>{roundOff(value)}</span> },
@@ -67,8 +67,8 @@ const DashboardPage = () => {
             chartHeight={''}
           />
         </div>
-
-        <div className='col-12 row card border border-gray-400 '
+      </div>
+      <div className='col-12 row card border border-gray-400 mt-7 '
           style={{
             backgroundColor: 'white',
             padding: '20px',
@@ -77,9 +77,16 @@ const DashboardPage = () => {
             boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
           }}
         >
+          <div className='me-2 mb-7 d-flex flex-row-auto '>
+            <span className='fw-bold text-gray-800 d-block fs-3 align-items-center py-2'>
+              Batch Records </span>
+            <li className="d-flex align-items-center py-2 ms-5 fw-bold text-gray-800 ">
+              <span className="bullet bullet-dot bg-danger me-5 "></span>
+              30 days rolling
+            </li>
+          </div>
           <Table columns={columns} dataSource={volumesPerThirtyDays} />
         </div>
-      </div>
       {/* end::Row */}
     </div>
   )
