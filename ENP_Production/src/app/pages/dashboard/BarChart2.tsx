@@ -193,9 +193,12 @@ const BarChart2: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
       <div className='card-body p-0 d-flex justify-content-between flex-column overflow-hidden'>
         {/* begin::Hidden */}
         <div className='d-flex flex-stack flex-wrap flex-grow-1 px-9 pt-9 pb-3'>
-          <div className='me-2'>
-            <span className='fw-bold text-gray-800 d-block fs-3'>Loader volumes</span>
-
+          <div className='me-2 d-flex flex-row-auto '>
+            <span className='fw-bold text-gray-800 d-block fs-3 align-items-center py-2'>Loader volumes</span>
+            <li className="d-flex align-items-center py-2 ms-5 fw-bold text-gray-800 ">
+              <span className="bullet bullet-dot bg-danger me-5 "></span>
+              30 days rolling
+            </li>
             {/*<span*/}
             {/*  className='text-gray-400 fw-semibold'><strong>{monthArray[todayDate.getMonth()]} {todayDate.getFullYear()}</strong> back to <strong>{monthArray[lastDate.getMonth()]} {lastDate.getFullYear()}</strong></span>*/}
           </div>

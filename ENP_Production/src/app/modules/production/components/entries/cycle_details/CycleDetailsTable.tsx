@@ -558,7 +558,7 @@ const CycleDetailsTable = () => {
     const volumesByDestination = calculateVolumesByField(groupedByDestination);
 
 
-    const dynamicColumns = (title: any) => {
+   const dynamicColumns = (title: any) => {
         const columns = [
             { title: title, dataIndex: 'field', render: (text: any) => <span style={{ color: '#3699FF' }}>{text}</span>, },
             {
@@ -784,7 +784,7 @@ const CycleDetailsTable = () => {
 
 
     return (
-        <div className="card card-custom card-flush" >
+        <div className="card  border border-gray-400  card-custom card-flush" >
             <div className="card-header mt-7">
                 <Space style={{ marginBottom: 16 }}>
                     <Input
@@ -1113,7 +1113,6 @@ const CycleDetailsTable = () => {
                                 </>
                             } />
                     </Modal>
-
                 </div>
             </KTCardBody >
         </div >

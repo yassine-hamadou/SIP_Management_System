@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {FC} from 'react'
-import {useIntl} from 'react-intl'
-import {PageTitle} from '../../../_metronic/layout/core'
+import { FC, useEffect, useState } from 'react'
+import { useIntl } from 'react-intl'
+import { PageTitle } from '../../../_metronic/layout/core'
 import {
   MixedWidget2,
   MixedWidget10,
@@ -17,38 +17,82 @@ import {
 } from '../../../_metronic/partials/widgets'
 import { BarChart } from './BarChart'
 import { BarChart2 } from './BarChart2'
+import { batchVolumesThirtyDaysRolling, calculateVolumesByField, roundOff } from '../../modules/production/components/CommonComponents'
+import { Table } from 'antd'
+import { useQuery } from 'react-query'
+import { fetchDocument } from '../../modules/production/urls'
 
-const DashboardPage: FC = () => (
-  <>
-    {/* begin::Row */}
-    <div className='row gy-5 g-xl-8'>
-      <div className='col-xxl-6'>
-        <BarChart
-          className='card-xl-stretch'
-          chartColor='danger' 
-          chartHeight={''}         
-        />
-      </div>      
-      <div className='col-xxl-6'>
-        <BarChart2
-          className='card-xl-stretch'
-          chartColor='primary' 
-          chartHeight={''}         
-        />
-      </div>      
+const DashboardPage = () => {
+  const tenantId = localStorage.getItem('tenant')
+  const [gridData, setGridData] = useState([])
+  const loadData = async () => {
+    try {
+      const response = await fetchDocument(`cycleDetails/tenant/${tenantId}`)
+      setGridData(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const columns: any = [
+    { title: 'BatchNumber', dataIndex: 'batchNumber', },
+    { title: 'Volumes', dataIndex: 'sumVolumes', render: (value: any) => <span>{roundOff(value)}</span> },
+    { title: 'Loads', dataIndex: 'sumLoads', render: (value: any) => <span>{roundOff(value)}</span> },
+    { title: 'Nominal Weights', dataIndex: 'sumNominalWeights', render: (value: any) => <span>{roundOff(value)}</span> },
+    { title: 'Payload Weights', dataIndex: 'sumPayloadWeights', render: (value: any) => <span>{roundOff(value)}</span> },
+  ]
+
+  
+  const volumesPerThirtyDays = batchVolumesThirtyDaysRolling(gridData);
+
+  return (
+    <div>
+      {/* begin::Row */}
+      <div className='row gy-5 g-xl-8'>
+        <div className='col-xxl-6'>
+          <BarChart
+            className='card-xl-stretch'
+            chartColor='danger'
+            chartHeight={''}
+          />
+        </div>
+        <div className='col-xxl-6'>
+          <BarChart2
+            className='card-xl-stretch'
+            chartColor='primary'
+            chartHeight={''}
+          />
+        </div>
+
+        <div className='col-12 row card border border-gray-400 '
+          style={{
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '5px',
+            margin: "5px",
+            boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
+          }}
+        >
+          <Table columns={columns} dataSource={volumesPerThirtyDays} />
+        </div>
+      </div>
+      {/* end::Row */}
     </div>
-    {/* end::Row */}
-  </>
-)
+  )
+}
 
 const DashboardWrapper: FC = () => {
   const intl = useIntl()
   return (
     <>
-      <PageTitle breadcrumbs={[]}>{intl.formatMessage({id: 'MENU.DASHBOARD'})}</PageTitle>
+      <PageTitle breadcrumbs={[]}>{intl.formatMessage({ id: 'MENU.DASHBOARD' })}</PageTitle>
       <DashboardPage />
     </>
   )
 }
 
-export {DashboardWrapper}
+export { DashboardWrapper }
