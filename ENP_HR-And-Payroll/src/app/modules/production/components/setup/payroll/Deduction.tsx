@@ -1,9 +1,7 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { Button, Form, Input, Modal, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
-import { DEDUCTION } from '../../../../../data/DummyData'
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Api_Endpoint, fetchCurrencies, fetchDeductionsCategory, fetchPeriods, fetchTaxes, updateDeductions } from '../../../../../services/ApiCalls'
 import { useForm } from 'react-hook-form'
@@ -16,9 +14,6 @@ const Deduction = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
   const { register, reset, handleSubmit } = useForm()
-  const [selectedPeriod, setSelectedPeriodValue] = useState<any>(null);
-  const [selectedTaxtype, setSelectedTaxtypeValue] = useState<any>(null);
-  const [selectedCurrency, setSelectedCurrencyValue] = useState<any>(null);
   const tenantId = localStorage.getItem('tenant')
 
   const { data: deductionCats } = useQuery('deductionCats', fetchDeductionsCategory, { cacheTime: 5000 })

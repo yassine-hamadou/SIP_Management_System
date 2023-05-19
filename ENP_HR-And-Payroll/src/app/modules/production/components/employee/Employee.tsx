@@ -53,6 +53,7 @@ const Employee = () => {
     const imageObjectURL:any  = URL.createObjectURL(imageBlob);
     setImg(imageObjectURL);
   };
+  
   const getImage = async (imgUrl:any) => {
     const res = await fetch(`http://208.117.44.15/hrwebapi/uploads/employee/${imgUrl}`);
     const imageBlob = await res.blob();

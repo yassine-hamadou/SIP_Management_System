@@ -1,12 +1,8 @@
-import {Button, Form, Input, InputNumber, Upload,Modal, Space, Table, Radio, RadioChangeEvent} from 'antd'
+import {Button, Form, Input, Modal, Space, Table} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
-import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { UploadOutlined } from '@ant-design/icons';
-import { ColumnsType } from 'antd/es/table'
-import { DEPARTMENTS, employeedata, period } from '../../../../../data/DummyData'
 
 const TimeSheet = () => {
   const [gridData, setGridData] = useState([])
@@ -62,39 +58,8 @@ const TimeSheet = () => {
     }
   }
 
-  const onEmployeeChange = (e: any) => {
-    const objectId = e.target.value 
-    const newEmplo = employeedata.find((item:any)=>{
-      return item.code.toString()===objectId
-    })
-  setEmployeeRecord(newEmplo)
-    
-  }
-
-  const [fileList, setFileList] = useState<UploadFile[]>([
-    
-  ]);
-
-  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-  };
 
 
-  // to preview the uploaded file
-  const onPreview = async (file: UploadFile) => {
-    let src = file.url as string;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj as RcFile);
-        reader.onload = () => resolve(reader.result as string);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
-  };
 
   function handleDelete(element: any) {
     deleteData(element)
@@ -539,9 +504,7 @@ const TimeSheet = () => {
             <label htmlFor="exampleFormControlInput1" className=" form-label">Payroll Period</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              {period.map((item: any) => (
-                <option value={item.code}>{item.code}</option>
-              ))}
+              
             </select>
           </div>
 
@@ -549,9 +512,7 @@ const TimeSheet = () => {
             <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              {DEPARTMENTS.map((item: any) => (
-                <option value={item.code}>{item.name}</option>
-              ))}
+              
             </select>
           </div>
         </div>
@@ -583,7 +544,7 @@ const TimeSheet = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={employeedata} />
+          <Table columns={columns}  />
           {/* Add form */}
           <Modal
                 title='Employee Details'
@@ -620,11 +581,9 @@ const TimeSheet = () => {
                     <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                      <select className="form-select form-select-solid" aria-label="Select example" onChange={(e)=>onEmployeeChange(e)}>
+                      <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        {employeedata.map((item: any) => (
-                          <option value={item.code}> {item.empcode} - {item.lastname}</option>
-                        ))}
+                        
                       </select>
                     </div>
                     <div className='col-6 mb-3'>

@@ -1,10 +1,8 @@
-import {Button, Form, Input, InputNumber, Modal, Select, Space, Table, Upload} from 'antd'
+import {Button, Input, Modal, Select, Space, Table} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { UploadOutlined } from '@ant-design/icons';
-import { employeedata, MEDICALS, period } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
 import {  Api_Endpoint, fetchEmployees, fetchMedicals, fetchPaygroups, fetchPeriods } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
@@ -237,21 +235,6 @@ const MedicalEntries = () => {
     return  item.paygroupId===parseInt(selectedValue1)
     })
 
-    // const handleFileUpload = async () => {
-    //   const formData = new FormData();
-    //   formData.append("file", selectedFile);
-    //   try {
-    //     const response = await axios.post("/api/upload", formData, {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data"
-    //       }
-    //     });
-    //     console.log(response.data);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // };
-
 
   const url = `${Api_Endpoint}/MedicalTransactions`
   const OnSubmit = handleSubmit( async (values)=> {
@@ -404,7 +387,6 @@ const MedicalEntries = () => {
                   <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Service Provider</label>
-                      {/* <input type="date" {...register("date")}  className="form-control form-control-solid"/> */}
                       <select {...register("medicalTypeId")} className="form-select form-select-solid" aria-label="Select example">
                         <option> select </option>
                         {allMedicals?.data.map((item: any) => (
@@ -437,7 +419,6 @@ const MedicalEntries = () => {
                           <p>Name: {selectedFile.name}</p>
                           <p>Type: {selectedFile.type}</p>
                           <p>Size: {selectedFile.size} bytes</p>
-                          {/* <button onClick={handleFileUpload}>Upload</button> */}
                         </div>
                       )}
                       

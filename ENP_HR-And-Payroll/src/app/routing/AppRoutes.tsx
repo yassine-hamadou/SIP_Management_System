@@ -23,15 +23,15 @@ import { message } from 'antd'
 const {PUBLIC_URL} = process.env
 
 const AppRoutes: FC = () => {
-  const {currentUser} = useAuth()
+  const {currentUser,tenant} = useAuth()
   const [messageApi, contextHolder] = message.useMessage();
   const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
   const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(currentUser?.id)).map((filteredItem:any) => {
-    return filteredItem.applicationId.toString()
+    return filteredItem?.applicationId?.toString()
   })
 
 const hasApp = userApp?.find((applicationId:any)=>applicationId ==='10')
-const tenantId = localStorage.getItem('tenant')
+// const tenantId = localStorage.getItem('tenant')
 
   return (
     <BrowserRouter basename={PUBLIC_URL}>
@@ -40,7 +40,7 @@ const tenantId = localStorage.getItem('tenant')
           <Route path='error/*' element={<ErrorsPage />} />
           <Route path='logout' element={<Logout />} />
           {/* {currentUser && hasApp &&tenantId? ( */}
-          {currentUser && hasApp && tenantId? (
+          {currentUser && hasApp && tenant? (
             <>
               
               <Route path='/*' element={<PrivateRoutes />} />

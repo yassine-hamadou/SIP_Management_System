@@ -2,7 +2,6 @@ import {FC, Suspense} from 'react'
 import {Route, Routes, Navigate, Outlet} from 'react-router-dom'
 import {MasterLayout} from '../../_metronic/layout/MasterLayout'
 import TopBarProgress from 'react-topbar-progress-indicator'
-import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
 import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {WithChildren} from '../../_metronic/helpers'
 import { Audit } from '../modules/production/components/setup/administration/Audit'
@@ -137,8 +136,7 @@ const PrivateRoutes = () => {
         {/* Redirect to Dashboard after success login/registartion */}
         <Route path='auth/*' element={<Navigate to='/hr-dashboard' />} />
         {/* Pages */}
-        <Route path='dashboard' element={<DashboardWrapper />} />
-        {/* <Route path='dashboard' element={<DashboardWrapper />} /> */}
+
         <Route path='payroll-dashboard' element={<PayrollDashboardWrapper />} />
         <Route path='hr-dashboard' element={<HRDashboardWrapper />} />
    

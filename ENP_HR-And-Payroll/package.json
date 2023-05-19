@@ -12,7 +12,6 @@
         "@formiz/core": "^1.8.1",
         "@formiz/validations": "^1.0.0",
         "@fortawesome/fontawesome-free": "6.1.1",
-        "@grapecity/activereports-react": "^4.0.0",
         "@mui/icons-material": "^5.10.9",
         "@mui/material": "^5.10.11",
         "@mui/x-date-pickers": "^5.0.6",
@@ -80,7 +79,7 @@
         "typescript": "4.6.3"
     },
     "scripts": {
-        "start": "set PORT=3000 && react-scripts --max_old_space_size=8192 start",
+        "start": "set PORT=3000 && react-scripts start",
         "startLinux": "PORT=3000 react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",

@@ -1,16 +1,13 @@
-import axios from 'axios'
 import {Calendar} from './calendar/Calendar'
 import {Link, useNavigate} from 'react-router-dom'
 import {useQuery} from 'react-query'
 import {useState} from 'react'
 import {KTCard, KTCardBody, KTSVG} from "../../../../../../../_metronic/helpers";
-import {ENP_URL} from "../../../../urls";
 import {Space} from "antd";
 import {DropDownListComponent} from "@syncfusion/ej2-react-dropdowns";
 import {fetchDepartments, fetchLeaveTypes} from "../../../../../../services/ApiCalls";
 
 const LeavePlanning = () => {
-  let dropDownListObj: any
   const [chosenFilter, setChosenFilter] = useState(null)
   const navigate = useNavigate()
 

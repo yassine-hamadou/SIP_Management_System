@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import "../../../employeeFormEntry/formStyle.css";
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Form, Modal, Space, Table, Upload } from 'antd';
-import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, MEDICALS, NOTCHES, UNITS } from '../../../../../../data/DummyData';
-import { KTSVG } from '../../../../../../../_metronic/helpers';
+import { Space,  } from 'antd';
+
 
 const EmployeeDetail = () =>{
     const [formData, setFormData] = useState({});
@@ -555,10 +553,6 @@ const EmployeeDetail = () =>{
 
     }
 
-    const dataByID = employeedata.find((employee:any) =>{
-        return employee.code.toString() === param.id
-    });
-
     const fetchImage = async () => {
         const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
         const imageBlob = await res.blob();
@@ -609,7 +603,7 @@ const EmployeeDetail = () =>{
         >
 
 
-            <h3> Details for <span style={{color:"#FF6363"}}>  {dataByID?.firstname} {dataByID?.lastname}</span></h3>
+            <h3> Details for <span style={{color:"#FF6363"}}>  </span></h3>
             <br></br>
             <Link to={'/transaction/hr/leave-planning/approval'}>
                 <a style={{fontSize:"16px", fontWeight: "500"}} className='mb-7 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>
@@ -634,11 +628,11 @@ const EmployeeDetail = () =>{
                             <div className='row mb-0'>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">First Name</label>
-                                    <input type="text" name="fname" value={dataByID?.firstname} readOnly className="form-control form-control-solid" />
+                                    <input type="text" name="fname"  readOnly className="form-control form-control-solid" />
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Surname</label>
-                                    <input type="text" name="mname" value={dataByID?.lastname} readOnly className="form-control form-control-solid" />
+                                    <input type="text" name="mname"  readOnly className="form-control form-control-solid" />
                                 </div>
                             </div>
 
@@ -656,7 +650,7 @@ const EmployeeDetail = () =>{
 
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
-                                    <input type="text" name="gender" value={dataByID?.sex} readOnly className="form-control form-control-solid" />
+                                    <input type="text" name="gender"  readOnly className="form-control form-control-solid" />
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className=" form-label">Marital Status</label>

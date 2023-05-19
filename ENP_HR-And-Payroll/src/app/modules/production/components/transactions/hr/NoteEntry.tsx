@@ -1,10 +1,7 @@
-import {Button, Form, Input, InputNumber, Modal, Select, Space, Table, Upload} from 'antd'
+import {Button, Form, Input, Modal, Select, Space, Table} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
-import { employeedata, NOTES, period } from '../../../../../data/DummyData'
-import { UploadOutlined } from '@ant-design/icons';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { useForm } from 'react-hook-form'
 import { useQuery } from 'react-query'

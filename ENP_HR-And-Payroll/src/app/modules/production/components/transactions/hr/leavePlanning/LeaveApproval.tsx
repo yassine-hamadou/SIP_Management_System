@@ -1,12 +1,11 @@
-import {Button, Form, Input, InputNumber, message, Modal, Space, Table} from 'antd'
+import {Button, Form, Input, message, Space, Table} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
-import {Link, Navigate, useNavigate} from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import { useQuery } from 'react-query'
 import {ENP_URL} from "../../../../urls";
 import { fetchEmployees } from '../../../../../../services/ApiCalls'
 import {KTCardBody, KTSVG} from '../../../../../../../_metronic/helpers'
-import {employeedata} from "../../../../../../data/DummyData";
 
 
 
@@ -52,14 +51,6 @@ const LeaveApproval = () => {
             return e
         }
     }
-
-    const fetchImage = async () => {
-        const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
-        const imageBlob = await res.blob();
-        const imageObjectURL:any  = URL.createObjectURL(imageBlob);
-        setImg(imageObjectURL);
-    };
-
 
     function handleDelete(element: any) {
         deleteData(element)
@@ -156,14 +147,7 @@ const LeaveApproval = () => {
             width: 100,
             render: (_: any, record: any) => (
                 <Space size='middle'>
-                    {/* <a href='#' className='btn btn-light-warning btn-sm'>
-            Update
-          </a> */}
-                        <span className='btn btn-light-info btn-sm' onClick={(record) => approveLeave(record)}>Approve</span>
-                    {/*<a className='btn btn-light-danger btn-sm' onClick={() => employeeDetail(record)}>*/}
-                    {/*    Details*/}
-                    {/*</a>*/}
-
+                    <span className='btn btn-light-info btn-sm' onClick={(record) => approveLeave(record)}>Approve</span>
                 </Space>
             ),
 
@@ -187,7 +171,6 @@ const LeaveApproval = () => {
 
     useEffect(() => {
         loadData()
-        fetchImage()
     }, [])
 
     const dataWithIndex = gridData.map((item: any, index) => ({
@@ -259,48 +242,7 @@ const LeaveApproval = () => {
                             </Button>
                         </Space>
                     </div>
-                    <Table columns={columns} dataSource={employeedata} />
-                    {/* <Modal
-                title='Add Employee'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
-            >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
-                >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
-            </Modal> */}
+                    <Table columns={columns} />
                 </div>
             </KTCardBody>
         </div>

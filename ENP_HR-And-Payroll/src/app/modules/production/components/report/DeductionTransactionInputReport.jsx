@@ -1,11 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { DxReportViewer} from 'devexpress-reporting/dx-webdocumentviewer';
-import "@grapecity/activereports/styles/ar-js-ui.css";
-import "@grapecity/activereports/styles/ar-js-viewer.css";
-import "@grapecity/activereports/styles/ar-js-designer.css";
-import "@grapecity/activereports/pdfexport";
-import "@grapecity/activereports/htmlexport";
-import "@grapecity/activereports/tabulardataexport";
 import ko from "knockout";
 import "devexpress-reporting/dx-webdocumentviewer";
 import "../../../../../../node_modules/devextreme/dist/css/dx.light.css";
