@@ -32,6 +32,7 @@ const CycleDetailsTable = () => {
     const [savedCount, setSavedCount] = useState(0) // to hold the number of rows saved from the uploaded file
 
     const [loading, setLoading] = useState(false)
+    const [uploading, setUploading] = useState(false)
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false) //  to show the update modal
     const [tempData, setTempData] = useState<any>()
     const { register, reset, handleSubmit } = useForm()
@@ -48,7 +49,7 @@ const CycleDetailsTable = () => {
     const { data: allMaterials } = useQuery('allMaterials', () => fetchDocument(`ProdRawMaterial/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: allShifts } = useQuery('shifts', () => fetchDocument(`ProductionShift/tenant/${tenantId}`), { cacheTime: 5000 })
 
-    let [batchVolumesByHauler, setBatchVolumesByHauler ] = useState<any>([]) // to hold the volumes by hauler
+    let [batchVolumesByHauler, setBatchVolumesByHauler] = useState<any>([]) // to hold the volumes by hauler
     let [batchVolumesByLoader, setBatchVolumesByLoader] = useState<any>([]) // to hold the volumes by loader
     let [batchVolumesByOrigin, setBatchVolumesByOrigin] = useState<any>([]) // to hold the volumes by origin
     let [batchVolumesByDestination, setBatchVolumesByDestination] = useState<any>([]) // to hold the volumes by destination
@@ -74,52 +75,56 @@ const CycleDetailsTable = () => {
         setIsCheckDataModalOpen(true)
     }
 
+    const handleRemove = () => {
+        setUploadedFile(null);
+    };
+
     const populateBatchData = (values: any) => {
-         // group by hauler unit
-         const groupedByHauler: any = {};
-         values?.forEach((item: any) => {
-             if (!groupedByHauler[item.haulerUnit.equipmentId]) {
-                 groupedByHauler[item.haulerUnit.equipmentId] = [];
-             }
-             groupedByHauler[item.haulerUnit.equipmentId].push(item);
-         });
- 
-         const groupedByLoader: any = {};
-         values?.forEach((item: any) => {
-             if (!groupedByLoader[item.loaderUnit.equipmentId]) {
-                 groupedByLoader[item.loaderUnit.equipmentId] = [];
-             }
-             groupedByLoader[item.loaderUnit.equipmentId].push(item);
-         });
- 
-         const groupedByOrigin: any = {};
-         values?.forEach((item: any) => {
-             if (!groupedByOrigin[item.origin.name]) {
-                 groupedByOrigin[item.origin.name] = [];
-             }
-             groupedByOrigin[item.origin.name].push(item);
-         });
- 
-         const groupedByDestination: any = {};
-         values?.forEach((item: any) => {
-             if (!groupedByDestination[item.destination.name]) {
-                 groupedByDestination[item.destination.name] = [];
-             }
-             groupedByDestination[item.destination.name].push(item);
-         });
-         setBatchRowsCount(values.length)
- 
-         setBatchVolumesByDestination(calculateVolumesByField(groupedByDestination))
-         setBatchVolumesByOrigin(calculateVolumesByField(groupedByOrigin))
-         setBatchVolumesByLoader(calculateVolumesByField(groupedByLoader))
-         setBatchVolumesByHauler(calculateVolumesByField(groupedByHauler))
+        // group by hauler unit
+        const groupedByHauler: any = {};
+        values?.forEach((item: any) => {
+            if (!groupedByHauler[item.haulerUnit.equipmentId]) {
+                groupedByHauler[item.haulerUnit.equipmentId] = [];
+            }
+            groupedByHauler[item.haulerUnit.equipmentId].push(item);
+        });
+
+        const groupedByLoader: any = {};
+        values?.forEach((item: any) => {
+            if (!groupedByLoader[item.loaderUnit.equipmentId]) {
+                groupedByLoader[item.loaderUnit.equipmentId] = [];
+            }
+            groupedByLoader[item.loaderUnit.equipmentId].push(item);
+        });
+
+        const groupedByOrigin: any = {};
+        values?.forEach((item: any) => {
+            if (!groupedByOrigin[item.origin.name]) {
+                groupedByOrigin[item.origin.name] = [];
+            }
+            groupedByOrigin[item.origin.name].push(item);
+        });
+
+        const groupedByDestination: any = {};
+        values?.forEach((item: any) => {
+            if (!groupedByDestination[item.destination.name]) {
+                groupedByDestination[item.destination.name] = [];
+            }
+            groupedByDestination[item.destination.name].push(item);
+        });
+        setBatchRowsCount(values.length)
+
+        setBatchVolumesByDestination(calculateVolumesByField(groupedByDestination))
+        setBatchVolumesByOrigin(calculateVolumesByField(groupedByOrigin))
+        setBatchVolumesByLoader(calculateVolumesByField(groupedByLoader))
+        setBatchVolumesByHauler(calculateVolumesByField(groupedByHauler))
     }
 
     const showBatchDataCheckModal = (values: any) => {
         setIsBatchDataCheckModalOpen(true)
         setIsCheckDataModalOpen(true)
         console.log('batchValues: ', values)
-        populateBatchData(values)       
+        populateBatchData(values)
     }
 
     const handleCancel = () => {
@@ -129,7 +134,9 @@ const CycleDetailsTable = () => {
         setTempData(null)
         setIsUploadModalOpen(false)
         setIsFileUploaded(false)
-        setSavedCount(0)
+        handleRemove()
+        setUploadedFile(null)
+        setUploading(false)
     }
 
     const handleCheckDataCancel = () => {
@@ -375,11 +382,22 @@ const CycleDetailsTable = () => {
         name: 'file',
         accept: '.xlsx, .xls',
         maxCount: 1,
-
         beforeUpload: (file: any) => {
             return new Promise((resolve, reject) => {
-                resolve(file)
-                setUploadedFile(file)
+                // check if file is not uploaded
+                if (!file) {
+                    message.error('No file uploaded!');
+                    reject(false)
+                }
+                // upload excel file only 
+                if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && file.type !== 'application/vnd.ms-excel') {
+                    message.error(`${file.name} is not a excel file`);
+                    reject(false)
+                }
+                else {
+                    resolve(true)
+                    setUploadedFile(file)
+                }
             })
         },
     }
@@ -410,12 +428,22 @@ const CycleDetailsTable = () => {
         }
     }
 
+    const onOkay = () => {
+        // check if no file is uploaded
+        if (!uploadedFile) {
+            message.error('No file uploaded!');
+            return
+        } else {
+            handleUpload()
+        }
+    }
+
     const handleUpload = () => {
 
         const reader = new FileReader()
         const dateStamp = new Date().getTime()
         try {
-            setLoading(true)
+            setUploading(true)
             reader.onload = (e: any) => {
 
                 const file = new Uint8Array(e.target.result)
@@ -494,7 +522,7 @@ const CycleDetailsTable = () => {
                 console.log('saveData: ', saveData)
                 setDataToSave(saveData)
                 timeStamp = ''
-                setLoading(false)
+                setUploading(false)
                 setIsUploadModalOpen(false)
                 setIsFileUploaded(true)
                 setUploadData(filteredData.slice(1))
@@ -560,7 +588,7 @@ const CycleDetailsTable = () => {
 
 
     // columns for checking data summary
-   const dynamicColumns = (title: any) => {
+    const dynamicColumns = (title: any) => {
         const columns = [
             { title: title, dataIndex: 'field', render: (text: any) => <span style={{ color: '#3699FF' }}>{text}</span>, },
             {
@@ -582,7 +610,7 @@ const CycleDetailsTable = () => {
         {
             key: '1', label: `Hauler Units`,
             children: (
-                <><Table dataSource={isBatchDataCheckModalOpen ? batchVolumesByHauler :volumesByHauler } columns={dynamicColumns('Hauler')}
+                <><Table dataSource={isBatchDataCheckModalOpen ? batchVolumesByHauler : volumesByHauler} columns={dynamicColumns('Hauler')}
                     pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
                     footer={() => summaryFooter(isBatchDataCheckModalOpen ? batchVolumesByHauler.length : volumesByHauler.length)}
                     bordered
@@ -593,7 +621,7 @@ const CycleDetailsTable = () => {
         {
             key: '2', label: `Loader Units`,
             children: (
-                <><Table dataSource={isBatchDataCheckModalOpen ? batchVolumesByLoader :volumesByLoader } columns={dynamicColumns('Loader')}
+                <><Table dataSource={isBatchDataCheckModalOpen ? batchVolumesByLoader : volumesByLoader} columns={dynamicColumns('Loader')}
                     pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
                     footer={() => summaryFooter(isBatchDataCheckModalOpen ? batchVolumesByLoader.length : volumesByLoader.length)}
                     bordered
@@ -603,7 +631,7 @@ const CycleDetailsTable = () => {
         },
         {
             key: '3', label: `Origins`, children: (
-                <><Table dataSource={isBatchDataCheckModalOpen ? batchVolumesByOrigin :volumesByOrigin } columns={dynamicColumns('Origin')}
+                <><Table dataSource={isBatchDataCheckModalOpen ? batchVolumesByOrigin : volumesByOrigin} columns={dynamicColumns('Origin')}
                     pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
                     footer={() => summaryFooter(isBatchDataCheckModalOpen ? batchVolumesByOrigin.length : volumesByOrigin.length)}
                     bordered
@@ -613,7 +641,7 @@ const CycleDetailsTable = () => {
         },
         {
             key: '4', label: `Destinations`, children: (
-                <><Table dataSource={isBatchDataCheckModalOpen ? batchVolumesByDestination :volumesByDestination } columns={dynamicColumns('Destination')}
+                <><Table dataSource={isBatchDataCheckModalOpen ? batchVolumesByDestination : volumesByDestination} columns={dynamicColumns('Destination')}
                     pagination={{ pageSize: 20 }} scroll={{ y: 240 }}
                     footer={() => summaryFooter(isBatchDataCheckModalOpen ? batchVolumesByDestination.length : volumesByDestination.length)}
                     bordered
@@ -1067,8 +1095,8 @@ const CycleDetailsTable = () => {
                     <Modal
                         title='Upload Cycle Detail'
                         open={isUploadModalOpen}
-                        onOk={handleUpload}
-                        confirmLoading={loading}
+                        onOk={onOkay}
+                        confirmLoading={uploading}
                         onCancel={handleCancel}
                         closable={true}
                     >
@@ -1078,7 +1106,7 @@ const CycleDetailsTable = () => {
                                 {...uploadProps}
                             >
                                 <Button
-                                    loading={loading}
+                                    loading={uploading}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'center',
@@ -1091,7 +1119,7 @@ const CycleDetailsTable = () => {
 
                     {/* check data modal */}
                     <Modal
-                        title= {isBatchDataCheckModalOpen ? 'Batch Summaries' :  'Data Summaries' }
+                        title={isBatchDataCheckModalOpen ? 'Batch Summaries' : 'Data Summaries'}
                         open={isCheckDataModalOpen}
                         onCancel={handleCheckDataCancel}
                         width={800}

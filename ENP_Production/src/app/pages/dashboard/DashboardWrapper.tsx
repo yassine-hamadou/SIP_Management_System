@@ -40,8 +40,8 @@ const DashboardPage = () => {
 
   const columns: any = [
     { title: 'BatchNumber', dataIndex: 'batchNumber',render: (text: any) => <span style={{ color: '#3699FF' }}>{text}</span>,  },
-    { title: 'Volumes', dataIndex: 'sumVolumes', render: (value: any) => <span>{roundOff(value)}</span> },
     { title: 'Loads', dataIndex: 'sumLoads', render: (value: any) => <span>{roundOff(value)}</span> },
+    { title: 'Volumes', dataIndex: 'sumVolumes', render: (value: any) => <span>{roundOff(value)}</span> },
     { title: 'Nominal Weights', dataIndex: 'sumNominalWeights', render: (value: any) => <span>{roundOff(value)}</span> },
     { title: 'Payload Weights', dataIndex: 'sumPayloadWeights', render: (value: any) => <span>{roundOff(value)}</span> },
   ]

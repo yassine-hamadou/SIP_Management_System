@@ -1,13 +1,13 @@
 import React from 'react'
-import {Navigate, Route, Routes, Outlet} from 'react-router-dom'
-import {PageLink, PageTitle} from '../../../_metronic/layout/core'
-import {ProductionReportTable} from "./components/report/production_table/CycleDetailsList";
-import {FuelReportTable} from "./components/report/fuel/CycleDetailsList";
-import {CycleDetailsTable} from "./components/entries/cycle_details/CycleDetailsTable";
-import {CycleGradesTable} from "./components/entries/cycle_grades/CycleGradesTable";
-import {PlannedOutputTable} from "./components/entries/planned_output/PlannedOutputTable";
-import {ActivityTable} from "./components/setup/activity/ActivityTable";
-import {DestinationTable} from "./components/setup/destination/DestinationTable";
+import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
+import { PageLink, PageTitle } from '../../../_metronic/layout/core'
+import { ProductionReportTable } from "./components/report/production_table/CycleDetailsList";
+import { FuelReportTable } from "./components/report/fuel/CycleDetailsList";
+import { CycleDetailsTable } from "./components/entries/cycle_details/CycleDetailsTable";
+import { CycleGradesTable } from "./components/entries/cycle_grades/CycleGradesTable";
+import { PlannedOutputTable } from "./components/entries/planned_output/PlannedOutputTable";
+import { ActivityTable } from "./components/setup/activity/ActivityTable";
+import { DestinationTable } from "./components/setup/destination/DestinationTable";
 import { ShiftPage } from './components/setup/shift/ShiftPage';
 import { OriginPage } from './components/setup/origin/OriginPage';
 import { LoaderUnit } from './components/setup/loaderUnit/LoaderUnit';
@@ -17,8 +17,9 @@ import { MineArea } from './components/setup/mine_care/MineArea';
 import { ProcessedMaterial } from './components/setup/materialProcessed/ProcessedMaterial';
 import { MaterialRaw } from './components/setup/materialRaw/MaterialRaw';
 import { LoaderOperator } from './components/setup/loaderOperator/LoaderOperator';
-import{EquipmentKpiReport} from "./components/report/EquipmentKpi";
+import { EquipmentKpiReport } from "./components/report/EquipmentKpi";
 import { ActivityStatsReport } from './components/report/ActivityStatsReport';
+
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: 'Cycle Details',
@@ -58,7 +59,7 @@ const ProductionPage: React.FC = () => {
             <>
               <PageTitle breadcrumbs={accountBreadCrumbs}>Cycle Details</PageTitle>
               {/*<Overview />*/}
-                <CycleDetailsTable />
+              <CycleDetailsTable />
             </>
           }
         />
@@ -152,7 +153,7 @@ const ProductionPage: React.FC = () => {
           element={
             <>
               <PageTitle breadcrumbs={accountBreadCrumbs}>Destination</PageTitle>
-              <DestinationTable/>
+              <DestinationTable />
             </>
           }
         />
@@ -198,8 +199,9 @@ const ProductionPage: React.FC = () => {
         path='/report/*'
         element={
           <>
-            {/*<ProductionHeader />*/}
-            <Outlet />
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Production Report</PageTitle>
+            {/*<Overview />*/}
+            <ProductionReportTable />
           </>
         }
       >
@@ -227,7 +229,7 @@ const ProductionPage: React.FC = () => {
           element={
             <>
               <PageTitle breadcrumbs={accountBreadCrumbs}>Equipment KPI</PageTitle>
-              <EquipmentKpiReport/>
+              <EquipmentKpiReport />
             </>
           }
         />
@@ -236,7 +238,7 @@ const ProductionPage: React.FC = () => {
           element={
             <>
               <PageTitle breadcrumbs={accountBreadCrumbs}>Activity Statistics</PageTitle>
-              <ActivityStatsReport/>
+              <ActivityStatsReport />
             </>
           }
         />

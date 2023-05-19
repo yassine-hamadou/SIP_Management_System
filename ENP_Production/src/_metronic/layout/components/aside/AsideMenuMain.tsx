@@ -35,14 +35,14 @@ export function AsideMenuMain() {
         {/* <AsideMenuItem to='production/entries/cycle-grade' hasBullet={true} title='Cycle Grade' /> */}
         <AsideMenuItem to='production/entries/planned-output' hasBullet={true} title='Planned Output' />
       </AsideMenuItemWithSub>
+      <AsideMenuItem to='production/report/production-report'title='Report' fontIcon='bi-archive' icon='/media/icons/duotune/general/gen028.svg' />
 
-      <AsideMenuItemWithSub to='#' title='Report' fontIcon='bi-archive' icon='/media/icons/duotune/general/gen028.svg'
-      >
-        <AsideMenuItem to='production/report/production-report' title='Production' hasBullet={true} />
-        <AsideMenuItem to='production/report/fuel-report' title='Fuel Report' hasBullet={true} />
-        <AsideMenuItem to='production/report/equipment-kpi' title='Equipment KPI' hasBullet={true} />
-        <AsideMenuItem to='production/report/activity-statistics' title='Activity Statistics' hasBullet={true} />
-      </AsideMenuItemWithSub>
+      {/* <AsideMenuItemWithSub to='#' title='Report' fontIcon='bi-archive' icon='/media/icons/duotune/general/gen028.svg'> */}
+        {/* <AsideMenuItem to='production/report/production-report' title='Production' hasBullet={true} /> */}
+        {/* <AsideMenuItem to='production/report/fuel-report' title='Fuel Report' hasBullet={true} /> */}
+        {/* <AsideMenuItem to='production/report/equipment-kpi' title='Equipment KPI' hasBullet={true} /> */}
+        {/* <AsideMenuItem to='production/report/activity-statistics' title='Activity Statistics' hasBullet={true} /> */}
+      {/* </AsideMenuItemWithSub> */}
 
       <AsideMenuItemWithSub to='#' title='Setup' fontIcon='bi-archive' icon='/media/icons/duotune/coding/cod009.svg'
       >
