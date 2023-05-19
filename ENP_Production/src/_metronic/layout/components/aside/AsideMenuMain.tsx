@@ -35,7 +35,7 @@ export function AsideMenuMain() {
         {/* <AsideMenuItem to='production/entries/cycle-grade' hasBullet={true} title='Cycle Grade' /> */}
         <AsideMenuItem to='production/entries/planned-output' hasBullet={true} title='Planned Output' />
       </AsideMenuItemWithSub>
-      <AsideMenuItem to='production/report/production-report'title='Report' fontIcon='bi-archive' icon='/media/icons/duotune/general/gen028.svg' />
+      <AsideMenuItem to='production/report/production-report'title='Reports' fontIcon='bi-archive' icon='/media/icons/duotune/general/gen028.svg' />
 
       {/* <AsideMenuItemWithSub to='#' title='Report' fontIcon='bi-archive' icon='/media/icons/duotune/general/gen028.svg'> */}
         {/* <AsideMenuItem to='production/report/production-report' title='Production' hasBullet={true} /> */}

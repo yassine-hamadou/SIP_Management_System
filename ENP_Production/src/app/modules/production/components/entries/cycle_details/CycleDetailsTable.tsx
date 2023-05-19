@@ -381,6 +381,7 @@ const CycleDetailsTable = () => {
     const uploadProps: UploadProps = {
         name: 'file',
         accept: '.xlsx, .xls',
+        action: '',
         maxCount: 1,
         beforeUpload: (file: any) => {
             return new Promise((resolve, reject) => {
