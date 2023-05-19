@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 // report card component
 export const ReportCard = (reportData: any) => {
     return (
-        <div
+        <div className='card border border-gray-400 '
             style={{
                 backgroundColor: 'white',
                 padding: '20px',

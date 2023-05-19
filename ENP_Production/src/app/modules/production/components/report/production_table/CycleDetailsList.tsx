@@ -25,7 +25,25 @@ const ProductionReportTable = () => {
 
   const ProductionReportData = [
     {
+      title: "Lists",
+      reports: [
+        { title: "Hauler Units Report", link: "/" },
+        { title: "Loader Units Report", link: "/" },
+        { title: "Origin Report", link: "/" },
+        { title: "Destination Report", link: "/" },
+        { title: "Production Materials Report", link: "/" },
+      ]
+    },
+    {
       title: "Production Report",
+      reports: [
+        { title: "Batch Totals Report", link: "/" },
+        { title: "Batch Summary Report", link: "/" },
+      ]
+    },
+    
+    {
+      title: "Statistics",
       reports: [
         { title: "Report", link: "/" },
         { title: "Report", link: "/" },

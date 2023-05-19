@@ -3,7 +3,7 @@ import ApexCharts, { ApexOptions } from 'apexcharts'
 import { getCSSVariableValue } from '../../../_metronic/assets/ts/_utils'
 import { useQuery } from "react-query";
 import axios from "axios";
-import { ENP_URL } from '../../modules/production/urls';
+import { ENP_URL, fetchDocument } from '../../modules/production/urls';
 import { useThemeMode } from '../../../_metronic/partials/layout/theme-mode/ThemeModeProvider';
 import { CycleDetailsDummyData } from '../../data/DummyData';
 
@@ -18,8 +18,11 @@ type Props = {
 const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
   const chartRef = useRef<HTMLDivElement | null>(null)
   const { mode } = useThemeMode()
+  const tenantId = localStorage.getItem('tenant')
   const data: any = []
   const categories: any = []
+  const { data: cycleDetails } = useQuery('cycledetails', () => fetchDocument(`cycleDetails/tenant/${tenantId}`), { cacheTime: 5000 })
+  console.log('cycleDetails: ', cycleDetails?.data)
 
 
   const chartOptions = (chartColor: string, chartHeight: string): ApexOptions => {
@@ -32,7 +35,7 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
       series: [
         {
           name: 'Total volumes',
-          data: data?.slice(-12)
+          data: data
         },
       ],
       chart: {
@@ -133,10 +136,6 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
       },
     }
 
-    // return a chart for cycle details per volumes per hauler
-
-
-
   }
   const refreshChart = () => {
     if (!chartRef.current) {
@@ -150,19 +149,21 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
     return chart
   }
 
-// group by hauler unit
+
+
+  // group by hauler unit
   const groupedByHauler: any = {};
-  CycleDetailsDummyData.forEach((item) => {
-    if (!groupedByHauler[item.haulerUnit]) {
-      groupedByHauler[item.haulerUnit] = [];
+  cycleDetails?.data.forEach((item: any) => {
+    if (!groupedByHauler[item.haulerUnit.equipmentId]) {
+      groupedByHauler[item.haulerUnit.equipmentId] = [];
     }
-    groupedByHauler[item.haulerUnit].push(item);
+    groupedByHauler[item.haulerUnit.equipmentId].push(item);
   });
 
-// sum volumes per hauler
+  // sum volumes per hauler
   const newData = [];
   for (const hauler in groupedByHauler) {
-    const volumes = groupedByHauler[hauler].map((item: { volume: any; }) => item.volume);
+    const volumes = groupedByHauler[hauler].map((item: { volumes: any; }) => item.volumes);
     const sum = volumes.reduce((accumulator: any, currentValue: any) => accumulator + currentValue);
     newData.push({ hauler, sum });
   }
@@ -177,7 +178,6 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
   console.log('categories: ', categories)
   console.log('data: ', data)
   console.log('newData: ', newData)
-  console.log('dummyData: ', CycleDetailsDummyData)
 
   useEffect(() => {
 
@@ -198,8 +198,13 @@ const BarChart: React.FC<Props> = ({ className, chartColor, chartHeight }) => {
       <div className='card-body p-0 pb-6 d-flex justify-content-between flex-column overflow-hidden'>
         {/* begin::Hidden */}
         <div className='d-flex flex-stack flex-wrap flex-grow-1 px-9 pt-9 pb-3'>
-          <div className='me-2'>
-            <span className='fw-bold text-gray-800 d-block fs-3'>Hauler volumes</span>
+          <div className='me-2 d-flex flex-row-auto '>
+            <span className='fw-bold text-gray-800 d-block fs-3 align-items-center py-2'>
+              Hauler volumes </span>
+            <li className="d-flex align-items-center py-2 ms-5 fw-bold text-gray-800 ">
+              <span className="bullet bullet-dot bg-danger me-5 "></span>
+              30 days rolling
+            </li>
           </div>
 
           <div className={`fw-bold fs-3 text-${chartColor}`}>{

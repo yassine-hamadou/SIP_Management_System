@@ -216,7 +216,7 @@ const OperatorComponent = (props: any) => {
     })
 
     return (
-        <div
+        <div className='card border border-gray-400 '
             style={{
                 backgroundColor: 'white',
                 padding: '20px',
