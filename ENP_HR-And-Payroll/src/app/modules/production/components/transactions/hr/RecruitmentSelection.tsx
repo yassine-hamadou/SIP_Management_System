@@ -1,16 +1,13 @@
-import { Button, Form, Input, InputNumber, Upload, Modal, Space, Table, Radio, RadioChangeEvent, message, Select } from 'antd'
+import { Button, Form, Input, Modal, Space, Table, Radio, RadioChangeEvent, message } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG, toAbsoluteUrl } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { UploadOutlined } from '@ant-design/icons';
-import { ColumnsType } from 'antd/es/table'
-import { CATEGORY, employeedata, JOBTITLE, PAYGROUP, UNITS } from '../../../../../data/DummyData'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { Api_Endpoint, fetchCategories, fetchJobTitles, fetchPaygroups, fetchRecruitmentTransactions, fetchUnits, postItem } from '../../../../../services/ApiCalls'
-import RecruitmentUpform from './RecruitmentUpform'
+import {  useQuery, useQueryClient } from 'react-query'
+import { Api_Endpoint, fetchCategories, fetchJobTitles, fetchPaygroups, fetchRecruitmentTransactions, fetchUnits } from '../../../../../services/ApiCalls'
+
 
 
 const tempImg = toAbsoluteUrl('/media/avatars/user.png')

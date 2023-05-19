@@ -1,13 +1,10 @@
 
-import {Button, Form, Input, InputNumber, Upload,Modal, Space, Table, Radio, RadioChangeEvent, Select} from 'antd'
+import {Button, Input, Modal, Space, Table, RadioChangeEvent, Select} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { UploadOutlined } from '@ant-design/icons';
-import { ColumnsType } from 'antd/es/table'
-import { employeedata } from '../../../../../data/DummyData'
+
 import { useForm } from 'react-hook-form'
 import { Api_Endpoint, fetchEmployees, fetchJobTitles, fetchTrainees, fetchTrainingDevTransactions, fetchTrainings, fetchTrainingSchedules } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'

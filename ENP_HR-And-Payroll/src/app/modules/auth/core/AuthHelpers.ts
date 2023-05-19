@@ -2,6 +2,7 @@ import {AuthModel} from './_models'
 
 const AUTH_LOCAL_STORAGE_KEY = 'token'
 const AccessKey = 'accessToken'
+const TenantKey = 'tenant'
 const getAuth = (): AuthModel | undefined => {
   if (!localStorage) {
     return
@@ -22,6 +23,25 @@ const getAuth = (): AuthModel | undefined => {
     console.error('AUTH LOCAL STORAGE PARSE ERROR', error)
   }
 }
+const getTenant = (): any | undefined => {
+  if (!localStorage) {
+    return
+  }
+
+  const lsValue: string | null = localStorage.getItem(TenantKey)
+  if (!lsValue) {
+    return
+  }
+
+  try {
+    const tenant: any = lsValue
+    if (tenant) {
+      return tenant
+    }
+  } catch (error) {
+    console.error('TENANT LOCAL STORAGE PARSE ERROR', error)
+  }
+}
 
 const setAuth = (auth: AuthModel) => {
   if (!localStorage) {
@@ -37,6 +57,18 @@ const setAuth = (auth: AuthModel) => {
     console.error('AUTH LOCAL STORAGE SAVE ERROR', error)
   }
 }
+const setTenant = (tenant: any) => {
+  if (!localStorage) {
+    return
+  }
+
+  try {
+    localStorage.setItem(TenantKey, tenant)
+    console.log('tenant', tenant)
+  } catch (error) {
+    console.error('TENANT LOCAL STORAGE SAVE ERROR', error)
+  }
+}
 
 const removeAuth = () => {
   if (!localStorage) {
@@ -45,6 +77,7 @@ const removeAuth = () => {
 
   try {
     localStorage.removeItem(AUTH_LOCAL_STORAGE_KEY)
+    localStorage.removeItem(TenantKey)
   } catch (error) {
     console.error('AUTH LOCAL STORAGE REMOVE ERROR', error)
   }
@@ -64,4 +97,4 @@ export function setupAxios(axios: any) {
   )
 }
 
-export {getAuth, setAuth, removeAuth, AUTH_LOCAL_STORAGE_KEY}
+export {getAuth, setAuth, removeAuth ,setTenant, getTenant, AUTH_LOCAL_STORAGE_KEY,TenantKey}

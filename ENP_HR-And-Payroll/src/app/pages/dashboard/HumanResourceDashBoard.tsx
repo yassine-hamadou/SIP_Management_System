@@ -1,17 +1,13 @@
 
 import react, {FC} from 'react'
-import {useIntl} from 'react-intl'
 import {PageTitle} from '../../../_metronic/layout/core'
 import { HRChart } from './charts/HRChart'
 import { TestChart } from './charts/TestChart'
 import { useQuery } from 'react-query'
-import { fetchDashBoardData } from '../../services/ApiCalls'
-import { Button, Input, Space, Table } from 'antd'
-
-
+import {  fetchDashBoardData } from '../../services/ApiCalls'
+import { Table } from 'antd'
 
 const columns: any = [
-   
   {
     title: 'Paygroup',
     dataIndex: 'paygroupName',
@@ -109,6 +105,7 @@ const HRDashboardPage = () => {
   const tenantId = localStorage.getItem('tenant')
   const { data: dashboardData } = useQuery('dashboarddata',()=> fetchDashBoardData(tenantId), { cacheTime: 5000 })
   
+  
 
   return(
     <div
@@ -137,19 +134,7 @@ const HRDashboardPage = () => {
           boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
         }} 
       >
-          {/* <Space style={{marginBottom: 16}}>
-            <Input
-              placeholder='Enter Search Text'
-              // onChange={handleInputChange}
-              type='text'
-              allowClear
-              // value={searchText}
-            />
-            <Button type='primary' >
-            
-              Search
-            </Button>
-          </Space> */}
+          
         <Table columns={columns} dataSource={dashboardData?.data} />
       </div>
     </div>

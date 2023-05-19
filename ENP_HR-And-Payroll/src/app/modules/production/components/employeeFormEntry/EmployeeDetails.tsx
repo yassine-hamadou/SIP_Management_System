@@ -2,44 +2,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import "./formStyle.css"
-import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Form, Modal, Space, Table, Upload } from 'antd';
 import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchEmployees, fetchExperiences, fetchGrades, fetchJobTitles, fetchNationalities, fetchNotches, fetchPaygroups, fetchQualifications, fetchSkills, fetchUnits } from '../../../../services/ApiCalls';
-import { BANKS, CATEGORY, DEPARTMENTS, DIVISION, employeedata, GRADES, MEDICALS, NOTCHES, UNITS } from '../../../../data/DummyData';
-import { KTSVG } from '../../../../../_metronic/helpers';
+
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 
 const EmplyeeDetails= () =>{
-  const [formData, setFormData] = useState({});
-  const [activeTab, setActiveTab] = useState('tab1');
-  const [activeTab1, setActiveTab1] = useState('skill');
-  const [activeTab2, setActiveTab2] = useState('medical');
-  const [skillOpen, setSkillOpen] = useState(false)
-  const [qualificationOpen,setQualificationOpen] = useState(false)
-  const [experienceOpen,setExperienceOpen] = useState(false)
-  const [medicalOpen,setMedicalOpen] = useState(false)
-  const [familyOpen,setFamilyOpen] = useState(false)
-  const [trainingOpen,setTrainingOpen] = useState(false)
-  const [leaveOpen,setLeaveOpen] = useState(false)
-  const [appraisalOpen,setAppraisalOpen] = useState(false)
-  const [noteOpen,setNoteOpen] = useState(false)
-  const [medicalEntryData, setMedicalEntryData] = useState([])
-  const [familyData, setFamilyData] = useState([])
-  const [experienceData, setExperienceData] = useState([])
-  const [qualificationData, setQualificationData] = useState([])
-  const [skillData, setSkillData] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [img, setImg] = useState()
-  const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
-  // const [paygroupName, setPaygroupName]= useState("")
-  // const [nationality, setNationality]= useState("")
-  // const [grade, setGrade]= useState("")
-  // const [unit, setUnit]= useState("")
-  // const [jobTitle, setJobTitle]= useState("")
   const [tempData, setTempData]= useState<any>()
   const [graName, setGraName] = useState<any>()
   const [depName, setDepName] = useState<any>()
@@ -51,44 +21,16 @@ const EmplyeeDetails= () =>{
   const [notchName, setNotchName] = useState<any>()
   const [nation, setNation] = useState<any>()
   const tenantId = localStorage.getItem('tenant')
+  const [tempImage, setTempImage] = useState<any>();
 
-  const deleteFamMem = async (element: any) => {
-    try {
-      const response = await axios.delete(`${Api_Endpoint}/FamilyMembers/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = familyData.filter((item: any) => item.id !== element.id)
-      setFamilyData(newData)
-      return response.status
-    } catch (e) {
-      return e
-    }
-  }
 
-  const getSkillName = (skillId: any) => {
-    let skillName = null
-    allSkills?.data.map((item: any) => {
-      if (item.id === skillId) {
-        skillName=item.name
-      }
-    })
-    return skillName
-  } 
-  const getQualificationName = (qualificationId: any) => {
-    let qualificationName = null
-    allQualifications?.data.map((item: any) => {
-      if (item.id === qualificationId) {
-        qualificationName=item.name
-      }
-    })
-    return qualificationName
-  } 
-  // validates input field to accept only numbers
-  const validatePhoneNumber=(event:any)=>{
-    if (!/[0-9]/.test(event.key)) {
-      event.preventDefault();
-    }
-                  
-  }
+  const onFileChange = (e:any) => {
+    // Update the state
+    setTempImage(e.target.files[0] );
+   
+  };
+
+
   const {data:allEmployees} = useQuery('employees',()=> fetchEmployees(tenantId), {cacheTime:5000})
   const {data:allDepartments} = useQuery('departments',()=> fetchDepartments(tenantId), {cacheTime:5000})
   const {data:allDivisions} = useQuery('divisions',()=> fetchDivisions(tenantId), {cacheTime:5000})
@@ -102,69 +44,6 @@ const EmplyeeDetails= () =>{
   const {data:allQualifications} = useQuery('qualifications',()=> fetchQualifications(tenantId), {cacheTime:5000})
   const {data:allExperiences} = useQuery('experiences',()=> fetchExperiences(tenantId), {cacheTime:5000})
   const {data:allJobTitles} = useQuery('jobtitle',()=> fetchJobTitles(tenantId), {cacheTime:5000})
-
-
-  // const tempData = allEmployees?.data.find((employee:any) =>{
-  //   return employee.id.toString() ===param.id
-  // });
-
-  const fetchImage = async () => {
-    const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
-    const imageBlob = await res.blob();
-    const imageObjectURL:any  = URL.createObjectURL(imageBlob);
-    setImg(imageObjectURL);
-  };
-
-  const loadSkills = async () => {
-    setLoading(true)
-    try {
-      const response = await axios.get(`${Api_Endpoint}/EmployeeSkills`)
-      setSkillData(response.data)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  const loadQualifications = async () => {
-    setLoading(true)
-    try {
-      const response = await axios.get(`${Api_Endpoint}/EmployeeQualifications`)
-      setQualificationData(response.data)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  const loadExperiences = async () => {
-    setLoading(true)
-    try {
-      const response = await axios.get(`${Api_Endpoint}/Experiences`)
-      setExperienceData(response.data)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  const loadFamilyMembers = async () => {
-    setLoading(true)
-    try {
-      const response = await axios.get(`${Api_Endpoint}/FamilyMembers`)
-      setFamilyData(response.data)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  const loadMedicalEntry = async () => {
-    setLoading(true)
-    try {
-      const response = await axios.get(`${Api_Endpoint}/Medicals`)
-      setMedicalEntryData(response.data)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   useEffect(()=>{
 
@@ -234,6 +113,7 @@ const EmplyeeDetails= () =>{
       })
       return setDivName(divisionName)
     } 
+
     const getPaygroupName = () => {
       let paygroupName = null
       alPaygroups?.data.map((item: any) => {
@@ -270,19 +150,9 @@ const EmplyeeDetails= () =>{
     const getEmployeeById = ()=>{
       setTempData(dataByID)
     }
-
     getEmployeeById()
-    loadMedicalEntry()
-    loadQualifications()
-    loadFamilyMembers()
-    loadExperiences()
-    loadSkills()
-    fetchImage()
     
   })
-
-
-
 
   return (
     <div
@@ -304,9 +174,15 @@ const EmplyeeDetails= () =>{
         <h3> You are viewing details of <span style={{color:"#FF6363"}}>  {tempData?.firstName} {tempData?.surname}</span></h3>
       <hr />
       <br></br>
-
+      <div className='col-4 mb-7'>
+            {
+              tempData?.imageUrl!==null?
+              <img style={{borderRadius:"10px", marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/${tempData?.imageUrl}`} width={150} height={150}></img>:
+              <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={150} height={150}></img>
+            }
+            
+          </div>
       <div className='row mb-5'>
-        {/* <h2 style={{color:"lightblue", fontWeight:"bold", textDecoration:"underline"}}>Details</h2> */}
         <div style={{ marginBottom:"10px"}}>
           <h2 style={{color:"#f2f2f2", fontWeight:"bold", backgroundColor:"Highlight", maxWidth:"180px", padding:"8px"}}>Details</h2>
         </div>

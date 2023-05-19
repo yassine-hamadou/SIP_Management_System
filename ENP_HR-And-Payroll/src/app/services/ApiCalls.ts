@@ -54,6 +54,7 @@ export const fetchDivisions = (tId:any) => {
     return axios.get(`${Api_Endpoint}/Divisions/tenant/${tId}`)
 }
 
+
 export const updateDivison = (data: any) => {
     return axios.put(`${Api_Endpoint}/Divisions/${data.id}`, data)
 }
@@ -240,6 +241,9 @@ export const fetchAppraisalTransactions = (tId:any) => {
 
 export const fetchDashBoardData = (tId:any) => {
     return axios.get(`${Api_Endpoint}/SortedData/tenant/${tId}`)
+}
+export const fetchChartData = (tId:any) => {
+    return axios.get(`${Api_Endpoint}/SortedData/chart/tenant/${tId}`)
 }
 
 export const fetchBenefitsCategory = (tId:any) => {

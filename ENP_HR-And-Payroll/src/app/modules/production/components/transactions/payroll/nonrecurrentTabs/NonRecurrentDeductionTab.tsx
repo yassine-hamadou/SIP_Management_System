@@ -3,7 +3,6 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../../urls'
-import { employeedata, period } from '../../../../../../data/DummyData'
 
 const NonRecurrentDeductionTab = () => {
   const [gridData, setGridData] = useState([])
@@ -289,9 +288,9 @@ const NonRecurrentDeductionTab = () => {
                       <label htmlFor="exampleFormControlInput1" className=" form-label">Employee ID</label>
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        {employeedata.map((item: any) => (
+                        {/* {employeedata.map((item: any) => (
                           <option value={item.code}> {item.empcode} - {item.lastname}</option>
-                        ))}
+                        ))} */}
                       </select>
                     </div>
                     <div className='col-6 mb-7'>
@@ -327,9 +326,9 @@ const NonRecurrentDeductionTab = () => {
                       {/* <input type="text" name="field1"  className="form-control form-control-solid"/> */}
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        {period.map((item: any) => (
+                        {/* {period.map((item: any) => (
                           <option value={item.code}>{item.code}</option>
-                        ))}
+                        ))} */}
                       </select>
                     </div>
                   </div>
@@ -343,9 +342,9 @@ const NonRecurrentDeductionTab = () => {
                       {/* <input type="text" name="name"  className="form-control form-control-solid"/> */}
                       <select className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        {period.map((item: any) => (
+                        {/* {period.map((item: any) => (
                           <option value={item.code}>{item.code}</option>
-                        ))}
+                        ))} */}
                       </select>
                     </div>
                   </div>

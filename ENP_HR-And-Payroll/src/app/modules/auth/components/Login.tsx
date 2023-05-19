@@ -35,7 +35,7 @@ const initialValues = {
 
 export function Login() {
   const [loading, setLoading] = useState(false)
-  const { saveAuth, setCurrentUser } = useAuth()
+  const { saveAuth, setCurrentUser , saveTenant} = useAuth()
   const tenantId = localStorage.getItem('tenant')
 
   const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
@@ -70,8 +70,9 @@ export function Login() {
         //  }else{
         //   setStatus("you don't have access to this application")
         //  }
+        saveTenant(values.tenantId)
         const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(curUser?.id)).map((filteredItem:any) => {
-          return filteredItem.applicationId.toString()
+          return filteredItem?.applicationId?.toString()
         })
 
         const newIt = userApp?.find((applicationId:any)=>{
@@ -95,7 +96,7 @@ export function Login() {
     },
   })
 
-localStorage.setItem('tenant', formik.values.tenantId)
+// localStorage.setItem('tenant', formik.values.tenantId)
 
 
   return (

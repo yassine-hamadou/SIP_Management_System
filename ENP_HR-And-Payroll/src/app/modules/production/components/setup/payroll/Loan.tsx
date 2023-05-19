@@ -1,11 +1,9 @@
-import { Button, Form, Input, Modal, Space, Table } from 'antd'
+import { Button, Input, Modal, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
-import { LOANS } from '../../../../../data/DummyData'
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../../services/ApiCalls'
-import { ENP_URL } from '../../../urls'
 
 const Loan = () => {
   const [gridData, setGridData] = useState([])
@@ -349,7 +347,7 @@ const Loan = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={LOANS} />
+          <Table columns={columns}  />
           <Modal
             title={isUpdateModalOpen ? 'Loan Update' : 'Loan Add'}
 

@@ -15,12 +15,15 @@ import {getUserByToken, parseJwt} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
 import { useQuery } from 'react-query'
 import { fetchUserApplications } from '../../../services/ApiCalls'
+import {setTenant} from "./AuthHelpers";
 
 type AuthContextProps = {
   auth: AuthModel | undefined
   saveAuth: (auth: AuthModel | undefined) => void
   currentUser: UserModel | undefined
   setCurrentUser: Dispatch<SetStateAction<UserModel | undefined>>
+  tenant: any
+  saveTenant: (tenant: any) => void
   logout: () => void
 }
 
@@ -28,7 +31,10 @@ const initAuthContextPropsState = {
   auth: authHelper.getAuth(),
   saveAuth: () => {},
   currentUser: undefined,
+  tenant: undefined,
   setCurrentUser: () => {},
+  saveTenant: () => {
+  },
   logout: () => {},
 }
 
@@ -40,6 +46,7 @@ const useAuth = () => {
 
 const AuthProvider: FC<WithChildren> = ({children}) => {
   const [auth, setAuth] = useState<AuthModel | undefined>(authHelper.getAuth())
+  const [tenant, setTenant] = useState<string | undefined>(authHelper.getTenant())
   const [currentUser, setCurrentUser] = useState<UserModel | undefined>()
   const saveAuth = (auth: AuthModel | undefined) => {
     setAuth(auth)
@@ -49,21 +56,30 @@ const AuthProvider: FC<WithChildren> = ({children}) => {
       authHelper.removeAuth()
     }
   }
+  const saveTenant = (tenant: any) => {
+    setTenant(tenant)
+    if (tenant) {
+      authHelper.setTenant(tenant) // save tenant  into local storage
+    } else {
+      authHelper.removeAuth()
+    }
+  }
 
   const logout = () => {
     saveAuth(undefined)
     setCurrentUser(undefined)
+    saveTenant(undefined)
   }
 
   return (
-    <AuthContext.Provider value={{auth, saveAuth, currentUser, setCurrentUser, logout}}>
+    <AuthContext.Provider value={{auth, saveAuth, currentUser, setCurrentUser, tenant, saveTenant, logout}}>
       {children}
     </AuthContext.Provider>
   )
 }
 
 const AuthInit: FC<WithChildren> = ({children}) => {
-  const {auth, logout, setCurrentUser} = useAuth()
+  const {auth, logout, setCurrentUser, tenant} = useAuth()
   const didRequest = useRef(false)
   const [showSplashScreen, setShowSplashScreen] = useState(true)
   
@@ -76,6 +92,7 @@ const AuthInit: FC<WithChildren> = ({children}) => {
           const data:any =  parseJwt(apiToken)
           if (data) {
             setCurrentUser(data)
+            setTenant(tenant)
           }
         }
       } catch (error) {
