@@ -901,35 +901,27 @@ const CycleDetailsTable = () => {
                         }
                     >
                         <form onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}>
-                            <hr></hr>
+                            <Divider orientation="left">
+                                Selectors
+                            </Divider>
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Date</label>
                                     <input type="date" {...register("cycleDate")} name="cycleDate" defaultValue={!isUpdateModalOpen ? '' : tempData?.cycleDate} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                                <div className='col-6 mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Shift</label>
-                                    <select
-                                        {...register("shiftId")}
-                                        onChange={handleChange}
-                                        className="form-select form-select-white" aria-label="Select example">
-                                        {!isUpdateModalOpen && <option>Select</option>}
-                                        {
-                                            allShifts?.data.map((item: any) => (
-                                                <option
-                                                    selected={isUpdateModalOpen && tempData.shift?.name}
-                                                    value={item.id}>{item.name}</option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Time</label>
                                     <input type="time" {...register("cycleTime")} name="cycleTime" defaultValue={!isUpdateModalOpen ? '' : tempData?.cycleTime} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                                <div className='col-6 mb-7'>
+
+                                <div className='col-4'>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Time at Loader</label>
+                                    <input type="time" {...register("timeAtLoader")} name="timeAtLoader" defaultValue={!isUpdateModalOpen ? '' : tempData?.timeAtLoader} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
+
+                            </div>
+                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Loader</label>
                                     <select
                                         {...register("loader")}
@@ -945,9 +937,7 @@ const CycleDetailsTable = () => {
                                         }
                                     </select>
                                 </div>
-                            </div>
-                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Hauler</label>
                                     <select
                                         {...register("hauler")}
@@ -963,7 +953,7 @@ const CycleDetailsTable = () => {
                                         }
                                     </select>
                                 </div>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Origin</label>
                                     <select
                                         {...register("originId")}
@@ -980,8 +970,9 @@ const CycleDetailsTable = () => {
                                     </select>
                                 </div>
                             </div>
+
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Hauler Unit</label>
                                     <select
                                         {...register("haulerUnitId")}
@@ -997,7 +988,7 @@ const CycleDetailsTable = () => {
                                         }
                                     </select>
                                 </div>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Loader Unit</label>
                                     <select
                                         {...register("loaderUnitId")}
@@ -1014,9 +1005,7 @@ const CycleDetailsTable = () => {
                                     </select>
                                 </div>
 
-                            </div>
-                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Material</label>
                                     <select
                                         {...register("materialId")}
@@ -1032,7 +1021,10 @@ const CycleDetailsTable = () => {
                                         }
                                     </select>
                                 </div>
-                                <div className='col-6 mb-7'>
+
+                            </div>
+                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Destination</label>
                                     <select
                                         {...register("destinationId")}
@@ -1048,43 +1040,57 @@ const CycleDetailsTable = () => {
                                         }
                                     </select>
                                 </div>
+                                <div className='col-4  mt-3'>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Shift</label>
+                                    <select
+                                        {...register("shiftId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            allShifts?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && tempData.shift?.name}
+                                                    value={item.id}>{item.name}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
                             </div>
+                            <Divider orientation="left">
+                                Inputs
+                            </Divider>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Nominal Weight</label>
                                     <input type="number" {...register("nominalWeight")} name="nominalWeight" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.nominalWeight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Weight</label>
                                     <input type="number" {...register("weight")} name="weight" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.weight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                            </div>
-                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Payload Weight</label>
                                     <input type="number" {...register("payloadWeight")} name="payloadWeight" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.payloadWeight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                                <div className='col-6 mb-7'>
+                            </div>
+                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Reported Weight</label>
                                     <input type="number" {...register("reportedWeight")} name="reported_weight" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.reportedWeight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                            </div>
-                            <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Volume</label>
                                     <input type="number" {...register("volumes")} name="volumes" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.volumes} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                                <div className='col-6 mb-7'>
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Loads</label>
                                     <input type="number" {...register("loads")} name="loads" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.loads} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                                <div className='col-6 mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Time at Loader</label>
-                                    <input type="time" {...register("timeAtLoader")} name="timeAtLoader" defaultValue={!isUpdateModalOpen ? '' : tempData?.timeAtLoader} onChange={handleChange} className="form-control form-control-white" />
-                                </div>
-                                <div className='col-6 mb-7'>
+                               
+                                <div className='col-4 mt-3'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Duration</label>
                                     <input type="number" {...register("duration")} name="duration" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
