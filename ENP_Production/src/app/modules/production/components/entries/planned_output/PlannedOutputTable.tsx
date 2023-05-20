@@ -78,7 +78,7 @@ const PlannedOutputTable = () => {
 
   const columns: any = [
     {
-      title: 'Destinaton',
+      title: 'Destination',
       dataIndex: 'destinationId',
       render: (record: any) => {
         return getRecordName(record, destinations?.data)

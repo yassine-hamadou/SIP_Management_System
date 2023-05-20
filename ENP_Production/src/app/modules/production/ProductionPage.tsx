@@ -19,6 +19,10 @@ import { MaterialRaw } from './components/setup/materialRaw/MaterialRaw';
 import { LoaderOperator } from './components/setup/loaderOperator/LoaderOperator';
 import { EquipmentKpiReport } from "./components/report/EquipmentKpi";
 import { ActivityStatsReport } from './components/report/ActivityStatsReport';
+import { EquipmentFuelTable } from './components/entries/fuel/EquipmentFuelTable';
+import { FuelReciept } from './components/entries/fuel/Reciept';
+import { FuelIssue } from './components/entries/fuel/Issue';
+import { FuelPump } from './components/setup/pump/fuelPump';
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -57,7 +61,7 @@ const ProductionPage: React.FC = () => {
           path='cycle-details'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Cycle Details</PageTitle>
+              <PageTitle>Cycle Details</PageTitle>
               {/*<Overview />*/}
               <CycleDetailsTable />
             </>
@@ -67,7 +71,7 @@ const ProductionPage: React.FC = () => {
           path='cycle-grade'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Cycle Grade</PageTitle>
+              <PageTitle>Cycle Grade</PageTitle>
               <CycleGradesTable />
             </>
           }
@@ -76,8 +80,17 @@ const ProductionPage: React.FC = () => {
           path='planned-output'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Planned Output</PageTitle>
+              <PageTitle>Planned Output</PageTitle>
               <PlannedOutputTable />
+            </>
+          }
+        />
+        <Route
+          path='fuel'
+          element={
+            <>
+              <PageTitle>Fuel</PageTitle>
+              <EquipmentFuelTable />
             </>
           }
         />
@@ -154,6 +167,15 @@ const ProductionPage: React.FC = () => {
             <>
               <PageTitle breadcrumbs={accountBreadCrumbs}>Destination</PageTitle>
               <DestinationTable />
+            </>
+          }
+        />
+        <Route
+          path='pump'
+          element={
+            <>
+              <PageTitle breadcrumbs={accountBreadCrumbs}>Pump</PageTitle>
+              <FuelPump />
             </>
           }
         />
