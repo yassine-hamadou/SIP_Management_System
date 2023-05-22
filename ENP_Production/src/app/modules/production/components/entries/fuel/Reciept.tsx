@@ -1,18 +1,27 @@
-import { Button, Input, Space, Table, message } from "antd";
+import { Button, Input, Modal, Space, Table, message } from "antd";
 import { KTCardBody } from "../../../../../../_metronic/helpers";
-import { PageActionButtons } from "../../CommonComponents";
+import { ModalFooterButtons, PageActionButtons } from "../../CommonComponents";
 import { useEffect, useState } from "react";
-import { fetchDocument } from "../../../urls";
+import { fetchDocument, postItem, updateItem } from "../../../urls";
+import { register } from "../../../../auth/core/_requests";
+import { useForm } from "react-hook-form";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 
 const FuelReciept = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false) // to show the update modal
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false) // to show the upload modal
     const [isFileUploaded, setIsFileUploaded] = useState(false) // to check if the file is uploaded
     const [isCheckDataModalOpen, setIsCheckDataModalOpen] = useState(false)  // to show the modal to check the data summaries from the uploaded file
     const [isBatchDataCheckModalOpen, setIsBatchDataCheckModalOpen] = useState(false) // to show the modal to check the data summaries from batch data 
+    const [submitLoading, setSubmitLoading] = useState(false)
     const tenantId = localStorage.getItem('tenant')
     const [loading, setLoading] = useState(false)
+    const { register, reset, handleSubmit } = useForm()
+    const [tempData, setTempData] = useState<any>()
+    const queryClient = useQueryClient()
+    const { data: pumps } = useQuery('pump', () => fetchDocument(`productionpump/tenant/${tenantId}`), { cacheTime: 5000 })
 
 
 
@@ -22,6 +31,18 @@ const FuelReciept = () => {
 
     const showUploadModal = () => {
         setIsUploadModalOpen(true)
+    }
+
+    const handleCancel = () => {
+        reset()
+        setIsModalOpen(false)
+        setIsUploadModalOpen(false)
+        setIsUpdateModalOpen(false)
+    }
+
+    const handleChange = (event: any) => {
+        event.preventDefault()
+        setTempData({ ...tempData, [event.target.name]: event.target.value });
     }
 
     //hide Update table 
@@ -35,7 +56,7 @@ const FuelReciept = () => {
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument(`cycleDetails/tenant/${tenantId}`)
+            const response = await fetchDocument(`profuelintake/tenant/${tenantId}`)
             // const data: any = countRowsPerBatch(response.data)
             // setGridData(data)
             setLoading(false)
@@ -46,6 +67,72 @@ const FuelReciept = () => {
         }
     }
 
+    const handleUpdate = (e: any) => {
+        setSubmitLoading(true)
+        e.preventDefault()
+        const item = {
+            url: 'profuelintake',
+            data: tempData
+        }
+        updateData(item)
+        console.log('update: ', item.data)
+    }
+
+    const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+        onSuccess: (dataU) => {
+            queryClient.setQueryData(['profuelintake', tempData], dataU);
+            reset()
+            setTempData({})
+            loadData()
+            setIsUpdateModalOpen(false)
+            setIsModalOpen(false)
+        },
+        onError: (error) => {
+            setSubmitLoading(false)
+            console.log('error: ', error)
+            message.error(`${error}`)
+        }
+    })
+
+    const OnSubmit = handleSubmit(async (values:any) => {
+        setSubmitLoading(true)
+        const item = {
+            data: {
+                intakeDate: values.intakeDate,
+                quantity: values.quantity,
+                pumpId: values.pumpId,
+                transactionType: 'Fuel Reciept',
+                tenantId: tenantId,
+            },
+            url:'profuelintake'
+        }
+        // remove some properties from item.data based on props of hasDescription and hasDuration
+        // if (!hasDescription) {
+        //     delete item.data.description
+        // }
+        // if (!hasDuration) {
+        //     delete item.data.duration
+        // }
+        console.log(item.data)
+        postData(item)
+    })
+
+    const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+        onSuccess: (data) => {
+            queryClient.setQueryData(['profuelintake', tempData], data);
+            reset()
+            setTempData({})
+            loadData()
+            setIsModalOpen(false)
+            setSubmitLoading(false)
+        },
+        onError: (error) => {
+            setSubmitLoading(false)
+            console.log('post error: ', error)
+            message.error(`${error}`)
+        }
+    })
+
     useEffect(() => {
         loadData()
     }, [])
@@ -54,7 +141,7 @@ const FuelReciept = () => {
     const columns: any = [
         { title: 'Date', dataIndex: 'recieptDate', },
         { title: 'Pump', dataIndex: 'pumpId', },
-       // { title: 'Equipment', dataIndex: 'equipmentId', },
+        // { title: 'Equipment', dataIndex: 'equipmentId', },
         { title: 'Transaction Type', dataIndex: 'transactionType', },
         { title: 'Quantity', dataIndex: 'quantity', },
         {
@@ -68,7 +155,7 @@ const FuelReciept = () => {
 
     return (
         <div className="card-custom card-flush">
-            <div className="card-header" style={{borderBottom: 'none'}}>
+            <div className="card-header" style={{ borderBottom: 'none' }}>
                 <Space style={{ marginBottom: 16 }}>
                     <Input
                         placeholder='Enter Search Text'
@@ -128,12 +215,60 @@ const FuelReciept = () => {
                 </div>
             </div>
             <KTCardBody className='py-4 '>
-                <div className='table-responsive'>                   
+                <div className='table-responsive'>
                     <Table
                         columns={columns}
                         scroll={isFileUploaded ? { x: 1300 } : {}}
                         loading={loading}
                     />
+
+                    <Modal
+                        title={isUpdateModalOpen ? `$ Update` : `Setup`}
+                        open={isModalOpen}
+                        onCancel={handleCancel}
+                        closable={true}
+                        footer={
+                            <ModalFooterButtons
+                                onCancel={handleCancel}
+                                onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit} />
+                        }
+                    >
+                        <form onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}>
+                            <hr></hr>
+                            <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                                <div className=' mb-7'>
+                                <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
+                                    <input type="date" {...register("intakeDate")} name="intakeDate" defaultValue={!isUpdateModalOpen ? '' : tempData?.cycleDate} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
+                                {
+                                <div className=' mb-7'>
+                                        <label htmlFor="exampleFormControlInput1" className="form-label">Quantity</label>
+                                        <input type="number" {...register("quantity")} min={0} name='quantity' defaultValue={!isUpdateModalOpen ? '' : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
+                                    </div>
+                                }
+                                {
+                                   <div className=' mb-7'>
+                                        <label htmlFor="exampleFormControlInput1" className="form-label">Pump</label>
+                                        <select
+                                        {...register("pumpId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            pumps?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && tempData.pump?.pumpId}
+                                                    value={item.id}>{item.name}</option>
+                                            ))
+                                        }
+                                    </select>
+                                    </div>
+                                }
+                            </div>
+                        </form>
+                    </Modal>
+
+
                 </div>
             </KTCardBody>
         </div>

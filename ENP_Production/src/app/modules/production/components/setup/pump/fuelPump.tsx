@@ -3,7 +3,7 @@ import { SetupComponent } from "../DynamicComponent"
 
 const FuelPump = () => {
     const data = {
-      url: 'ProductionPump',
+      url: 'ProPump',
       title: 'pump',
     }
   

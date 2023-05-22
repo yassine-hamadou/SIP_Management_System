@@ -53,6 +53,7 @@ const CycleDetailsTable = () => {
     let [batchVolumesByLoader, setBatchVolumesByLoader] = useState<any>([]) // to hold the volumes by loader
     let [batchVolumesByOrigin, setBatchVolumesByOrigin] = useState<any>([]) // to hold the volumes by origin
     let [batchVolumesByDestination, setBatchVolumesByDestination] = useState<any>([]) // to hold the volumes by destination
+    const [fileList, setFileList] = useState([]);
 
     const handleChange = (event: any) => {
         event.preventDefault()
@@ -77,6 +78,7 @@ const CycleDetailsTable = () => {
 
     const handleRemove = () => {
         setUploadedFile(null);
+        setFileList([]); 
     };
 
     const populateBatchData = (values: any) => {
@@ -383,10 +385,11 @@ const CycleDetailsTable = () => {
         accept: '.xlsx, .xls',
         action: '',
         maxCount: 1,
+        fileList: fileList,
         beforeUpload: (file: any) => {
             return new Promise((resolve, reject) => {
                 // check if file is not uploaded
-                if (!file) {
+                if (!file || fileList.length === 1) {
                     message.error('No file uploaded!');
                     reject(false)
                 }
@@ -396,17 +399,19 @@ const CycleDetailsTable = () => {
                     reject(false)
                 }
                 else {
+                    const updatedFileList: any = [...fileList, file]; // Add the uploaded file to the fileList
+                    setFileList(updatedFileList);
                     resolve(true)
                     setUploadedFile(file)
                 }
             })
         },
+        onRemove: () => {handleRemove()}
     }
 
 
     // convert populated data from excel file to database 
     const saveTableObjects = () => {
-        setSavedCount(0)
         try {
             setLoading(true)
             const filteredSavedData = dataToSave.filter((data: any) => data !== null && data !== undefined)
@@ -415,9 +420,8 @@ const CycleDetailsTable = () => {
                 url: 'cycleDetails',
             }
             postData(item)
-            message.success(`Saving ${filteredSavedData.lenght}  of ${dataToSave.length} ${savedCount > 1 ? 'records' : 'record'} of uploaded data`, 5)
+            message.success(`Saving ${filteredSavedData.length}  of ${dataToSave.length} ${filteredSavedData.length > 1 ? 'records' : 'record'} of uploaded data`, 6)
             loadData()
-            setLoading(false)
             setIsFileUploaded(false)
             setUploadedFile(null)
             setUploadData([])
@@ -453,12 +457,26 @@ const CycleDetailsTable = () => {
                 const workSheet: any = workBook.Sheets[workSheetName]
 
                 // sets the range to be read from the excel file
-                const range = "A13:ZZ1100";
+                const range = "A13:ZZ1200";
 
                 const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range, blankrows: false })
 
+                let stopReading = false;
                 const filteredData: any = data
                     .map((item: any) => {
+
+                        if (stopReading) {
+                            return null; // Skip processing the remaining rows
+                          }
+
+                        const isTotalRow = item['Shift'] === 'Total' || item['Date'] === 'Total' ||
+                            item['Time Start'] === 'Total' ;
+
+                            if (isTotalRow) {
+                                stopReading = true; 
+                                return null;
+                              }
+
                         return {
                             cycleDate: moment(excelDateToJSDate(item.Date), 'YYYY-MM-DD').format('DD/MM/YYYY'),
                             shift: item['Shift'],
@@ -478,7 +496,7 @@ const CycleDetailsTable = () => {
                             timeAtLoader: moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
                             duration: item['Travel Empty Duration'],
                         }
-                    })
+                    }) .filter((item: any) => item !== null);
 
                 let timeStamp: any = dateStamp
                 const saveData = filteredData.slice(1).map((item: any,) => {
@@ -493,9 +511,9 @@ const CycleDetailsTable = () => {
                     const shiftId = allShifts?.data.find((s: any) => s.name === item.shift);
 
                     // check if the id of any of the data is not found 
-                    if (!destinationId || !haulerUnitId || !loaderUnitId || !originId) {
-                        return
-                    } else {
+                    // if (!destinationId || !haulerUnitId || !loaderUnitId || !originId) {
+                    //     return
+                    // } else {
                         return {
                             cycleDate: item.cycleDate,
                             cycleTime: item.cycleTime,
@@ -518,9 +536,10 @@ const CycleDetailsTable = () => {
                             tenantId: tenantId,
                             batchNumber: `${timeStamp}`,
                         }
-                    }
+                   // }
                 });
                 console.log('saveData: ', saveData)
+                handleRemove()
                 setDataToSave(saveData)
                 timeStamp = ''
                 setUploading(false)
@@ -529,7 +548,6 @@ const CycleDetailsTable = () => {
                 setUploadData(filteredData.slice(1))
                 setRowCount(filteredData.length)
                 setUploadColumns(uploadFileColumns)
-                console.log('read data: ', filteredData.slice(0, 10))
             }
         } catch (error) {
             setIsUploadModalOpen(false)
@@ -687,7 +705,6 @@ const CycleDetailsTable = () => {
             const response = await fetchDocument(`cycleDetails/tenant/${tenantId}`)
             const data: any = countRowsPerBatch(response.data)
             setGridData(data)
-            console.log('cycledetailsData: ', countRowsPerBatch(response.data))
             setLoading(false)
         } catch (error) {
             setLoading(false)
@@ -724,14 +741,17 @@ const CycleDetailsTable = () => {
     }
     const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
         onSuccess: (data) => {
+            setLoading(true)
             queryClient.setQueryData(['cycleDetails', tempData], data);
             reset()
             setTempData({})
             loadData()
             setIsUpdateModalOpen(false)
             setIsModalOpen(false)
+            setLoading(false)
         },
         onError: (error) => {
+            setLoading(false)
             console.log('error: ', error)
             message.error(`${error}`)
         }
@@ -798,6 +818,7 @@ const CycleDetailsTable = () => {
 
     const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
         onSuccess: (data) => {
+            setLoading(true)
             queryClient.setQueryData(['cycleDetails'], data);
             setSavedCount(isFileUploaded ? savedCount + 1 : 0)
             reset()
@@ -805,8 +826,10 @@ const CycleDetailsTable = () => {
             loadData()
             setIsModalOpen(false)
             setSubmitLoading(false)
+            setLoading(false)
         },
         onError: (error) => {
+            setLoading(false)
             setSubmitLoading(false)
             console.log('post error: ', error)
             message.error(`${error}`)
