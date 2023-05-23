@@ -1,4 +1,4 @@
-import { Button, Input, Modal, Space, Table, message } from "antd";
+import { Button, Divider, Input, Modal, Space, Table, Upload, UploadProps, message } from "antd";
 import { KTCardBody } from "../../../../../../_metronic/helpers";
 import { ModalFooterButtons, PageActionButtons } from "../../CommonComponents";
 import { useEffect, useState } from "react";
@@ -6,10 +6,13 @@ import { fetchDocument, postItem, updateItem } from "../../../urls";
 import { register } from "../../../../auth/core/_requests";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { UploadOutlined } from '@ant-design/icons';
 
 
 const FuelReciept = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [uploading, setUploading] = useState(false)
+    const [uploadedFile, setUploadedFile] = useState<any>(null)
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false) // to show the update modal
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false) // to show the upload modal
     const [isFileUploaded, setIsFileUploaded] = useState(false) // to check if the file is uploaded
@@ -22,7 +25,7 @@ const FuelReciept = () => {
     const [tempData, setTempData] = useState<any>()
     const queryClient = useQueryClient()
     const { data: pumps } = useQuery('pump', () => fetchDocument(`productionpump/tenant/${tenantId}`), { cacheTime: 5000 })
-
+    const [fileList, setFileList] = useState([]);
 
 
     const showModal = () => {
@@ -38,6 +41,7 @@ const FuelReciept = () => {
         setIsModalOpen(false)
         setIsUploadModalOpen(false)
         setIsUpdateModalOpen(false)
+        handleRemove()
     }
 
     const handleChange = (event: any) => {
@@ -51,6 +55,50 @@ const FuelReciept = () => {
         //setUploadedFile(null)
         setLoading(false)
         loadData()
+    }
+
+    const onOkay = () => {
+        // check if no file is uploaded
+        if (!uploadedFile) {
+            message.error('No file uploaded!');
+            return
+        } else {
+            // handleUpload()
+        }
+    }
+
+    const handleRemove = () => {
+        setUploadedFile(null);
+        setFileList([]); 
+    };
+
+    const uploadProps: UploadProps = {
+        name: 'file',
+        accept: '.xlsx, .xls',
+        action: '',
+        maxCount: 1,
+        fileList: fileList,
+        beforeUpload: (file: any) => {
+            return new Promise((resolve, reject) => {
+                // check if file is not uploaded
+                if (!file || fileList.length === 1) {
+                    message.error('No file uploaded!');
+                    reject(false)
+                }
+                // upload excel file only 
+                if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && file.type !== 'application/vnd.ms-excel') {
+                    message.error(`${file.name} is not a excel file`);
+                    reject(false)
+                }
+                else {
+                    const updatedFileList: any = [...fileList, file]; // Add the uploaded file to the fileList
+                    setFileList(updatedFileList);
+                    resolve(true)
+                    setUploadedFile(file)
+                }
+            })
+        },
+        onRemove: () => {handleRemove()}
     }
 
     const loadData = async () => {
@@ -266,6 +314,32 @@ const FuelReciept = () => {
                                 }
                             </div>
                         </form>
+                    </Modal>
+
+                    {/* Modal to upload file */}
+                    <Modal
+                        title='Upload File'
+                        open={isUploadModalOpen}
+                        onOk={onOkay}
+                        confirmLoading={uploading}
+                        onCancel={handleCancel}
+                        closable={true}
+                    >
+                        <Divider />
+                        <Space size='large'>
+                            <Upload
+                                {...uploadProps}
+                            >
+                                <Button
+                                    loading={uploading}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}
+                                    icon={<UploadOutlined />}>Click to Upload</Button>
+                            </Upload>
+                        </Space>
                     </Modal>
 
 

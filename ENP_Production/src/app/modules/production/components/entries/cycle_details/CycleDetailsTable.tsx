@@ -941,7 +941,6 @@ const CycleDetailsTable = () => {
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Time at Loader</label>
                                     <input type="time" {...register("timeAtLoader")} name="timeAtLoader" defaultValue={!isUpdateModalOpen ? '' : tempData?.timeAtLoader} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-4 mt-3'>
