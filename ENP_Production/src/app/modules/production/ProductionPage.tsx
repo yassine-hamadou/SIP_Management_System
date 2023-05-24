@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import { ProductionReportTable } from "./components/report/production_table/CycleDetailsList";
+import { ProductionReportTable } from "./components/report/production_table/ProductionReports";
 import { FuelReportTable } from "./components/report/fuel/CycleDetailsList";
 import { CycleDetailsTable } from "./components/entries/cycle_details/CycleDetailsTable";
 import { CycleGradesTable } from "./components/entries/cycle_grades/CycleGradesTable";
@@ -64,15 +64,6 @@ const ProductionPage: React.FC = () => {
               <PageTitle>Cycle Details</PageTitle>
               {/*<Overview />*/}
               <CycleDetailsTable />
-            </>
-          }
-        />
-        <Route
-          path='cycle-grade'
-          element={
-            <>
-              <PageTitle>Cycle Grade</PageTitle>
-              <CycleGradesTable />
             </>
           }
         />

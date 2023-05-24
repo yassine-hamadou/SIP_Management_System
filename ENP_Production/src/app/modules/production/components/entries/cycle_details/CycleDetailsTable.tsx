@@ -1,4 +1,3 @@
-import { UploadOutlined } from '@ant-design/icons';
 import { Button, Divider, Input, Modal, Space, Table, TabsProps, Tag, Upload, UploadFile, UploadProps, message } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from "react";
@@ -12,6 +11,7 @@ import { Tabs } from 'antd';
 import { TableProps } from 'react-bootstrap';
 import { UploadChangeParam } from 'antd/es/upload';
 import { time } from 'console';
+import { UploadOutlined } from '@ant-design/icons';
 
 
 
@@ -1141,7 +1141,7 @@ const CycleDetailsTable = () => {
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                     }}
-                                    icon={<UploadOutlined />}>Click to Upload</Button>
+                                    icon={<UploadOutlined rev={''}/>}>Click to Upload</Button>
                             </Upload>
                         </Space>
                     </Modal>

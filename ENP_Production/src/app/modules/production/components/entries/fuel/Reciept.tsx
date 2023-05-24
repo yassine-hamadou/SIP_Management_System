@@ -6,7 +6,8 @@ import { fetchDocument, postItem, updateItem } from "../../../urls";
 import { register } from "../../../../auth/core/_requests";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from "@ant-design/icons";
+
 
 
 const FuelReciept = () => {
@@ -337,7 +338,7 @@ const FuelReciept = () => {
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                     }}
-                                    icon={<UploadOutlined />}>Click to Upload</Button>
+                                    icon={<UploadOutlined rev={''} />}>Click to Upload</Button>
                             </Upload>
                         </Space>
                     </Modal>

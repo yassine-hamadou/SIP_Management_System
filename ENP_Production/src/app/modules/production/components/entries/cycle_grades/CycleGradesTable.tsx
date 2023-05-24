@@ -198,7 +198,7 @@ const CycleGradesTable = () => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
-                icon={<UploadOutlined />}>Click to Upload</Button>
+                icon={<UploadOutlined rev={''} />}>Click to Upload</Button>
             </Upload>
           </Space>
 
