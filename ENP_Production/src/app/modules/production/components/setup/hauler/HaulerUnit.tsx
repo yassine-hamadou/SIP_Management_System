@@ -1,4 +1,4 @@
-import { ProUnitComponet } from '../PROUnitComponent'
+import { ProUnitComponet } from "../components/PROUnitComponent"
 
 const HaulerUnit = () => {
   const data = {

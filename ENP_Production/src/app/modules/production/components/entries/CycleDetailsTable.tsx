@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { set, useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import * as XLSX from 'xlsx';
-import { KTCardBody } from '../../../../../../_metronic/helpers';
-import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
-import { ModalFooterButtons, PageActionButtons, calculateVolumesByField, excelDateToJSDate, extractDateFromTimestamp, roundOff, timeStamp } from '../../CommonComponents';
+import { KTCardBody } from '../../../../../_metronic/helpers';
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../urls';
+import { ModalFooterButtons, PageActionButtons, calculateVolumesByField, excelDateToJSDate, extractDateFromTimestamp, groupByBatchNumber, roundOff, timeStamp } from '../CommonComponents';
 import { Tabs } from 'antd';
 import { TableProps } from 'react-bootstrap';
 import { UploadChangeParam } from 'antd/es/upload';
@@ -672,17 +672,7 @@ const CycleDetailsTable = () => {
         },
     ];
 
-    const groupByBatchNumber = (data: any) => {
-        const groupedByBatchNumber: any = {};
-        data?.forEach((item: any) => {
-            if (!groupedByBatchNumber[item.batchNumber]) {
-                groupedByBatchNumber[item.batchNumber] = [];
-            }
-            groupedByBatchNumber[item.batchNumber].push(item);
-        });
-        return groupedByBatchNumber;
-    }
-
+    
     //return count of rows per batch
     const countRowsPerBatch = (data: any) => {
         const groupedByBatchNumber = groupByBatchNumber(data);

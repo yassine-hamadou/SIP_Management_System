@@ -1,28 +1,33 @@
 import React from 'react'
 import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import { ProductionReportTable } from "./components/report/production_table/ProductionReports";
+import { ProductionReportTable } from "./components/report/ProductionReports";
 import { FuelReportTable } from "./components/report/fuel/CycleDetailsList";
-import { CycleDetailsTable } from "./components/entries/cycle_details/CycleDetailsTable";
-import { CycleGradesTable } from "./components/entries/cycle_grades/CycleGradesTable";
-import { PlannedOutputTable } from "./components/entries/planned_output/PlannedOutputTable";
+import { CycleDetailsTable } from "./components/entries/CycleDetailsTable";
+import { CycleGradesTable } from "./components/entries/CycleGradesTable";
+import { PlannedOutputTable } from "./components/entries/PlannedOutputTable";
 import { ActivityTable } from "./components/setup/activity/ActivityTable";
-import { DestinationTable } from "./components/setup/destination/DestinationTable";
-import { ShiftPage } from './components/setup/shift/ShiftPage';
-import { OriginPage } from './components/setup/origin/OriginPage';
-import { LoaderUnit } from './components/setup/loaderUnit/LoaderUnit';
-import { HaulerOperator } from './components/setup/haulerOperator/HaulerOperator';
-import { HaulerUnit } from './components/setup/haulerUnit/HaulerUnit';
-import { MineArea } from './components/setup/mine_care/MineArea';
-import { ProcessedMaterial } from './components/setup/materialProcessed/ProcessedMaterial';
-import { MaterialRaw } from './components/setup/materialRaw/MaterialRaw';
-import { LoaderOperator } from './components/setup/loaderOperator/LoaderOperator';
+import { DestinationTable } from "./components/setup/locations/DestinationTable";
+import { ShiftPage } from './components/setup/ShiftPage';
+import { OriginPage } from './components/setup/locations/OriginPage';
+import { LoaderUnit } from './components/setup/loader/LoaderUnit';
+import { HaulerOperator } from './components/setup/hauler/HaulerOperator';
+import { HaulerUnit } from './components/setup/hauler/HaulerUnit';
+import { MineArea } from './components/setup/locations/MineArea';
+import { ProcessedMaterial } from './components/setup/materials/ProcessedMaterial';
+import { MaterialRaw } from './components/setup/materials/MaterialRaw';
+import { LoaderOperator } from './components/setup/loader/LoaderOperator';
 import { EquipmentKpiReport } from "./components/report/EquipmentKpi";
 import { ActivityStatsReport } from './components/report/ActivityStatsReport';
 import { EquipmentFuelTable } from './components/entries/fuel/EquipmentFuelTable';
 import { FuelReceipt } from './components/entries/fuel/Receipt';
 import { FuelIssue } from './components/entries/fuel/Issue';
-import { FuelPump } from './components/setup/pump/fuelPump';
+import { FuelPump } from './components/setup/locations/fuelPump';
+import { ProductionLoader } from './components/setup/loader/Loader';
+import { ProductionHauler } from './components/setup/hauler/Hauler';
+import { ProductionLocations } from './components/setup/locations/Locations';
+import { ProductionMaterials } from './components/setup/materials/Materials';
+import { ProductionDrill } from './components/setup/Drill';
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -97,94 +102,50 @@ const ProductionPage: React.FC = () => {
         }
       >
         <Route
-          path='loader/operator'
+          path='loader'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Loader Operator</PageTitle>
+              <PageTitle>Loader</PageTitle>
               {/*<Overview />*/}
-              <LoaderOperator />
+              <ProductionLoader />
             </>
           }
         />
         <Route
-          path='loader/unit'
+          path='hauler'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Loader Unit</PageTitle>
+              <PageTitle>Hauler</PageTitle>
               {/*<Overview />*/}
-              <LoaderUnit />
+              <ProductionHauler />
             </>
           }
         />
         <Route
-          path='hauler/operator'
+          path='drill'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Hauler Operator</PageTitle>
-              <HaulerOperator />
+              <PageTitle>Drill Unit</PageTitle>
+              <ProductionDrill />
             </>
           }
         />
         <Route
-          path='hauler/unit'
+          path='locations'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Hauler Unit</PageTitle>
-              <HaulerUnit />
+              <PageTitle>Locations</PageTitle>
+              {/*<Overview />*/}
+              <ProductionLocations />
             </>
           }
         />
         <Route
-          path='mine-area'
+          path='materials'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Mine Area</PageTitle>
-              <MineArea />
-            </>
-          }
-        />
-        <Route
-          path='origin'
-          element={
-            <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Origin</PageTitle>
-              <OriginPage />
-            </>
-          }
-        />
-        <Route
-          path='destination'
-          element={
-            <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Destination</PageTitle>
-              <DestinationTable />
-            </>
-          }
-        />
-        <Route
-          path='pump'
-          element={
-            <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Pump</PageTitle>
-              <FuelPump />
-            </>
-          }
-        />
-        <Route
-          path='raw-material'
-          element={
-            <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Raw Material</PageTitle>
-              <MaterialRaw />
-            </>
-          }
-        />
-        <Route
-          path='processed-material'
-          element={
-            <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Processed Material</PageTitle>
-              <ProcessedMaterial />
+              <PageTitle>Materials</PageTitle>
+              <ProductionMaterials />
             </>
           }
         />
@@ -192,7 +153,7 @@ const ProductionPage: React.FC = () => {
           path='activity'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Activity</PageTitle>
+              <PageTitle>Activity</PageTitle>
               <ActivityTable />
             </>
           }
@@ -201,7 +162,7 @@ const ProductionPage: React.FC = () => {
           path='shift'
           element={
             <>
-              <PageTitle breadcrumbs={accountBreadCrumbs}>Shift</PageTitle>
+              <PageTitle>Shift</PageTitle>
               <ShiftPage />
             </>
           }
@@ -212,7 +173,7 @@ const ProductionPage: React.FC = () => {
         path='/report/*'
         element={
           <>
-            <PageTitle breadcrumbs={accountBreadCrumbs}>Production Report</PageTitle>
+            <PageTitle>Production Report</PageTitle>
             {/*<Overview />*/}
             <ProductionReportTable />
           </>

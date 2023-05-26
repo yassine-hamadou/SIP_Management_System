@@ -1,6 +1,6 @@
 import { Button, Divider, Input, Modal, Space, Table, Upload, UploadProps, message } from "antd";
 import { KTCardBody } from "../../../../../../_metronic/helpers";
-import { ModalFooterButtons, PageActionButtons } from "../../CommonComponents";
+import { ModalFooterButtons, PageActionButtons, fuelIntakeData } from "../../CommonComponents";
 import { useEffect, useState } from "react";
 import { fetchDocument, postItem, updateItem } from "../../../urls";
 import { register } from "../../../../auth/core/_requests";
@@ -27,6 +27,7 @@ const FuelReceipt = () => {
     const queryClient = useQueryClient()
     const { data: pumps } = useQuery('pump', () => fetchDocument(`ProPump/tenant/${tenantId}`), { cacheTime: 5000 })
     const [fileList, setFileList] = useState([]);
+    const [gridData, setGridData] = useState([])
 
 
     const showModal = () => {
@@ -106,8 +107,8 @@ const FuelReceipt = () => {
         setLoading(true)
         try {
             const response = await fetchDocument(`profuelintake/tenant/${tenantId}`)
-            // const data: any = countRowsPerBatch(response.data)
-            // setGridData(data)
+            const data: any =  fuelIntakeData(response.data, 'Fuel Receiept')
+            setGridData(data)
             setLoading(false)
         } catch (error) {
             setLoading(false)
@@ -146,14 +147,16 @@ const FuelReceipt = () => {
     const OnSubmit = handleSubmit(async (values: any) => {
         setSubmitLoading(true)
         const item = {
-            data: {
-                intakeDate: values.intakeDate,
-                quantity: values.quantity,
-                pumpId: values.pumpId,
-                batchNumber: `${Date.now()}`,
-                transactionType: 'Fuel Reciept',
-                tenantId: tenantId,
-            },
+            data: [
+                {
+                    intakeDate: values.intakeDate,
+                    quantity: values.quantity,
+                    pumpId: values.pumpId,
+                    batchNumber: `${Date.now()}`,
+                    transactionType: 'Fuel Reciept',
+                    tenantId: tenantId,
+                },
+            ],
             url: 'profuelintake'
         }
         // remove some properties from item.data based on props of hasDescription and hasDuration

@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import * as XLSX from 'xlsx';
 import { KTCardBody } from '../../../../../../_metronic/helpers';
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
-import { ModalFooterButtons, PageActionButtons, calculateVolumesByField, excelDateToJSDate, extractDateFromTimestamp, roundOff, timeStamp } from '../../CommonComponents';
+import { ModalFooterButtons, PageActionButtons, calculateVolumesByField, excelDateToJSDate, extractDateFromTimestamp, fuelIntakeData, groupByBatchNumber, roundOff, timeStamp } from '../../CommonComponents';
 import { Tabs } from 'antd';
 import { TableProps } from 'react-bootstrap';
 import { UploadChangeParam } from 'antd/es/upload';
@@ -88,6 +88,31 @@ const FuelIssue = () => {
         setFileList([]);
     };
 
+    const showUpdateModal = (values: any) => {
+        showModal()
+        setIsUpdateModalOpen(true)
+        setTempData(values);
+        console.log(values)
+    }
+
+    const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+        onSuccess: (data) => {
+            queryClient.setQueryData(['profuelintake', tempData], data);
+            loadData()
+        },
+        onError: (error) => {
+            console.log('delete error: ', error)
+        }
+    })
+
+    function handleDelete(element: any) {
+        const item = {
+            url: 'ProFuelIntake',
+            data: element
+        }
+        deleteData(item)
+    }
+
     const uploadProps: UploadProps = {
         name: 'file',
         accept: '.xlsx, .xls',
@@ -112,12 +137,40 @@ const FuelIssue = () => {
         onRemove: () => { handleRemove() }
     }
 
+    const countRowsPerBatch = (data: any) => {
+        const groupedByBatchNumber = groupByBatchNumber(data);
+        const batchNumbers = Object.keys(groupedByBatchNumber);
+        const batchCount = batchNumbers.map((batchNumber: any) => {
+            const records = groupedByBatchNumber[batchNumber];
+            const itemsCount = records.length;
+            // Filter records with transactionType 'Fuel Issue'
+            const fuelIssueRecords = records.filter(
+                (record: any) => record.transactionType === 'Fuel Issue'
+            );
+
+            // Sum the values of the 'quantity' property for each batch
+            const totalQuantity = fuelIssueRecords.reduce(
+                (sum: number, record: any) => sum + record.quantity,
+                0
+            );
+            return {
+                batchNumber: batchNumber,
+                itemsCount: itemsCount,
+                date: extractDateFromTimestamp(parseInt(batchNumber)),
+                totalQuantity: totalQuantity,
+                records: records,
+            };
+        });
+        return batchCount;
+    };
+
+
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument(`cycleDetails/tenant/${tenantId}`)
-            // const data: any = countRowsPerBatch(response.data)
-            // setGridData(data)
+            const response = await fetchDocument(`ProFuelIntake/tenant/${tenantId}`)
+            const data: any =  fuelIntakeData(response.data, 'Fuel Issue')
+            setGridData(data)
             setLoading(false)
         } catch (error) {
             setLoading(false)
@@ -130,16 +183,16 @@ const FuelIssue = () => {
         setSubmitLoading(true)
         e.preventDefault()
         const item = {
-            url: 'profuelintake',
-            data: tempData
+            url: 'ProFuelIntake',
+            data: { ...tempData, pumpId: parseInt(tempData.pumpId), quantity: parseInt(tempData.quantity) }
         }
         updateData(item)
         console.log('update: ', item.data)
     }
 
     const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
-        onSuccess: (dataU) => {
-            queryClient.setQueryData(['profuelintake', tempData], dataU);
+        onSuccess: (data) => {
+            queryClient.setQueryData(['profuelintake', tempData], data);
             reset()
             setTempData({})
             loadData()
@@ -156,23 +209,19 @@ const FuelIssue = () => {
     const OnSubmit = handleSubmit(async (values: any) => {
         setSubmitLoading(true)
         const item = {
-            data: {
-                intakeDate: values.intakeDate,
-                quantity: values.quantity,
-                pumpId: values.pumpId,
-                batchNumber: `${Date.now()}`,
-                transactionType: 'Fuel Issue',
-                tenantId: tenantId,
-            },
-            url: 'profuelintake'
+            data: [
+                {
+                    intakeDate: values.intakeDate,
+                    quantity: parseInt(values.quantity),
+                    pumpId: parseInt(values.pumpId),
+                    equipmentId: values.equipmentId,
+                    batchNumber: `${Date.now()}`,
+                    transactionType: 'Fuel Issue',
+                    tenantId: tenantId,
+                },
+            ],
+            url: 'ProFuelIntake'
         }
-        // remove some properties from item.data based on props of hasDescription and hasDuration
-        // if (!hasDescription) {
-        //     delete item.data.description
-        // }
-        // if (!hasDuration) {
-        //     delete item.data.duration
-        // }
         console.log(item.data)
         postData(item)
     })
@@ -199,15 +248,41 @@ const FuelIssue = () => {
 
 
     const columns: any = [
-        { title: 'Date', dataIndex: 'recieptDate', },
+        { title: 'Date', dataIndex: 'date', },
         { title: 'Batch Number', dataIndex: 'batchNumber', },
         // { title: 'Pump', dataIndex: 'pumpId', },
-        { title: 'Quantity', dataIndex: 'quantity', },
+        {
+            title: 'Items',
+            dataIndex: 'itemsCount',
+            render: (text: any) => <Tag color="geekblue">{text} {text > 1 ? 'records' : 'record'} </Tag>
+        },
+        { title: 'Total Qty Issued', dataIndex: 'totalQuantity', },
+
         {
             title: 'Action',
             fixed: 'right',
             width: 150,
-            render: (record: any) => () => { },
+            render: (_: any, record: any) => (
+                <Space size='middle'>
+                    {
+                        record.itemsCount == 1 &&
+                        <Space size='small'>
+                            <a onClick={() => showUpdateModal(record?.records[0])} className='btn btn-light-warning btn-sm'>
+                                Update
+                            </a>
+                            <a onClick={() => handleDelete(record?.records[0])} className='btn btn-light-danger btn-sm'>
+                                Delete
+                            </a>
+                        </Space>
+                    }
+                    {
+                        // record.itemsCount > 1 &&
+                        // <a onClick={() => showBatchDataCheckModal(record?.records)} className='btn btn-light-success btn-sm'>
+                        //     Check Data
+                        // </a>
+                    }
+                </Space>
+            ),
         }
     ]
 
@@ -344,6 +419,7 @@ const FuelIssue = () => {
                                         Check data
                                     </Button> */}
                                     <Button
+                                        onClick={saveTableObjects}
                                         type='primary' size='large'
                                         style={{
                                             display: 'flex',
@@ -385,7 +461,7 @@ const FuelIssue = () => {
                     />
 
                     <Modal
-                        title={isUpdateModalOpen ? `$ Update` : `Add Fuel Issue`}
+                        title={isUpdateModalOpen ? `Update Fuel Issue` : `Add Fuel Issue`}
                         open={isModalOpen}
                         onCancel={handleCancel}
                         closable={true}
@@ -400,12 +476,12 @@ const FuelIssue = () => {
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-6'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Date</label>
-                                    <input type="date" {...register("intakeDate")} name="intakeDate" defaultValue={!isUpdateModalOpen ? '' : tempData?.cycleDate} onChange={handleChange} className="form-control form-control-white" />
+                                    <input type="date" {...register("intakeDate")} name="intakeDate" defaultValue={!isUpdateModalOpen ? '' : tempData?.intakeDate} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
 
                                 <div className='col-6'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Quantity</label>
-                                    <input type="number" {...register("quantity")} min={0} name='quantity' defaultValue={!isUpdateModalOpen ? '' : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
+                                    <input type="number" {...register("quantity")} min={0} name='quantity' defaultValue={!isUpdateModalOpen ? '' : tempData?.quantity} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-9 '>
@@ -419,7 +495,7 @@ const FuelIssue = () => {
                                         {
                                             equipments?.data.map((item: any) => (
                                                 <option
-                                                    selected={isUpdateModalOpen && tempData.equipmentId?.equipmentId}
+                                                    selected={isUpdateModalOpen && tempData.equipmentId}
                                                     value={item.equipmentId}>{item.equipmentId}</option>
                                             ))
                                         }
@@ -436,7 +512,7 @@ const FuelIssue = () => {
                                         {
                                             pumps?.data.map((item: any) => (
                                                 <option
-                                                    selected={isUpdateModalOpen && tempData.pump?.pumpId}
+                                                    selected={isUpdateModalOpen && tempData.pump?.id}
                                                     value={item.id}>{item.name}</option>
                                             ))
                                         }

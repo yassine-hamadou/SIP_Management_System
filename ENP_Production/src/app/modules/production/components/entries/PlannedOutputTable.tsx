@@ -2,10 +2,10 @@ import { UploadOutlined } from '@ant-design/icons';
 import { Button, Divider, Form, Input, Modal, Select, Space, Table, Upload, message } from 'antd';
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
-import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents';
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../urls';
+import { ModalFooterButtons, PageActionButtons } from '../CommonComponents';
 import { useForm } from 'react-hook-form';
-import { KTCardBody } from '../../../../../../_metronic/helpers';
+import { KTCardBody } from '../../../../../_metronic/helpers';
 
 
 const PlannedOutputTable = () => {
@@ -216,40 +216,35 @@ const PlannedOutputTable = () => {
   })
 
   return (
-    <div className='card border border-gray-400 '
-      style={{
-        backgroundColor: 'white',
-        padding: '20px',
-        borderRadius: '5px',
-        boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-      }}
-    >
+    <div className='card border border-gray-400 card-custom card-flush '>
+      <div className="card-header mt-7">
+        <Space style={{ marginBottom: 16 }}>
+          <Input
+            placeholder='Enter Search Text'
+            type='text'
+            allowClear size='large'
+          />
+          <Button type='primary' size='large'>
+            Search
+          </Button>
+        </Space>
+        <div className="card-toolbar">
+          <Space style={{ marginBottom: 16 }}>
+            <PageActionButtons
+              onAddClick={showModal}
+              onExportClicked={() => { console.log('export clicked') }}
+              onUploadClicked={showUploadModal}
+              hasAddButton={true}
+              hasExportButton={true}
+              hasUploadButton={true}
+            />
+
+          </Space>
+        </div>
+
+      </div>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
-          <div className='d-flex justify-content-between'>
-            <Space style={{ marginBottom: 16 }}>
-              <Input
-                placeholder='Enter Search Text'
-                type='text'
-                allowClear size='large'
-              />
-              <Button type='primary' size='large'>
-                Search
-              </Button>
-            </Space>
-            <Space style={{ marginBottom: 16 }}>
-              <PageActionButtons
-                onAddClick={showModal}
-                onExportClicked={() => { console.log('export clicked') }}
-                onUploadClicked={showUploadModal}
-                hasAddButton={true}
-                hasExportButton={true}
-                hasUploadButton={true}
-              />
-
-            </Space>
-          </div>
-
           <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
 
           <Modal
@@ -344,7 +339,7 @@ const PlannedOutputTable = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}
-                    icon={<UploadOutlined rev={''}/>}>Click to Upload</Button>
+                    icon={<UploadOutlined rev={''} />}>Click to Upload</Button>
                 </Upload>
               </Space>
 

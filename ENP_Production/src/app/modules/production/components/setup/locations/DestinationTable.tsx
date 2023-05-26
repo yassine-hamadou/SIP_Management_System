@@ -1,4 +1,4 @@
-import { SetupComponent } from '../DynamicComponent'
+import { SetupComponent } from '../components/DynamicComponent'
 
 // const DestinationTable = () => {
 //   const [isModalOpen, setIsModalOpen] = useState(false)

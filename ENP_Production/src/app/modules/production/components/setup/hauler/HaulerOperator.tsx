@@ -1,4 +1,4 @@
-import { OperatorComponent } from '../ProOperatorComponent'
+import { OperatorComponent } from "../components/ProOperatorComponent"
 
 const HaulerOperator = () => {
   const data = {

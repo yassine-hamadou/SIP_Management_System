@@ -1,10 +1,9 @@
-import { SetupComponent } from "../components/DynamicComponent"
+import { SetupComponent } from './components/DynamicComponent'
 
-
-const ActivityTable = () => {
+const ShiftPage = () => {
   const data = {
-    url: 'ProductionActivity',
-    title: 'origin',
+    url: 'ProductionShift',
+    title: 'Shift',
   }
 
   return (
@@ -16,10 +15,10 @@ const ActivityTable = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-      <SetupComponent data={data} hasDescription={false} hasDuration={false} />
+      <SetupComponent data={data} hasDescription={false} hasDuration={true} />
     </div>
   )
 }
 
-export { ActivityTable }
+export { ShiftPage }
 

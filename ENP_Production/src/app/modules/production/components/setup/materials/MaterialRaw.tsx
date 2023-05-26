@@ -1,4 +1,4 @@
-import { MatComponet } from '../MaterialSetupComponent';
+import { MatComponet } from "../components/MaterialSetupComponent";
 
 const MaterialRaw = () => {
     const data = {

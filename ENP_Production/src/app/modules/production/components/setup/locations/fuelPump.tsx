@@ -1,4 +1,4 @@
-import { SetupComponent } from "../DynamicComponent"
+import { SetupComponent } from "../components/DynamicComponent"
 
 
 const FuelPump = () => {

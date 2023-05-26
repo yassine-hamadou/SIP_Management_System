@@ -215,9 +215,48 @@ function batchVolumesThirtyDaysRolling(data: any) {
     return result;
 }
 
+const groupByBatchNumber = (data: any) => {
+    const groupedByBatchNumber: any = {};
+    data?.forEach((item: any) => {
+        if (!groupedByBatchNumber[item.batchNumber]) {
+            groupedByBatchNumber[item.batchNumber] = [];
+        }
+        groupedByBatchNumber[item.batchNumber].push(item);
+    });
+    return groupedByBatchNumber;
+}
+
+const fuelIntakeData = (data: any, transactionType: any) => {
+    const groupedByBatchNumber = groupByBatchNumber(data);
+    const batchNumbers = Object.keys(groupedByBatchNumber);
+    const batchCount = batchNumbers.map((batchNumber: any) => {
+        const records = groupedByBatchNumber[batchNumber];
+        const itemsCount = records.length;
+        // Filter records with transactionType 'Fuel Issue'
+        const fuelIssueRecords = records.filter(
+            (record: any) => record.transactionType === transactionType
+        );
+
+        // Sum the values of the 'quantity' property for each batch
+        const totalQuantity = fuelIssueRecords.reduce(
+            (sum: number, record: any) => sum + record.quantity,
+            0
+        );
+        return {
+            batchNumber: batchNumber,
+            itemsCount: itemsCount,
+            date: extractDateFromTimestamp(parseInt(batchNumber)),
+            totalQuantity: totalQuantity,
+            records: records,
+        };
+    });
+    return batchCount;
+};
+
 
 export {
     PageActionButtons, ModalFooterButtons, excelDateToJSDate,
     roundOff, timeStamp, calculateVolumesByField,
-    extractDateFromTimestamp, batchVolumesThirtyDaysRolling
+    extractDateFromTimestamp, batchVolumesThirtyDaysRolling,
+    groupByBatchNumber, fuelIntakeData,
 }

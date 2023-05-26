@@ -2,9 +2,9 @@ import { Button, Input, Modal, Space, Table, message } from "antd"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useMutation, useQueryClient } from "react-query"
-import { KTCardBody } from "../../../../../_metronic/helpers"
-import { deleteItem, fetchDocument, postItem, updateItem } from "../../urls"
-import { ModalFooterButtons, PageActionButtons } from "../CommonComponents"
+import { KTCardBody } from "../../../../../../_metronic/helpers"
+import { deleteItem, fetchDocument, postItem, updateItem } from "../../../urls"
+import { ModalFooterButtons, PageActionButtons } from "../../CommonComponents"
 
 const MatComponet = (props: any) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -205,14 +205,7 @@ const MatComponet = (props: any) => {
     })
   
     return (
-      <div className='card border border-gray-400 '
-        style={{
-          backgroundColor: 'white',
-          padding: '20px',
-          borderRadius: '5px',
-          boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-        }}
-      >
+      <div>
         <KTCardBody className='py-4 '>
           <div className='table-responsive'>
             <div className='d-flex justify-content-between'>
@@ -267,3 +260,4 @@ const MatComponet = (props: any) => {
   }
 
   export { MatComponet }
+

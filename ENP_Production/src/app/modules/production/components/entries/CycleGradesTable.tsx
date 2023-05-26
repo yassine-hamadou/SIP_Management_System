@@ -9,7 +9,7 @@ import {
   Upload
 } from 'antd';
 import { useState } from "react";
-import { PageActionButtons } from '../../CommonComponents';
+import { PageActionButtons } from '../CommonComponents';
 import { UploadOutlined } from '@ant-design/icons';
 
 const CycleGradesTable = () => {
