@@ -2,10 +2,10 @@ import { ActivityComponent } from "../components/ActivityComponent"
 import { SetupComponent } from "../components/DynamicComponent"
 
 
-const ActivityTable = () => {
+const ActivityDetails = () => {
   const data = {
-    url: 'ProductionActivity',
-    title: 'Activity',
+    url: 'ProactivityDetails',
+    title: 'Activity Details',
   }
 
   return (
@@ -18,11 +18,11 @@ const ActivityTable = () => {
       }}
     >
       <ActivityComponent data={data} 
-      hasActivityType={true} 
+      hasActivityType={false} 
       />
     </div>
   )
 }
 
-export { ActivityTable }
+export { ActivityDetails }
 

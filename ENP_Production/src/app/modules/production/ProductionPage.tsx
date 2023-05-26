@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC, Suspense } from 'react'
 import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import { ProductionReportTable } from "./components/report/ProductionReports";
@@ -28,23 +28,21 @@ import { ProductionHauler } from './components/setup/hauler/Hauler';
 import { ProductionLocations } from './components/setup/locations/Locations';
 import { ProductionMaterials } from './components/setup/materials/Materials';
 import { ProductionDrill } from './components/setup/Drill';
+import { WithChildren } from '../../../_metronic/helpers';
+import { getCSSVariableValue } from '../../../_metronic/assets/ts/_utils';
+import TopBarProgress from 'react-topbar-progress-indicator';
+import { ActivityDetails } from './components/setup/activity/ActivityDetails';
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
-    title: 'Cycle Details',
-    path: '/cycle_details/cycle-details',
+    title: 'Activiy',
+    path: '/setup/activity/',
     isSeparator: false,
     isActive: false,
   },
   {
-    title: 'Cycle Grade',
-    path: '/cycle_details/cycle-grade',
-    isSeparator: true,
-    isActive: false,
-  },
-  {
-    title: 'Planned Output',
-    path: '/cycle_details/planned-output',
+    title: 'Activiy Details',
+    path: '/activity/activityDetails',
     isSeparator: true,
     isActive: false,
   },
@@ -53,6 +51,7 @@ const accountBreadCrumbs: Array<PageLink> = [
 const ProductionPage: React.FC = () => {
   return (
     <Routes>
+
       <Route
         path='/entries/*'
         element={
@@ -150,14 +149,36 @@ const ProductionPage: React.FC = () => {
           }
         />
         <Route
-          path='activity'
+          path='activity/*'
           element={
             <>
-              <PageTitle>Activity</PageTitle>
-              <ActivityTable />
+              <Outlet />
             </>
           }
-        />
+        >
+          <Route
+            path=''
+            element={
+              <>
+                <SuspensedView>
+                  <PageTitle>Activity</PageTitle>
+                  <ActivityTable />
+                </SuspensedView>
+              </>
+            }
+          />
+          <Route
+            path='activityDetails/:id'
+            element={
+              <SuspensedView>
+                <PageTitle>Activity Details</PageTitle>
+                <ActivityDetails />
+              </SuspensedView>
+            }
+          />
+        </Route>
+
+
         <Route
           path='shift'
           element={
@@ -220,6 +241,18 @@ const ProductionPage: React.FC = () => {
       </Route>
     </Routes>
   )
+}
+
+const SuspensedView: FC<WithChildren> = ({ children }) => {
+  const baseColor = getCSSVariableValue('--kt-primary')
+  TopBarProgress.config({
+    barColors: {
+      '0': baseColor,
+    },
+    barThickness: 1,
+    shadowBlur: 5,
+  })
+  return <Suspense fallback={<TopBarProgress />}>{children}</Suspense>
 }
 
 export default ProductionPage
