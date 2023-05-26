@@ -330,7 +330,7 @@ const ProUnitComponet = (props: any) => {
                             <hr></hr>
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                                 <div >
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label ">Equipment</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500 ">Equipment</label>
 
                                     <select
                                         {...register("equipmentId")}
@@ -347,11 +347,11 @@ const ProUnitComponet = (props: any) => {
                                     </select>
                                 </div>
                                 <div className=' mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="form-label">Model name</label>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Model name</label>
                                     <input {...register("modelName")} disabled={true} name='modelName' defaultValue={!isUpdateModalOpen ? modelName : tempData?.modelName}  className="form-control form-control-white" />
                                 </div>
                                 <div className=' mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Description</label>
                                     <input {...register("description")} name='description' defaultValue={!isUpdateModalOpen ? equipmentDes : tempData?.description} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>

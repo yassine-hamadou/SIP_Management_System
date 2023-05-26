@@ -10,7 +10,7 @@ import { UploadOutlined } from "@ant-design/icons";
 
 
 
-const FuelReciept = () => {
+const FuelReceipt = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [uploading, setUploading] = useState(false)
     const [uploadedFile, setUploadedFile] = useState<any>(null)
@@ -25,7 +25,7 @@ const FuelReciept = () => {
     const { register, reset, handleSubmit } = useForm()
     const [tempData, setTempData] = useState<any>()
     const queryClient = useQueryClient()
-    const { data: pumps } = useQuery('pump', () => fetchDocument(`productionpump/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: pumps } = useQuery('pump', () => fetchDocument(`ProPump/tenant/${tenantId}`), { cacheTime: 5000 })
     const [fileList, setFileList] = useState([]);
 
 
@@ -70,7 +70,7 @@ const FuelReciept = () => {
 
     const handleRemove = () => {
         setUploadedFile(null);
-        setFileList([]); 
+        setFileList([]);
     };
 
     const uploadProps: UploadProps = {
@@ -99,7 +99,7 @@ const FuelReciept = () => {
                 }
             })
         },
-        onRemove: () => {handleRemove()}
+        onRemove: () => { handleRemove() }
     }
 
     const loadData = async () => {
@@ -143,17 +143,18 @@ const FuelReciept = () => {
         }
     })
 
-    const OnSubmit = handleSubmit(async (values:any) => {
+    const OnSubmit = handleSubmit(async (values: any) => {
         setSubmitLoading(true)
         const item = {
             data: {
                 intakeDate: values.intakeDate,
                 quantity: values.quantity,
                 pumpId: values.pumpId,
+                batchNumber: `${Date.now()}`,
                 transactionType: 'Fuel Reciept',
                 tenantId: tenantId,
             },
-            url:'profuelintake'
+            url: 'profuelintake'
         }
         // remove some properties from item.data based on props of hasDescription and hasDuration
         // if (!hasDescription) {
@@ -189,9 +190,8 @@ const FuelReciept = () => {
 
     const columns: any = [
         { title: 'Date', dataIndex: 'recieptDate', },
-        { title: 'Pump', dataIndex: 'pumpId', },
-        // { title: 'Equipment', dataIndex: 'equipmentId', },
-        { title: 'Transaction Type', dataIndex: 'transactionType', },
+        { title: 'Batch Number', dataIndex: 'batchNumber', },
+        // { title: 'Pump', dataIndex: 'pumpId', },
         { title: 'Quantity', dataIndex: 'quantity', },
         {
             title: 'Action',
@@ -272,7 +272,7 @@ const FuelReciept = () => {
                     />
 
                     <Modal
-                        title={isUpdateModalOpen ? `$ Update` : `Setup`}
+                        title={isUpdateModalOpen ? `$ Update` : `Add Receipt`}
                         open={isModalOpen}
                         onCancel={handleCancel}
                         closable={true}
@@ -285,20 +285,14 @@ const FuelReciept = () => {
                         <form onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}>
                             <hr></hr>
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
-                                <div className=' mb-7'>
-                                <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
+                                <div className=' mb-7 '>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Date</label>
                                     <input type="date" {...register("intakeDate")} name="intakeDate" defaultValue={!isUpdateModalOpen ? '' : tempData?.cycleDate} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
-                                {
-                                <div className=' mb-7'>
-                                        <label htmlFor="exampleFormControlInput1" className="form-label">Quantity</label>
-                                        <input type="number" {...register("quantity")} min={0} name='quantity' defaultValue={!isUpdateModalOpen ? '' : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
-                                    </div>
-                                }
-                                {
-                                   <div className=' mb-7'>
-                                        <label htmlFor="exampleFormControlInput1" className="form-label">Pump</label>
-                                        <select
+
+                                <div className=' mb-7 '>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Pump</label>
+                                    <select
                                         {...register("pumpId")}
                                         onChange={handleChange}
                                         className="form-select form-select-white" aria-label="Select example">
@@ -311,8 +305,12 @@ const FuelReciept = () => {
                                             ))
                                         }
                                     </select>
-                                    </div>
-                                }
+                                </div>
+
+                                <div className=' mb-7 '>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Quantity</label>
+                                    <input type="number" {...register("quantity")} min={0} name='quantity' defaultValue={!isUpdateModalOpen ? '' : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
                             </div>
                         </form>
                     </Modal>
@@ -350,4 +348,4 @@ const FuelReciept = () => {
     )
 };
 
-export { FuelReciept }
+export { FuelReceipt }

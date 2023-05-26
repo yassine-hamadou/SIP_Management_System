@@ -268,14 +268,14 @@ const PlannedOutputTable = () => {
               <hr></hr>
               <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                 <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Quantity</label>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Quantity</label>
                   <input type="number" {...register("quantity")} min={0} step={1} name="quantity" defaultValue={!isUpdateModalOpen ? 0 : tempData?.quantity} onChange={handleChange} className="form-control form-control-white" />
                 </div>
               </div>
 
               <div style={{ padding: "0px 20px 0 20px" }} className='row mb-0 '>
                 <div className='mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="required form-label">Destination</label>
+                  <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Destination</label>
                   <select
                     {...register("destinationId")}
                     onChange={handleChange}
@@ -290,7 +290,7 @@ const PlannedOutputTable = () => {
                     }
                   </select>
                   <div className='mt-7'>
-                    <label htmlFor="exampleFormControlInput1" className="required form-label">Activity</label>
+                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Activity</label>
                     <select
                       {...register("activityId")}
                       onChange={handleChange}

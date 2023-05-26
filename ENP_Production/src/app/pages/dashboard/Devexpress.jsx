@@ -16,7 +16,7 @@ const Devexpres = () => {
                 // endpoint='https ://208.117.44.15/dashboards/dashboardcontrol'
                 endpoint='http://208.117.44.15/dashboards/dashboardcontrol'
                 workingMode='ViewerOnly'
-                dashboardId='dashboard4'
+                dashboardId='productionDashboard'
             ></DashboardControl>
         </div>  
     )

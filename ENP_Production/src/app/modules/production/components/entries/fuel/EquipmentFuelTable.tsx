@@ -1,6 +1,6 @@
 import { Space, Tabs, TabsProps, Tag } from "antd";
 import { Link } from "react-router-dom";
-import { FuelReciept } from "./Reciept";
+import { FuelReceipt } from "./Receipt";
 import { FuelIssue } from "./Issue";
 
 
@@ -11,10 +11,10 @@ const EquipmentFuelTable = () => {
     };
     const tabItems: TabsProps['items'] = [
         {
-            key: '1', label: `Reciept`,
+            key: '1', label: `Receipt`,
             children: (
                 <>
-                    <FuelReciept />
+                    <FuelReceipt />
                 </>
             ),
         },

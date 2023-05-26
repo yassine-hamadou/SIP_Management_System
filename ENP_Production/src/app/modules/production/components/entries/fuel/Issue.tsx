@@ -1,20 +1,61 @@
-import { message, Space, Input, Button, Table  } from "antd";
-import { useState, useEffect } from "react";
-import { KTCardBody } from "../../../../../../_metronic/helpers";
-import { fetchDocument } from "../../../urls";
-import { PageActionButtons } from "../../CommonComponents";
+import { Button, Divider, Input, Modal, Space, Table, TabsProps, Tag, Upload, UploadFile, UploadProps, message } from 'antd';
+import moment from 'moment';
+import { useEffect, useState } from "react";
+import { set, useForm } from 'react-hook-form';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import * as XLSX from 'xlsx';
+import { KTCardBody } from '../../../../../../_metronic/helpers';
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls';
+import { ModalFooterButtons, PageActionButtons, calculateVolumesByField, excelDateToJSDate, extractDateFromTimestamp, roundOff, timeStamp } from '../../CommonComponents';
+import { Tabs } from 'antd';
+import { TableProps } from 'react-bootstrap';
+import { UploadChangeParam } from 'antd/es/upload';
+import { time } from 'console';
+import { UploadOutlined } from '@ant-design/icons';
+
 
 
 const FuelIssue = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [uploading, setUploading] = useState(false)
+    const [uploadedFile, setUploadedFile] = useState<any>(null)
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false) // to show the update modal
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false) // to show the upload modal
     const [isFileUploaded, setIsFileUploaded] = useState(false) // to check if the file is uploaded
     const [isCheckDataModalOpen, setIsCheckDataModalOpen] = useState(false)  // to show the modal to check the data summaries from the uploaded file
     const [isBatchDataCheckModalOpen, setIsBatchDataCheckModalOpen] = useState(false) // to show the modal to check the data summaries from batch data 
+    const [submitLoading, setSubmitLoading] = useState(false)
     const tenantId = localStorage.getItem('tenant')
     const [loading, setLoading] = useState(false)
+    const { register, reset, handleSubmit } = useForm()
+    const [tempData, setTempData] = useState<any>()
+    const queryClient = useQueryClient()
+    const [fileList, setFileList] = useState([]);
+    const { data: pumps } = useQuery('pump', () => fetchDocument(`ProPump/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: equipments } = useQuery('equipmments', () => fetchDocument(`equipments/tenant/${tenantId}`), { cacheTime: 5000 })
 
 
+    const [uploadColumns, setUploadColumns] = useState<any>([]) //to hold the table columns of the uploaded file
+    const [uploadData, setUploadData] = useState<any>([]) // to hold the data read from the uploaded file
+    const [rowCount, setRowCount] = useState(0) // to hold the number of rows read from the uploaded file
+    const [dataToSave, setDataToSave] = useState<any>([]) // to hold the data to be saved from the uploaded file
+    const [gridData, setGridData] = useState([])
+    const handleChange = (event: any) => {
+        event.preventDefault()
+        setTempData({ ...tempData, [event.target.name]: event.target.value });
+    }
+
+    const handleCancel = () => {
+        reset()
+        setIsModalOpen(false)
+        setIsUpdateModalOpen(false)
+        setTempData(null)
+        setIsUploadModalOpen(false)
+        setIsFileUploaded(false)
+        handleRemove()
+        setUploadedFile(null)
+        setUploading(false)
+    }
 
     const showModal = () => {
         setIsModalOpen(true)
@@ -27,9 +68,48 @@ const FuelIssue = () => {
     //hide Update table 
     const clearUpdateTable = () => {
         setIsFileUploaded(false)
-       // setUploadedFile(null)
+        // setUploadedFile(null)
         setLoading(false)
         loadData()
+    }
+
+    const onOkay = () => {
+        // check if no file is uploaded
+        if (!uploadedFile) {
+            message.error('No file uploaded!');
+            return
+        } else {
+            handleUpload()
+        }
+    }
+
+    const handleRemove = () => {
+        setUploadedFile(null);
+        setFileList([]);
+    };
+
+    const uploadProps: UploadProps = {
+        name: 'file',
+        accept: '.xlsx, .xls',
+        action: '',
+        maxCount: 1,
+        fileList: fileList,
+        beforeUpload: (file: any) => {
+            return new Promise((resolve, reject) => {
+                // check if file is not uploaded
+                if (!file || fileList.length === 1) {
+                    message.error('No file uploaded!');
+                    reject(false)
+                }
+                else {
+                    const updatedFileList: any = [...fileList, file]; // Add the uploaded file to the fileList
+                    setFileList(updatedFileList);
+                    resolve(true)
+                    setUploadedFile(file)
+                }
+            })
+        },
+        onRemove: () => { handleRemove() }
     }
 
     const loadData = async () => {
@@ -46,6 +126,73 @@ const FuelIssue = () => {
         }
     }
 
+    const handleUpdate = (e: any) => {
+        setSubmitLoading(true)
+        e.preventDefault()
+        const item = {
+            url: 'profuelintake',
+            data: tempData
+        }
+        updateData(item)
+        console.log('update: ', item.data)
+    }
+
+    const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+        onSuccess: (dataU) => {
+            queryClient.setQueryData(['profuelintake', tempData], dataU);
+            reset()
+            setTempData({})
+            loadData()
+            setIsUpdateModalOpen(false)
+            setIsModalOpen(false)
+        },
+        onError: (error) => {
+            setSubmitLoading(false)
+            console.log('error: ', error)
+            message.error(`${error}`)
+        }
+    })
+
+    const OnSubmit = handleSubmit(async (values: any) => {
+        setSubmitLoading(true)
+        const item = {
+            data: {
+                intakeDate: values.intakeDate,
+                quantity: values.quantity,
+                pumpId: values.pumpId,
+                batchNumber: `${Date.now()}`,
+                transactionType: 'Fuel Issue',
+                tenantId: tenantId,
+            },
+            url: 'profuelintake'
+        }
+        // remove some properties from item.data based on props of hasDescription and hasDuration
+        // if (!hasDescription) {
+        //     delete item.data.description
+        // }
+        // if (!hasDuration) {
+        //     delete item.data.duration
+        // }
+        console.log(item.data)
+        postData(item)
+    })
+
+    const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+        onSuccess: (data) => {
+            queryClient.setQueryData(['profuelintake', tempData], data);
+            reset()
+            setTempData({})
+            loadData()
+            setIsModalOpen(false)
+            setSubmitLoading(false)
+        },
+        onError: (error) => {
+            setSubmitLoading(false)
+            console.log('post error: ', error)
+            message.error(`${error}`)
+        }
+    })
+
     useEffect(() => {
         loadData()
     }, [])
@@ -53,9 +200,8 @@ const FuelIssue = () => {
 
     const columns: any = [
         { title: 'Date', dataIndex: 'recieptDate', },
-        { title: 'Pump', dataIndex: 'pumpId', },
-        { title: 'Equipment', dataIndex: 'equipmentId', },
-        { title: 'Transaction Type', dataIndex: 'transactionType', },
+        { title: 'Batch Number', dataIndex: 'batchNumber', },
+        // { title: 'Pump', dataIndex: 'pumpId', },
         { title: 'Quantity', dataIndex: 'quantity', },
         {
             title: 'Action',
@@ -65,10 +211,112 @@ const FuelIssue = () => {
         }
     ]
 
+    const uploadFileColumns = [
+        { title: 'Date', dataIndex: 'intakeDate', render: (text: any) => moment(excelDateToJSDate(text), 'YYYY-MM-DD').format('YYYY-MM-DD') },
+        { title: 'Pump', dataIndex: 'pump' },
+        { title: 'Equipment', dataIndex: 'equipment' },
+        { title: 'Quantity', dataIndex: 'quantity' },
+    ]
+
+    const handleUpload = () => {
+
+        const reader = new FileReader()
+        const dateStamp = new Date().getTime()
+        try {
+            setUploading(true)
+            reader.onload = (e: any) => {
+
+                const file = new Uint8Array(e.target.result)
+                const workBook = XLSX.read(file, { type: 'array' })
+                const targetSheetName = `LV'S - RAW DATA`;
+                const workSheet: any = workBook.Sheets[targetSheetName]
+
+                // sets the range to be read from the excel file
+                const range = "A3:F2300";
+
+                const data: any = XLSX.utils.sheet_to_json(workSheet, { header: 0, range: range, blankrows: false, defval: null })
+
+                let stopReading = false;
+                const filteredData: any = data
+                    .map((item: any) => {
+
+                        if (stopReading) {
+                            return null; // Skip processing the remaining rows
+                        }
+                        // check for blanks in the row
+                        const isRowBblank = item['DATE'] === undefined && item['PUMP ID'] === undefined && item['EQUIPMENT'] === undefined && item['QTY'] === undefined;
+
+                        if (isRowBblank) {
+                            stopReading = true;
+                            return null;
+                        }
+
+                        return {
+                            intakeDate: item['DATE'],
+                            pump: item['PUMP ID'],
+                            equipment: item['EQUIPMENT'],
+                            quantity: item['QTY'],
+                        }
+                    }).filter((item: any) => item !== null || item !== undefined);
+
+                let timeStamp: any = dateStamp
+                const saveData = filteredData.map((item: any,) => {
+                    const pumpId = pumps?.data.find((pump: any) => pump.name.trim() === item.pump.trim());
+                    const equipment = equipments?.data.find((equipment: any) => equipment.equipmentId.trim() === item.equipment.trim());
+                    return {
+                        intakeDate: `${item.intakeDate}`,
+                        pumpId: parseInt(pumpId?.id),
+                        quantity: parseInt(item.quantity),
+                        equipmentId: parseInt(equipment?.id),
+                        transactionType: 'Fuel Issue',
+                        tenantId: tenantId,
+                        batchNumber: `${timeStamp}`,
+                    }
+                });
+                console.log('saveData: ', saveData)
+                console.log('filteredData: ', filteredData)
+                handleRemove()
+                setDataToSave(saveData)
+                timeStamp = ''
+                setUploading(false)
+                setIsUploadModalOpen(false)
+                setIsFileUploaded(true)
+                setUploadData(filteredData)
+                setRowCount(filteredData.length)
+                setUploadColumns(uploadFileColumns)
+            }
+        } catch (error) {
+            setIsUploadModalOpen(false)
+        }
+        reader.readAsArrayBuffer(uploadedFile)
+    }
+
+    const saveTableObjects = () => {
+        setLoading(true)
+        try {
+            const filteredSavedData = dataToSave.filter((data: any) => data !== null && data !== undefined)
+            const item = {
+                data: filteredSavedData,
+                url: 'profuelintake',
+            }
+            postData(item)
+            message.success(`Saving ${filteredSavedData.length}  of ${dataToSave.length} ${filteredSavedData.length > 1 ? 'records' : 'record'} of uploaded data`, 6)
+            loadData()
+            setIsFileUploaded(false)
+            setUploadedFile(null)
+            setUploadData([])
+            setDataToSave([])
+        } catch (err) {
+            console.log('fileSaveError: ', err)
+            setLoading(false)
+        }
+    }
+
+
 
     return (
         <div className="card-custom card-flush">
-            <div className="card-header" style={{borderBottom: 'none'}}>
+            <div className="card-header" style={{ borderBottom: 'none' }}>
                 <Space style={{ marginBottom: 16 }}>
                     <Input
                         placeholder='Enter Search Text'
@@ -84,7 +332,7 @@ const FuelIssue = () => {
                         {
                             isFileUploaded ?
                                 <Space>
-                                    <Button
+                                    {/* <Button
                                         type='primary' size='large'
                                         style={{
                                             display: 'flex',
@@ -94,7 +342,7 @@ const FuelIssue = () => {
                                         className='btn btn-light-success btn-sm'
                                     >
                                         Check data
-                                    </Button>
+                                    </Button> */}
                                     <Button
                                         type='primary' size='large'
                                         style={{
@@ -128,12 +376,102 @@ const FuelIssue = () => {
                 </div>
             </div>
             <KTCardBody className='py-4 '>
-                <div className='table-responsive'>                   
+                <div className='table-responsive'>
                     <Table
-                        columns={columns}
-                        scroll={isFileUploaded ? { x: 1300 } : {}}
+                        columns={isFileUploaded ? uploadColumns : columns}
+                        dataSource={isFileUploaded ? uploadData : gridData}
+
                         loading={loading}
                     />
+
+                    <Modal
+                        title={isUpdateModalOpen ? `$ Update` : `Add Fuel Issue`}
+                        open={isModalOpen}
+                        onCancel={handleCancel}
+                        closable={true}
+                        footer={
+                            <ModalFooterButtons
+                                onCancel={handleCancel}
+                                onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit} />
+                        }
+                    >
+                        <form onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}>
+                            <hr></hr>
+                            <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
+                                <div className='col-6'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Date</label>
+                                    <input type="date" {...register("intakeDate")} name="intakeDate" defaultValue={!isUpdateModalOpen ? '' : tempData?.cycleDate} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
+
+                                <div className='col-6'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Quantity</label>
+                                    <input type="number" {...register("quantity")} min={0} name='quantity' defaultValue={!isUpdateModalOpen ? '' : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
+                                </div>
+                            </div>
+                            <div style={{ padding: "20px 20px 0 20px" }} className='row mb-9 '>
+                                <div className='col-6'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Equipment</label>
+                                    <select
+                                        {...register("equipmentId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            equipments?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && tempData.equipmentId?.equipmentId}
+                                                    value={item.equipmentId}>{item.equipmentId}</option>
+                                            ))
+                                        }
+                                    </select>
+
+                                </div>
+                                <div className='col-6'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label text-gray-500">Pump</label>
+                                    <select
+                                        {...register("pumpId")}
+                                        onChange={handleChange}
+                                        className="form-select form-select-white" aria-label="Select example">
+                                        {!isUpdateModalOpen && <option>Select</option>}
+                                        {
+                                            pumps?.data.map((item: any) => (
+                                                <option
+                                                    selected={isUpdateModalOpen && tempData.pump?.pumpId}
+                                                    value={item.id}>{item.name}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </Modal>
+
+                    {/* Modal to upload file */}
+                    <Modal
+                        title='Upload File'
+                        open={isUploadModalOpen}
+                        onOk={onOkay}
+                        confirmLoading={uploading}
+                        onCancel={handleCancel}
+                        closable={true}
+                    >
+                        <Divider />
+                        <Space size='large'>
+                            <Upload
+                                {...uploadProps}
+                            >
+                                <Button
+                                    loading={uploading}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}
+                                    icon={<UploadOutlined rev={''} />}>Click to Upload</Button>
+                            </Upload>
+                        </Space>
+                    </Modal>
+
                 </div>
             </KTCardBody>
         </div>

@@ -20,7 +20,7 @@ import { LoaderOperator } from './components/setup/loaderOperator/LoaderOperator
 import { EquipmentKpiReport } from "./components/report/EquipmentKpi";
 import { ActivityStatsReport } from './components/report/ActivityStatsReport';
 import { EquipmentFuelTable } from './components/entries/fuel/EquipmentFuelTable';
-import { FuelReciept } from './components/entries/fuel/Reciept';
+import { FuelReceipt } from './components/entries/fuel/Receipt';
 import { FuelIssue } from './components/entries/fuel/Issue';
 import { FuelPump } from './components/setup/pump/fuelPump';
 

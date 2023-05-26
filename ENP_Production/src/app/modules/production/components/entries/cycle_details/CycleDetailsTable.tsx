@@ -78,7 +78,7 @@ const CycleDetailsTable = () => {
 
     const handleRemove = () => {
         setUploadedFile(null);
-        setFileList([]); 
+        setFileList([]);
     };
 
     const populateBatchData = (values: any) => {
@@ -361,7 +361,10 @@ const CycleDetailsTable = () => {
     ]
 
     const uploadFileColumns = [
-        { title: 'Cyce Date', dataIndex: 'cycleDate', key: 'date', fixed: 'left', width: 120, },
+        {
+            title: 'Cyce Date', dataIndex: 'cycleDate', key: 'date', fixed: 'left', width: 120,
+            render: (text: any) => moment(excelDateToJSDate(text), 'YYYY-MM-DD').format('YYYY-MM-DD')
+        },
         { title: 'Shift', dataIndex: 'shift', width: 100 },
         { title: 'Time Start', dataIndex: 'timeAtLoader', width: 120 },
         { title: 'Loader Unit', dataIndex: 'loaderUnit', width: 150 },
@@ -406,14 +409,14 @@ const CycleDetailsTable = () => {
                 }
             })
         },
-        onRemove: () => {handleRemove()}
+        onRemove: () => { handleRemove() }
     }
 
 
     // convert populated data from excel file to database 
     const saveTableObjects = () => {
+        setLoading(true)
         try {
-            setLoading(true)
             const filteredSavedData = dataToSave.filter((data: any) => data !== null && data !== undefined)
             const item = {
                 data: filteredSavedData,
@@ -426,7 +429,6 @@ const CycleDetailsTable = () => {
             setUploadedFile(null)
             setUploadData([])
             setDataToSave([])
-
         } catch (err) {
             console.log('fileSaveError: ', err)
             setLoading(false)
@@ -467,18 +469,18 @@ const CycleDetailsTable = () => {
 
                         if (stopReading) {
                             return null; // Skip processing the remaining rows
-                          }
+                        }
 
                         const isTotalRow = item['Shift'] === 'Total' || item['Date'] === 'Total' ||
-                            item['Time Start'] === 'Total' ;
+                            item['Time Start'] === 'Total';
 
-                            if (isTotalRow) {
-                                stopReading = true; 
-                                return null;
-                              }
+                        if (isTotalRow) {
+                            stopReading = true;
+                            return null;
+                        }
 
                         return {
-                            cycleDate: moment(excelDateToJSDate(item.Date), 'YYYY-MM-DD').format('DD/MM/YYYY'),
+                            cycleDate: `${item.Date}`,
                             shift: item['Shift'],
                             cycleTime: moment(excelDateToJSDate(item['Arrived']), 'HH:mm:ss').format('HH:mm'),
                             loaderUnit: item['Loading Unit'],
@@ -496,7 +498,7 @@ const CycleDetailsTable = () => {
                             timeAtLoader: moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
                             duration: item['Travel Empty Duration'],
                         }
-                    }) .filter((item: any) => item !== null);
+                    }).filter((item: any) => item !== null);
 
                 let timeStamp: any = dateStamp
                 const saveData = filteredData.slice(1).map((item: any,) => {
@@ -514,29 +516,29 @@ const CycleDetailsTable = () => {
                     // if (!destinationId || !haulerUnitId || !loaderUnitId || !originId) {
                     //     return
                     // } else {
-                        return {
-                            cycleDate: item.cycleDate,
-                            cycleTime: item.cycleTime,
-                            loader: loader?.empCode,
-                            hauler: hauler?.empCode,
-                            loaderUnitId: parseInt(loaderUnitId?.id),
-                            haulerUnitId: parseInt(haulerUnitId?.id),
-                            originId: parseInt(originId?.id),
-                            materialId: parseInt(materialId?.id),
-                            destinationId: parseInt(destinationId?.id),
-                            nominalWeight: parseInt(item.nominalWeight),
-                            weight: parseInt(item.nominalWeight),
-                            payloadWeight: parseInt(item.payloadWeight),
-                            reportedWeight: parseInt(item.reportedWeight),
-                            volumes: parseInt(item.volumes),
-                            loads: parseInt(item.loads),
-                            timeAtLoader: item.timeAtLoader,
-                            shiftId: parseInt(shiftId?.id),
-                            duration: parseInt(item.duration),
-                            tenantId: tenantId,
-                            batchNumber: `${timeStamp}`,
-                        }
-                   // }
+                    return {
+                        cycleDate: item.cycleDate,
+                        cycleTime: item.cycleTime,
+                        loader: loader?.empCode,
+                        hauler: hauler?.empCode,
+                        loaderUnitId: parseInt(loaderUnitId?.id),
+                        haulerUnitId: parseInt(haulerUnitId?.id),
+                        originId: parseInt(originId?.id),
+                        materialId: parseInt(materialId?.id),
+                        destinationId: parseInt(destinationId?.id),
+                        nominalWeight: parseInt(item.nominalWeight),
+                        weight: parseInt(item.nominalWeight),
+                        payloadWeight: parseInt(item.payloadWeight),
+                        reportedWeight: parseInt(item.reportedWeight),
+                        volumes: parseInt(item.volumes),
+                        loads: parseInt(item.loads),
+                        timeAtLoader: item.timeAtLoader,
+                        shiftId: parseInt(shiftId?.id),
+                        duration: parseInt(item.duration),
+                        tenantId: tenantId,
+                        batchNumber: `${timeStamp}`,
+                    }
+                    // }
                 });
                 console.log('saveData: ', saveData)
                 handleRemove()
@@ -929,22 +931,22 @@ const CycleDetailsTable = () => {
                             </Divider>
                             <div style={{ padding: "20px 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-4'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Date</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Date</label>
                                     <input type="date" {...register("cycleDate")} name="cycleDate" defaultValue={!isUpdateModalOpen ? '' : tempData?.cycleDate} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-4'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Time</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Time</label>
                                     <input type="time" {...register("cycleTime")} name="cycleTime" defaultValue={!isUpdateModalOpen ? '' : tempData?.cycleTime} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
 
                                 <div className='col-4'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Time at Loader</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Time at Loader</label>
                                     <input type="time" {...register("timeAtLoader")} name="timeAtLoader" defaultValue={!isUpdateModalOpen ? '' : tempData?.timeAtLoader} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Loader</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Loader</label>
                                     <select
                                         {...register("loader")}
                                         onChange={handleChange}
@@ -960,7 +962,7 @@ const CycleDetailsTable = () => {
                                     </select>
                                 </div>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Hauler</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Hauler</label>
                                     <select
                                         {...register("hauler")}
                                         onChange={handleChange}
@@ -976,7 +978,7 @@ const CycleDetailsTable = () => {
                                     </select>
                                 </div>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Origin</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Origin</label>
                                     <select
                                         {...register("originId")}
                                         onChange={handleChange}
@@ -995,7 +997,7 @@ const CycleDetailsTable = () => {
 
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Hauler Unit</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Hauler Unit</label>
                                     <select
                                         {...register("haulerUnitId")}
                                         onChange={handleChange}
@@ -1011,7 +1013,7 @@ const CycleDetailsTable = () => {
                                     </select>
                                 </div>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Loader Unit</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Loader Unit</label>
                                     <select
                                         {...register("loaderUnitId")}
                                         onChange={handleChange}
@@ -1028,7 +1030,7 @@ const CycleDetailsTable = () => {
                                 </div>
 
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Material</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Material</label>
                                     <select
                                         {...register("materialId")}
                                         onChange={handleChange}
@@ -1047,7 +1049,7 @@ const CycleDetailsTable = () => {
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Destination</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Destination</label>
                                     <select
                                         {...register("destinationId")}
                                         onChange={handleChange}
@@ -1063,7 +1065,7 @@ const CycleDetailsTable = () => {
                                     </select>
                                 </div>
                                 <div className='col-4  mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Shift</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Shift</label>
                                     <select
                                         {...register("shiftId")}
                                         onChange={handleChange}
@@ -1084,36 +1086,36 @@ const CycleDetailsTable = () => {
                             </Divider>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Nominal Weight</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Nominal Weight</label>
                                     <input type="number" {...register("nominalWeight")} name="nominalWeight" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.nominalWeight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Weight</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Weight</label>
                                     <input type="number" {...register("weight")} name="weight" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.weight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Payload Weight</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Payload Weight</label>
                                     <input type="number" {...register("payloadWeight")} name="payloadWeight" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.payloadWeight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Reported Weight</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Reported Weight</label>
                                     <input type="number" {...register("reportedWeight")} name="reported_weight" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.reportedWeight} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Volume</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Volume</label>
                                     <input type="number" {...register("volumes")} name="volumes" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.volumes} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Loads</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Loads</label>
                                     <input type="number" {...register("loads")} name="loads" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.loads} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
                             <div style={{ padding: "0 20px 0 20px" }} className='row mb-0 '>
-                               
+
                                 <div className='col-4 mt-3'>
-                                    <label htmlFor="exampleFormControlInput1" className="required form-label">Duration</label>
+                                    <label htmlFor="exampleFormControlInput1" className="required form-label text-gray-500">Duration</label>
                                     <input type="number" {...register("duration")} name="duration" min={0} defaultValue={!isUpdateModalOpen ? 0 : tempData?.duration} onChange={handleChange} className="form-control form-control-white" />
                                 </div>
                             </div>
@@ -1141,7 +1143,7 @@ const CycleDetailsTable = () => {
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                     }}
-                                    icon={<UploadOutlined rev={''}/>}>Click to Upload</Button>
+                                    icon={<UploadOutlined rev={''} />}>Click to Upload</Button>
                             </Upload>
                         </Space>
                     </Modal>
