@@ -1,5 +1,5 @@
 
-import { ProUnitComponet } from "./components/PROUnitComponent";
+import { ProUnitComponent } from "./components/PROUnitComponent";
 
 
 const ProductionDrill = () => {
@@ -17,7 +17,7 @@ const ProductionDrill = () => {
                 boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
             }}
         >
-            <ProUnitComponet data={data} />
+            <ProUnitComponent data={data} />
         </div>
     )
 };

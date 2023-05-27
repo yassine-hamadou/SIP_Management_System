@@ -7,7 +7,7 @@ import { deleteItem, fetchDocument, postItem, updateItem } from '../../../urls'
 import { ModalFooterButtons, PageActionButtons } from '../../CommonComponents'
 
 
-const ProUnitComponet = (props: any) => {
+const ProUnitComponent = (props: any) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
     const [uploadedFile, setUploadedFile] = useState<any>(null)
@@ -229,7 +229,12 @@ const ProUnitComponet = (props: any) => {
         e.preventDefault()
         const item = {
             url: props.data.url,
-            data: tempData
+            data: {
+                equipmentId: tempData.equipmentId,
+                modelName: tempData.modelName,
+                description: tempData.description ,
+                tenantId:tenantId,
+            }
         }
         updateData(item)
         console.log('update: ', item.data)
@@ -356,5 +361,5 @@ const ProUnitComponet = (props: any) => {
     )
 }
 
-export { ProUnitComponet }
+export { ProUnitComponent }
 

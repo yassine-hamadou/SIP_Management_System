@@ -10,7 +10,7 @@ const ProductionHauler = () => {
     };
     const tabItems: TabsProps['items'] = [
         {
-            key: '1', label: `Units`,
+            key: '1', label: `Unit`,
             children: (
                 <>
                    <HaulerUnit />
@@ -18,7 +18,7 @@ const ProductionHauler = () => {
             ),
         },
         {
-            key: '2', label: `Operators`,
+            key: '2', label: `Operator`,
             children: (
                 <>
                     <HaulerOperator />

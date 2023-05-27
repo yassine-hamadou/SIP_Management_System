@@ -1,4 +1,4 @@
-import { ProUnitComponet } from "../components/PROUnitComponent"
+import { ProUnitComponent } from "../components/PROUnitComponent"
 
 const LoaderUnit = () => {
   const data = {
@@ -6,7 +6,7 @@ const LoaderUnit = () => {
     url: 'ProLoaderUnit',
   }
   return  (
-      <ProUnitComponet data = {data}/>
+      <ProUnitComponent data = {data}/>
   )
 }
 

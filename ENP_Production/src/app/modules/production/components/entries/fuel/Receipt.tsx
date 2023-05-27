@@ -106,8 +106,8 @@ const FuelReceipt = () => {
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument(`profuelintake/tenant/${tenantId}`)
-            const data: any =  fuelIntakeData(response.data, 'Fuel Receiept')
+            const response = await fetchDocument(`ProFuelReceipt/tenant/${tenantId}`)
+            const data: any =  fuelIntakeData(response?.data)
             setGridData(data)
             setLoading(false)
         } catch (error) {
@@ -121,7 +121,7 @@ const FuelReceipt = () => {
         setSubmitLoading(true)
         e.preventDefault()
         const item = {
-            url: 'profuelintake',
+            url: 'ProFuelReceipt',
             data: tempData
         }
         updateData(item)
@@ -130,7 +130,7 @@ const FuelReceipt = () => {
 
     const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
         onSuccess: (dataU) => {
-            queryClient.setQueryData(['profuelintake', tempData], dataU);
+            queryClient.setQueryData(['ProFuelReceipt', tempData], dataU);
             reset()
             setTempData({})
             loadData()
@@ -153,11 +153,11 @@ const FuelReceipt = () => {
                     quantity: values.quantity,
                     pumpId: values.pumpId,
                     batchNumber: `${Date.now()}`,
-                    transactionType: 'Fuel Reciept',
+                    transactionType: 'Fuel Receipt',
                     tenantId: tenantId,
                 },
             ],
-            url: 'profuelintake'
+            url: 'ProFuelReceipt'
         }
         // remove some properties from item.data based on props of hasDescription and hasDuration
         // if (!hasDescription) {
@@ -172,7 +172,7 @@ const FuelReceipt = () => {
 
     const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
         onSuccess: (data) => {
-            queryClient.setQueryData(['profuelintake', tempData], data);
+            queryClient.setQueryData(['ProFuelReceipt', tempData], data);
             reset()
             setTempData({})
             loadData()
@@ -192,7 +192,7 @@ const FuelReceipt = () => {
 
 
     const columns: any = [
-        { title: 'Date', dataIndex: 'recieptDate', },
+        { title: 'Date', dataIndex: 'intakeDate', },
         { title: 'Batch Number', dataIndex: 'batchNumber', },
         // { title: 'Pump', dataIndex: 'pumpId', },
         { title: 'Quantity', dataIndex: 'quantity', },

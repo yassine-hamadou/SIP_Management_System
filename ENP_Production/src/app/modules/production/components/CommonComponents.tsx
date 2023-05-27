@@ -226,19 +226,14 @@ const groupByBatchNumber = (data: any) => {
     return groupedByBatchNumber;
 }
 
-const fuelIntakeData = (data: any, transactionType: any) => {
+const fuelIntakeData = (data: any) => {
     const groupedByBatchNumber = groupByBatchNumber(data);
     const batchNumbers = Object.keys(groupedByBatchNumber);
     const batchCount = batchNumbers.map((batchNumber: any) => {
         const records = groupedByBatchNumber[batchNumber];
         const itemsCount = records.length;
-        // Filter records with transactionType 'Fuel Issue'
-        const fuelIssueRecords = records.filter(
-            (record: any) => record.transactionType === transactionType
-        );
-
         // Sum the values of the 'quantity' property for each batch
-        const totalQuantity = fuelIssueRecords.reduce(
+        const totalQuantity = records.reduce(
             (sum: number, record: any) => sum + record.quantity,
             0
         );

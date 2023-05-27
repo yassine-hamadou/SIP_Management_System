@@ -97,7 +97,7 @@ const FuelIssue = () => {
 
     const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
         onSuccess: (data) => {
-            queryClient.setQueryData(['profuelintake', tempData], data);
+            queryClient.setQueryData(['ProFuelIssue', tempData], data);
             loadData()
         },
         onError: (error) => {
@@ -107,7 +107,7 @@ const FuelIssue = () => {
 
     function handleDelete(element: any) {
         const item = {
-            url: 'ProFuelIntake',
+            url: 'ProFuelIssue',
             data: element
         }
         deleteData(item)
@@ -137,39 +137,12 @@ const FuelIssue = () => {
         onRemove: () => { handleRemove() }
     }
 
-    const countRowsPerBatch = (data: any) => {
-        const groupedByBatchNumber = groupByBatchNumber(data);
-        const batchNumbers = Object.keys(groupedByBatchNumber);
-        const batchCount = batchNumbers.map((batchNumber: any) => {
-            const records = groupedByBatchNumber[batchNumber];
-            const itemsCount = records.length;
-            // Filter records with transactionType 'Fuel Issue'
-            const fuelIssueRecords = records.filter(
-                (record: any) => record.transactionType === 'Fuel Issue'
-            );
-
-            // Sum the values of the 'quantity' property for each batch
-            const totalQuantity = fuelIssueRecords.reduce(
-                (sum: number, record: any) => sum + record.quantity,
-                0
-            );
-            return {
-                batchNumber: batchNumber,
-                itemsCount: itemsCount,
-                date: extractDateFromTimestamp(parseInt(batchNumber)),
-                totalQuantity: totalQuantity,
-                records: records,
-            };
-        });
-        return batchCount;
-    };
-
 
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument(`ProFuelIntake/tenant/${tenantId}`)
-            const data: any =  fuelIntakeData(response.data, 'Fuel Issue')
+            const response = await fetchDocument(`ProFuelIssue/tenant/${tenantId}`)
+            const data: any =  fuelIntakeData(response?.data)
             setGridData(data)
             setLoading(false)
         } catch (error) {
@@ -183,7 +156,7 @@ const FuelIssue = () => {
         setSubmitLoading(true)
         e.preventDefault()
         const item = {
-            url: 'ProFuelIntake',
+            url: 'ProFuelIssue',
             data: { ...tempData, pumpId: parseInt(tempData.pumpId), quantity: parseInt(tempData.quantity) }
         }
         updateData(item)
@@ -192,7 +165,7 @@ const FuelIssue = () => {
 
     const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
         onSuccess: (data) => {
-            queryClient.setQueryData(['profuelintake', tempData], data);
+            queryClient.setQueryData(['ProFuelIssue', tempData], data);
             reset()
             setTempData({})
             loadData()
@@ -220,7 +193,7 @@ const FuelIssue = () => {
                     tenantId: tenantId,
                 },
             ],
-            url: 'ProFuelIntake'
+            url: 'ProFuelIssue'
         }
         console.log(item.data)
         postData(item)
@@ -228,7 +201,7 @@ const FuelIssue = () => {
 
     const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
         onSuccess: (data) => {
-            queryClient.setQueryData(['profuelintake', tempData], data);
+            queryClient.setQueryData(['ProFuelIssue', tempData], data);
             reset()
             setTempData({})
             loadData()
