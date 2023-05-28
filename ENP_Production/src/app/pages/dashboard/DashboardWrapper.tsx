@@ -21,7 +21,9 @@ import { batchVolumesThirtyDaysRolling, calculateVolumesByField, roundOff } from
 import { Table } from 'antd'
 import { useQuery } from 'react-query'
 import { fetchDocument } from '../../modules/production/urls'
-import Devexpres from './Devexpress'
+import { Devexpres, Devexpres2 } from './Devexpress'
+
+
 
 const DashboardPage = () => {
   const tenantId = localStorage.getItem('tenant')
@@ -96,11 +98,12 @@ const DashboardPage = () => {
 
 const DevBoardPage = () => (
   <>
-    <div className='row gy-5 g-xl-8'>
-      <div className='col-xl-12'>
+      <div className='col-xl-12 mb-7  border border-gray-400'>
         <Devexpres />
       </div>
-    </div>
+      <div className='col-xl-12 border border-gray-400'>
+        <Devexpres2 />
+      </div>
     <br />
     <br />
   </>

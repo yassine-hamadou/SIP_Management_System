@@ -11,8 +11,9 @@ import { Tabs } from 'antd';
 import { TableProps } from 'react-bootstrap';
 import { UploadChangeParam } from 'antd/es/upload';
 import { time } from 'console';
-import { UploadOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusCircleOutlined, UploadOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table';
+import { NumberSchema } from 'yup';
 
 
 
@@ -289,17 +290,18 @@ const FuelComponent = ({ dataToUpload, url, title, readFromFile }: any) => {
         return name
     }
 
-    const expandedRow = (record: any) => {
-        const rowColumns = [
-            { title: 'Pump', dataIndex: 'pumpId', render: (record: any) => <span>{getRecordName(record?.id, pumps?.data)}</span> },
-            { title: 'Equipment', dataIndex: 'equipmentId' },
+    interface ExpandedDataType {
+        key: React.Key;
+        pumpId: number;
+        equipmentId: string;
+      }
+
+    const expandedRowRender = (record: any) => {
+        const rowColumns: TableColumnsType<ExpandedDataType> = [
+            { title: 'Pump', dataIndex: 'pumpId', key: 'pump', render: (record: any) => <span>{getRecordName(record?.id, pumps?.data)}</span> },
+            { title: 'Equipment', dataIndex: 'equipmentId', key: 'equipment', },
         ]
-        return (
-            <Table
-                columns={rowColumns}
-                dataSource={record.records[0]}
-            />
-        )
+        return <Table columns={rowColumns} dataSource={record.records[0]}  pagination={false} />
     }
 
     const handleUpload = () => {
@@ -428,10 +430,17 @@ const FuelComponent = ({ dataToUpload, url, title, readFromFile }: any) => {
                         loading={loading}
                         columns={isFileUploaded ? uploadColumns : columns}
                         expandable={{
-                            expandedRowRender: (records) =>
-                                <>
-                                    {/* {expandedRow(records)} */}
-                                </>,
+                            // expandIcon: ({ expanded, onExpand, record }) => {
+                            //     if (record.records.length > 1) {
+                            //         return <></>
+                            //     }
+                            //     return expanded ? (
+                            //         <MinusCircleOutlined onClick={e => onExpand(record, e)} rev={undefined} />
+                            //     ) : (
+                            //         <PlusCircleOutlined onClick={e => onExpand(record, e)} rev={undefined} />
+                            //     )
+                            // },
+                            expandedRowRender: (record) => expandedRowRender(record),
                             rowExpandable: (records) => records.length === 1,
                         }}
                         dataSource={isFileUploaded ? uploadData : gridData}

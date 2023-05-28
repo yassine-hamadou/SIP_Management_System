@@ -4,7 +4,7 @@ import { SetupComponent } from "../components/DynamicComponent"
 
 const ActivityDetails = () => {
   const data = {
-    url: 'ProactivityDetails',
+    url: 'ProActivityDetails',
     title: 'Activity Details',
   }
 

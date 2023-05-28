@@ -16,10 +16,26 @@ const Devexpres = () => {
                 // endpoint='https ://208.117.44.15/dashboards/dashboardcontrol'
                 endpoint='http://208.117.44.15/dashboards/dashboardcontrol'
                 workingMode='ViewerOnly'
-                dashboardId='productionDashboard'
+                dashboardId='pro_cycleDetails'
             ></DashboardControl>
         </div>  
     )
 }
 
-export default Devexpres
+const Devexpres2 = () => {
+    return (
+        <div style={{width: '100%', height: '80vh'}}>
+            <DashboardControl
+                id='web-dashboard'
+                style={{height: '100%'}}
+                // endpoint='https://demos.devexpress.com/services/dashboard/api'
+                // endpoint='https ://208.117.44.15/dashboards/dashboardcontrol'
+                endpoint='http://208.117.44.15/dashboards/dashboardcontrol'
+                workingMode='ViewerOnly'
+                dashboardId='pro_fuelIntake'
+            ></DashboardControl>
+        </div>  
+    )
+}
+
+export { Devexpres, Devexpres2 }

@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query"
 import { KTCardBody } from "../../../../../../_metronic/helpers"
 import { deleteItem, fetchDocument, postItem, updateItem } from "../../../urls"
 import { ModalFooterButtons, PageActionButtons } from "../../CommonComponents"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { ArrowLeftOutlined } from "@ant-design/icons"
 
 
@@ -48,6 +48,7 @@ const ActivityComponent = ({ data, hasActivityType }: any) => {
     const [tempData, setTempData] = useState<any>()
     const { register, reset, handleSubmit } = useForm()
     const queryClient = useQueryClient()
+    const param: any = useParams();
     const activityTypes: any = [
         'Haul', 'Load', 'Drill'
     ]
@@ -167,6 +168,10 @@ const ActivityComponent = ({ data, hasActivityType }: any) => {
         setLoading(true)
         try {
             const response = await fetchDocument(`${data.url}/tenant/${tenantId}`)
+            if(data.url === 'ProActivityDetails'){
+                response.data = response.data.filter((item: any) => item.activityId === param.id)
+                console.log('response.data: ',response.data)
+            }
             setGridData(response.data)
             setLoading(false)
         } catch (error) {
@@ -238,18 +243,24 @@ const ActivityComponent = ({ data, hasActivityType }: any) => {
 
     const OnSubmit = handleSubmit(async (values: any) => {
         setSubmitLoading(true)
-        const item = {
+        const item: any = {
             data: {
                 name: values.name,
                 code: values.code,
                 activityType: values.activityType,
+                activityId: parseInt(param.id),
                 tenantId: tenantId,
             },
             url: data.url
         }
-        // remove some properties from item.data based on props of hasDescription and hasDuration
+        // Remove the activityType property if hasActivityType is false
         if (!hasActivityType) {
-            delete item.data.activityType
+            const { activityType, ...dataWithoutActivityType } = item.data;
+            item.data = dataWithoutActivityType;
+        } else {
+            // Remove the activityId property if hasActivityType is true
+            const { activityId, ...dataWithoutActivityId } = item.data;
+            item.data = dataWithoutActivityId;
         }
 
         console.log(item.data)
