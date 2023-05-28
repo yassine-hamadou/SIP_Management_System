@@ -6,7 +6,12 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import * as XLSX from 'xlsx';
 import { KTCardBody } from '../../../../../_metronic/helpers';
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../urls';
-import { ModalFooterButtons, PageActionButtons, calculateVolumesByField, excelDateToJSDate, extractDateFromTimestamp, groupByBatchNumber, roundOff, timeStamp } from '../CommonComponents';
+import {
+    ModalFooterButtons, PageActionButtons, calculateVolumesByField,
+    convertExcelDateToJSDate, convertExcelTimeToJSDate, excelDateToJSDate,
+    extractDateFromTimestamp, groupByBatchNumber, roundOff,
+    timeFormat, timeStamp
+} from '../CommonComponents';
 import { Tabs } from 'antd';
 import { TableProps } from 'react-bootstrap';
 import { UploadChangeParam } from 'antd/es/upload';
@@ -57,6 +62,11 @@ const CycleDetailsTable = () => {
 
     const handleChange = (event: any) => {
         event.preventDefault()
+        // if (event.target.name === 'cycleDate') {
+        //     const selectedDate = new Date(event.target.value);
+        //     const isoDate = selectedDate.toISOString();
+        //     // Use the isoDate value as needed
+        //   }
         setTempData({ ...tempData, [event.target.name]: event.target.value });
     }
 
@@ -482,7 +492,8 @@ const CycleDetailsTable = () => {
                         return {
                             cycleDate: `${item.Date}`,
                             shift: item['Shift'],
-                            cycleTime: moment(excelDateToJSDate(item['Arrived']), 'HH:mm:ss').format('HH:mm'),
+                            // cycleTime: moment(excelDateToJSDate(item['Arrived']), 'HH:mm:ss').format('HH:mm'),
+                            cycleTime: item['Arrived'],
                             loaderUnit: item['Loading Unit'],
                             loader: item['Loader Operator'],
                             hauler: item['Hauler Operator'],
@@ -495,10 +506,14 @@ const CycleDetailsTable = () => {
                             reportedWeight: item['Reported Weight'],
                             volumes: roundOff(item.Volume),
                             loads: item['Loads'],
-                            timeAtLoader: moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
+                            timeAtLoader: item['Time Start'],
+                            // timeAtLoader: moment(excelDateToJSDate(item['Time Start']), 'HH:mm:ss').format('HH:mm'),
                             duration: item['Travel Empty Duration'],
                         }
                     }).filter((item: any) => item !== null);
+
+                //log first 20 rows of filtered data
+                console.log('filteredData: ', filteredData.slice(0, 20))
 
                 let timeStamp: any = dateStamp
                 const saveData = filteredData.slice(1).map((item: any,) => {
@@ -517,8 +532,8 @@ const CycleDetailsTable = () => {
                     //     return
                     // } else {
                     return {
-                        cycleDate: item.cycleDate,
-                        cycleTime: item.cycleTime,
+                        cycleDate: convertExcelDateToJSDate(item.cycleDate).toISOString(),
+                        cycleTime: convertExcelTimeToJSDate(item.cycleTime).toISOString(),
                         loader: loader?.empCode,
                         hauler: hauler?.empCode,
                         loaderUnitId: parseInt(loaderUnitId?.id),
@@ -532,7 +547,7 @@ const CycleDetailsTable = () => {
                         reportedWeight: parseInt(item.reportedWeight),
                         volumes: parseInt(item.volumes),
                         loads: parseInt(item.loads),
-                        timeAtLoader: item.timeAtLoader,
+                        timeAtLoader: convertExcelTimeToJSDate(item.timeAtLoader).toISOString(),
                         shiftId: parseInt(shiftId?.id),
                         duration: parseInt(item.duration),
                         tenantId: tenantId,
@@ -540,7 +555,7 @@ const CycleDetailsTable = () => {
                     }
                     // }
                 });
-                console.log('saveData: ', saveData)
+                console.log('saveData: ', saveData.slice(0, 20))
                 handleRemove()
                 setDataToSave(saveData)
                 timeStamp = ''
@@ -672,7 +687,7 @@ const CycleDetailsTable = () => {
         },
     ];
 
-    
+
     //return count of rows per batch
     const countRowsPerBatch = (data: any) => {
         const groupedByBatchNumber = groupByBatchNumber(data);
@@ -774,14 +789,16 @@ const CycleDetailsTable = () => {
         loadData()
     }
 
+
     const OnSubmit = handleSubmit(async (values) => {
         setSubmitLoading(true)
+        const selectedDate = new Date(values.cycleDate);
         const item = {
             data: [
                 {
-                    cycleDate: values.cycleDate,
+                    cycleDate: selectedDate.toISOString(),
                     shiftId: parseInt(values.shiftId),
-                    cycleTime: values.cycleTime,
+                    cycleTime: timeFormat(values.cycleTime).toISOString(),
                     loader: values.loader,
                     hauler: values.hauler,
                     haulerUnitId: parseInt(values.haulerUnitId),
@@ -795,7 +812,7 @@ const CycleDetailsTable = () => {
                     reportedWeight: parseInt(values.reportedWeight),
                     volumes: parseInt(values.volumes),
                     loads: parseInt(values.loads),
-                    timeAtLoader: values.timeAtLoader,
+                    timeAtLoader: timeFormat(values.timeAtLoader).toISOString(),
                     duration: parseInt(values.duration),
                     tenantId: tenantId,
                     batchNumber: `${Date.now()}`,
@@ -833,14 +850,20 @@ const CycleDetailsTable = () => {
         <div className="card  border border-gray-400  card-custom card-flush" >
             <div className="card-header mt-7">
                 <Space style={{ marginBottom: 16 }}>
-                    <Input
-                        placeholder='Enter Search Text'
-                        type='text'
-                        allowClear size='large'
-                    />
-                    <Button type='primary' size='large'>
-                        Search
-                    </Button>
+                    {
+                        isFileUploaded ? '' :
+                            <>
+                                <Input
+                                    placeholder='Enter Search Text'
+                                    type='text'
+                                    allowClear size='large'
+                                />
+                                <Button type='primary' size='large'>
+                                    Search
+                                </Button>
+                            </>
+                    }
+
                 </Space>
                 <div className="card-toolbar">
                     <Space style={{ marginBottom: 16 }}>
