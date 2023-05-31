@@ -110,8 +110,18 @@ function extractDateFromTimestamp(timestamp: any) {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
 
-    return `${day}-${month}-${year}`;
+    return `${year}-${month}-${day}`;
 }
+
+const convertExcelDateToJSDate = (serialNumber: any) => {
+    return new Date(Date.UTC(1900, 0, serialNumber - 1));
+  };
+  
+  const convertExcelTimeToJSDate = (decimalTime: any) => {
+    const millisecondsInDay = 24 * 60 * 60 * 1000;
+    const timeMilliseconds = Math.floor((decimalTime % 1) * millisecondsInDay);
+    return new Date(timeMilliseconds);
+  };
 
 
 const timeStamp = () => {
@@ -119,6 +129,14 @@ const timeStamp = () => {
     const timestamp = date.getTime() * 1000 + date.getMilliseconds();
     const batchNumber = timestamp.toString();
     return batchNumber;
+}
+
+const timeFormat = (time: any) => {
+    // Split the time string into hours, minutes, and seconds
+    const [hours, minutes] = time.split(":");
+    const dateObject = new Date("1970-01-01");
+    dateObject.setHours(hours, minutes)
+    return dateObject
 }
 
 // round off to whole number
@@ -215,9 +233,55 @@ function batchVolumesThirtyDaysRolling(data: any) {
     return result;
 }
 
+const groupByBatchNumber = (data: any) => {
+    const groupedByBatchNumber: any = {};
+    data?.forEach((item: any) => {
+        if (!groupedByBatchNumber[item.batchNumber]) {
+            groupedByBatchNumber[item.batchNumber] = [];
+        }
+        groupedByBatchNumber[item.batchNumber].push(item);
+    });
+    return groupedByBatchNumber;
+}
+
+const fuelIntakeData = (data: any) => {
+    const groupedByBatchNumber = groupByBatchNumber(data);
+    const batchNumbers = Object.keys(groupedByBatchNumber);
+    const batchCount = batchNumbers.map((batchNumber: any) => {
+        const records = groupedByBatchNumber[batchNumber];
+        const itemsCount = records.length;
+        // Sum the values of the 'quantity' property for each batch
+        
+        const totalQuantity = records.reduce(
+            (sum: number, record: any) => sum + record.quantity,
+            0
+        );
+        return {
+            batchNumber: batchNumber,
+            itemsCount: itemsCount,
+            date: records.length === 1 ? getDateFromDateString(records[0].intakeDate) : extractDateFromTimestamp(parseInt(batchNumber)),
+            totalQuantity: totalQuantity,
+            records: records,
+        };
+    });
+    return batchCount;
+};
+
+const getDateFromDateString = (dateString: any) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 and padding with leading zeros
+    const day = String(date.getDate()).padStart(2, '0'); // Padding with leading zeros
+    
+    // Return the formatted date string
+    return `${year}-${month}-${day}`;
+  };
+
 
 export {
     PageActionButtons, ModalFooterButtons, excelDateToJSDate,
     roundOff, timeStamp, calculateVolumesByField,
-    extractDateFromTimestamp, batchVolumesThirtyDaysRolling
+    extractDateFromTimestamp, batchVolumesThirtyDaysRolling,
+    groupByBatchNumber, fuelIntakeData, convertExcelDateToJSDate, 
+    convertExcelTimeToJSDate, timeFormat, getDateFromDateString
 }
