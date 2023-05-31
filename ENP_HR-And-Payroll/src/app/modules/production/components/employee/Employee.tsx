@@ -46,22 +46,22 @@ const Employee = () => {
     }
   }
 
-  const fetchImage = async () => {
-    const res = await fetch("http://208.117.44.15/hrwebapi/uploads/employee/phil.jpeg");
-    // const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
-    const imageBlob = await res.blob();
-    const imageObjectURL:any  = URL.createObjectURL(imageBlob);
-    setImg(imageObjectURL);
-  };
+  // const fetchImage = async () => {
+  //   const res = await fetch("http://208.117.44.15/hrwebapi/uploads/employee/phil.jpeg");
+  //   // const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
+  //   const imageBlob = await res.blob();
+  //   const imageObjectURL:any  = URL.createObjectURL(imageBlob);
+  //   setImg(imageObjectURL);
+  // };
   
-  const getImage = async (imgUrl:any) => {
-    const res = await fetch(`http://208.117.44.15/hrwebapi/uploads/employee/${imgUrl}`);
-    const imageBlob = await res.blob();
-    const imageObjectURL:any  = URL.createObjectURL(imageBlob);
-    // return imageObjectURL
-    setImgNew(imageObjectURL);
-    // return <img style={{borderRadius:"10px"}} src={imageObjectURL} width={50} height={50}></img>
-  };
+  // const getImage = async (imgUrl:any) => {
+  //   const res = await fetch(`http://208.117.44.15/hrwebapi/uploads/employee/${imgUrl}`);
+  //   const imageBlob = await res.blob();
+  //   const imageObjectURL:any  = URL.createObjectURL(imageBlob);
+  //   // return imageObjectURL
+  //   setImgNew(imageObjectURL);
+  //   // return <img style={{borderRadius:"10px"}} src={imageObjectURL} width={50} height={50}></img>
+  // };
   
 
   function handleDelete(element: any) {
@@ -277,7 +277,7 @@ const Employee = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axioInstance.get(`${Api_Endpoint}/Employees/tenant/${tenantId}`,
+      const response = await axios.get(`${Api_Endpoint}/Employees/tenant/${tenantId}`,
       )
       setGridData(response.data)
       setLoading(false)
@@ -288,8 +288,8 @@ const Employee = () => {
 
   useEffect(() => {
     loadData()
-    fetchImage()
-    getImage('phil.jpeg')
+    // fetchImage()
+    // getImage('phil.jpeg')
   }, [])
 
   // const sortedEmployees = gridData.sort((a:any, b:any) => a?.departmentId.localeCompare(b?.departmentId));

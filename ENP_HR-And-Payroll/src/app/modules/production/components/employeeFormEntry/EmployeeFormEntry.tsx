@@ -22,7 +22,7 @@ const MultiTabForm= () =>{
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
   }
-
+  const [previewImage, setPreviewImage] = useState('');
   const [tempImage, setTempImage] = useState<any>();
 
   const navigate = useNavigate();
@@ -65,7 +65,7 @@ const MultiTabForm= () =>{
       imgWindow?.document.write(image.outerHTML);
     };
 
-      const showPreview = (e:any)=>{
+    const showPreview = (e:any)=>{
     if (e.target.files && e.target.files[0]){
       let imageFile = e.target.files[0]
       const reader = new FileReader()
@@ -79,8 +79,18 @@ const MultiTabForm= () =>{
   }
 
   const onFileChange = (e:any) => {
-    // Update the state
+    const file = e.target.files[0];
     setTempImage(e.target.files[0] );
+
+    if (file) {
+      const reader:any = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage('');
+    }
    
   };
 
@@ -195,32 +205,28 @@ const MultiTabForm= () =>{
           {/* Details */}
           {activeTab === 'tab1' && 
           <div className='row col-12'>
-            {/* <div className='row mb-0'>
-              <div className='col-2 mb-7'>
-                <Upload
-                      
-                  listType="picture-card"
-                  fileList={fileList}
-                  onChange={onChange}
-                  onPreview={onPreview}
-                > 
-                  <UploadOutlined />
-                </Upload>
-                <img src={tempImage} style={{height:"90px"}}  alt="profImg" />
-                <input className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' 
-                  onChange={onFileChange}
-                  type="file" />
-              </div>
-              
-            </div> */}
             
-              <div className='col-4 mb-7 '>
-                <label className="form-label">Add Profile</label><br></br>
-                <label htmlFor="imageFile" className='btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>Select Picture</label>
+            
+              <div className=' mb-7 '>
+                {
+                  previewImage && (
+
+                    <img style={{borderRadius:"10px",marginBottom:"20px"}} src={previewImage} width={120} height={120}></img>
+                  )
+                }{
+                  !previewImage&& (
+
+                    <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={120} height={120}></img>
+                  )
+                }
+                <br></br>
+                <label htmlFor="imageFile" className='btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>Upload Picture</label>
                 <input id='imageFile' style={{visibility:"hidden"}}  
                   onChange={onFileChange}
                   type="file" />
               </div>
+
+
               <div className='col-4 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Employee ID</label>
                 <input type="text"  {...register("employeeId")}  className="form-control form-control-solid" />
@@ -228,9 +234,10 @@ const MultiTabForm= () =>{
             
             
               <div className='col-4 mb-7'>
-              <label htmlFor="exampleFormControlInput1" className=" form-label">First Name</label>
-              <input type="text"  {...register("firstName")}  className="form-control form-control-solid" />
+                <label htmlFor="exampleFormControlInput1" className=" form-label">First Name</label>
+                <input type="text"  {...register("firstName")}  className="form-control form-control-solid" />
               </div>
+
               <div className='col-4 mb-7'>
               <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
               <input type="text" {...register("surname")}  className="form-control form-control-solid" />
@@ -273,7 +280,7 @@ const MultiTabForm= () =>{
                   </select>
               </div>
               <div className='col-4 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">National ID</label>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">National ID (Ghana Card )</label>
                 <input type="text" {...register("nationalId")} className="form-control form-control-solid" /> 
               </div>
             
@@ -453,7 +460,8 @@ const MultiTabForm= () =>{
                 <select {...register("bankId")} className="form-select form-select-solid" aria-label="Select example">
                   <option>select </option>
                   {BANKS.map((item: any) => (
-                    <option value={item.code}>{item.branch}</option>                 ))}
+                    <option value={item.code}>{item.branch}</option>                 
+                    ))}
                 </select>
               </div>
               <div className='col-4 mb-7'>

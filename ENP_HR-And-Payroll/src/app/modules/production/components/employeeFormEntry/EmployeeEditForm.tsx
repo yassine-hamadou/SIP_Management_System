@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import "./formStyle.css"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { Button, Form, Modal, Space, Table, } from 'antd';
-import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchEmployees, fetchExperiences, fetchGrades, fetchJobTitles, fetchNationalities, fetchNotches, fetchPaygroups, fetchQualifications, fetchSkills, fetchUnits, updateEmployee } from '../../../../services/ApiCalls';
+import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchEmployees, fetchExperiences, fetchGrades, fetchJobTitles, fetchMedicals, fetchNationalities, fetchNotches, fetchPaygroups, fetchQualifications, fetchSkills, fetchUnits, updateEmployee } from '../../../../services/ApiCalls';
 import { KTSVG } from '../../../../../_metronic/helpers';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
@@ -24,12 +24,15 @@ const EmployeeEditForm = () => {
   const [trainingOpen, setTrainingOpen] = useState(false)
   const [leaveOpen, setLeaveOpen] = useState(false)
   const [appraisalOpen, setAppraisalOpen] = useState(false)
+  const [statusModalOpen, setIsStatusModalOpen] = useState(false)
+  const [statusGridModalOpen, setStatusGridModalOpen] = useState(false)
   const [noteOpen, setNoteOpen] = useState(false)
   const [medicalEntryData, setMedicalEntryData] = useState([])
   const [familyData, setFamilyData] = useState([])
   const [experienceData, setExperienceData] = useState([])
   const [qualificationData, setQualificationData] = useState([])
   const [skillData, setSkillData] = useState([])
+  const [statusData, setStatusData] = useState([])
   const [loading, setLoading] = useState(false)
   const [img, setImg] = useState()
   const { register, reset, handleSubmit } = useForm()
@@ -46,8 +49,9 @@ const EmployeeEditForm = () => {
   const [newPay, setNewPay] = useState([])
   const tenantId = localStorage.getItem('tenant')
   const [tempImage, setTempImage] = useState<any>();
-
-
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState('');
   const navigate = useNavigate();
 
   const handleTabClick = (tab: any) => {
@@ -58,6 +62,12 @@ const EmployeeEditForm = () => {
   }
   const handleTab2Click = (tab2: any) => {
     setActiveTab2(tab2);
+  }
+  const openStatus = () => {
+    setIsStatusModalOpen(true)
+  }
+  const openStatusGrid = () => {
+    setStatusGridModalOpen(true)
   }
 
   const handleChange = (event: any) => {
@@ -188,7 +198,13 @@ const EmployeeEditForm = () => {
     setAppraisalOpen(false)
     setNoteOpen(false)
     setExperienceOpen(false)
+    setStatusGridModalOpen(false)
 
+  }
+
+  const handleStatusCancel = () => {
+    reset()
+    setIsStatusModalOpen(false)
   }
 
   const [submitLoading, setSubmitLoading] = useState(false)
@@ -328,6 +344,7 @@ const EmployeeEditForm = () => {
 
     },
   ]
+
   const medicalColumns: any = [
 
     {
@@ -383,6 +400,7 @@ const EmployeeEditForm = () => {
 
     },
   ]
+
   const skillColumns: any = [
     {
       title: 'Name',
@@ -416,6 +434,53 @@ const EmployeeEditForm = () => {
 
     },
   ]
+
+  const statusColumns: any = [
+   
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      sorter: (a: any, b: any) => {
+        if (a.satatus > b.satatus) {
+          return 1
+        }
+        if (b.satatus > a.satatus) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Date',
+      key: 'date',
+      render: (row:any )=>{
+        return row.date?.substring(0,10)
+      },
+      sorter: (a: any, b: any) => {
+        if (a.date > b.date) {
+          return 1
+        }
+        if (b.date > a.date) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Comment',
+      dataIndex: 'comment',
+      sorter: (a: any, b: any) => {
+        if (a.comment > b.comment) {
+          return 1
+        }
+        if (b.comment > a.comment) {
+          return -1
+        }
+        return 0
+      },
+    },
+  ]
+
   const experienceColumns: any = [
     {
       title: 'Name',
@@ -526,6 +591,7 @@ const EmployeeEditForm = () => {
 
     },
   ]
+
   const compensationColumns: any = [
 
     {
@@ -761,16 +827,6 @@ const EmployeeEditForm = () => {
     },
   ]
 
-
-
-  // const handleSubmit = (event:any) => {
-  //   event.preventDefault();
-  //   console.log(formData);
-  //   // Use the formData object to submit the data to your server
-
-  // }
-
-
   const getSkillName = (skillId: any) => {
     let skillName = null
     allSkills?.data.map((item: any) => {
@@ -810,6 +866,7 @@ const EmployeeEditForm = () => {
   const { data: allExperiences } = useQuery('experiences',()=> fetchExperiences(tenantId), { cacheTime: 5000 })
   const { data: allJobTitles } = useQuery('jobtitle',()=> fetchJobTitles(tenantId), { cacheTime: 5000 })
   const { data: paygroups } = useQuery('paygroups',()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: medicals } = useQuery('medicals',()=> fetchMedicals(tenantId), { cacheTime: 5000 })
 
 
 
@@ -822,17 +879,27 @@ const EmployeeEditForm = () => {
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  const onFileChange = (e:any) => {
-    // Update the state
-    setTempImage(e.target.files[0] );
+  // const onFileChange = (e:any) => {
+  //   // Update the state
+  //   setTempImage(e.target.files[0] );
    
-  };
+  // };
 
   const loadSkills = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/EmployeeSkills`)
+      const response = await axios.get(`${Api_Endpoint}/EmployeeSkills/tenant/${tenantId}`)
       setSkillData(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const loadStatus = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.get(`${Api_Endpoint}/EmployeeStatus`)
+      setStatusData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -841,7 +908,7 @@ const EmployeeEditForm = () => {
   const loadQualifications = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/EmployeeQualifications`)
+      const response = await axios.get(`${Api_Endpoint}/EmployeeQualifications/tenant/${tenantId}`)
       setQualificationData(response.data)
       setLoading(false)
     } catch (error) {
@@ -851,7 +918,7 @@ const EmployeeEditForm = () => {
   const loadExperiences = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Experiences`)
+      const response = await axios.get(`${Api_Endpoint}/Experiences/tenant/${tenantId}`)
       setExperienceData(response.data)
       setLoading(false)
     } catch (error) {
@@ -861,7 +928,7 @@ const EmployeeEditForm = () => {
   const loadFamilyMembers = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/FamilyMembers`)
+      const response = await axios.get(`${Api_Endpoint}/FamilyMembers/tenant/${tenantId}`)
       setFamilyData(response.data)
       setLoading(false)
     } catch (error) {
@@ -871,7 +938,7 @@ const EmployeeEditForm = () => {
   const loadMedicalEntry = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Medicals`)
+      const response = await axios.get(`${Api_Endpoint}/Medicals/tenant/${tenantId}`)
       setMedicalEntryData(response.data)
       setLoading(false)
     } catch (error) {
@@ -991,10 +1058,15 @@ const EmployeeEditForm = () => {
     loadFamilyMembers()
     loadExperiences()
     loadSkills()
+    loadStatus()
     fetchImage()
   }, [param.id, allEmployees])
 
   const skillByEmployee = skillData.filter((section: any) => {
+    return section.employeeId.toString() === param.id
+  })
+
+  const statusByEmployee = statusData.filter((section: any) => {
     return section.employeeId.toString() === param.id
   })
   // const experienceByEmployee = experienceData.filter((exp:any) =>{
@@ -1006,35 +1078,25 @@ const EmployeeEditForm = () => {
   const familyByEmployee = familyData.filter((qualification: any) => {
     return qualification.employeeId.toString() === param.id
   })
-  // const medicalByEmployee = medicalData.filter((medical:any) =>{
-  //   return medical.employeeId.toString() ===param.id
-  // })
 
 
-  //increase counter
-  // const increase = () => {
-  //   setCounter(count => count + 1);
+ 
+  // to preview the uploaded file
+  // const onPreview = async (file: UploadFile) => {
+  //   let src = file.url as string;
+  //   if (!src) {
+  //     src = await new Promise((resolve) => {
+  //       const reader = new FileReader();
+  //       reader.readAsDataURL(file.originFileObj as RcFile);
+  //       reader.onload = () => resolve(reader.result as string);
+  //     });
+  //   }
+  //   const image = new Image();
+  //   image.src = src;
+  //   const imgWindow = window.open(src);
+  //   imgWindow?.document.write(image.outerHTML);
   // };
 
-  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-  };
-
-  // to preview the uploaded file
-  const onPreview = async (file: UploadFile) => {
-    let src = file.url as string;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj as RcFile);
-        reader.onload = () => resolve(reader.result as string);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
-  };
   const queryClient = useQueryClient()
   const { isLoading, mutate } = useMutation(updateEmployee, {
     onSuccess: (data) => {
@@ -1050,6 +1112,48 @@ const EmployeeEditForm = () => {
   }
 
 
+
+  const handleImageChange = (e:any) => {
+    const file = e.target.files[0];
+    setTempImage(file);
+
+    if (file) {
+      const reader:any = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage('');
+    }
+  };
+
+
+// for posting employee statuses
+  const urlSta = `${Api_Endpoint}/EmployeeStatus`
+  const OnSubmitStatus = handleSubmit(async (values: any) => {
+    setLoading(true)
+    const data = {
+      comment: values.comment,
+      status: values.status,
+      employeeId: parseInt(param.id),
+    }
+    console.log(data);
+    
+    try {
+      const response = await axios.post(urlSta, data)
+      setSubmitLoading(false)
+      reset()
+      setIsStatusModalOpen(false)
+      loadStatus()
+      return response.statusText
+    } catch (error: any) {
+      setSubmitLoading(false)
+      return error.statusText
+    }
+  })
+
+  // for posting employee skills
   const url = `${Api_Endpoint}/EmployeeSkills`
   const submitSkills = handleSubmit(async (values: any) => {
     setLoading(true)
@@ -1136,6 +1240,68 @@ const EmployeeEditForm = () => {
       return error.statusText
     }
   })
+
+  console.log('New', param.id);
+  
+
+  const uRL = `${Api_Endpoint}/Employees/${param.id}`
+    const OnSUbmitUpdate = handleSubmit( async ( )=> {
+      
+      setLoading(true)
+      const formData:any = new FormData();
+      formData.append('id', parseInt(tempData.id))
+      formData.append('employeeId', tempData.employeeId==null?"":tempData.employeeId)
+      formData.append('firstName', tempData.firstName==null?"":tempData.firstName)
+      formData.append('surname', tempData.surname==null?"":tempData.surname)
+      formData.append('otherName', tempData.otherName==null?"":tempData.otherName)
+      formData.append('dob', tempData.dob==null?"":tempData.dob)
+      formData.append('gender', tempData.gender==null?"":tempData.gender)
+      formData.append('maritalStatus', tempData.maritalStatus==null?"":tempData.maritalStatus)
+      formData.append('nationality', tempData.nationality==null?"":tempData.nationality)
+      formData.append('nationalId', tempData.nationalId==null?"":tempData.nationalId)
+      formData.append('phone', tempData.phone==null?"":tempData.phone)
+      formData.append('alternativePhone', tempData.alternativePhone==null?"":tempData.alternativePhone)
+      formData.append('address', tempData.address==null?"":tempData.address)
+      formData.append('residentialAddress', tempData.residentialAddress==null?"":tempData.residentialAddress)
+      formData.append('email', tempData.email==null?"":tempData.email)
+      formData.append('personalEmail', tempData.personalEmail==null?"":tempData.personalEmail)
+      formData.append('nextOfKin', tempData.nextOfKin==null?"":tempData.nextOfKin)
+      formData.append('guarantor', tempData.guarantor==null?"":tempData.guarantor)
+      formData.append('paygroupId', tempData.paygroupId==null?"":parseInt(tempData.paygroupId))
+      formData.append('categoryId', tempData.categoryId==null?"":parseInt(tempData.categoryId))
+      formData.append('divisionId', tempData.divisionId==null?"":parseInt(tempData.divisionId))
+      formData.append('departmentId', tempData.departmentId==null?"":parseInt(tempData.departmentId))
+      formData.append('gradeId', tempData.gradeId==null?"":parseInt(tempData.gradeId))
+      formData.append('notchId', tempData.notchId==null?"":tempData.notchId)
+      formData.append('jobTitleId', tempData.jobTitleId==null?"":parseInt(tempData.jobTitleId))
+      formData.append('employmentDate', tempData.employmentDate==null?"":tempData.employmentDate)
+      formData.append('payType', tempData.payType==null?"":tempData.payType)
+      formData.append('paymentMethod', tempData.paymentMethod==null?"":tempData.paymentMethod)
+      formData.append('bankId', tempData.bankId==null?"":tempData.bankId)
+      formData.append('account', tempData.account==null?"":tempData.account)
+      formData.append('tin', tempData.tin==null?"":tempData.tin)
+      formData.append('ssf', tempData.ssf==null?"":tempData.ssf)
+      formData.append('imageFile', tempImage?tempImage:"")
+      formData.append('tenantId', tenantId)
+
+      const config = {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },}
+
+      console.log(Object.fromEntries(formData))
+      try {
+        const response = await axios.put(uRL, formData, config)
+        setSubmitLoading(false)
+        navigate('/employee', {replace: true})
+        return response.statusText
+      } catch (error: any) {
+        setSubmitLoading(false)
+        return error.statusText
+      }
+    })
+
+    // 
 
   return (
     <div
@@ -1235,21 +1401,25 @@ const EmployeeEditForm = () => {
           <>
             <div className='col-4 mb-7'>
             {
+              !previewImage&&(
               tempData?.imageUrl!==null?
               <img style={{borderRadius:"10px", marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/${tempData?.imageUrl}`} width={150} height={150}></img>:
               <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={150} height={150}></img>
+              )
+            }
+            {
+              previewImage&&(
+
+                <img style={{borderRadius:"10px",marginBottom:"20px"}} src={previewImage} width={150} height={150}></img>
+              )
             }
            <br></br>
             <label htmlFor="imageFile" className='btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>Change Picture</label>
             <input id='imageFile' style={{visibility:"hidden"}}  
-              onChange={onFileChange}
+              onChange={handleImageChange}
               type="file" />
           </div>
             <div className='row col-12'>
-              
-
-                
-
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Employee ID</label>
                   <input type="text"
@@ -1258,7 +1428,6 @@ const EmployeeEditForm = () => {
                     value={tempData?.employeeId} className="form-control form-control-solid" />
                 </div>
 
-              
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">First Name</label>
                   <input type="text"
@@ -1275,7 +1444,7 @@ const EmployeeEditForm = () => {
                 </div>
               
                 <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Other Name</label>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Other Name</label>
                   <input type="text"
                     name="otherName"
                     onChange={handleChange}
@@ -1286,7 +1455,7 @@ const EmployeeEditForm = () => {
                   <input type="date"
                     name="dob"
                     onChange={handleChange}
-                    value={tempData?.dob} className="form-control form-control-solid" />
+                    value={tempData?.dob?.substring(0,10)} className="form-control form-control-solid" />
                 </div>
               
 
@@ -1475,12 +1644,82 @@ const EmployeeEditForm = () => {
                 </div>
                 <div className='col-3 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Employment Date</label>
-                  <input type="date" name="employmentDate" value={tempData?.employmentDate} onChange={handleChange} className="form-control form-control-solid" />
+                  <input type="date" name="employmentDate" value={tempData?.employmentDate?.substring(0,10)} onChange={handleChange} className="form-control form-control-solid" />
 
                 </div>
                 <div className='col-3 mb-7'>
                   <br></br>
-                  <a href="#" className="btn btn-danger"> Status</a>
+                  <a onClick={openStatusGrid} className="btn btn-danger"> Status</a>
+                  <Modal
+                        title={`Status for ${tempData?.firstName} ${tempData?.surname}`}
+                        open={statusGridModalOpen}
+                        onCancel={handleCancel}
+                        closable={true}
+                        footer={[
+                            <Button key='back' onClick={handleCancel}>
+                                Close
+                            </Button>,
+                            
+                        ]}
+                    >
+                      <div style={{margin:"20px 0px"}}>
+
+                        <button type='button' className='btn btn-primary me-3' onClick={openStatus}>
+                          <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                          Add
+                        </button>
+                      </div>
+                      <hr></hr>
+                      <Table columns={statusColumns} dataSource={statusByEmployee} />
+                        
+                        <Modal
+                        title={isUpdateModalOpen ? `Update` : `Setup`}
+                        open={statusModalOpen}
+                        onCancel={handleStatusCancel}
+                        closable={true}
+                        footer={[
+                            <Button key='back' onClick={handleStatusCancel}>
+                                Cancel
+                            </Button>,
+                            <Button
+                                key='submit'
+                                type='primary'
+                                htmlType='submit'
+                                loading={submitLoading}
+                                onClick={isUpdateModalOpen ? handleUpdate : OnSubmitStatus}
+                            >
+                                Submit
+                            </Button>,
+                        ]}
+                    >
+                        <form
+                            onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmitStatus}
+                        >
+                            <hr></hr>
+                            <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                                <div className=' mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
+                                    <select className="form-select form-select-solid" {...register("status")} defaultValue={isUpdateModalOpen === true ? tempData.status : ''} onChange={handleChange} aria-label="Select example">
+                                      <option> select</option>
+                                      <option value="Activate"> Activate</option>
+                                      <option value="Suspended"> Suspended</option>
+                                      <option value="Suspended"> Suspended</option>
+                                      <option value="End of Contract"> End of Contract</option>
+                                    </select>
+                                    {/* <input type="text" {...register("status")} defaultValue={isUpdateModalOpen === true ? tempData.status : ''} onChange={handleChange} className="form-control form-control-solid" /> */}
+                                </div>
+                                <div className=' mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Comment</label>
+                                    <input type="text" {...register("comment")} defaultValue={isUpdateModalOpen === true ? tempData.comment : ''} onChange={handleChange} className="form-control form-control-solid" />
+                                </div>
+                                {/* <div className=' mb-7'>
+                                    <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
+                                    <input type="date" {...register("date")} defaultValue={isUpdateModalOpen === true ? tempData.date : ''} onChange={handleChange} className="form-control form-control-solid" />
+                                </div> */}
+                            </div>
+                        </form>
+                    </Modal>
+                    </Modal>
                 </div>
               </div>
 }
@@ -1532,8 +1771,6 @@ const EmployeeEditForm = () => {
                   <input type="text" name="ssf" onChange={handleChange} value={tempData.ssf} className="form-control form-control-solid" />
                 </div>
               </div>
-
-
           }
 
           {/* skills & qualifications */}
@@ -1988,9 +2225,9 @@ const EmployeeEditForm = () => {
                             <label htmlFor="exampleFormControlInput1" className="form-label">Medical Type</label>
                             <select className="form-select form-select-solid" aria-label="Select example">
                               <option> select</option>
-                              {/* {MEDICALS.map((item: any) => (
-                                <option value={item.code}>{item.name}</option>
-                              ))} */}
+                              {medicals?.data.map((item: any) => (
+                                <option value={item.id}>{item.name}</option>
+                              ))}
                             </select>
                           </div>
                           <div className=' mb-7'>
@@ -2115,7 +2352,7 @@ const EmployeeEditForm = () => {
             </div>}
         </div>
       </div >
-      <button className='btn btn-primary' onClick={handleUpdate} type="submit">Submit</button>
+      <button className='btn btn-primary' onClick={OnSUbmitUpdate} type="submit">Submit</button>
 
     </div>
   );

@@ -4,9 +4,8 @@ import ApexCharts, {ApexOptions} from 'apexcharts'
 import {getCSSVariableValue} from '../../../../_metronic/assets/ts/_utils'
 import {useThemeMode} from '../../../../_metronic/partials/layout/theme-mode/ThemeModeProvider'
 import { useQuery } from 'react-query'
-import { Api_Endpoint, fetchChartData } from '../../../services/ApiCalls'
-import axios from 'axios'
-// import {useThemeMode} from '../layout/theme-mode/ThemeModeProvider'
+import { fetchChartData } from '../../../services/ApiCalls'
+
 
 type Props = {
   className: string
@@ -17,21 +16,10 @@ type Props = {
 const HRChart: React.FC<Props> = ({className, chartColor, chartHeight}) => {
   const chartRef = useRef<HTMLDivElement | null>(null)
   const {mode} = useThemeMode()
-  // const [chartData, setGridData] = useState([])
   const { data: chartData } = useQuery('chartdata', ()=> fetchChartData(tenantId), { cacheTime: 5000 })
 
 
   const tenantId = localStorage.getItem('tenant')
-  // const loadData = async () => {
-    
-  //   try {
-  //     const response = await axios.get(`${Api_Endpoint}/SortedData/chart/tenant/${tenantId}`)
-  //     setGridData(response.data)
-      
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
   const departmentName = chartData?.data.map((item:any)=>{
     return item.departmentName
   })

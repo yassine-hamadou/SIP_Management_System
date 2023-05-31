@@ -11,9 +11,11 @@ export const ENP_URL = 'http://208.117.44.15/SmWebApi/api'
 // export const fetchEquips= ()=>{
 //     return axios.get(`${ENP_URL}/VmequpsApi`)
 // }
+
 // export const fetchLocations= ()=>{
 //     return axios.get(`${ENP_URL}/IclocsApi`)
 // }
+
 // export const fetchModels= ()=>{
 //     return axios.get(`${ENP_URL}/VmmodlsApi`)
 // }

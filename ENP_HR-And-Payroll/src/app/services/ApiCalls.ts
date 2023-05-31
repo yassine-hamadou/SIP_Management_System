@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { ENP_URL } from '../modules/production/urls';
 
-const tenantId = localStorage.getItem('tenant')
+// const tenantId = localStorage.getItem('tenant')
 
 export const Api_Endpoint = "http://208.117.44.15/hrwebapi/api";
 export const UsersEndpoint = "http://208.117.44.15/userapi/api";
@@ -151,9 +150,11 @@ export const fetchJobTitles = (tId:any) => {
 export const updateJobTitle = (data: any) => {
     return axios.put(`${Api_Endpoint}/JobTitles/${data.id}`, data)
 }
+
 export const fetchMedicals = (tId:any) => {
     return axios.get(`${Api_Endpoint}/Medicals/tenant/${tId}`)
 }
+
 export const updateMedical = (data: any) => {
     return axios.put(`${Api_Endpoint}/Medicals/${data.id}`, data)
 }
