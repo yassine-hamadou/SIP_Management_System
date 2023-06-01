@@ -1066,9 +1066,27 @@ const EmployeeEditForm = () => {
     return section.employeeId.toString() === param.id
   })
 
-  const statusByEmployee = statusData.filter((section: any) => {
+  const statusByEmployee:any = statusData.filter((section: any) => {
     return section.employeeId.toString() === param.id
   })
+
+  const recentStatus: any = statusByEmployee?.find((item:any)=>{
+    return item.index === (statusByEmployee.length -1)
+  })
+  
+  let highestIdItem:any = null;
+  let highestId:any = -1;
+
+  for (let i = 0; i < statusByEmployee.length; i++) {
+    if (statusByEmployee[i]?.id > highestId) {
+      highestId = statusByEmployee[i]?.id;
+      highestIdItem = statusByEmployee[i];
+    }
+  }
+  
+  // check date be make sure users can not select date before today
+  const today = new Date().toISOString().split('T')[0];  
+
   // const experienceByEmployee = experienceData.filter((exp:any) =>{
   //   return exp.employeeId.toString() ===param.id
   // })
@@ -1648,8 +1666,13 @@ const EmployeeEditForm = () => {
 
                 </div>
                 <div className='col-3 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className=" form-label">Most Recent Status</label>
+                  <input type="text" disabled value={highestIdItem?.status}  className="form-control form-control-solid" />
+
+                </div>
+                <div className='col-3 mb-7'>
                   <br></br>
-                  <a onClick={openStatusGrid} className="btn btn-danger"> Status</a>
+                  <a onClick={openStatusGrid} className="btn btn-danger"> Change Status</a>
                   <Modal
                         title={`Status for ${tempData?.firstName} ${tempData?.surname}`}
                         open={statusGridModalOpen}
@@ -1712,10 +1735,10 @@ const EmployeeEditForm = () => {
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Comment</label>
                                     <input type="text" {...register("comment")} defaultValue={isUpdateModalOpen === true ? tempData.comment : ''} onChange={handleChange} className="form-control form-control-solid" />
                                 </div>
-                                {/* <div className=' mb-7'>
+                                <div className=' mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
-                                    <input type="date" {...register("date")} defaultValue={isUpdateModalOpen === true ? tempData.date : ''} onChange={handleChange} className="form-control form-control-solid" />
-                                </div> */}
+                                    <input type="date" {...register("date")} min={today} defaultValue={isUpdateModalOpen === true ? tempData.date : ''} onChange={handleChange} className="form-control form-control-solid" />
+                                </div>
                             </div>
                         </form>
                     </Modal>
