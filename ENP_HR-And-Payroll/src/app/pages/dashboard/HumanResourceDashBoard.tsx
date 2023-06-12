@@ -6,6 +6,7 @@ import { TestChart } from './charts/TestChart'
 import { useQuery } from 'react-query'
 import {  fetchDashBoardData } from '../../services/ApiCalls'
 import { Table } from 'antd'
+import { HRNewDashBoard } from './charts/HRNewDashBoard'
 
 const columns: any = [
   {
@@ -151,8 +152,7 @@ const HRDashboardWrapper = () => {
   return (
     <>
       <PageTitle breadcrumbs={[]}>{"Human Resource Dashboard"}</PageTitle>
-      <HRDashboardPage />
-      
+      <HRNewDashBoard/>
     </>
   )
 }

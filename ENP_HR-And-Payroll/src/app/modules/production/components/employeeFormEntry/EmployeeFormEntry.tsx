@@ -11,6 +11,7 @@ import axios from 'axios';
 import { Api_Endpoint, fetchCategories, fetchDepartments, fetchDivisions, fetchGrades, fetchJobTitles, fetchNationalities, fetchNotches, fetchPaygroups, fetchUnits } from '../../../../services/ApiCalls';
 import { useQuery } from 'react-query';
 import {useNavigate, Navigate } from 'react-router-dom';
+import { useAuth } from '../../../auth';
 
 const MultiTabForm= () =>{
   const [formData, setFormData] = useState({});
@@ -27,7 +28,7 @@ const MultiTabForm= () =>{
 
   const navigate = useNavigate();
   const tenantId = localStorage.getItem('tenant')
-
+  const {currentUser} = useAuth()
   const {data:allDepartments} = useQuery('departments',()=> fetchDepartments(tenantId), {cacheTime:5000})
   const {data:allDivisions} = useQuery('divisions',()=> fetchDivisions(tenantId), {cacheTime:5000})
   const {data:allCategories} = useQuery('categories', ()=>fetchCategories(tenantId), {cacheTime:5000})
@@ -42,13 +43,11 @@ const MultiTabForm= () =>{
     setActiveTab(newTab);
   }
 
-  const [fileList, setFileList] = useState<UploadFile[]>([
-    
-  ]);
+  // console.log(currentUser?.exp);
+  const expiringDate:any = currentUser?.exp
+  
+  const dateObj:any = new Date(expiringDate * 1000);
 
-  const onChange: UploadProps['onChange'] = (file:any) => {
-    setTempImage(file);
-  };
     // to preview the uploaded file
     const onPreview = async (file: UploadFile) => {
       let src = file.url as string;
@@ -93,6 +92,10 @@ const MultiTabForm= () =>{
     }
    
   };
+
+  const clearImage = ()=>{
+    setPreviewImage('');
+  }
 
 
 
@@ -210,8 +213,28 @@ const MultiTabForm= () =>{
               <div className=' mb-7 '>
                 {
                   previewImage && (
-
-                    <img style={{borderRadius:"10px",marginBottom:"20px"}} src={previewImage} width={120} height={120}></img>
+                    <>
+                      <img style={{borderRadius:"10px",marginBottom:"20px"}} src={previewImage} width={120} height={120}>
+                      </img>
+                      <p style={{
+                        // backgroundColor:"light-blue", 
+                        
+                        width:"90px", 
+                        height:"20px", 
+                        fontSize:"14px", 
+                        fontWeight:"bold",
+                        alignItems:"center",
+                        display:"flex",
+                        justifyContent:"center",
+                        borderRadius:"5px",
+                        marginTop:"-15px",
+                        marginLeft:"10px",
+                        cursor:"pointer",
+                        }}
+                        onClick={clearImage}
+                      >Remove</p>
+                    </>
+                      
                   )
                 }{
                   !previewImage&& (

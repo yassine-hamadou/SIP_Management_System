@@ -32,6 +32,8 @@ const AppRoutes: FC = () => {
 
 const hasApp = userApp?.find((applicationId:any)=>applicationId ==='10')
 // const tenantId = localStorage.getItem('tenant')
+const expiringDate:any = currentUser?.exp
+const dateObj:any = new Date(expiringDate * 1000);
 
   return (
     <BrowserRouter basename={PUBLIC_URL}>
@@ -39,10 +41,9 @@ const hasApp = userApp?.find((applicationId:any)=>applicationId ==='10')
         <Route element={<App />}>
           <Route path='error/*' element={<ErrorsPage />} />
           <Route path='logout' element={<Logout />} />
-          {/* {currentUser && hasApp &&tenantId? ( */}
-          {currentUser && hasApp && tenant? (
+          
+          {currentUser && hasApp && tenant && (dateObj > Date.now())? (
             <>
-              
               <Route path='/*' element={<PrivateRoutes />} />
               <Route index element={<Navigate to='/hr-dashboard' />} />
             </>

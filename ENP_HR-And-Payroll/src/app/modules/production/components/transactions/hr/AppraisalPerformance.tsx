@@ -4,10 +4,11 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { Api_Endpoint, fetchAppraisals, fetchAppraisalTransactions, fetchEmployees, fetchJobTitles, fetchPaygroups, fetchPeriods } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchAppraisals, fetchAppraisalTransactions, fetchEmployees, fetchJobTitles, fetchPaygroups, fetchPeriods,fetchParameters } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 import "./cusStyle.css"
 import { useForm } from 'react-hook-form'
+import { defaultValues } from 'devexpress-dashboard/model/index.metadata'
 
 const AppraisalPerformance = () => {
   const [gridData, setGridData] = useState([])
@@ -15,7 +16,7 @@ const AppraisalPerformance = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const {reset, register, handleSubmit} = useForm()
+  const {reset, register, handleSubmit} = useForm( )
   
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [tabModalOpen, setTabModalOpen] = useState(false)
@@ -37,12 +38,14 @@ const AppraisalPerformance = () => {
   const [radio3Value, setRadio3Value] = useState(1);
   const [radio4Value, setRadio4Value] = useState(1);
   const tenantId = localStorage.getItem('tenant')
+  const [fieldInit, setFieldInit] =useState([])
+  
+
+
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
   };
-  const showModal = () => {
-    setIsModalOpen(true)
-  }
+  
 
   const onRadioChange = (e: RadioChangeEvent) => {
     console.log('radio checked', e.target.value);
@@ -64,10 +67,6 @@ const AppraisalPerformance = () => {
     console.log('radio checked', e.target.value);
     setRadio4Value(e.target.value);
   };
-
-  // const handleOk = () => {
-  //   setIsModalOpen(false)
-  // }
 
   const handleCancel = () => {
     reset()
@@ -114,23 +113,7 @@ const AppraisalPerformance = () => {
   const { data: allJobTitles } = useQuery('jobTitles',()=> fetchJobTitles(tenantId), { cacheTime: 5000 })
   const { data: allPaygroups } = useQuery('recruitments',()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
   const { data: allAppraisalTransactions } = useQuery('appraisalTransactions',()=> fetchAppraisalTransactions(tenantId), { cacheTime: 5000 })
-
-  // to preview the uploaded file
-  const onPreview = async (file: UploadFile) => {
-    let src = file.url as string;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj as RcFile);
-        reader.onload = () => resolve(reader.result as string);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
-  };
-
+  const { data: allParameters } = useQuery('parameters', ()=> fetchParameters(tenantId), { cacheTime: 5000 })
 
   const columns: any = [
     {
@@ -362,7 +345,7 @@ const AppraisalPerformance = () => {
     let surname = ""
     alEmployees?.data.map((item: any) => {
       if (item.id === employeeId) {
-        surname=item.dob
+        surname = item?.dob?.substring(0,10)
       }
     })
     return surname
@@ -383,8 +366,42 @@ const AppraisalPerformance = () => {
     })
     return jobTitleName
   } 
- 
-    
+
+  const parameterByAppraisal = allParameters?.data.filter((section: any) => section.appraisalId === parseInt(selectedValue2))
+  .map((item:any)=>({
+    ...item,
+    score: '',
+    comment: '',
+  }))
+
+  const showModal = () => {
+    setIsModalOpen(true)
+    setFieldInit(parameterByAppraisal)
+  }
+
+  const handleSelectedChange = (e:any) =>{
+    setSelectedValue2(e.target.value)
+    setFieldInit(parameterByAppraisal)
+  }
+  const handleScoreChange = (e:any, userId:any) => {
+    const newUsers:any = fieldInit.map((user:any) => {
+      if (user.id === userId) {
+        return { ...user, score: parseInt(e.target.value) };
+      }
+      return user;
+    });
+    setFieldInit(newUsers);
+  };
+
+  const handleCommentChange = (e:any, userId:any) => {
+    const newUsers:any = fieldInit.map((user:any) => {
+      if (user.id === userId) {
+        return { ...user, comment: e.target.value };
+      }
+      return user;
+    });
+    setFieldInit(newUsers);
+  };
 
   useEffect(() => {
     const getjobTitleName = () => {
@@ -397,6 +414,8 @@ const AppraisalPerformance = () => {
       setjobTitleName(jobTitleName)
       return jobTitleName
     } 
+
+    
     getjobTitleName()
     loadData()
   }, [allJobTitles?.data, employeeRecord?.jobTitleId])
@@ -428,12 +447,11 @@ const AppraisalPerformance = () => {
         employeeId: employeeRecord.id,
         startPeriod: selectedValue3,
         endPeriod: selectedValue4,
-        accomComment: values.accomComment,
-        accomScore: radio1Value.toString(),
-        improvComment: values.improvComment,
-        improvScore: radio2Value.toString(),
-        goalComment: values.goalComment,
-        goalScore: radio3Value.toString(),
+        appraTranItems: fieldInit.map((item:any) => ({
+          parameterId: item.id,
+          score: item.score.toString(),
+          comment: item.comment,
+        })),
         tenantId: tenantId,
       }
       console.log(data)
@@ -475,7 +493,7 @@ const AppraisalPerformance = () => {
           </div>
           <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Appraisal Type</label>
-            <select value={selectedValue2} onChange={(e) => setSelectedValue2(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+            <select value={selectedValue2} onChange={handleSelectedChange} className="form-select form-select-solid" aria-label="Select example">
               <option value="select appraisal type">select appraisal type</option>
               {allAppraisals?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
@@ -580,7 +598,7 @@ const AppraisalPerformance = () => {
                           }}
                         >
                           <option>select</option>
-                          {emplyeesByPaygroup.map((item: any) => (
+                          {emplyeesByPaygroup?.map((item: any) => (
                             <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
                           ))}
                         </Select>
@@ -610,7 +628,7 @@ const AppraisalPerformance = () => {
                   <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="text" {...register("dob")} readOnly  defaultValue={employeeRecord?.dob}  className="form-control form-control-solid"/>
+                      <input type="text" {...register("dob")} readOnly  defaultValue={employeeRecord?.dob?.substring(0,10)}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
@@ -618,7 +636,49 @@ const AppraisalPerformance = () => {
 
                     </div>
                   </div>
-                  <form>
+                  <hr></hr>
+                  {fieldInit?.map((user:any) => (
+                    <div style={{ padding: '10px 20px 10px 20px' }} className="col-12" key={user.id}>
+                      <label style={{fontWeight:"bold"}} htmlFor="exampleFormControlInput1" className="form-label">
+                        {user.name}
+                      </label>
+                      <div className='row'>
+                        <div className='col-6'>
+                          <label  htmlFor="exampleFormControlInput1" className="form-label">
+                            Score
+                          </label>
+                          <input
+                            type="number"
+                            min={1}
+                            max={5}
+                            placeholder='score from 1 to 5'
+                            className="form-control form-control-solid"
+                            value={user.score}
+                            onChange={(e) => handleScoreChange(e, user.id)}
+                          />
+                        </div>
+                        <div className='col-6'>
+                          <label  htmlFor="exampleFormControlInput1" className="form-label">
+                            Comment
+                          </label>
+                          <textarea
+                            value={user.comment}
+                            onChange={(e) => handleCommentChange(e, user.id)}
+                            className="form-control form-control-solid"
+                            placeholder="comments (optional)"
+                            aria-label="With textarea"
+                          ></textarea>
+                        </div>
+                      </div>                      
+                    </div>
+                  ))}
+                  <div style={{padding: "20px 20px 30px 20px"}} className='col-12 mb-3'>
+                  <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Supporting Document :</label>
+
+                    <input {...register("documentUrl")}  className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
+                  </div>
+
+                  {/* <form>
                     <hr></hr>
                   <div>
                     <div style={{display:"flex", }} className="tabs">
@@ -703,7 +763,7 @@ const AppraisalPerformance = () => {
                       </div>}
                     </div>
                   </div>
-                </form>
+                </form> */}
               </form>           
           </Modal>     
           <Modal
@@ -727,9 +787,7 @@ const AppraisalPerformance = () => {
                   </Button>,
                 ]}
             >
-
               <h3>Will be updated soon</h3>
-               
           </Modal>
         </div>
       </KTCardBody>
@@ -740,5 +798,6 @@ const AppraisalPerformance = () => {
 }
 
 export {AppraisalPerformance}
+
 
 

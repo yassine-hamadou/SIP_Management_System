@@ -3,10 +3,10 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
-import { Api_Endpoint, fetchPaygroups ,fetchPeriods} from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchEmployees, fetchPaygroups ,fetchPeriods} from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 
-const Payrun = () => {
+const LoanTransaction = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -49,7 +49,7 @@ const Payrun = () => {
   const columns: any = [
    
     {
-      title: 'Paygroup',
+      title: 'Employee ID',
       dataIndex: 'paygroupId',
       sorter: (a: any, b: any) => {
         if (a.paygroupId > b.paygroupId) {
@@ -69,6 +69,58 @@ const Payrun = () => {
           return 1
         }
         if (b.month > a.month) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Description',
+      dataIndex: 'month',
+      sorter: (a: any, b: any) => {
+        if (a.month > b.month) {
+          return 1
+        }
+        if (b.month > a.month) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Reference no',
+      dataIndex: 'month',
+      sorter: (a: any, b: any) => {
+        if (a.month > b.month) {
+          return 1
+        }
+        if (b.month > a.month) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      sorter: (a: any, b: any) => {
+        if (a.date > b.date) {
+          return 1
+        }
+        if (b.date > a.date) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      sorter: (a: any, b: any) => {
+        if (a.amount > b.amount) {
+          return 1
+        }
+        if (b.amount > a.amount) {
           return -1
         }
         return 0
@@ -98,12 +150,13 @@ const Payrun = () => {
     },
   ]
 
+  const { data: employees } = useQuery('employees', ()=> fetchEmployees(tenantId), { cacheTime: 5000 })
   const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
   const { data: periods } = useQuery('periods', ()=> fetchPeriods(tenantId), { cacheTime: 5000 })
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/ProductionActivity`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -200,6 +253,7 @@ const Payrun = () => {
                 title='Process Payrun'
                 open={isModalOpen}
                 onCancel={handleCancel}
+                width={850}
                 closable={true}
                 footer={[
                     <Button key='back' onClick={handleCancel}>
@@ -221,16 +275,16 @@ const Payrun = () => {
                 <form>
                 <hr></hr>
                   <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Paygroup </label>
+                    <div className='col-6 mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID </label>
                       <select  className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
-                        {allPaygroups?.data.map((item: any) => (
-                          <option value={item.id}>{item.name}</option>
+                        {employees?.data.map((item: any) => (
+                          <option value={item.id}>{item.employeeId} - {item.firstName} {item.surname}</option>
                         ))}
                       </select>
                     </div>
-                    <div className=' mb-7'>
+                    <div className='col-6 mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Month </label>
                       <select  className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
@@ -238,6 +292,22 @@ const Payrun = () => {
                           <option value={item.id}>{item.name}</option>
                         ))}
                       </select>
+                    </div>
+                    <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
+                        <input type="text"  className="form-control form-control-solid" />
+                    </div>
+                    <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Reference</label>
+                        <input type="text"  className="form-control form-control-solid" />
+                    </div>
+                    <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
+                        <input type="text"  className="form-control form-control-solid" />
+                    </div>
+                    <div className='col-6 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Amount</label>
+                        <input type="number"  className="form-control form-control-solid" />
                     </div>
                   </div>
                 </form>
@@ -248,4 +318,4 @@ const Payrun = () => {
   )
 }
 
-export {Payrun}
+export {LoanTransaction}

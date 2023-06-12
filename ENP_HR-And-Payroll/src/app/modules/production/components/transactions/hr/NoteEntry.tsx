@@ -410,24 +410,24 @@ const NoteEntry = () => {
                         <label htmlFor="exampleFormControlInput1" className="form-label">Reference #</label>
                         <input type="text" {...register("reference")}  className="form-control form-control-solid"/>
                       </div>
-                      {/* <div className='col-6 mb-7'>
+                      <div className='col-6 mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Note Type</label>
                         <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
                           <option value="Disciplinary">DISCIPLINARY ACTION</option>
                           <option value="Grievances">GRIEVANCES </option>
                         </select>
-                      </div> */}
+                      </div>
                       
-                      {/* <div className='col-6 mb-7'>
+                       <div className='col-6 mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Note Category</label>
                         <select {...register("noteCategoryId")} className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        {noteCategoriesByType?.map((item: any) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
+                          <option> select</option>
+                          {noteCategoriesByType?.map((item: any) => (
+                            <option value={item.id}>{item.name}</option>
+                          ))}
                         </select>
-                      </div> */}
+                      </div> 
                       
                       <div className='col-6 mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Upload Document</label>

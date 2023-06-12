@@ -3,10 +3,10 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
-import { Api_Endpoint, fetchPaygroups ,fetchPeriods} from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchPaygroups, fetchPeriods } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 
-const Payrun = () => {
+const BackPays = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -62,7 +62,33 @@ const Payrun = () => {
       },
     },
     {
-      title: 'Month',
+      title: 'Start month',
+      dataIndex: 'month',
+      sorter: (a: any, b: any) => {
+        if (a.month > b.month) {
+          return 1
+        }
+        if (b.month > a.month) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'End month',
+      dataIndex: 'month',
+      sorter: (a: any, b: any) => {
+        if (a.month > b.month) {
+          return 1
+        }
+        if (b.month > a.month) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Percentage Increase',
       dataIndex: 'month',
       sorter: (a: any, b: any) => {
         if (a.month > b.month) {
@@ -100,6 +126,7 @@ const Payrun = () => {
 
   const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
   const { data: periods } = useQuery('periods', ()=> fetchPeriods(tenantId), { cacheTime: 5000 })
+
   const loadData = async () => {
     setLoading(true)
     try {
@@ -195,52 +222,66 @@ const Payrun = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} />
           <Modal
-                title='Process Payrun'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='Process BackPay'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                  Cancel
+              </Button>,
+              <Button
+              key='submit'
+              type='primary'
+              htmlType='submit'
+              loading={submitLoading}
+              onClick={() => {
+                form.submit()
+              }}
+              >
+                  Submit
+              </Button>,
+            ]}
             >
-                <form>
-                <hr></hr>
-                  <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Paygroup </label>
-                      <select  className="form-select form-select-solid" aria-label="Select example">
+              <form>
+              <hr></hr>
+                <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                  <div className=' mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="form-label">Paygroup </label>
+                    <select  className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
                         {allPaygroups?.data.map((item: any) => (
                           <option value={item.id}>{item.name}</option>
                         ))}
                       </select>
-                    </div>
-                    <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Month </label>
-                      <select  className="form-select form-select-solid" aria-label="Select example">
+
+                  </div>
+                  <div className=' mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="form-label">Start Month </label>
+                    <select  className="form-select form-select-solid" aria-label="Select example">
                         <option> select</option>
                         {periods?.data.map((item: any) => (
                           <option value={item.id}>{item.name}</option>
                         ))}
                       </select>
-                    </div>
                   </div>
-                </form>
+                  <div className=' mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="form-label"> End Month </label>
+                    <select  className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        {periods?.data.map((item: any) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
+                  </div>
+                  <div className=' mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="form-label">Increase Percentage</label>
+                    <input type="number"  className="form-control form-control-solid" />
+                  </div>
+                </div>
+              </form>
             </Modal>
         </div>
       </KTCardBody>
@@ -248,4 +289,4 @@ const Payrun = () => {
   )
 }
 
-export {Payrun}
+export {BackPays}

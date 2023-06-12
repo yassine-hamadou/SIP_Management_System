@@ -3,6 +3,8 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { Api_Endpoint, fetchPaygroups ,fetchPeriods} from '../../../../../services/ApiCalls'
+import { useQuery } from 'react-query'
 
 const Journals = () => {
   const [gridData, setGridData] = useState([])
@@ -11,7 +13,7 @@ const Journals = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
-
+  const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const showModal = () => {
@@ -29,7 +31,7 @@ const Journals = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/ProductionActivity/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -47,13 +49,26 @@ const Journals = () => {
   const columns: any = [
    
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: 'Paygroup',
+      dataIndex: 'paygroupId',
       sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
+        if (a.paygroupId > b.paygroupId) {
           return 1
         }
-        if (b.name > a.name) {
+        if (b.paygroupId > a.paygroupId) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Month',
+      dataIndex: 'month',
+      sorter: (a: any, b: any) => {
+        if (a.month > b.month) {
+          return 1
+        }
+        if (b.month > a.month) {
           return -1
         }
         return 0
@@ -83,6 +98,8 @@ const Journals = () => {
     },
   ]
 
+  const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: periods } = useQuery('periods', ()=> fetchPeriods(tenantId), { cacheTime: 5000 })
   const loadData = async () => {
     setLoading(true)
     try {
@@ -120,7 +137,7 @@ const Journals = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
+  const url = `${Api_Endpoint}/ProductionActivity`
   const onFinish = async (values: any) => {
     setSubmitLoading(true)
     const data = {
@@ -180,45 +197,51 @@ const Journals = () => {
           </div>
           <Table columns={columns} />
           <Modal
-                title='Add Activity'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='Process Journal'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                  Cancel
+              </Button>,
+              <Button
+              key='submit'
+              type='primary'
+              htmlType='submit'
+              loading={submitLoading}
+              onClick={() => {
+                form.submit()
+              }}
+              >
+                  Submit
+              </Button>,
+            ]}
             >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
-                >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
+                <form>
+                <hr></hr>
+                  <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Paygroup </label>
+                      <select  className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        {allPaygroups?.data.map((item: any) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
+
+                    </div>
+                    <div className=' mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Month </label>
+                      <select  className="form-select form-select-solid" aria-label="Select example">
+                        <option> select</option>
+                        {periods?.data.map((item: any) => (
+                          <option value={item.id}>{item.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </form>
             </Modal>
         </div>
       </KTCardBody>

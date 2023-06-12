@@ -1266,10 +1266,10 @@
   dependencies:
     "@date-io/core" "^2.16.0"
 
-"@devexpress/analytics-core@^22.1.5":
-  version "22.2.4"
-  resolved "https://registry.npmjs.org/@devexpress/analytics-core/-/analytics-core-22.2.4.tgz"
-  integrity sha512-c89PbKRFkppEOT3Fdw6vRJyP2423v1hA3czynq30+jfLRpxx/pIF7oMsHah2JVNzzU2+MeQ2bt3+dFyxQ2GAEw==
+"@devexpress/analytics-core@22.2.6":
+  version "22.2.6"
+  resolved "https://registry.yarnpkg.com/@devexpress/analytics-core/-/analytics-core-22.2.6.tgz#fdf424f765621cd4e309ed3b1b5b722721cec072"
+  integrity sha512-vlXj0CAsISyUJK4tRrshr5J1yzCqAStB829zgICsZGAcTWiKzQ3zO/u6cqnCilyQf1U8SgksA+uxsWSZ6xhEBw==
   dependencies:
     "@types/jquery" "^3.1.1"
     "@types/jqueryui" "^1.12.1"
@@ -5039,18 +5039,34 @@ detective@^5.2.1:
     defined "^1.0.0"
     minimist "^1.2.6"
 
-devexpress-diagram@2.1.68:
-  version "2.1.68"
-  resolved "https://registry.npmjs.org/devexpress-diagram/-/devexpress-diagram-2.1.68.tgz"
-  integrity sha512-MCyJFbtjcp74ARQnJcQegBS1Nu+9Qt9q7FnPRza76CvUnPR0jNoHeO26FxSaA3NX0WW7JxmAqxaFWMhMBOanCg==
+devexpress-dashboard-react@22.2.6:
+  version "22.2.6"
+  resolved "https://registry.yarnpkg.com/devexpress-dashboard-react/-/devexpress-dashboard-react-22.2.6.tgz#3aa7fa401f1d8ff97b2453f5f9864853263300b7"
+  integrity sha512-tFNq4mcuQaeLER2u1H8ciaEJOaoRTcA1u9YNoZCB4/dbYawtS3mPpjVWjLY9Hb0iZMhIy7Y1S9Df4MCnxROLWQ==
+  dependencies:
+    prop-types "^15.6.1"
+
+devexpress-dashboard@22.2.6:
+  version "22.2.6"
+  resolved "https://registry.yarnpkg.com/devexpress-dashboard/-/devexpress-dashboard-22.2.6.tgz#e2d842319d363e2c3cb0f99fe36b5846339f44ea"
+  integrity sha512-lLobxVwSpq/JUBHsCRJ9IW1fNzoBdYRWRpYShKjX4xA2sTHrb6ugwdIUUY/VO0Vjov14qOFd38pGrT4or9lXvg==
+  dependencies:
+    "@types/jquery" "^3.1.1"
+    jquery "^3.3.1"
+    knockout "~3.5.0"
+
+devexpress-diagram@2.1.72:
+  version "2.1.72"
+  resolved "https://registry.yarnpkg.com/devexpress-diagram/-/devexpress-diagram-2.1.72.tgz#3aa5de7557fbec79611efcef29e1d0a2fbe18d85"
+  integrity sha512-joK87V4+Olt1PIhdaRhNOmpyT+HSLLNFoDsBvbkSx8leEiyHcjDhtF8mQMVu1zkqwjv62JwnjL1Yqh0LQo1ZLg==
   dependencies:
     "@devexpress/utils" "1.3.16"
     es6-object-assign "^1.1.0"
 
-devexpress-gantt@4.1.39:
-  version "4.1.39"
-  resolved "https://registry.npmjs.org/devexpress-gantt/-/devexpress-gantt-4.1.39.tgz"
-  integrity sha512-WR4WZyPLCMOAc8LFfntaKa/qmAdLbaM2EN0Jr13Xrup3Kt5wKB2ucNbZBolESklmBOq0L5WNGujPms/ltJ/9kQ==
+devexpress-gantt@4.1.43:
+  version "4.1.43"
+  resolved "https://registry.yarnpkg.com/devexpress-gantt/-/devexpress-gantt-4.1.43.tgz#02c77b18144187196c3179ed28d7bd695969d1ec"
+  integrity sha512-pBPwUUzxOmCIM6AvbVWOGf63adsphDX2mqGxesFoScsaKANS/lS3tT7tXXOfqXDXjGFNpicimL1rEoZKvijqgA==
   dependencies:
     "@devexpress/utils" "1.4.1"
     tslib "2.3.1"
@@ -5077,6 +5093,13 @@ devextreme-quill@1.5.20:
     parchment "2.0.0-dev.2"
     quill-delta "4.2.2"
 
+devextreme-react@22.2.6:
+  version "22.2.6"
+  resolved "https://registry.yarnpkg.com/devextreme-react/-/devextreme-react-22.2.6.tgz#6d1f682420bf3b5c9b4f63e91dd43e576fbc2073"
+  integrity sha512-LS7Ic2tAZta2KM8PjygED5F5TfZmnt788WSxp7jkRS7hAqHlRPvfUbe0/2a9mx0A0A5bWwEYwDDLDM2q2OLn7w==
+  dependencies:
+    prop-types "^15.8.1"
+
 devextreme-showdown@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/devextreme-showdown/-/devextreme-showdown-1.0.1.tgz"
@@ -5084,15 +5107,15 @@ devextreme-showdown@^1.0.1:
   dependencies:
     yargs "^17.2.1"
 
-devextreme@^22.1.5:
-  version "22.2.4"
-  resolved "https://registry.npmjs.org/devextreme/-/devextreme-22.2.4.tgz"
-  integrity sha512-r2AKkDdNiPEYNzMKqV3hRwvu/6ZTWUju6fN5BfHD9oKRFqoxGrssYaDhDyFBvtGwdXZN3HfDrlKSYKF1UMlUlQ==
+devextreme@22.2.6:
+  version "22.2.6"
+  resolved "https://registry.yarnpkg.com/devextreme/-/devextreme-22.2.6.tgz#e983b1137c7975bf207740c900b5f6072487abb0"
+  integrity sha512-4MR3ws2atJJt/464pGWA4lGISzgH3vYlCUDvt0chT6S1uUIzz9joEY8WErscf4WleCa9r6tSSWfguELE/2d7sQ==
   dependencies:
     "@babel/runtime" "^7.12.1"
     "@devextreme/runtime" "3.0.11"
-    devexpress-diagram "2.1.68"
-    devexpress-gantt "4.1.39"
+    devexpress-diagram "2.1.72"
+    devexpress-gantt "4.1.43"
     devextreme-quill "1.5.20"
     devextreme-showdown "^1.0.1"
     inferno "^7.4.9"
@@ -7433,6 +7456,11 @@ jquery@^3.1.1:
   resolved "https://registry.npmjs.org/jquery/-/jquery-3.6.3.tgz"
   integrity sha512-bZ5Sy3YzKo9Fyc8wH2iIQK4JImJ6R0GWI9kL1/k7Z91ZBNgkRXE6U0JfHIizZbort8ZunhSI3jw9I6253ahKfg==
 
+jquery@^3.3.1:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.7.0.tgz#fe2c01a05da500709006d8790fe21c8a39d75612"
+  integrity sha512-umpJ0/k8X0MvD1ds0P9SfowREz2LenHsQaxSohMZ5OMNEU2r0tf8pdeEFTHMFxWVxKNyU9rTtK3CWzUCTKJUeQ==
+
 jquery@^3.6.4:
   version "3.6.4"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.4.tgz#ba065c188142100be4833699852bf7c24dc0252f"
@@ -9143,7 +9171,7 @@ prop-types-extra@^1.1.0:
     react-is "^16.3.2"
     warning "^4.0.0"
 
-prop-types@^15.5.7, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@^15.5.7, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==

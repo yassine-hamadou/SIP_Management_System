@@ -289,7 +289,7 @@ const CompensationBenefit = () => {
     let surname = ""
     allEmployees?.data.map((item: any) => {
       if (item.id === employeeId) {
-        surname=item.dob
+        surname=item?.dob?.substring(0,10)
       }
     })
     return surname
@@ -518,7 +518,7 @@ const allPerkByGrade:any = allGradePerks?.data?.filter((item:any) =>{
                           }}
                         >
                           <option>select</option>
-                          {emplyeesByPaygroup.map((item: any) => (
+                          {emplyeesByPaygroup?.map((item: any) => (
                             <option key={item.id} value={item.id}>{item.employeeId} - {item.firstName} - {item.surname}</option>
                           ))}
                         </Select>
@@ -543,7 +543,7 @@ const allPerkByGrade:any = allGradePerks?.data?.filter((item:any) =>{
                   <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="text" name="dob" value={employeeRecord?.dob}  readOnly  className="form-control form-control-solid"/>
+                      <input type="text" name="dob" value={employeeRecord?.dob?.substring(0,10)}  readOnly  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>

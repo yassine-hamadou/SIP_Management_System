@@ -45,9 +45,7 @@ const Recurrent= () =>{
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              {/* {PAYGROUP.map((item: any) => (
-                <option value={item.code}>{item.name}</option>
-              ))} */}
+              
             </select>
           </div>
 
@@ -55,18 +53,14 @@ const Recurrent= () =>{
             <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              {/* {DEPARTMENTS.map((item: any) => (
-                <option value={item.code}>{item.name}</option>
-              ))} */}
+              
             </select>
           </div>
           <div className='col-4 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Employee</label>
             <select className="form-select form-select-solid" aria-label="Select example">
               <option> select</option>
-              {/* {employeedata.map((item: any) => (
-                <option value={item.code}>{item.empcode}-{item.lastname}</option>
-              ))} */}
+              
             </select>
           </div>
         </div>

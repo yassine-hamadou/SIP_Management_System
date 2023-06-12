@@ -516,7 +516,8 @@ const TrainingDevelopment = () => {
       startDate: values.startDate,
       endDtae: values.endDate,
       venue: values.venue,
-      facilitator: values.facilitator
+      facilitator: values.facilitator,
+      tenantId: tenantId
 
     }
       try { 
@@ -541,6 +542,7 @@ const TrainingDevelopment = () => {
       topic: values.topic,
       day: values.day,
       trainingDevTransactionId: parseInt(selectedRef),
+      tenantId: tenantId
     }
       try { 
         
@@ -563,6 +565,7 @@ const TrainingDevelopment = () => {
     const data = {
       employeeId: employeeRecord.id,
       trainingDevTransactionId: parseInt(selectedRef),
+      tenantId: tenantId
     }
       try { 
         

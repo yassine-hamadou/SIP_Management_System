@@ -11,6 +11,11 @@ const Approval = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
+  const [activeTab, setActiveTab] = useState('tab1');
+  const tenantId = localStorage.getItem('tenant')
+  const handleTabClick = (tab:any) => {
+    setActiveTab(tab);
+  }
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -153,73 +158,113 @@ const Approval = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
-          <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
-              <Input
-                placeholder='Enter Search Text'
-                onChange={handleInputChange}
-                type='text'
-                allowClear
-                value={searchText}
-              />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
-            </Space>
-            <Space style={{marginBottom: 16}}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
+            <div className="tabs">
+              
+              <button 
+                className={`tab ${activeTab === 'tab1' ? 'active' : ''}`} 
+                onClick={() => handleTabClick('tab1')}
+              >
+                Timesheets
               </button>
+              <button 
+                className={`tab ${activeTab === 'tab2' ? 'active' : ''}`} 
+                onClick={() => handleTabClick('tab2')}
+              >
+                Recurrent Transactions
+              </button>
+              <button 
+                className={`tab ${activeTab === 'tab3' ? 'active' : ''}`} 
+                onClick={() => handleTabClick('tab3')}
+              >
+                Non-recurrent Transactions
+              </button>
+            
+              
+              
+            </div>
+                  
+            <div className="tab-content">
 
-              <button type='button' className='btn btn-light-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                Export
-            </button>
-            </Space>
-          </div>
+              {/* Details */}
+              {activeTab === 'tab1' && 
+                <div className='d-flex justify-content-between'>
+                  <Space style={{marginBottom: 16}}>
+                    <Input
+                      placeholder='Enter Search Text'
+                      onChange={handleInputChange}
+                      type='text'
+                      allowClear
+                      value={searchText}
+                    />
+                    <Button type='primary' onClick={globalSearch}>
+                      Search
+                    </Button>
+                  </Space>
+                  <Space style={{marginBottom: 16}}>
+                    <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+                      <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                      Add
+                    </button>
+      
+                  </Space>
+                </div>
+                }
+
+              {/* Communications */}
+              {
+              activeTab === 'tab2' && 
+              <div className='d-flex justify-content-between'>
+                <Space style={{marginBottom: 16}}>
+                  <Input
+                    placeholder='Enter Search Text'
+                    onChange={handleInputChange}
+                    type='text'
+                    allowClear
+                    value={searchText}
+                  />
+                  <Button type='primary' onClick={globalSearch}>
+                    Search
+                  </Button>
+                </Space>
+                <Space style={{marginBottom: 16}}>
+                  <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+                    <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                    Add
+                  </button>
+    
+                </Space>
+              </div>
+              }
+              {/* Communications */}
+              {
+              activeTab === 'tab3' && 
+              <div className='d-flex justify-content-between'>
+                <Space style={{marginBottom: 16}}>
+                  <Input
+                    placeholder='Enter Search Text'
+                    onChange={handleInputChange}
+                    type='text'
+                    allowClear
+                    value={searchText}
+                  />
+                  <Button type='primary' onClick={globalSearch}>
+                    Search
+                  </Button>
+                </Space>
+                <Space style={{marginBottom: 16}}>
+                  <button type='button' className='btn btn-primary me-3' onClick={showModal}>
+                    <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                    Add
+                  </button>
+    
+                </Space>
+              </div>
+              }
+
+            </div>
+            
           <Table columns={columns}  />
-          <Modal
-                title='Add Activity'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
-            >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    title='Add Service'
-                    onFinish={onFinish}
-                >
-                    <Form.Item
-                        name='name'
-                        label='Name'
-                        
-                        rules={[{required: true}]}
-                    >
-                        <Input />
-                    </Form.Item>
-                </Form>
-            </Modal>
+          
         </div>
       </KTCardBody>
     </div>

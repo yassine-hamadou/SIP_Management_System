@@ -13,8 +13,8 @@ export function AsideMenuMain() {
   const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
 
   const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(currentUser?.id)).map((filteredItem:any) => {
-    return filteredItem.applicationId.toString()
-})
+    return filteredItem?.applicationId?.toString()
+  })
 
 
   
@@ -28,15 +28,9 @@ export function AsideMenuMain() {
   // console.log("userId ",currentUser?.id)
   
    const  currentUserRoles = allUserRoles?.data.filter((item:any )=> item.userId === parseInt(currentUser?.id)).map((filteredItem:any) => {
-        return filteredItem.roleId.toString()
+        return filteredItem?.roleId?.toString()
     })
-    
-    // const tes = userRoles.forEach((rol:any) => {
-    //   return rol.id
-    // });
-
-    // console.log(currentUserRoles);
-    
+  
 
   return (
     <>
@@ -89,6 +83,7 @@ export function AsideMenuMain() {
           </>
         </AsideMenuItemWithSub>
 
+        {/* This is for only HR */}
         {
           isHR==true?
           <AsideMenuItemWithSub
@@ -131,6 +126,8 @@ export function AsideMenuMain() {
           </AsideMenuItemWithSub>
           :""
         }
+
+        {/* This is for only Payroll */}
         {
           isPayroll==true?
           <AsideMenuItemWithSub
@@ -149,9 +146,9 @@ export function AsideMenuMain() {
           </AsideMenuItemWithSub>
           <AsideMenuItemWithSub to='#' title='Processes' icon='/media/icons/duotune/general/gen008.svg' hasBullet={false}>
             <AsideMenuItem to='processes/payroll/approval' hasBullet={true} title='Approvals' />
-            <AsideMenuItem to='processes/payroll/check-tax' hasBullet={true} title='Check Taxes' />
+            {/* <AsideMenuItem to='processes/payroll/check-tax' hasBullet={true} title='Check Taxes' /> */}
             <AsideMenuItem to='processes/payroll/journal' hasBullet={true} title='Journals' />
-            <AsideMenuItem to='processes/payroll/project-sheets-input' hasBullet={true} title='Project Sheets and Inputs' />
+            {/* <AsideMenuItem to='processes/payroll/project-sheets-input' hasBullet={true} title='Project Sheets and Inputs' /> */}
             <AsideMenuItem to='processes/payroll/payrun' hasBullet={true} title='Payruns' />
           </AsideMenuItemWithSub>
           <AsideMenuItem 
@@ -187,6 +184,8 @@ export function AsideMenuMain() {
           </AsideMenuItemWithSub>
           :""
         }
+
+        {/* This is for HR and Payroll */}
         {
           isPayrollHR==true?
           <>
@@ -289,6 +288,7 @@ export function AsideMenuMain() {
                   ||currentUserRoles?.find((rolId:any)=>rolId?.includes('7'))
                   ||currentUserRoles?.find((rolId:any)=>rolId?.includes('8'))
                   ? <AsideMenuItemWithSub to='#' title='Transactions' icon='/media/icons/duotune/ecommerce/ecm001.svg' hasBullet={false}>
+                      <AsideMenuItem to='transaction/payroll/loantran' hasBullet={true} title='Loans' />
                       <AsideMenuItem to='transaction/payroll/timesheet' hasBullet={true} title='Timesheets' />
                       <AsideMenuItem to='transaction/payroll/recurrent' hasBullet={true} title='Recurrents' />
                       <AsideMenuItem to='transaction/payroll/non-recurrent' hasBullet={true} title='Non-recurrents' />
@@ -307,9 +307,10 @@ export function AsideMenuMain() {
                   ||currentUserRoles?.find((rolId:any)=>rolId?.includes('28'))
                   ? <AsideMenuItemWithSub to='#' title='Processes' icon='/media/icons/duotune/general/gen008.svg' hasBullet={false}>
                       <AsideMenuItem to='processes/payroll/approval' hasBullet={true} title='Approvals' />
-                      <AsideMenuItem to='processes/payroll/check-tax' hasBullet={true} title='Check Taxes' />
+                      <AsideMenuItem to='processes/payroll/bonuses' hasBullet={true} title='Bonuses' />
+                      <AsideMenuItem to='processes/payroll/backpay' hasBullet={true} title='Back Pays' />
                       <AsideMenuItem to='processes/payroll/journal' hasBullet={true} title='Journals' />
-                      <AsideMenuItem to='processes/payroll/project-sheets-input' hasBullet={true} title='Project Sheets and Inputs' />
+                      {/* <AsideMenuItem to='processes/payroll/project-sheets-input' hasBullet={true} title='Project Sheets and Inputs' /> */}
                       <AsideMenuItem to='processes/payroll/payrun' hasBullet={true} title='Payruns' />
                     </AsideMenuItemWithSub>
                   :""
@@ -370,7 +371,7 @@ export function AsideMenuMain() {
             </AsideMenuItemWithSub>
           </>
           :""
-      }
+        }
 
       <div className='menu-item'>
        <div className='menu-content'>

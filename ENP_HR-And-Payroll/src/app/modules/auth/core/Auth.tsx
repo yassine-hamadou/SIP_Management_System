@@ -13,8 +13,6 @@ import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
 import {getUserByToken, parseJwt} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
-import { useQuery } from 'react-query'
-import { fetchUserApplications } from '../../../services/ApiCalls'
 import {setTenant} from "./AuthHelpers";
 
 type AuthContextProps = {
@@ -98,7 +96,7 @@ const AuthInit: FC<WithChildren> = ({children}) => {
       } catch (error) {
         console.error(error)
         if (!didRequest.current) {
-          // logout()
+          logout()
         }
       } finally {
         setShowSplashScreen(false)

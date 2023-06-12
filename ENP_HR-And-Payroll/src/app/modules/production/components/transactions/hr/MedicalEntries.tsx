@@ -1,10 +1,10 @@
-import {Button, Input, Modal, Select, Space, Table} from 'antd'
+import {Button, Input, Modal, Radio, RadioChangeEvent, Select, Space, Table} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { useForm } from 'react-hook-form'
-import {  Api_Endpoint, fetchEmployees, fetchMedicals, fetchPaygroups, fetchPeriods } from '../../../../../services/ApiCalls'
+import {  Api_Endpoint, fetchEmployees, fetchMedicals, fetchPaygroups, fetchPeriods, fetchServiceProviders } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 import React from 'react';
 
@@ -20,6 +20,8 @@ const MedicalEntries = () => {
   const {register, reset, handleSubmit} = useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
+  const [radioValue, setRadioValue] = useState(0);
+  const [selectedProvider, setSeletedProvider] = useState<any>("");
   const handleFileSelection = (event:any) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -33,6 +35,11 @@ const MedicalEntries = () => {
     setIsModalOpen(false)
   }
 
+
+   const onRadioChange = (e: RadioChangeEvent) => {
+    setRadioValue(e.target.value);
+  };
+
   const [fileList, setFileList] = useState<UploadFile[]>([
     
   ]);
@@ -45,27 +52,13 @@ const MedicalEntries = () => {
   const {data:allMedicals} = useQuery('medicals', ()=> fetchMedicals(tenantId), {cacheTime:5000})
   const { data: allPeriods } = useQuery('periods', ()=> fetchPeriods(tenantId), { cacheTime: 5000 })
   const { data: allPaygroups } = useQuery('paygroup',()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
-
-  // to preview the uploaded file
-  const onPreview = async (file: UploadFile) => {
-    let src = file.url as string;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj as RcFile);
-        reader.onload = () => resolve(reader.result as string);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
-  };
-
+  const { data: serviceProviders } = useQuery('serviceProviders',()=> fetchServiceProviders(tenantId), { cacheTime: 5000 })
+  const { data: serviceCost } = useQuery('serviceCost',()=> fetchServiceProviders(tenantId), { cacheTime: 5000 })
 
   const handleCancel = () => {
     reset()
     setIsModalOpen(false)
+    setSeletedProvider("")
   }
 
   const deleteData = async (element: any) => {
@@ -143,24 +136,6 @@ const MedicalEntries = () => {
         return 0
       },
     },
-
-    {
-      title: 'Action',
-      fixed: 'right',
-      width: 100,
-      render: (_: any, record: any) => (
-        <Space size='middle'>
-          {/* <a href='#' className='btn btn-light-warning btn-sm'>
-            Update
-          </a> */}
-          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
-            Delete
-          </a>
-         
-        </Space>
-      ),
-      
-    },
   ]
 
   const loadData = async () => {
@@ -188,8 +163,8 @@ const MedicalEntries = () => {
   })
 
   console.log(dataByID)
-  console.log(dataByID)
-  console.log(dataByID)
+  console.log(selectedProvider)
+  
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -228,27 +203,27 @@ const MedicalEntries = () => {
   const onEmployeeChange = (objectId: any) => {
     const newEmplo = allEmployee?.data.find((item:any)=>{
       return item.id===parseInt(objectId)
-    }) // console.log(newEmplo)
+    })
     setEmployeeRecord(newEmplo)
   }
   const emplyeesByPaygroup:any = allEmployee?.data.filter((item:any) =>{
     return  item.paygroupId===parseInt(selectedValue1)
-    })
+  })
 
 
   const url = `${Api_Endpoint}/MedicalTransactions`
   const OnSubmit = handleSubmit( async (values)=> {
     setLoading(true)
     const data = {
-          employeeId: employeeRecord.id,
-          paygroupId: parseInt(selectedValue1),
-          periodId: parseInt(selectedValue2),
-          medicalTypeId: parseInt(values.medicalTypeId),
-          date: values.date,
-          comment: values.comment,
-          tenantId: tenantId,
-        }
-        console.log(data)
+      employeeId: employeeRecord.id,
+      paygroupId: parseInt(selectedValue1),
+      periodId: parseInt(selectedValue2),
+      medicalTypeId: parseInt(values.medicalTypeId),
+      date: values.date,
+      comment: values.comment,
+      tenantId: tenantId,
+    }
+    console.log(data)
     try {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
@@ -296,7 +271,6 @@ const MedicalEntries = () => {
       </div>
       {
         selectedValue1===null||selectedValue2===null||selectedValue1==="select paygroup"||selectedValue2==="select period"?"":
-
         <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
@@ -350,7 +324,7 @@ const MedicalEntries = () => {
                   onSubmit={OnSubmit}  
                 >
                   <hr></hr>
-                  <div style={{padding: "20px 20px 20px 20px"}} className='row mb-0 '>
+                  <div className='row'>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee</label>
                       
@@ -375,55 +349,61 @@ const MedicalEntries = () => {
                         </Select>
                     </div>
                     <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Dependant</label>
-                      <select {...register("medicalTypeId")} className="form-select form-select-solid" aria-label="Select example">
-                        <option> select </option>
-                        {allMedicals?.data.map((item: any) => (
-                          <option value={item.id}>{item.name}</option>
-                        ))}
-                      </select>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Reference</label>
+                      <input type="text" {...register("reference")}  className="form-control form-control-solid"/>
                     </div>
-                  </div>
-                  <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
+                    <div className='col-6 mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Dependant</label>
+                        <div className='mt-2'>
+                          <Radio.Group value={radioValue} onChange={onRadioChange} >
+                            <Radio value={1}>Yes</Radio>
+                            <Radio value={0}>No</Radio>
+                          </Radio.Group>
+                        </div>
+                    </div>
+                    {
+                      radioValue==1 &&(
+                        <div className='col-6 mb-3'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Select Dependant</label>
+                          <select {...register("dependantId")} className="form-select form-select-solid" aria-label="Select example">
+                            <option> Select </option>
+                          </select>
+                        </div>
+                      )
+                    }
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Service Provider</label>
-                      <select {...register("medicalTypeId")} className="form-select form-select-solid" aria-label="Select example">
+                      <select {...register("medicalTypeId")} value={selectedProvider} onChange={(e:any)=>{setSeletedProvider(e.target.value)}} className="form-select form-select-solid" aria-label="Select example">
                         <option> select </option>
-                        {allMedicals?.data.map((item: any) => (
+                        {serviceProviders?.data.map((item: any) => (
                           <option value={item.id}>{item.name}</option>
                         ))}
                       </select>
                     </div>
+                    {
+                      selectedProvider===null||selectedProvider==="" || selectedProvider==="select" ?"":
+                      <>
+                        <p>We can add services and product now</p>
+                      </>
+                    }
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
                       <input type="date" {...register("date")}  className="form-control form-control-solid"/>
                     </div>
-                  </div>
-                  <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Voucher Number</label>
                       <input type="text" {...register("voucherNumber")}  className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Comments</label>
-                      
                       <textarea {...register("comment")} className="form-control form-control-solid" aria-label="With textarea"></textarea>
                     </div>
-                  </div>
-                  <div style={{padding: "0px 20px 20px 20px"}} className='row mb-0 '>
                     <div className='col-6 mb-3'>
   
                     <input type="file" className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onChange={handleFileSelection} />
-                      {selectedFile && (
-                        <div>
-                          <p>Name: {selectedFile.name}</p>
-                          <p>Type: {selectedFile.type}</p>
-                          <p>Size: {selectedFile.size} bytes</p>
-                        </div>
-                      )}
-                      
+                                            
                     </div>
-                  </div>
+               </div>
                 </form>
             </Modal>
         </div>

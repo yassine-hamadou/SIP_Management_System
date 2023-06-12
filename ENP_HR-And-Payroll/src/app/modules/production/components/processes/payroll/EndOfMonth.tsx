@@ -6,7 +6,7 @@ import { ENP_URL } from '../../../urls'
 import { Api_Endpoint, fetchPaygroups ,fetchPeriods} from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 
-const Payrun = () => {
+const EndOfMonth = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -195,28 +195,28 @@ const Payrun = () => {
             </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} />
           <Modal
-                title='Process Payrun'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+            title='Process Journal'
+            open={isModalOpen}
+            onCancel={handleCancel}
+            closable={true}
+            footer={[
+              <Button key='back' onClick={handleCancel}>
+                  Cancel
+              </Button>,
+              <Button
+              key='submit'
+              type='primary'
+              htmlType='submit'
+              loading={submitLoading}
+              onClick={() => {
+                form.submit()
+              }}
+              >
+                  Submit
+              </Button>,
+            ]}
             >
                 <form>
                 <hr></hr>
@@ -229,6 +229,7 @@ const Payrun = () => {
                           <option value={item.id}>{item.name}</option>
                         ))}
                       </select>
+
                     </div>
                     <div className=' mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Month </label>
@@ -248,4 +249,4 @@ const Payrun = () => {
   )
 }
 
-export {Payrun}
+export {EndOfMonth}

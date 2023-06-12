@@ -67,6 +67,9 @@ export const updateDepartment = (data: any) => {
 export const fetchUnits = (tId:any) => {
     return axios.get(`${Api_Endpoint}/Units/tenant/${tId}`)
 }
+export const fetchParameters = (tId:any) => {
+    return axios.get(`${Api_Endpoint}/Parameters/tenant/${tId}`)
+}
 export const updateUnit = (data: any) => {
     return axios.put(`${Api_Endpoint}/Units/${data.id}`, data)
 }
@@ -221,10 +224,14 @@ export const fetchNoteTransactions = (tId:any) => {
 export const fetchServiceProviders = (tId:any) => {
     return axios.get(`${Api_Endpoint}/ServiceProviders/tenant/${tId}`)
 }
+
 export const updateServiceProvider = (data: any) => {
     return axios.put(`${Api_Endpoint}/ServiceProviders/${data.id}`, data)
 }
 
+export const fetchServiceCost = (tId: any) => {
+    return axios.put(`${Api_Endpoint}/ServiceCosts/${tId}`)
+}
 export const updateServiceCost = (data: any) => {
     return axios.put(`${Api_Endpoint}/ServiceCosts/${data.id}`, data)
 }

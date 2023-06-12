@@ -63,6 +63,7 @@ const EmployeeEditForm = () => {
   const handleTab2Click = (tab2: any) => {
     setActiveTab2(tab2);
   }
+  
   const openStatus = () => {
     setIsStatusModalOpen(true)
   }
@@ -879,12 +880,6 @@ const EmployeeEditForm = () => {
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  // const onFileChange = (e:any) => {
-  //   // Update the state
-  //   setTempImage(e.target.files[0] );
-   
-  // };
-
   const loadSkills = async () => {
     setLoading(true)
     try {
@@ -1087,9 +1082,6 @@ const EmployeeEditForm = () => {
   // check date be make sure users can not select date before today
   const today = new Date().toISOString().split('T')[0];  
 
-  // const experienceByEmployee = experienceData.filter((exp:any) =>{
-  //   return exp.employeeId.toString() ===param.id
-  // })
   const qualificationByEmployee = qualificationData.filter((qualification: any) => {
     return qualification.employeeId.toString() === param.id
   })
@@ -1097,23 +1089,6 @@ const EmployeeEditForm = () => {
     return qualification.employeeId.toString() === param.id
   })
 
-
- 
-  // to preview the uploaded file
-  // const onPreview = async (file: UploadFile) => {
-  //   let src = file.url as string;
-  //   if (!src) {
-  //     src = await new Promise((resolve) => {
-  //       const reader = new FileReader();
-  //       reader.readAsDataURL(file.originFileObj as RcFile);
-  //       reader.onload = () => resolve(reader.result as string);
-  //     });
-  //   }
-  //   const image = new Image();
-  //   image.src = src;
-  //   const imgWindow = window.open(src);
-  //   imgWindow?.document.write(image.outerHTML);
-  // };
 
   const queryClient = useQueryClient()
   const { isLoading, mutate } = useMutation(updateEmployee, {
@@ -1129,8 +1104,6 @@ const EmployeeEditForm = () => {
     mutate(tempData)
   }
 
-
-
   const handleImageChange = (e:any) => {
     const file = e.target.files[0];
     setTempImage(file);
@@ -1145,7 +1118,6 @@ const EmployeeEditForm = () => {
       setPreviewImage('');
     }
   };
-
 
 // for posting employee statuses
   const urlSta = `${Api_Endpoint}/EmployeeStatus`
@@ -1178,6 +1150,7 @@ const EmployeeEditForm = () => {
     const data = {
       skillId: values.skillId,
       employeeId: parseInt(param.id),
+      tenantId: tenantId,
     }
     try {
       const response = await axios.post(url, data)
@@ -1198,6 +1171,7 @@ const EmployeeEditForm = () => {
     const data = {
       name: values.name,
       employeeId: parseInt(param.id),
+      tenantId: tenantId,
     }
     try {
       const response = await axios.post(url1, data)
@@ -1218,6 +1192,7 @@ const EmployeeEditForm = () => {
     const data = {
       qualificationId: values.qualificationId,
       employeeId: parseInt(param.id),
+      tenantId: tenantId,
     }
     try {
       const response = await axios.post(url2, data)
@@ -1245,6 +1220,7 @@ const EmployeeEditForm = () => {
       phone: values.phone,
       note: values.note,
       employeeId: parseInt(param.id),
+      tenantId: tenantId,
     }
     try {
       const response = await axios.post(url3, data)
@@ -1331,7 +1307,7 @@ const EmployeeEditForm = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-      <h3> You are updating <span style={{ color: "#FF6363" }}>  {tempData?.firstName} {tempData?.surname}</span></h3>
+      <h3>You are updating <span style={{ color: "#FF6363" }}>  {tempData?.firstName} {tempData?.surname}</span></h3>
       <br></br>
       <Link to="/employee">
         <a style={{ fontSize: "16px", fontWeight: "500" }} className='mb-7 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>
@@ -1667,7 +1643,10 @@ const EmployeeEditForm = () => {
                 </div>
                 <div className='col-3 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Most Recent Status</label>
-                  <input type="text" disabled value={highestIdItem?.status}  className="form-control form-control-solid" />
+                  <br></br>
+                  <span className="form-control form-control-solid">{highestIdItem?.status} - {highestIdItem?.date.substring(0,10)}</span>
+                  
+                  {/* <input  disabled value={highestIdItem?.status - highestIdItem?.date.substring(0,10)} className="form-control form-control-solid" /> */}
 
                 </div>
                 <div className='col-3 mb-7'>
@@ -1725,9 +1704,9 @@ const EmployeeEditForm = () => {
                                     <select className="form-select form-select-solid" {...register("status")} defaultValue={isUpdateModalOpen === true ? tempData.status : ''} onChange={handleChange} aria-label="Select example">
                                       <option> select</option>
                                       <option value="Activate"> Activate</option>
+                                      <option value="Terminate"> Terminate</option>
                                       <option value="Suspended"> Suspended</option>
-                                      <option value="Suspended"> Suspended</option>
-                                      <option value="End of Contract"> End of Contract</option>
+                                      <option value="End of Contract">End of Contract</option>
                                     </select>
                                     {/* <input type="text" {...register("status")} defaultValue={isUpdateModalOpen === true ? tempData.status : ''} onChange={handleChange} className="form-control form-control-solid" /> */}
                                 </div>

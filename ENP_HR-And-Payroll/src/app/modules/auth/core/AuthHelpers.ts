@@ -47,6 +47,7 @@ const setAuth = (auth: AuthModel) => {
   if (!localStorage) {
     return
   }
+  
   try {
     const lsValue = JSON.stringify(auth)
     const tok = JSON.stringify(auth.jwtToken)
@@ -89,7 +90,7 @@ export function setupAxios(axios: any) {
     (config: {headers: {Authorization: string}}) => {
       const auth = getAuth()
       if (auth && auth.jwtToken) {
-        config.headers.Authorization = `${auth.jwtToken}`
+        config.headers.Authorization = `Bearer ${auth.jwtToken}`
       }
       return config
     },
