@@ -21,6 +21,7 @@ const ServiceCost = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const param: any = useParams();
+  const [detailName, setDetailName] = useState('')
 
   const tenantId = localStorage.getItem('tenant')
   const navigate = useNavigate();
@@ -118,12 +119,16 @@ const ServiceCost = () => {
     },
   ]
   const { data: allProducts } = useQuery('products', fetchProducts, { cacheTime: 5000 })
-  const { data: allServiceProviders } = useQuery('serviceProviders', fetchServiceProviders, { cacheTime: 5000 })
+  const { data: allServiceProviders } = useQuery('serviceProviders',()=>fetchServiceProviders(tenantId), { cacheTime: 5000 })
 
   const loadData = async () => {
     setLoading(true)
     try {
       const response = await axios.get(`${Api_Endpoint}/ServiceCosts/tenant/${tenantId}`)
+      const getProduct = allServiceProviders?.data.find((item: any) => item.id.toString() === param.id)
+      console.log('product',allServiceProviders?.data)
+      const productName = getProduct?.name
+      setDetailName(productName)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -247,7 +252,7 @@ const ServiceCost = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
-          <h3 style={{ fontWeight: "bolder" }}>{itemName} </h3>
+          <h3 style={{ fontWeight: "bolder" }}>{detailName} </h3>
           <br></br>
           <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
           <br></br>
@@ -306,7 +311,7 @@ const ServiceCost = () => {
                   <label htmlFor="exampleFormControlInput1" className="form-label">Product/Service</label>
                   {/* <input type="text" {...register("code")}  className="form-control form-control-solid"/> */}
                   <select {...register("medicalServiceId")} value={isUpdateModalOpen === true ? tempData?.medicalServiceId : 'Select service'} onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
-                    {isUpdateModalOpen === false ?  <option value="Select service">Select service</option> : null}
+                    {isUpdateModalOpen === false ? <option value="Select service">Select service</option> : null}
                     {
                       allProducts?.data.map((item: any) => (
                         <option value={item.id}>{item.name}</option>

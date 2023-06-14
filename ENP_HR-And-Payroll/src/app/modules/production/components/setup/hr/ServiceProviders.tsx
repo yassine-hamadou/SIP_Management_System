@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
-import { Api_Endpoint, fetchServiceProviders, updateServiceProvider } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchProducts, fetchServiceProviders, updateServiceProvider } from '../../../../../services/ApiCalls'
 
 const ServiceProviders = () => {
   const [gridData, setGridData] = useState([])
@@ -40,6 +40,7 @@ const ServiceProviders = () => {
     event.preventDefault()
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
+  const { data: allProducts } = useQuery('products', fetchProducts, { cacheTime: 5000 })
 
   const deleteData = async (element: any) => {
     try {
@@ -163,12 +164,13 @@ const ServiceProviders = () => {
 
   //   const {data:allServiceProviders} = useQuery('ServiceProviders', fetchServiceProviders, {cacheTime:5000})
 
-  const { data: allServiceProviders } = useQuery('serviceProviders', fetchServiceProviders, { cacheTime: 5000 })
+  const { data: allServiceProviders } = useQuery('serviceProviders', ()=>fetchServiceProviders(tenantId), { cacheTime: 5000 })
   const loadData = async () => {
     setLoading(true)
     try {
       const response = await axios.get(`${Api_Endpoint}/ServiceProviders/tenant/${tenantId}`)
       setGridData(response.data)
+
       setLoading(false)
     } catch (error) {
       console.log(error)

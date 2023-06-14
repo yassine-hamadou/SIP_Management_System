@@ -1,14 +1,13 @@
-import {Button, Form, Input, InputNumber, Upload,Modal, Space, Table, Radio, RadioChangeEvent, Select} from 'antd'
+import {Button, Input, Modal, Space, Table, RadioChangeEvent, Select} from 'antd'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
-import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
+import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { Api_Endpoint, fetchAppraisals, fetchAppraisalTransactions, fetchEmployees, fetchJobTitles, fetchPaygroups, fetchPeriods,fetchParameters } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
 import "./cusStyle.css"
 import { useForm } from 'react-hook-form'
-import { defaultValues } from 'devexpress-dashboard/model/index.metadata'
 
 const AppraisalPerformance = () => {
   const [gridData, setGridData] = useState([])

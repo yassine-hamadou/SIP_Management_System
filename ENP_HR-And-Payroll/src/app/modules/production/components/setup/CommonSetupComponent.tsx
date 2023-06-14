@@ -1,10 +1,12 @@
 import { Button, Input, Modal, Space, Table } from "antd"
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
-import { useQueryClient, useMutation } from "react-query"
+import { useQueryClient, useMutation, useQuery } from "react-query"
 import { KTCardBody, KTSVG } from "../../../../../_metronic/helpers"
 import { deleteItem, fetchDocument, updateItem, postItem } from "../../../../services/ApiCalls"
-import { Link } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { ArrowLeftOutlined } from "@ant-design/icons"
+import { data } from "jquery"
 
 // common setup component
 const SetupComponent = (props: any) => {
@@ -20,6 +22,12 @@ const SetupComponent = (props: any) => {
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const queryClient = useQueryClient()
     const tenantId = localStorage.getItem('tenant')
+    const param: any = useParams();
+    const navigate = useNavigate();
+    const [detailName, setDetailName] = useState('')
+
+    const { data: medicals } = useQuery('medicals', () => fetchDocument(`Medicals/tenant/${tenantId}`), { cacheTime: 5000 })
+
 
     const showModal = () => {
         setIsModalOpen(true)
@@ -95,8 +103,14 @@ const SetupComponent = (props: any) => {
                 <Space size='middle'>
                     {
                         props.data.title === 'Divisions' && <Link to={`/department/${record.id}`}>
-                        <span className='btn btn-light-info btn-sm'>Department</span>
-                      </Link>
+                            <span className='btn btn-light-info btn-sm'>Department</span>
+                        </Link>
+                    }
+
+                    {
+                        props.data.title === 'Medicals' && <Link to={`/products/${record.id}`}>
+                            <span className='btn btn-light-info btn-sm'>Products</span>
+                        </Link>
                     }
                     <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
                         Update
@@ -106,15 +120,28 @@ const SetupComponent = (props: any) => {
                     </a>
                 </Space>
             ),
-
         },
     ]
+
+    // if title is products then remove the code column from the table
+    if (props.data.title === 'Products') {
+        columns.shift()
+    }
 
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = await fetchDocument(`${props.data.url}/tenant/${tenantId}`)
-            setGridData(response.data)
+            const response = props.data.url === 'Products' ? await fetchDocument(`${props.data.url}`) : await fetchDocument(`${props.data.url}/tenant/${tenantId}`)
+            if (props.data.url === 'Products') {
+                const getMedicals = medicals?.data.find((item: any) => item.id.toString() === param.id)
+                const detName = getMedicals?.name
+                setDetailName(detName)
+                const data = response.data.filter((item: any) => item.medicalTypeId?.toString() === param.id)
+                console.log('data', data)
+                setGridData(data)
+            } else {
+                setGridData(response.data)
+            }
             setLoading(false)
         } catch (error) {
             console.log(error)
@@ -181,16 +208,23 @@ const SetupComponent = (props: any) => {
 
     const OnSubmit = handleSubmit(async (values) => {
         setLoading(true)
-        const item = {
+        const item: any = {
             data: {
                 name: values.name,
                 code: values.code,
-                tenantId:tenantId,
+                medicalTypeId: parseInt(param.id),
+                tenantId: tenantId,
             },
             url: props.data.url
         }
-        console.log(item.data)
-        postData(item)
+        // if title is not Products, remove medicalTypeId from item data
+        if (props.data.title !== 'Products') {
+            const { medicalTypeId, ...dataWithoutMedicalTypeId } = item.data;
+            item.data = dataWithoutMedicalTypeId;
+        }
+
+        console.log('before post', item.data)
+        //postData(item)
     })
 
     const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
@@ -217,6 +251,18 @@ const SetupComponent = (props: any) => {
         >
             <KTCardBody className='py-4 '>
                 <div className='table-responsive'>
+                    <div className="mb-5">
+                        {
+                            props.data.title === 'Products' &&
+                            <>
+                                <div>
+                                    <span className="fw-bold text-gray-800 d-block fs-2 mb-3 ">{detailName}</span>
+                                    <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+                                </div>
+                            </>
+                        }
+
+                    </div>
                     <div className='d-flex justify-content-between'>
                         <Space style={{ marginBottom: 16 }}>
                             <Input
