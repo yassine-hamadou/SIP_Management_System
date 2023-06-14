@@ -349,8 +349,7 @@ const Loan = () => {
           </div>
           <Table columns={columns}  />
           <Modal
-            title={isUpdateModalOpen ? 'Loan Update' : 'Loan Add'}
-
+            title={isUpdateModalOpen ? 'Update Loan' : 'Add Loan'}
             open={isModalOpen}
             onCancel={handleCancel}
             closable={true}

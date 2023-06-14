@@ -597,12 +597,9 @@ const EmployeeDetail = () =>{
                 backgroundColor: 'white',
                 padding: '40px',
                 borderRadius: '5px',
-
                 boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
             }}
         >
-
-
             <h3> Details for <span style={{color:"#FF6363"}}>  </span></h3>
             <br></br>
             <Link to={'/transaction/hr/leave-planning/approval'}>
@@ -616,14 +613,9 @@ const EmployeeDetail = () =>{
                 <div className="tab-content">
                         <div className='col-8'>
                             <div className='row mb-0'>
-
-
-
                                 <div className='col-6 mb-7'>
                                     <img style={{borderRadius:"10px"}} src={img} width={100} height={100}></img>
-
                                 </div>
-
                             </div>
                             <div className='row mb-0'>
                                 <div className='col-6 mb-7'>
@@ -635,7 +627,6 @@ const EmployeeDetail = () =>{
                                     <input type="text" name="mname"  readOnly className="form-control form-control-solid" />
                                 </div>
                             </div>
-
                             <div className='row mb-0'>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className="required form-label">Other Name</label>
@@ -647,7 +638,6 @@ const EmployeeDetail = () =>{
                                 </div>
                             </div>
                             <div className='row mb-0'>
-
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
                                     <input type="text" name="gender"  readOnly className="form-control form-control-solid" />
@@ -661,7 +651,6 @@ const EmployeeDetail = () =>{
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className=" form-label">Nationality</label>
                                     <input type="text" name="Nationality" readOnly className="form-control form-control-solid" />
-
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label htmlFor="exampleFormControlInput1" className=" form-label">National ID</label>

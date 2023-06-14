@@ -11,7 +11,6 @@ const LeavePlanning = () => {
   const [chosenFilter, setChosenFilter] = useState(null)
   const navigate = useNavigate()
 
-
   return (
     <>
       <KTCard>

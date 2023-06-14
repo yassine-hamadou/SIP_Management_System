@@ -119,6 +119,7 @@ import { Bonuses } from '../modules/production/components/processes/payroll/Bonu
 import { BackPays } from '../modules/production/components/processes/payroll/BackPay'
 import { EndOfMonth } from '../modules/production/components/processes/payroll/EndOfMonth'
 import { LoanTransaction } from '../modules/production/components/transactions/payroll/LoanTransaction'
+import { Shifts } from '../modules/production/components/setup/hr/Shift'
 
 
 
@@ -148,7 +149,7 @@ const PrivateRoutes = () => (
       <Route
         path='employee/*'
         element={<SuspensedView>
-          <PageTitle breadcrumbs={accountBreadCrumbs}>All Employees</PageTitle>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Details</PageTitle>
           <Employee />
         </SuspensedView>} />
 
@@ -488,6 +489,7 @@ const PrivateRoutes = () => (
           <PageTitle breadcrumbs={accountBreadCrumbs}>Perks</PageTitle>
           <Perks />
         </SuspensedView>} />
+   
       {/* HR Routes  */}
       <Route
         path='setup/hr/appraisals/*'
@@ -549,6 +551,13 @@ const PrivateRoutes = () => (
           <PageTitle breadcrumbs={accountBreadCrumbs}>Company Assets </PageTitle>
           <CompanyAsset />
         </SuspensedView>} />
+      <Route
+        path='setup/hr/shifts/*'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Shifts</PageTitle>
+          <Shifts />
+        </SuspensedView>} 
+        />
 
 
       {/* Payroll Routes  */}
@@ -594,6 +603,13 @@ const PrivateRoutes = () => (
         path='setup/payroll/loan/*'
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Loans</PageTitle>
+          <Loan />
+        </SuspensedView>} />
+
+      <Route
+        path='setup/payroll/bank*'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Banks</PageTitle>
           <Loan />
         </SuspensedView>} />
       <Route

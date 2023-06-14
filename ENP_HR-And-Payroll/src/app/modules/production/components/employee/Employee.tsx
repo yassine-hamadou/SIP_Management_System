@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import {read, utils, writeFile} from "xlsx"
 import { Api_Endpoint, axioInstance, fetchDepartments, fetchEmployees, fetchGrades, fetchNotches, fetchPaygroups } from '../../../../services/ApiCalls'
+import { Roaster } from '../setup/hr/Roater'
 
 
 const Employee = () => {
@@ -19,7 +20,11 @@ const Employee = () => {
   const [img, setImg] = useState();
   const [imgNew, setImgNew] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState('employeeDetail');
 
+  const handleTabClick = (tab:any) => {
+    setActiveTab(tab);
+  }
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -45,24 +50,7 @@ const Employee = () => {
       return e
     }
   }
-
-  // const fetchImage = async () => {
-  //   const res = await fetch("http://208.117.44.15/hrwebapi/uploads/employee/phil.jpeg");
-  //   // const res = await fetch("https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80");
-  //   const imageBlob = await res.blob();
-  //   const imageObjectURL:any  = URL.createObjectURL(imageBlob);
-  //   setImg(imageObjectURL);
-  // };
-  
-  // const getImage = async (imgUrl:any) => {
-  //   const res = await fetch(`http://208.117.44.15/hrwebapi/uploads/employee/${imgUrl}`);
-  //   const imageBlob = await res.blob();
-  //   const imageObjectURL:any  = URL.createObjectURL(imageBlob);
-  //   // return imageObjectURL
-  //   setImgNew(imageObjectURL);
-  //   // return <img style={{borderRadius:"10px"}} src={imageObjectURL} width={50} height={50}></img>
-  // };
-  
+ 
 
   function handleDelete(element: any) {
     deleteData(element)
@@ -288,12 +276,8 @@ const Employee = () => {
 
   useEffect(() => {
     loadData()
-    // fetchImage()
-    // getImage('phil.jpeg')
   }, [])
 
-  // const sortedEmployees = gridData.sort((a:any, b:any) => a?.departmentId.localeCompare(b?.departmentId));
-  // const females = sortedEmployees.filter((employee:any) => employee.gender === 'female');
   
   var out_data:any = {};
   
@@ -351,34 +335,80 @@ const Employee = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
-          <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
-              <Input
-                placeholder='Enter Search Text'
-                onChange={handleInputChange}
-                type='text'
-                allowClear
-                value={searchText}
-              />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
-            </Space>
-            <Space style={{marginBottom: 16}}>
-              <Link to='/employee-form'>
-              <button type='button' className='btn btn-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
-              </Link>
-              {/* <a onClick={handleExport} className='btn btn-light-primary me-3'>Export Data</a> */}
-              <button onClick={handleExport} type='button' className='btn btn-light-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                Export
-            </button>
-            </Space>
-          </div>
-          <Table columns={columns} dataSource={dataWithIndex}  loading={loading}/>
+        <div className="tabs">
+          
+          <button 
+            className={`tab ${activeTab === 'employeeDetail' ? 'active' : ''}`} 
+            onClick={() => handleTabClick('employeeDetail')}
+          >
+            Details
+          </button>
+          <button 
+            className={`tab ${activeTab === 'roaster' ? 'active' : ''}`} 
+            onClick={() => handleTabClick('roaster')}
+          >
+            Roaster
+          </button>
+          <button 
+            className={`tab ${activeTab === 'summary' ? 'active' : ''}`} 
+            onClick={() => handleTabClick('summary')}
+          >
+            Summary
+          </button>
+         
+          
+          
+        </div>
+          
+          <div className="tab-content">
+
+          {activeTab === 'employeeDetail' && 
+            <>
+            
+              <div className='d-flex justify-content-between'>
+                <Space style={{marginBottom: 16}}>
+                  <Input
+                    placeholder='Enter Search Text'
+                    onChange={handleInputChange}
+                    type='text'
+                    allowClear
+                    value={searchText}
+                  />
+                  <Button type='primary' onClick={globalSearch}>
+                    Search
+                  </Button>
+                </Space>
+                <Space style={{marginBottom: 16}}>
+                  <Link to='/employee-form'>
+                  <button type='button' className='btn btn-primary me-3'>
+                    <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                    Add
+                  </button>
+                  </Link>
+                  {/* <a onClick={handleExport} className='btn btn-light-primary me-3'>Export Data</a> */}
+                  <button onClick={handleExport} type='button' className='btn btn-light-primary me-3'>
+                    <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
+                    Export
+                </button>
+                </Space>
+              </div>
+              <Table columns={columns} dataSource={dataWithIndex}  loading={loading}/>
+            </>
+          }
+
+          {activeTab === 'roaster' && 
+            <div>
+              <Roaster/>
+            </div>
+          }
+
+          {activeTab === 'summary' && 
+            <div>
+              <h1>Summary chart here</h1>
+            </div>
+          }
+
+        </div>
           
         </div>
       </KTCardBody>

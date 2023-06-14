@@ -8,7 +8,7 @@ const Products = () => {
     }
   return (
     <div>
-      < SetupComponent data={data} />    
+      <SetupComponent data={data} />    
     </div>
   )
 }

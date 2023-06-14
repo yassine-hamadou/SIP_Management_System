@@ -4,9 +4,8 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { useForm } from 'react-hook-form'
-import {  Api_Endpoint, fetchEmployees, fetchMedicals, fetchPaygroups, fetchPeriods, fetchServiceProviders } from '../../../../../services/ApiCalls'
+import {  Api_Endpoint, fetchEmployees, fetchMedicals, fetchPaygroups, fetchPeriods, fetchProducts, fetchServiceCost, fetchServiceProviders } from '../../../../../services/ApiCalls'
 import { useQuery } from 'react-query'
-import React from 'react';
 
 const MedicalEntries = () => {
   const [gridData, setGridData] = useState([])
@@ -19,16 +18,22 @@ const MedicalEntries = () => {
   const [employeeRecord, setEmployeeRecord]= useState<any>([])
   const {register, reset, handleSubmit} = useForm()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
   const [radioValue, setRadioValue] = useState(0);
   const [selectedProvider, setSeletedProvider] = useState<any>("");
+  const [productName, setProductName] = useState<any>()
   const handleFileSelection = (event:any) => {
     setSelectedFile(event.target.files[0]);
   };
 
   const [selectedFile, setSelectedFile] = useState<any>(null);
+
   const showModal = () => {
     setIsModalOpen(true)
+  }
+  const showProductModal = () => {
+    setIsProductModalOpen(true)
   }
 
   const handleOk = () => {
@@ -53,13 +58,35 @@ const MedicalEntries = () => {
   const { data: allPeriods } = useQuery('periods', ()=> fetchPeriods(tenantId), { cacheTime: 5000 })
   const { data: allPaygroups } = useQuery('paygroup',()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
   const { data: serviceProviders } = useQuery('serviceProviders',()=> fetchServiceProviders(tenantId), { cacheTime: 5000 })
-  const { data: serviceCost } = useQuery('serviceCost',()=> fetchServiceProviders(tenantId), { cacheTime: 5000 })
+  const { data: serviceCost } = useQuery('serviceCost',()=> fetchServiceCost(tenantId), { cacheTime: 5000 })
+  const { data: products } = useQuery('products',()=> fetchProducts(), { cacheTime: 5000 })
+  const [selectedProducts, setSelectedProducts] = useState<any>([]);
 
   const handleCancel = () => {
     reset()
     setIsModalOpen(false)
     setSeletedProvider("")
+    setSelectedProducts([])
   }
+
+
+  const handleProductCancel = () => {
+    setIsProductModalOpen(false)
+  }
+
+
+  const handleSelect = (product:any) => {
+    setSelectedProducts((prevSelectedProducts:any) => [...prevSelectedProducts, product]);
+  };
+
+  console.log('Selected',selectedProducts);
+  
+
+  const handleRemove = (product:any) => {
+    setSelectedProducts((prevSelectedProducts:any) =>
+      prevSelectedProducts.filter((p:any) => p.id !== product.id)
+    );
+  };
 
   const deleteData = async (element: any) => {
     try {
@@ -76,6 +103,7 @@ const MedicalEntries = () => {
   function handleDelete(element: any) {
     deleteData(element)
   }
+
   const columns: any = [
    
     {
@@ -138,6 +166,60 @@ const MedicalEntries = () => {
     },
   ]
 
+  const productColumn:any = [
+    {
+      title: 'Product',
+      key: 'medicalServiceId',
+      render: (row: any) => {
+        return getProductName(row.medicalServiceId)
+      },
+      sorter: (a: any, b: any) => {
+        if (a.medicalServiceId > b.medicalServiceId) {
+          return 1
+        }
+        if (b.medicalServiceId > a.medicalServiceId) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Cost',
+      dataIndex: 'cost',
+      sorter: (a: any, b: any) => {
+        if (a.cost > b.cost) {
+          return 1
+        }
+        if (b.cost > a.cost) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Action',
+      fixed: 'right',
+      width: 100,
+      render: (_: any, record: any) => (
+        <Space size='middle'>
+          <a onClick={() => handleRemove(record)} className='btn btn-light-danger btn-sm'>
+            Remove
+          </a>
+        </Space>
+      ),
+    },
+  ]
+
+  const getProductName = (proId: any) => {
+    let productName = ""
+    products?.data.map((item: any) => {
+      if (item.id === proId) {
+        productName=item.name
+      }
+    })
+    return productName
+  } 
+
   const loadData = async () => {
     setLoading(true)
     try {
@@ -149,21 +231,26 @@ const MedicalEntries = () => {
     }
   }
 
-  useEffect(() => {
-    loadData()
-  }, [])
+
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
     key: index,
-  }))
+  }))  
 
   const dataByID:any = gridData.filter((refId:any) =>{
     return  refId.periodId===parseInt(selectedValue2)&&refId.paygroupId===parseInt(selectedValue1)
   })
 
-  console.log(dataByID)
-  console.log(selectedProvider)
+  const productByProvider:any = serviceCost?.data.filter((serv:any) =>{
+    return  serv.serviceProviderId===parseInt(selectedProvider)
+  })
+
+  const dataByProvider:any = selectedProducts?.filter((serv:any) =>{
+    return  serv.serviceProviderId===parseInt(selectedProvider)
+  })
+
+  console.log('dataByProvider:',dataByProvider)
   
 
   const handleInputChange = (e: any) => {
@@ -172,6 +259,9 @@ const MedicalEntries = () => {
       loadData()
     }
   }
+  useEffect(() => {
+    loadData()
+  }, [])
 
   const globalSearch = () => {
     // @ts-ignore
@@ -182,6 +272,7 @@ const MedicalEntries = () => {
     })
     setGridData(filteredData)
   }
+
   const getEmployeeName = (employeeId: any) => {
     let employeeName = null
     allEmployee?.data.map((item: any) => {
@@ -191,6 +282,7 @@ const MedicalEntries = () => {
     })
     return employeeName
   } 
+
   const getMedicalName = (medicalId: any) => {
     let medicalName = null
     allMedicals?.data.map((item: any) => {
@@ -200,16 +292,23 @@ const MedicalEntries = () => {
     })
     return medicalName
   } 
+
   const onEmployeeChange = (objectId: any) => {
     const newEmplo = allEmployee?.data.find((item:any)=>{
       return item.id===parseInt(objectId)
     })
     setEmployeeRecord(newEmplo)
   }
+
   const emplyeesByPaygroup:any = allEmployee?.data.filter((item:any) =>{
     return  item.paygroupId===parseInt(selectedValue1)
   })
 
+  // const { Option } = Select;
+
+  // const handleNewChange = (value: string[]) => {
+  //   console.log(`selected ${value}`);
+  // };
 
   const url = `${Api_Endpoint}/MedicalTransactions`
   const OnSubmit = handleSubmit( async (values)=> {
@@ -269,6 +368,7 @@ const MedicalEntries = () => {
 
         </div>
       </div>
+
       {
         selectedValue1===null||selectedValue2===null||selectedValue1==="select paygroup"||selectedValue2==="select period"?"":
         <KTCardBody className='py-4 '>
@@ -300,25 +400,25 @@ const MedicalEntries = () => {
           </div>
           <Table columns={columns} dataSource={dataByID} loading={loading} />
           <Modal
-                title='Medical Entry'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                width="800px"
-                footer={[
-                    <Button key='back' onClick={handleCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={OnSubmit}
-                    >
-                        Submit
-                    </Button>,
-                ]}
+              title='Medical Entry'
+              open={isModalOpen}
+              onCancel={handleCancel}
+              closable={true}
+              width="800px"
+              footer={[
+                <Button key='back' onClick={handleCancel}>
+                    Cancel
+                </Button>,
+                <Button
+                key='submit'
+                type='primary'
+                htmlType='submit'
+                loading={submitLoading}
+                onClick={OnSubmit}
+                >
+                    Submit
+                </Button>,
+              ]}
             >
                 <form
                   onSubmit={OnSubmit}  
@@ -327,26 +427,23 @@ const MedicalEntries = () => {
                   <div className='row'>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Employee</label>
-                      
                       <br></br>
                       <Select
-                         
-                          {...register("employeeId")}
-                          showSearch
-                          placeholder="select a reference"
-                          optionFilterProp="children"
-                          style={{width:"300px"}}
-                          value={employeeRecord.id}
-                          onChange={(e)=>{
-                            onEmployeeChange(e)
-                          }}
-                          
-                        >
-                          <option>select</option>
-                          {emplyeesByPaygroup?.map((item: any) => (
-                            <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
-                          ))}
-                        </Select>
+                        {...register("employeeId")}
+                        showSearch
+                        placeholder="select a reference"
+                        optionFilterProp="children"
+                        style={{width:"300px"}}
+                        value={employeeRecord.id}
+                        onChange={(e)=>{
+                          onEmployeeChange(e)
+                        }}
+                      >
+                        <option>select</option>
+                        {emplyeesByPaygroup?.map((item: any) => (
+                          <option key={item.id} value={item.id}>{item.firstName} - {item.surname}</option>
+                        ))}
+                      </Select>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Reference</label>
@@ -380,12 +477,6 @@ const MedicalEntries = () => {
                         ))}
                       </select>
                     </div>
-                    {
-                      selectedProvider===null||selectedProvider==="" || selectedProvider==="select" ?"":
-                      <>
-                        <p>We can add services and product now</p>
-                      </>
-                    }
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
                       <input type="date" {...register("date")}  className="form-control form-control-solid"/>
@@ -399,11 +490,92 @@ const MedicalEntries = () => {
                       <textarea {...register("comment")} className="form-control form-control-solid" aria-label="With textarea"></textarea>
                     </div>
                     <div className='col-6 mb-3'>
-  
-                    <input type="file" className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onChange={handleFileSelection} />
-                                            
+                      <input type="file" className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onChange={handleFileSelection} />                  
                     </div>
-               </div>
+                    <div>
+                    <hr></hr>
+                    {
+                      selectedProvider===null||selectedProvider==="" || selectedProvider==="select" ?"":
+                      <>
+                      <button type='button' className='btn btn-primary me-3 mb-3' onClick={showProductModal}>
+                        <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                        Select Products
+                      </button>
+
+                        <Table columns={productColumn} dataSource={dataByProvider}/>
+                        <Modal
+                          title='Product list'
+                          open={isProductModalOpen}
+                          onCancel={handleProductCancel}
+                          closable={true}
+                          footer={[
+                            <Button key='back' onClick={handleProductCancel}>
+                                Cancel
+                            </Button>,
+                            <Button
+                            key='submit'
+                            type='primary'
+                            htmlType='submit'
+                            loading={submitLoading}
+                            onClick={OnSubmit}
+                            >
+                              Submit
+                            </Button>,
+                          ]}
+                        
+                        >
+                          <hr></hr>
+
+                          {
+                            productByProvider.length ===0?
+                            <>
+                            <div style={{alignItems:"center", justifyContent:"center", padding:"30px, 0px", textAlign:"center"}}>
+                              <h4>
+                                No Data for this provider
+                              </h4>
+                            </div>
+                              
+                            </>:
+                            productByProvider?.map((item:any)=>{
+                              const productNam = products?.data?.find((p:any) => p.id === item.medicalServiceId);
+                              return (
+                                <>
+                                  <div className='d-flex justify-content-between'>
+                                    <p>
+                                      {
+                                        productNam?.name
+                                      }
+                                    </p>
+                                    <button 
+                                      onClick={() => handleSelect(item)}
+                                      className='btn btn-light-primary btn-sm mb-3'
+                                      >Add</button>
+                                  </div>
+                                </>
+                              );
+                            })
+                          }
+                          <hr></hr>
+                        </Modal>
+                        {/* <Select
+                         mode="multiple"
+                         style={{ width: '100%' }}
+                         placeholder="select products"
+                         onChange={handleNewChange}
+                         optionLabelProp="label"
+                        >
+                          {
+                            productByProvider.map((item:any)=>(
+                              <Option value={item.id}>
+                                {item.id}
+                              </Option>
+                            ))
+                          }
+                        </Select> */}
+                      </>
+                    }
+                    </div>
+                  </div>
                 </form>
             </Modal>
         </div>
@@ -415,3 +587,5 @@ const MedicalEntries = () => {
 }
 
 export {MedicalEntries}
+
+

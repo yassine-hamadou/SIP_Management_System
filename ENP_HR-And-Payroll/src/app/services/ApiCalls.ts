@@ -230,8 +230,9 @@ export const updateServiceProvider = (data: any) => {
 }
 
 export const fetchServiceCost = (tId: any) => {
-    return axios.put(`${Api_Endpoint}/ServiceCosts/${tId}`)
+    return axios.get(`${Api_Endpoint}/ServiceCosts/tenant/${tId}`)
 }
+
 export const updateServiceCost = (data: any) => {
     return axios.put(`${Api_Endpoint}/ServiceCosts/${data.id}`, data)
 }
