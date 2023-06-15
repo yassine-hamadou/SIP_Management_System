@@ -121,6 +121,7 @@ import { EndOfMonth } from '../modules/production/components/processes/payroll/E
 import { LoanTransaction } from '../modules/production/components/transactions/payroll/LoanTransaction'
 import { Shifts } from '../modules/production/components/setup/hr/Shift'
 import { Bank } from '../modules/production/components/setup/payroll/Bank'
+import { RoasterShifts } from '../modules/production/components/setup/hr/RoaterShifts'
 
 
 
@@ -152,6 +153,13 @@ const PrivateRoutes = () => (
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Details</PageTitle>
           <Employee />
+        </SuspensedView>} />
+
+        <Route
+        path='roasterShifts/:id'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Roaster Shifts</PageTitle>
+          <RoasterShifts />
         </SuspensedView>} />
 
       <Route

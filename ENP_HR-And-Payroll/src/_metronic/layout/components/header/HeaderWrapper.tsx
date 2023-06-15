@@ -40,7 +40,8 @@ export function HeaderWrapper() {
         {!aside.display && (
           <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0'>
             <Link to='/dashboard' className='d-lg-none'>
-              <img alt='Logo' src={toAbsoluteUrl('/media/logos/default-small.svg')} className='h-30px' />
+              <h3 style={{color:"#009EF7"}}>HR - PAYROLL</h3>
+              {/* <img alt='Logo' src={toAbsoluteUrl('/media/logos/default-small.svg')} className='h-30px' /> */}
             </Link>
           </div>
         )}
@@ -49,7 +50,8 @@ export function HeaderWrapper() {
         {aside.display && (
           <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0'>
             <Link to='/' className='d-lg-none'>
-              <img alt='Logo' src={toAbsoluteUrl('/media/logos/default-small.svg')} className='h-30px' />
+            <h3 style={{color:"#009EF7"}}>HR - PAYROLL</h3>
+              {/* <img alt='Logo' src={toAbsoluteUrl('/media/logos/default-small.svg')} className='h-30px' /> */}
             </Link>
           </div>
         )}

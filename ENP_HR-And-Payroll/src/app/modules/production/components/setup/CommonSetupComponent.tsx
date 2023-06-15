@@ -131,7 +131,7 @@ const SetupComponent = (props: any) => {
                 const detName = getMedicals?.name
                 setDetailName(detName)
                 const data = response.data.filter((item: any) => item.medicalTypeId?.toString() === param.id)
-                console.log('data', data)
+                // console.log('data', data)
                 setGridData(data)
             } else {
                 setGridData(response.data)
