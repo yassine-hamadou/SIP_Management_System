@@ -1,26 +1,25 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
-import { ENP_URL } from '../../../urls'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchGrades, fetchLeaveTypes, fetchPaygroups, updateGrade, updateGradeLeave } from '../../../../../services/ApiCalls'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
 
-const Roaster = () => {
+import { Button, Input, Modal, Space, Table } from 'antd'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useMutation, useQueryClient } from 'react-query'
+import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
+import { Api_Endpoint, deleteItem, fetchDocument, postItem, updateItem } from '../../../../../services/ApiCalls'
+import axios from 'axios'
+
+const Bank = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const { register, reset, handleSubmit } = useForm()
-  const param: any = useParams();
-  const navigate = useNavigate();
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const tenantId = localStorage.getItem('tenant')
+  const queryClient = useQueryClient()
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -33,6 +32,7 @@ const Roaster = () => {
     reset()
     setIsModalOpen(false)
     setIsUpdateModalOpen(false)
+    setTempData(null)
   }
 
   const handleChange = (event: any) => {
@@ -40,23 +40,27 @@ const Roaster = () => {
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
-
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${Api_Endpoint}/GradeLeaves/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['Bank', tempData], data);
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
     }
-  }
+  })
 
   function handleDelete(element: any) {
-    deleteData(element)
+    const item = {
+      url: '',
+      data: element
+    }
+    deleteData(item)
   }
+
+
   const columns: any = [
+
     {
       title: 'Code',
       dataIndex: 'code',
@@ -84,19 +88,6 @@ const Roaster = () => {
       },
     },
     {
-      title: 'Start Date',
-      dataIndex: 'startDate',
-      sorter: (a: any, b: any) => {
-        if (a.startDate > b.startDate) {
-          return 1
-        }
-        if (b.startDate > a.startDate) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
       title: 'Action',
       fixed: 'right',
       width: 100,
@@ -108,50 +99,16 @@ const Roaster = () => {
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-
         </Space>
       ),
 
     },
   ]
 
-  const { data: allGrades } = useQuery('grades', ()=> fetchGrades(tenantId), { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
-  const { data: allLeaves } = useQuery('leaveTypes', ()=> fetchLeaveTypes(tenantId), { cacheTime: 5000 })
-
-  const dataByID = gridData.filter((section: any) => {
-    return section.gradeId.toString() === param.id
-  })
-
-
-
-  const getLeaveName = (id: any) => {
-    let leaveName = null
-    allLeaves?.data.map((item: any) => {
-      if (item.id === id) {
-        leaveName = item.name
-      }
-    })
-    return leaveName
-  }
-
-  const getItemName = async (param: any) => {
-
-    let newName = null
-
-    const itemTest = await allGrades?.data.find((item: any) =>
-      item.id.toString() === param
-    )
-    newName = await itemTest
-    return newName
-  }
-
-  // this filters for only gradeLeaves for the pARAM ID 
-
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/GradeLeaves/tenant/${tenantId}`)
+      const response = await  axios.get(`${Api_Endpoint}/Banks`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -167,6 +124,8 @@ const Roaster = () => {
     ...item,
     key: index,
   }))
+
+//   console.log('dataWithIndex: ',dataWithIndex)
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -185,14 +144,14 @@ const Roaster = () => {
     setGridData(filteredData)
   }
 
-  const queryClient = useQueryClient()
-  const { isLoading, mutate } = useMutation(updateGradeLeave, {
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['gradeLeave', tempData.id], data);
+      queryClient.setQueryData(['Banks', tempData], data);
       reset()
       setTempData({})
-      loadData()/*  */
+      loadData()
       setIsUpdateModalOpen(false)
+      setIsModalOpen(false)
     },
     onError: (error) => {
       console.log('error: ', error)
@@ -201,43 +160,59 @@ const Roaster = () => {
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
-    mutate(tempData)
-    console.log('update: ', tempData)
+    const item = {
+      url: 'Banks',
+      data: tempData
+    }
+    updateData(item)
+    console.log('update: ', item.data)
   }
 
   const showUpdateModal = (values: any) => {
+    showModal()
     setIsUpdateModalOpen(true)
     setTempData(values);
     console.log(values)
   }
 
-
-  const url = `${Api_Endpoint}/GradeLeaves`
-  const OnSUbmit = handleSubmit(async (values) => {
-    setLoading(true)
-    const data = {
-      gradeId: parseInt(param.id),
-      leaveId: parseInt(values.leaveId),
-      tenantId: tenantId,
-      numberOfDays: parseInt(values.numberOfDays),
-
-    }
-    console.log(data)
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['users', tempData], data);
       reset()
-      setIsModalOpen(false)
+      setTempData({})
       loadData()
-      return response.statusText
-    } catch (error: any) {
-      setSubmitLoading(false)
-      return error.statusText
+      setIsModalOpen(false)
+    },
+    onError: (error) => {
+      console.log('post error: ', error)
     }
   })
 
+  const OnSubmit = handleSubmit(async (values) => {
+    setLoading(true)
+    const endpoint = 'Banks'
+
+    const item = {
+      data: {
+        code: values.code,
+        name: values.name,
+      },
+      url: endpoint
+    }
+    console.log(item.data)
+    // postData(item)
+  })
+
+ 
   return (
-    
+    <div
+      style={{
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '5px',
+        boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
+      }}
+    >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className='d-flex justify-content-between'>
@@ -265,9 +240,9 @@ const Roaster = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataByID} loading={loading} />
+          <Table columns={columns} dataSource={gridData} />
           <Modal
-            title={isUpdateModalOpen ? 'Update Roaster':'Add Roaster'}
+            title={isUpdateModalOpen ? 'Update Bank' : 'Add Bank'}
             open={isModalOpen}
             onCancel={handleCancel}
             closable={true}
@@ -280,44 +255,44 @@ const Roaster = () => {
                 type='primary'
                 htmlType='submit'
                 loading={submitLoading}
-                onClick={OnSUbmit}
+                onClick={isUpdateModalOpen ? handleUpdate : OnSubmit}
               >
                 Submit
               </Button>,
             ]}
           >
             <form
-              onSubmit={OnSUbmit}
+              onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmit}
             >
+
               <hr></hr>
-              <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
-                
-                <div className=' mb-7'>
+              <div style={{ padding: "20px 20px 0 20px" }} className=''>
+                <div className='mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Code</label>
-                  <input type="text" {...register("code")}
-                    defaultValue={isUpdateModalOpen === true ? tempData.code : ''} 
-                    onChange={handleChange} 
+                  <input type="text"
+                    {...register("code")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.code : ''}
+                    onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
-                <div className=' mb-7'>
+                <div className='mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
-                  <input type="text" {...register("name")}
-                    defaultValue={isUpdateModalOpen === true ? tempData.name : ''} 
-                    onChange={handleChange} 
+                  <input type="text"
+                    {...register("name")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.name : ''}
+                    onChange={handleChange}
                     className="form-control form-control-solid" />
-                </div>
-                <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Start Date</label>
-                  <input type="date" {...register("startDate")} 
-                  onChange={handleChange} 
-                  className="form-control form-control-solid" />
+
                 </div>
               </div>
+              
             </form>
           </Modal>
         </div>
       </KTCardBody>
+    </div>
   )
 }
 
-export { Roaster }
+export { Bank }
+

@@ -7,7 +7,7 @@ import { deleteItem, fetchDocument, updateItem, postItem } from "../../../../ser
 import { Link, useNavigate, useParams } from "react-router-dom"
 
 // common setup component
-const SetupComponent = (props: any) => {
+const ShareComponent = (props: any) => {
     const [gridData, setGridData] = useState([])
     const [loading, setLoading] = useState(false)
     const [searchText, setSearchText] = useState('')
@@ -22,7 +22,10 @@ const SetupComponent = (props: any) => {
     const param: any = useParams();
     const navigate = useNavigate();
     const [detailName, setDetailName] = useState('')
+
     const { data: medicals } = useQuery('medicals', () => fetchDocument(`Medicals/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: paygroups } = useQuery('paygroups', () => fetchDocument(`Paygroups/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: periods } = useQuery('periods', () => fetchDocument(`periods/tenant/${tenantId}`), { cacheTime: 5000 })
     const showModal = () => {
         setIsModalOpen(true)
     }
@@ -117,15 +120,15 @@ const SetupComponent = (props: any) => {
         },
     ]
 
-    // if title is products then remove the code column from the table
-    if (props.data.title === 'Products') {
-        columns.shift()
-    }
+    // // if title is products then remove the code column from the table
+    // if (props.data.title === 'Products') {
+    //     columns.shift()
+    // }
 
     const loadData = async () => {
         setLoading(true)
         try {
-            const response = props.data.url === 'Products' ? await fetchDocument(`${props.data.url}`) : await fetchDocument(`${props.data.url}/tenant/${tenantId}`)
+            const response = props.data.url === 'Products' ? await fetchDocument(`${props.data.url}`) : await fetchDocument(`${props.data.url}`)
             if (props.data.url === 'Products') {
                 const getMedicals = medicals?.data.find((item: any) => item.id.toString() === param.id)
                 const detName = getMedicals?.name
@@ -282,7 +285,7 @@ const SetupComponent = (props: any) => {
                             </button>
                         </Space>
                     </div>
-                    <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
+                    <Table columns={props.data.column} dataSource={dataWithIndex} loading={loading} />
                     <Modal
                         title={isUpdateModalOpen ? `${props.data.title} Update` : `${props.data.title} Setup`}
                         open={isModalOpen}
@@ -325,4 +328,4 @@ const SetupComponent = (props: any) => {
     )
 }
 
-export { SetupComponent }
+export { ShareComponent }

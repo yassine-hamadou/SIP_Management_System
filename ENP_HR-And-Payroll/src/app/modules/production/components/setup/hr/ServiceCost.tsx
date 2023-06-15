@@ -57,8 +57,6 @@ const ServiceCost = () => {
     }
   }
 
-
-
   function handleDelete(element: any) {
     deleteData(element)
   }
@@ -172,7 +170,6 @@ const ServiceCost = () => {
     return section.serviceProviderId.toString() === param.id
   })
 
-  console.log(dataByID)
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
@@ -218,7 +215,7 @@ const ServiceCost = () => {
     console.log(values)
   }
 
-  const url = `${Api_Endpoint}/ServiceCosts`
+  const url = `${Api_Endpoint}/ServiceCosts1`
   const OnSUbmit = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
@@ -309,8 +306,9 @@ const ServiceCost = () => {
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Product/Service</label>
-                  {/* <input type="text" {...register("code")}  className="form-control form-control-solid"/> */}
-                  <select {...register("medicalServiceId")} value={isUpdateModalOpen === true ? tempData?.medicalServiceId : 'Select service'} onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("medicalServiceId")} 
+                  value={isUpdateModalOpen === true ? tempData?.medicalServiceId : 'Select service'} 
+                  onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option value="Select service">Select service</option> : null}
                     {
                       allProducts?.data.map((item: any) => (

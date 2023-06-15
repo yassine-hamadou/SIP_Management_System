@@ -120,6 +120,7 @@ import { BackPays } from '../modules/production/components/processes/payroll/Bac
 import { EndOfMonth } from '../modules/production/components/processes/payroll/EndOfMonth'
 import { LoanTransaction } from '../modules/production/components/transactions/payroll/LoanTransaction'
 import { Shifts } from '../modules/production/components/setup/hr/Shift'
+import { Bank } from '../modules/production/components/setup/payroll/Bank'
 
 
 
@@ -607,10 +608,10 @@ const PrivateRoutes = () => (
         </SuspensedView>} />
 
       <Route
-        path='setup/payroll/bank*'
+        path='setup/payroll/bank/*'
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Banks</PageTitle>
-          <Loan />
+          <Bank />
         </SuspensedView>} />
       <Route
         path='setup/payroll/overtime/*'

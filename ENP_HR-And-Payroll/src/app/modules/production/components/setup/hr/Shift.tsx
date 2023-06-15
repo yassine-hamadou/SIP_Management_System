@@ -20,6 +20,7 @@ const Shifts = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -39,10 +40,9 @@ const Shifts = () => {
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
-
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${Api_Endpoint}/GradeLeaves/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/Shifts/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -135,10 +135,8 @@ const Shifts = () => {
   const { data: allLeaves } = useQuery('leaveTypes', ()=> fetchLeaveTypes(tenantId), { cacheTime: 5000 })
 
   const dataByID = gridData.filter((section: any) => {
-    return section.gradeId.toString() === param.id
+    return section?.gradeId?.toString() === param.id
   })
-
-
 
   const getLeaveName = (id: any) => {
     let leaveName = null
@@ -161,12 +159,10 @@ const Shifts = () => {
     return newName
   }
 
-  // this filters for only gradeLeaves for the pARAM ID 
-
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/GradeLeaves/tenant/${tenantId}`)
+      const response = await axios.get(`${Api_Endpoint}/Shifts`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -183,12 +179,14 @@ const Shifts = () => {
     key: index,
   }))
 
+
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
       loadData()
     }
   }
+
 
   const globalSearch = () => {
     // @ts-ignore
@@ -206,7 +204,7 @@ const Shifts = () => {
       queryClient.setQueryData(['shifts', tempData.id], data);
       reset()
       setTempData({})
-      loadData()/*  */
+      loadData()
       setIsUpdateModalOpen(false)
     },
     onError: (error) => {
@@ -231,7 +229,12 @@ const Shifts = () => {
   const OnSUbmit = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
+        
       tenantId: tenantId,
+      code: values.code,
+      name: values.name,
+      startTime: values.startTime,
+      endTime: values.endTime,
 
     }
     console.log(data)
