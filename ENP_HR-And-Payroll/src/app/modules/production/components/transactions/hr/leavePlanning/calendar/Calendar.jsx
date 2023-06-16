@@ -59,7 +59,6 @@ const Calendar = ({chosenFilter: any}) => {
     staleTime: 300000,
   })
  const tenantId = localStorage.getItem('tenant')
-  console.log('tenantId', tenantId)
 
   const {data: leaveTypes} = useQuery('leaveTypes', ()=>fetchLeaveTypes(tenantId), {
     refetchOnWindowFocus: false,
