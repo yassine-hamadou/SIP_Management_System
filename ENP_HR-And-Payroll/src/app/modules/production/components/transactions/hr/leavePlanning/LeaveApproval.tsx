@@ -228,7 +228,7 @@ const LeaveApproval = () => {
         loadData()
     }, [])
 
-    const dataWithIndex = gridData.map((item: any, index) => ({
+    const dataWithIndex = gridData?.map((item: any, index) => ({
         ...item,
         key: index,
     }))
