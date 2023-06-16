@@ -2,8 +2,8 @@
 import axios from 'axios'
 import {Api_Endpoint} from "../../../../../../../services/ApiCalls";
 
-export const fetchLeavePlannings = () => {
-  return axios.get(`${Api_Endpoint}/LeavePlanings`)
+export const fetchLeavePlannings = (tenantId: any) => {
+  return axios.get(`${Api_Endpoint}/LeavePlanings/tenant/${tenantId}`)
 }
 
 //Object to inject in the Calendar

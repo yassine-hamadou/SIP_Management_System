@@ -326,7 +326,7 @@ const Employee = () => {
   }
 
   return (
-    <div
+    <div 
       style={{
         backgroundColor: 'white',
         padding: '20px',
@@ -334,7 +334,7 @@ const Employee = () => {
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
       }}
     >
-      <KTCardBody className='py-4 '>
+      <KTCardBody className='py-1 '>
         <div className='table-responsive'>
         <div className="tabs">
           
@@ -355,8 +355,7 @@ const Employee = () => {
             onClick={() => handleTabClick('summary')}
           >
             Summary
-          </button>
-         
+          </button>        
           
           
         </div>

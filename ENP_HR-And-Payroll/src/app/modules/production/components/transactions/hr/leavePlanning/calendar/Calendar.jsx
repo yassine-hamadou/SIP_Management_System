@@ -47,24 +47,26 @@ L10n.load({
   },
 })
 
-const Calendar = ({chosenFilter}) => {
+const Calendar = ({chosenFilter: any}) => {
   // const [serviceTypeDropDownValues, setserviceTypeDropDownValues] = useState([])
   let scheduleObj
   let empDropDownObj
   const queryClient = useQueryClient()
   // React Query
   //Get
-  const {data: employeeData} = useQuery('employeeData', fetchEmployees, {
+  const {data: employeeData} = useQuery('employeeData',()=> fetchEmployees(tenantId), {
     refetchOnWindowFocus: false,
     staleTime: 300000,
   })
+ const tenantId = localStorage.getItem('tenant')
+  console.log('tenantId', tenantId)
 
-  const {data: leaveTypes} = useQuery('leaveTypes', fetchLeaveTypes, {
+  const {data: leaveTypes} = useQuery('leaveTypes', ()=>fetchLeaveTypes(tenantId), {
     refetchOnWindowFocus: false,
     staleTime: 300000,
   })
-
-  const {data: leaveData} = useQuery('leavePlannings', fetchLeavePlannings, {
+  
+  const {data: leaveData} = useQuery('leavePlannings',  () => fetchLeavePlannings(tenantId), {
     refetchOnWindowFocus: false,
     staleTime: 300000,
   });
@@ -278,7 +280,8 @@ const Calendar = ({chosenFilter}) => {
           id: schedule.Id,
           fromDate: schedule.StartTime,
           toDate: schedule.EndTime,
-          leaveId: schedule.leaveType
+          leaveId: schedule.leaveType,
+          tenantId: tenantId
         }
       })
       //Since format is an array, I need to change it to the format that the API will understand which is an object
@@ -302,7 +305,8 @@ const Calendar = ({chosenFilter}) => {
           id: schedule.Id,
           fromDate: schedule.StartTime,
           toDate: schedule.EndTime,
-          leaveId: schedule.leaveType
+          leaveId: schedule.leaveType,
+          tenantId: tenantId
         }
       })
       updateLeave(formattedDataToEdit[0])
