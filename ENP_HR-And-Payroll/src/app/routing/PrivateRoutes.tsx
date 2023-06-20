@@ -122,6 +122,7 @@ import { LoanTransaction } from '../modules/production/components/transactions/p
 import { Shifts } from '../modules/production/components/setup/hr/Shift'
 import { Bank } from '../modules/production/components/setup/payroll/Bank'
 import { RoasterShifts } from '../modules/production/components/setup/hr/RoaterShifts'
+import { Organogram } from '../modules/production/components/setup/hr/Organogram'
 
 
 
@@ -547,6 +548,12 @@ const PrivateRoutes = () => (
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Recruitments</PageTitle>
           <Recruitments />
+        </SuspensedView>} />
+      <Route
+        path='setup/hr/organogram/*'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Organogram</PageTitle>
+          <Organogram />
         </SuspensedView>} />
       <Route
         path='setup/hr/training/*'
