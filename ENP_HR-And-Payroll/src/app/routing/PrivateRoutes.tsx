@@ -553,7 +553,7 @@ const PrivateRoutes = () => (
       <Route
         path='next/:id/:level'
         element={<SuspensedView>
-          <PageTitle breadcrumbs={accountBreadCrumbs}>Org Level</PageTitle>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Organogram</PageTitle>
           <OrgLevel />
         </SuspensedView>} />
       <Route

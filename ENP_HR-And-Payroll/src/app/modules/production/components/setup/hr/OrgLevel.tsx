@@ -16,14 +16,14 @@ const OrgLevel = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
   const { register, reset, handleSubmit } = useForm()
   const param: any = useParams();
+  const currentLevel = parseInt(param.level) + 1
   const navigate = useNavigate();
   const [tempData, setTempData] = useState<any>()
+  const [updateItem, setUpdateItem] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
-  const currentLevel = parseInt(param.level) + 1
   const [supervisorName, setSupervisorName] = useState('')
-  const previousLevel = parseInt(param.level)
   const { data: allEmployees } = useQuery('employess', () => fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
   const { data: allOrganograms } = useQuery('organograms', () => fetchDocument(`organograms`), { cacheTime: 5000 })
 
@@ -49,6 +49,11 @@ const OrgLevel = () => {
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
+  const reRenderScreen = () => {
+    if (currentLevel <= 6) {
+      navigate(`/next/${param.id}/${currentLevel}`)
+    }
+  }
 
   const deleteData = async (element: any) => {
     try {
@@ -106,9 +111,9 @@ const OrgLevel = () => {
       render: (_: any, record: any) => (
         <Space size='middle'>
           {
-            currentLevel <= 6 ?
-              <Link to={`/next/${record.id}/${currentLevel}`}>
-                <span className='btn btn-light-info btn-sm'>Next</span>
+            currentLevel < 6 ?
+              <Link to={`/next/${record.id}/${currentLevel}`} >
+                <span className='btn btn-light-info btn-sm' >Next</span>
               </Link>
               : null
           }
@@ -151,7 +156,7 @@ const OrgLevel = () => {
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, [param, currentLevel])
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
@@ -192,6 +197,15 @@ const OrgLevel = () => {
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
+    if (tempData.employeeId != updateItem.employeeId) {
+      // verify that the employeeId is not already in the organogram table
+      const checkEmployee = allOrganograms?.data.find((item: any) => item.employeeId === tempData.employeeId)
+      if (checkEmployee) {
+        message.error('Employee already exists in the organogram table')
+        return
+      }
+      updateData(tempData)
+    } 
     updateData(tempData)
     console.log('update: ', tempData)
   }
@@ -200,7 +214,8 @@ const OrgLevel = () => {
     setIsUpdateModalOpen(true)
     showModal()
     setTempData(values);
-    console.log(values)
+    setUpdateItem(values)
+    // console.log(values)
   }
 
 
@@ -211,7 +226,7 @@ const OrgLevel = () => {
       employeeId: parseInt(values.employeeId),
       supervisorId: parseInt(param.id),
       currentLevel: `Level ${currentLevel}`,
-      isAssistant: values.isAssistant,
+      isAssistant: values.isAssistant === 'Select' ? '0' : values.isAssistant,
       tenantId: tenantId,
     }
     console.log(data)
@@ -220,8 +235,10 @@ const OrgLevel = () => {
       const checkEmployee = allOrganograms?.data.find((item: any) => item.employeeId === data.employeeId)
       if (checkEmployee) {
         setSubmitLoading(false)
-        return message.error(`Employee already exists in the organogram`)
+        message.error(`Employee already exists in the organogram`)
+        return
       }
+
       const response = await axios.post(url, data)
       setSubmitLoading(false)
       reset()
@@ -276,7 +293,7 @@ const OrgLevel = () => {
           </div>
           <Table columns={columns} dataSource={gridData} loading={loading} />
           <Modal
-            title={isUpdateModalOpen ? 'Update Employee ' : 'Add Employee to Organogram'}
+            title={isUpdateModalOpen ? 'Update Organogram ' : 'Add Employee to Organogram'}
             open={isModalOpen}
             onCancel={handleCancel}
             closable={true}
@@ -324,7 +341,7 @@ const OrgLevel = () => {
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Is assistant</label>
                   <select {...register("isAssistant")}
-                    value={isUpdateModalOpen === true ? tempData?.isAssistant : null}
+                    value={isUpdateModalOpen === true ? tempData?.isAssistant : 'Select'}
                     onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option value="Select">Select</option> : null}
                     <option value="1">Yes</option>
