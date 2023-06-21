@@ -123,6 +123,7 @@ import { Shifts } from '../modules/production/components/setup/hr/Shift'
 import { Bank } from '../modules/production/components/setup/payroll/Bank'
 import { RoasterShifts } from '../modules/production/components/setup/hr/RoaterShifts'
 import { Organogram } from '../modules/production/components/setup/hr/Organogram'
+import { OrgLevel } from '../modules/production/components/setup/hr/OrgLevel'
 
 
 
@@ -548,6 +549,12 @@ const PrivateRoutes = () => (
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Recruitments</PageTitle>
           <Recruitments />
+        </SuspensedView>} />
+      <Route
+        path='next/:id/:level'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Org Level</PageTitle>
+          <OrgLevel />
         </SuspensedView>} />
       <Route
         path='setup/hr/organogram/*'

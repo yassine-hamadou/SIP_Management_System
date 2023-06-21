@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { Button, Form, Input, InputNumber, Modal, Space, Table, message } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { Api_Endpoint, fetchDocument, fetchGrades, fetchLeaveTypes, fetchPaygroups, updateGrade, updateGradeLeave, updateItem } from '../../../../../services/ApiCalls'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 
-const Organogram = () => {
+const OrgLevel = () => {
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -21,12 +21,15 @@ const Organogram = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
+  const currentLevel = parseInt(param.level) + 1
+  const [supervisorName, setSupervisorName] = useState('')
+  const previousLevel = parseInt(param.level)
   const { data: allEmployees } = useQuery('employess', () => fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allOrganograms } = useQuery('organograms', () => fetchDocument(`organograms`), { cacheTime: 5000 })
 
   const levels = [
-    'Level 0', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6', 
-   ]
-  
+    'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6',
+  ]
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -46,11 +49,6 @@ const Organogram = () => {
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
-  const employeeName = (employeeId: any) => {
-    const employee = allEmployees?.data?.find((employee: any) => employee.id === employeeId)
-    const name = `${employee?.firstName} ${employee?.surname}`
-    return name
-}
 
   const deleteData = async (element: any) => {
     try {
@@ -67,6 +65,12 @@ const Organogram = () => {
   function handleDelete(element: any) {
     deleteData(element)
   }
+
+  const employeeName = (employeeId: any) => {
+    const employee = allEmployees?.data?.find((employee: any) => employee.id === employeeId)
+    return `${employee?.firstName} ${employee?.surname}`
+  }
+
   const columns: any = [
     {
       title: 'Employee',
@@ -80,25 +84,8 @@ const Organogram = () => {
         }
         return 0
       },
-      render: (employeeId: any) => {
-        return <span>{employeeName(employeeId)}</span>
-      }
-    
+      render: (employeeId: any) => employeeName(employeeId)
     },
-    // {
-    //   title: 'Supervisor',
-    //   dataIndex: 'id',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.name > b.name) {
-    //       return 1
-    //     }
-    //     if (b.name > a.name) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    //   render: (supervisorId: any) => employeeName(supervisorId)
-    // },
     {
       title: 'Current Level',
       dataIndex: 'currentLevel',
@@ -118,13 +105,17 @@ const Organogram = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <Link to={`/next/${record.id}/0`}>
-            <span className='btn btn-light-info btn-sm'>Next</span>
-          </Link>
+          {
+            currentLevel <= 6 ?
+              <Link to={`/next/${record.id}/${currentLevel}`}>
+                <span className='btn btn-light-info btn-sm'>Next</span>
+              </Link>
+              : null
+          }
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
-          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm disabled'>
+          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
 
@@ -146,9 +137,12 @@ const Organogram = () => {
     setLoading(true)
     try {
       const response = await axios.get(`${Api_Endpoint}/organograms`)
-      // filter for currentLevel equal to Level 0
-      const data = response?.data.filter((item: any) => item.currentLevel === 'Level 0')
-      setGridData(data)
+      const levelItem = response?.data.find((item: any) => item.id.toString() === param.id)
+      const getSupervisor = allEmployees?.data?.find((employee: any) => employee.id === levelItem?.employeeId)
+      const name = `${getSupervisor?.firstName} ${getSupervisor?.surname}`
+      setSupervisorName(name)
+      const filteredBySupervisor = response?.data.filter((item: any) => item?.supervisorId === parseInt(param.id))
+      setGridData(filteredBySupervisor)
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -214,14 +208,20 @@ const Organogram = () => {
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
     const data = {
-      employeeId: values.employeeId,
-      supervisorId: values.employeeId,
-      currentLevel: 'Level 0',
-      isAssistant: '0',
+      employeeId: parseInt(values.employeeId),
+      supervisorId: parseInt(param.id),
+      currentLevel: `Level ${currentLevel}`,
+      isAssistant: values.isAssistant,
       tenantId: tenantId,
     }
     console.log(data)
     try {
+      //if employeeId already exists in the organogram table, return error
+      const checkEmployee = allOrganograms?.data.find((item: any) => item.employeeId === data.employeeId)
+      if (checkEmployee) {
+        setSubmitLoading(false)
+        return message.error(`Employee already exists in the organogram`)
+      }
       const response = await axios.post(url, data)
       setSubmitLoading(false)
       reset()
@@ -245,6 +245,10 @@ const Organogram = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+          <div className="mb-5">
+            <span className="fw-bold text-gray-800 d-block fs-2 mb-3 ">{supervisorName}</span>
+            <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+          </div>
           <div className='d-flex justify-content-between'>
             <Space style={{ marginBottom: 16 }}>
               <Input
@@ -258,7 +262,7 @@ const Organogram = () => {
                 Search
               </Button>
             </Space>
-            {/* <Space style={{ marginBottom: 16 }}>
+            <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
                 <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
                 Add
@@ -268,11 +272,11 @@ const Organogram = () => {
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
               </button>
-            </Space> */}
+            </Space>
           </div>
           <Table columns={columns} dataSource={gridData} loading={loading} />
           <Modal
-            title={isUpdateModalOpen ? 'Update Roaster' : 'Add Roaster'}
+            title={isUpdateModalOpen ? 'Update Employee ' : 'Add Employee to Organogram'}
             open={isModalOpen}
             onCancel={handleCancel}
             closable={true}
@@ -297,12 +301,12 @@ const Organogram = () => {
               <hr></hr>
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
 
-                
+
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Employee</label>
-                  <select {...register("employeeId")} 
-                  value={isUpdateModalOpen === true ? tempData?.employeeId :null} 
-                  onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("employeeId")}
+                    value={isUpdateModalOpen === true ? tempData?.employeeId : null}
+                    onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option value="Select">Select</option> : null}
                     {
                       allEmployees?.data.map((item: any) => (
@@ -311,33 +315,22 @@ const Organogram = () => {
                     }
                   </select>
                 </div>
-                {/* <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Supervisor</label>
-                  <select {...register("supervisorId")} 
-                  value={isUpdateModalOpen === true ? tempData?.supervisorId :null} 
-                  onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
-                    {isUpdateModalOpen === false ? <option value="Select">Select</option> : null}
-                    {
-                      allEmployees?.data.map((item: any) => (
-                        <option value={item.id}>{`${item?.firstName} ${item?.surname}`}</option>
-                      ))
-                    }
-                  </select>
-                </div> */}
                 <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Current level</label>
-                  <select {...register("currentLevel")} 
-                    value={isUpdateModalOpen === true ? tempData?.currentLevel : null}
-                    onChange={handleChange} disabled={true} className="form-select form-select-solid" aria-label="Select example">
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Current Level</label>
+                  <input type="text" {...register("currentLevel")} disabled={true}
+                    defaultValue={isUpdateModalOpen === true ? tempData.currentLevel : `Level ${currentLevel}`}
+                    onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Is assistant</label>
+                  <select {...register("isAssistant")}
+                    value={isUpdateModalOpen === true ? tempData?.isAssistant : null}
+                    onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option value="Select">Select</option> : null}
-                    {
-                      levels.map((item: any) => (
-                        <option value={item}>{item}</option>
-                      ))
-                    }
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                   </select>
                 </div>
-                
               </div>
             </form>
           </Modal>
@@ -347,4 +340,4 @@ const Organogram = () => {
   )
 }
 
-export { Organogram }
+export { OrgLevel }
