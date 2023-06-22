@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Table, message } from 'antd'
+import { Breadcrumb, Button, Form, Input, InputNumber, Modal, Space, Table, message } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
@@ -24,8 +24,10 @@ const OrgLevel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
   const [supervisorName, setSupervisorName] = useState('')
-  const { data: allEmployees } = useQuery('employess', () => fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allEmployees } = useQuery('employees', () => fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
   const { data: allOrganograms } = useQuery('organograms', () => fetchDocument(`organograms`), { cacheTime: 5000 })
+  const [breadcrumbs, setBreadcrumbs]: any = useState<any>([])
+  const [treeData, setTreeData] = useState<any>([])
 
   const levels = [
     'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6',
@@ -72,10 +74,19 @@ const OrgLevel = () => {
   }
 
   const employeeName = (employeeId: any) => {
-    const employee = allEmployees?.data?.find((employee: any) => employee.id === employeeId)
-    return `${employee?.firstName} ${employee?.surname}`
+    const employee = allEmployees?.data?.find((employee: any) => employee.employeeId === employeeId.trim())
+    const name = `${employee?.firstName} ${employee?.surname}`
+    return name
   }
 
+  // jobrole
+  const jobRole = (employeeId: any) => {
+    const jobRole = allEmployees?.data?.find((employee: any) => employee.employeeId === employeeId)
+    const name = `${jobRole?.jobRole}`
+    return name
+  }
+
+ 
   const columns: any = [
     {
       title: 'Employee',
@@ -90,6 +101,20 @@ const OrgLevel = () => {
         return 0
       },
       render: (employeeId: any) => employeeName(employeeId)
+    },
+    {
+      title: 'Job Role',
+      dataIndex: 'employeeId',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+      render: (employeeId: any) => jobRole(employeeId)
     },
     {
       title: 'Current Level',
@@ -112,7 +137,7 @@ const OrgLevel = () => {
         <Space size='middle'>
           {
             currentLevel < 6 ?
-              <Link to={`/next/${record.id}/${currentLevel}`} >
+              <Link to={`/next/${record.id}/${currentLevel}`} onClick={()=>addItemtoBreadcrumb(record)} >
                 <span className='btn btn-light-info btn-sm' >Next</span>
               </Link>
               : null
@@ -135,19 +160,62 @@ const OrgLevel = () => {
   })
 
 
+  const addItemtoBreadcrumb = (item: any) => {
+    console.log('breadcrumbItem: ',item)
+    const newItem = {
+      title: <a onClick={() => navigate(-1)}>{item}</a>
+    }
+    setBreadcrumbs([...breadcrumbs, newItem])
+    console.log('breadcrumb: ',breadcrumbs)
+  }
 
-  // this filters for only gradeLeaves for the pARAM ID 
+  const removeItemFromBreadcrumb = (index: any) => {
+    setBreadcrumbs(breadcrumbs.slice(0, index))
+  }
+
+  function createEmployeeTree(data: any) {
+    const employeeMap: any = {};
+
+    // Populate the employeeMap with employee data and initialize children array
+    for (const employee of data) {
+        const { id, supervisorId, ...rest } = employee;
+        const employeeData = { id, ...rest, children: [], name: employeeName(employee.employeeId) };
+        employeeMap[id] = employeeData;
+    }
+
+    const rootEmployees = [];
+
+    for (const employee of data) {
+        const { id, supervisorId } = employee;
+        const employeeData = employeeMap[id];
+
+        if (employeeData.currentLevel === "Level 0") { // Check if the employee is at Level 0
+            rootEmployees.push(employeeData);
+        } else {
+            const parentEmployee = employeeMap[supervisorId];
+            if (parentEmployee) {
+                parentEmployee.children.push(employeeData);
+            }
+        }
+    }
+    console.log('treeData: ', rootEmployees)
+    return rootEmployees;
+}
+
+
 
   const loadData = async () => {
     setLoading(true)
     try {
       const response = await axios.get(`${Api_Endpoint}/organograms`)
       const levelItem = response?.data.find((item: any) => item.id.toString() === param.id)
-      const getSupervisor = allEmployees?.data?.find((employee: any) => employee.id === levelItem?.employeeId)
+      const getSupervisor = allEmployees?.data?.find((employee: any) => employee.employeeId === levelItem?.employeeId)
       const name = `${getSupervisor?.firstName} ${getSupervisor?.surname}`
       setSupervisorName(name)
-      const filteredBySupervisor = response?.data.filter((item: any) => item?.supervisorId === parseInt(param.id))
+      const filteredBySupervisor = response?.data.filter((item: any) => item?.supervisorId === param.id)
+      console.log('filt: ',filteredBySupervisor)
       setGridData(filteredBySupervisor)
+      setTreeData(createEmployeeTree(response?.data))
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -156,7 +224,7 @@ const OrgLevel = () => {
 
   useEffect(() => {
     loadData()
-  }, [param, currentLevel])
+  }, [param, currentLevel, breadcrumbs])
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
@@ -205,7 +273,7 @@ const OrgLevel = () => {
         return
       }
       updateData(tempData)
-    } 
+    }
     updateData(tempData)
     console.log('update: ', tempData)
   }
@@ -222,9 +290,13 @@ const OrgLevel = () => {
   const url = `${Api_Endpoint}/organograms`
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
+    if(values.employeeId === 'Select'){
+      message.error('Please select an employee')
+      return
+    }
     const data = {
-      employeeId: parseInt(values.employeeId),
-      supervisorId: parseInt(param.id),
+      employeeId: values.employeeId,
+      supervisorId: param.id,
       currentLevel: `Level ${currentLevel}`,
       isAssistant: values.isAssistant === 'Select' ? '0' : values.isAssistant,
       tenantId: tenantId,
@@ -239,11 +311,11 @@ const OrgLevel = () => {
         return
       }
 
+      setIsModalOpen(false)
       const response = await axios.post(url, data)
+      loadData()
       setSubmitLoading(false)
       reset()
-      setIsModalOpen(false)
-      loadData()
       return response.statusText
     } catch (error: any) {
       setSubmitLoading(false)
@@ -263,8 +335,9 @@ const OrgLevel = () => {
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className="mb-5">
-            <span className="fw-bold text-gray-800 d-block fs-2 mb-3 ">{supervisorName}</span>
             <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+            <span className="fw-bold text-gray-800 d-block fs-2 mb-3 ">{supervisorName}</span>
+            {/* <> <Breadcrumb  routes ={breadcrumbs}/> </> */}
           </div>
           <div className='d-flex justify-content-between'>
             <Space style={{ marginBottom: 16 }}>
@@ -327,7 +400,7 @@ const OrgLevel = () => {
                     {isUpdateModalOpen === false ? <option value="Select">Select</option> : null}
                     {
                       allEmployees?.data.map((item: any) => (
-                        <option value={item.id}>{`${item?.firstName} ${item?.surname}`}</option>
+                        <option value={item.employeeId}>{`${item?.firstName} ${item?.surname}`}</option>
                       ))
                     }
                   </select>
@@ -341,7 +414,7 @@ const OrgLevel = () => {
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Is assistant</label>
                   <select {...register("isAssistant")}
-                    value={isUpdateModalOpen === true ? tempData?.isAssistant : 'Select'}
+                    value={isUpdateModalOpen === true ? tempData?.isAssistant : null }
                     onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option value="Select">Select</option> : null}
                     <option value="1">Yes</option>

@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { Button, Form, Input, InputNumber, Modal, Space, Switch, Table, Tree } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
@@ -7,6 +7,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Api_Endpoint, fetchDocument, fetchGrades, fetchLeaveTypes, fetchPaygroups, updateGrade, updateGradeLeave, updateItem } from '../../../../../services/ApiCalls'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
+
 
 const Organogram = () => {
   const [gridData, setGridData] = useState([])
@@ -22,11 +23,14 @@ const Organogram = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
   const { data: allEmployees } = useQuery('employess', () => fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
+  const [treeData, setTreeData] = useState<any>([])
+  const [showTree, setShowTree] = useState<boolean>(false)
+
 
   const levels = [
-    'Level 0', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6', 
-   ]
-  
+    'Level 0', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6',
+  ]
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -34,6 +38,10 @@ const Organogram = () => {
   const handleOk = () => {
     setIsModalOpen(false)
   }
+
+  const onChange = (checked: boolean) => {
+   setShowTree(checked) 
+  };
 
   const handleCancel = () => {
     reset()
@@ -47,10 +55,17 @@ const Organogram = () => {
   }
 
   const employeeName = (employeeId: any) => {
-    const employee = allEmployees?.data?.find((employee: any) => employee.id === employeeId)
+    const employee = allEmployees?.data?.find((employee: any) => employee.employeeId.trim() === employeeId.trim())
     const name = `${employee?.firstName} ${employee?.surname}`
     return name
-}
+  }
+
+  // jobrole
+  const jobRole = (employeeId: any) => {
+    const jobRole = allEmployees?.data?.find((employee: any) => employee.employeeId.trim() === employeeId.trim())
+    const name = `${jobRole?.jobRole}`
+    return name
+  }
 
   const deleteData = async (element: any) => {
     try {
@@ -83,22 +98,22 @@ const Organogram = () => {
       render: (employeeId: any) => {
         return <span>{employeeName(employeeId)}</span>
       }
-    
+
     },
-    // {
-    //   title: 'Supervisor',
-    //   dataIndex: 'id',
-    //   sorter: (a: any, b: any) => {
-    //     if (a.name > b.name) {
-    //       return 1
-    //     }
-    //     if (b.name > a.name) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    //   render: (supervisorId: any) => employeeName(supervisorId)
-    // },
+    {
+      title: 'Job Role',
+      dataIndex: 'employeeId',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+      render: (employeeId: any) => jobRole(employeeId)
+    },
     {
       title: 'Current Level',
       dataIndex: 'currentLevel',
@@ -138,6 +153,37 @@ const Organogram = () => {
     return section?.gradeId?.toString() === param.id
   })
 
+  function createEmployeeTree(data: any) {
+    const employeeMap: any = {};
+
+    // Populate the employeeMap with employee data and initialize children array
+    for (const employee of data) {
+      const { id, supervisorId, ...rest } = employee;
+      const employeeData = { id, ...rest, children: [], title: <> <span className='fw-bold text-gray-800 d-block fs-4'>{ employeeName(employee.employeeId)}</span>  </>  };
+      employeeMap[id] = employeeData;
+    }
+  
+    const rootEmployees = [];
+  
+    // Build the tree structure by assigning children to their respective parent employees
+    for (const employee of data) {
+      const { id, supervisorId } = employee;
+      const employeeData = employeeMap[id];
+  
+      const parsedSupervisorId = parseInt(supervisorId, 10); // Parse supervisorId to int
+  
+      if (!isNaN(parsedSupervisorId) && parsedSupervisorId in employeeMap) {
+        const parentEmployee = employeeMap[parsedSupervisorId];
+        parentEmployee.children.push(employeeData);
+      } else {
+        rootEmployees.push(employeeData);
+      }
+    }
+  
+    console.log('treeData: ', rootEmployees)
+    return rootEmployees;
+}
+
 
 
   // this filters for only gradeLeaves for the pARAM ID 
@@ -148,6 +194,9 @@ const Organogram = () => {
       const response = await axios.get(`${Api_Endpoint}/organograms`)
       // filter for currentLevel equal to Level 0
       const data = response?.data.filter((item: any) => item.currentLevel === 'Level 0')
+      console.log('data', response?.data)
+      setTreeData(createEmployeeTree(response?.data))
+      // console.log('treeData: ', treeData)  
       setGridData(data)
       setLoading(false)
     } catch (error) {
@@ -258,19 +307,23 @@ const Organogram = () => {
                 Search
               </Button>
             </Space>
-            {/* <Space style={{ marginBottom: 16 }}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
-
-              <button type='button' className='btn btn-light-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                Export
-              </button>
-            </Space> */}
+            <Space>
+              <span className='fw-bold text-gray-800 d-block fs-3 mr-2'>Show Tree</span>
+              <Switch checked={!!showTree} onChange={setShowTree} />
+            </Space>
           </div>
-          <Table columns={columns} dataSource={gridData} loading={loading} />
+          {
+            showTree ?
+              <>
+                <Tree
+                className='mt-4'
+                  showLine
+                  treeData={treeData}
+                />
+              </> :
+              <Table columns={columns} dataSource={gridData} loading={loading} />
+          }
+
           <Modal
             title={isUpdateModalOpen ? 'Update Roaster' : 'Add Roaster'}
             open={isModalOpen}
@@ -297,16 +350,16 @@ const Organogram = () => {
               <hr></hr>
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
 
-                
+
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Employee</label>
-                  <select {...register("employeeId")} 
-                  value={isUpdateModalOpen === true ? tempData?.employeeId :null} 
-                  onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("employeeId")}
+                    value={isUpdateModalOpen === true ? tempData?.employeeId : null}
+                    onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option value="Select">Select</option> : null}
                     {
                       allEmployees?.data.map((item: any) => (
-                        <option value={item.id}>{`${item?.firstName} ${item?.surname}`}</option>
+                        <option value={item.employeeId}>{`${item?.firstName} ${item?.surname}`}</option>
                       ))
                     }
                   </select>
@@ -326,7 +379,7 @@ const Organogram = () => {
                 </div> */}
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Current level</label>
-                  <select {...register("currentLevel")} 
+                  <select {...register("currentLevel")}
                     value={isUpdateModalOpen === true ? tempData?.currentLevel : null}
                     onChange={handleChange} disabled={true} className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option value="Select">Select</option> : null}
@@ -337,7 +390,7 @@ const Organogram = () => {
                     }
                   </select>
                 </div>
-                
+
               </div>
             </form>
           </Modal>
