@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Switch, Table, Tree } from 'antd'
+import { Button, Divider, Form, Input, InputNumber, Modal, Space, Switch, Table, Tree } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
@@ -153,13 +153,13 @@ const Organogram = () => {
     return section?.gradeId?.toString() === param.id
   })
 
-  function createEmployeeTree(data: any) {
+  const createEmployeeTree = (data: any) => {
     const employeeMap: any = {};
 
     // Populate the employeeMap with employee data and initialize children array
     for (const employee of data) {
       const { id, supervisorId, ...rest } = employee;
-      const employeeData = { id, ...rest, children: [], title: <> <span className='fw-bold text-gray-800 d-block fs-4'>{ employeeName(employee.employeeId)}</span>  </>  };
+      const employeeData = { id, ...rest, children: [], title: <> <span className='fw-bold text-gray-800 d-block fs-4'>{`${employeeName(employee.employeeId)} (${jobRole(employee.employeeId)})`}</span>  </>  };
       employeeMap[id] = employeeData;
     }
   
@@ -179,9 +179,7 @@ const Organogram = () => {
         rootEmployees.push(employeeData);
       }
     }
-  
-    console.log('treeData: ', rootEmployees)
-    return rootEmployees;
+      return rootEmployees;
 }
 
 
@@ -191,13 +189,12 @@ const Organogram = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/organograms`)
+      const response = await fetchDocument(`organograms`)
       // filter for currentLevel equal to Level 0
       const data = response?.data.filter((item: any) => item.currentLevel === 'Level 0')
-      console.log('data', response?.data)
-      setTreeData(createEmployeeTree(response?.data))
-      // console.log('treeData: ', treeData)  
       setGridData(data)
+      const td = createEmployeeTree(response?.data)
+      setTreeData(td)
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -309,6 +306,7 @@ const Organogram = () => {
             </Space>
             <Space>
               <span className='fw-bold text-gray-800 d-block fs-3 mr-2'>Show Tree</span>
+              <Divider type="vertical" />
               <Switch checked={!!showTree} onChange={setShowTree} />
             </Space>
           </div>

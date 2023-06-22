@@ -86,7 +86,7 @@ const OrgLevel = () => {
     return name
   }
 
- 
+
   const columns: any = [
     {
       title: 'Employee',
@@ -137,7 +137,7 @@ const OrgLevel = () => {
         <Space size='middle'>
           {
             currentLevel < 6 ?
-              <Link to={`/next/${record.id}/${currentLevel}`} onClick={()=>addItemtoBreadcrumb(record)} >
+              <Link to={`/next/${record.id}/${currentLevel}`} onClick={() => addItemtoBreadcrumb(record)} >
                 <span className='btn btn-light-info btn-sm' >Next</span>
               </Link>
               : null
@@ -161,59 +161,61 @@ const OrgLevel = () => {
 
 
   const addItemtoBreadcrumb = (item: any) => {
-    console.log('breadcrumbItem: ',item)
+    console.log('breadcrumbItem: ', item)
     const newItem = {
-      title: <a onClick={() => navigate(-1)}>{item}</a>
+      title: <a onClick={() => navigate(-1)}>{employeeName(item.employeeId)}</a>
     }
     setBreadcrumbs([...breadcrumbs, newItem])
-    console.log('breadcrumb: ',breadcrumbs)
+    console.log('breadcrumb: ', breadcrumbs)
   }
 
   const removeItemFromBreadcrumb = (index: any) => {
     setBreadcrumbs(breadcrumbs.slice(0, index))
   }
 
-  function createEmployeeTree(data: any) {
+  const createEmployeeTree = (data: any) => {
     const employeeMap: any = {};
 
     // Populate the employeeMap with employee data and initialize children array
     for (const employee of data) {
-        const { id, supervisorId, ...rest } = employee;
-        const employeeData = { id, ...rest, children: [], name: employeeName(employee.employeeId) };
-        employeeMap[id] = employeeData;
+      const { id, supervisorId, ...rest } = employee;
+      const employeeData = { id, ...rest, children: [], title: <> <span className='fw-bold text-gray-800 d-block fs-4'>{employeeName(employee.employeeId)}</span>  </> };
+      employeeMap[id] = employeeData;
     }
 
     const rootEmployees = [];
 
+    // Build the tree structure by assigning children to their respective parent employees
     for (const employee of data) {
-        const { id, supervisorId } = employee;
-        const employeeData = employeeMap[id];
+      const { id, supervisorId } = employee;
+      const employeeData = employeeMap[id];
 
-        if (employeeData.currentLevel === "Level 0") { // Check if the employee is at Level 0
-            rootEmployees.push(employeeData);
-        } else {
-            const parentEmployee = employeeMap[supervisorId];
-            if (parentEmployee) {
-                parentEmployee.children.push(employeeData);
-            }
-        }
+      const parsedSupervisorId = parseInt(supervisorId, 10); // Parse supervisorId to int
+
+      if (!isNaN(parsedSupervisorId) && parsedSupervisorId in employeeMap) {
+        const parentEmployee = employeeMap[parsedSupervisorId];
+        parentEmployee.children.push(employeeData);
+      } else {
+        rootEmployees.push(employeeData);
+      }
     }
-    console.log('treeData: ', rootEmployees)
     return rootEmployees;
-}
+  }
 
 
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/organograms`)
+      const response = await fetchDocument(`organograms`)
       const levelItem = response?.data.find((item: any) => item.id.toString() === param.id)
       const getSupervisor = allEmployees?.data?.find((employee: any) => employee.employeeId === levelItem?.employeeId)
       const name = `${getSupervisor?.firstName} ${getSupervisor?.surname}`
+      if(currentLevel === 1) {
+
+      }
       setSupervisorName(name)
       const filteredBySupervisor = response?.data.filter((item: any) => item?.supervisorId === param.id)
-      console.log('filt: ',filteredBySupervisor)
       setGridData(filteredBySupervisor)
       setTreeData(createEmployeeTree(response?.data))
       setLoading(false)
@@ -290,7 +292,7 @@ const OrgLevel = () => {
   const url = `${Api_Endpoint}/organograms`
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    if(values.employeeId === 'Select'){
+    if (values.employeeId === 'Select') {
       message.error('Please select an employee')
       return
     }
@@ -334,11 +336,13 @@ const OrgLevel = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
-          <div className="mb-5">
+          <div className="mb-0">
             <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
-            <span className="fw-bold text-gray-800 d-block fs-2 mb-3 ">{supervisorName}</span>
-            {/* <> <Breadcrumb  routes ={breadcrumbs}/> </> */}
           </div>
+          <Space >
+            <span className="fw-bold text-gray-800 d-block fs-2 mb-3 ">{supervisorName}</span>
+            {/* <> <Breadcrumb separator=">" items={breadcrumbs} className="mb-3" /> </> */}
+          </Space>
           <div className='d-flex justify-content-between'>
             <Space style={{ marginBottom: 16 }}>
               <Input
@@ -414,7 +418,7 @@ const OrgLevel = () => {
                 <div className=' mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Is assistant</label>
                   <select {...register("isAssistant")}
-                    value={isUpdateModalOpen === true ? tempData?.isAssistant : null }
+                    value={isUpdateModalOpen === true ? tempData?.isAssistant : null}
                     onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option value="Select">Select</option> : null}
                     <option value="1">Yes</option>
