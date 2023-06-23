@@ -211,9 +211,6 @@ const OrgLevel = () => {
       const levelItem = response?.data.find((item: any) => item.id.toString() === param.id)
       const getSupervisor = allEmployees?.data?.find((employee: any) => employee.employeeId === levelItem?.employeeId)
       const name = `${getSupervisor?.firstName} ${getSupervisor?.surname}`
-      if(currentLevel === 1) {
-
-      }
       setSupervisorName(name)
       const filteredBySupervisor = response?.data.filter((item: any) => item?.supervisorId === param.id)
       setGridData(filteredBySupervisor)

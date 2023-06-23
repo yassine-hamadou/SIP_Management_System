@@ -124,6 +124,8 @@ import { Bank } from '../modules/production/components/setup/payroll/Bank'
 import { RoasterShifts } from '../modules/production/components/setup/hr/RoaterShifts'
 import { Organogram } from '../modules/production/components/setup/hr/Organogram'
 import { OrgLevel } from '../modules/production/components/setup/hr/OrgLevel'
+import { AppraisalDeliverables } from '../modules/production/components/setup/hr/ObjectiveDeliverables'
+import { AppraisalObjectives } from '../modules/production/components/setup/hr/ParameterObjectives'
 
 
 
@@ -652,6 +654,18 @@ const PrivateRoutes = () => (
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Parameters</PageTitle>
           <Parameter />
+        </SuspensedView>} />
+      <Route
+        path='objectives/:id'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Objectives</PageTitle>
+          <AppraisalObjectives/>
+        </SuspensedView>} />
+      <Route
+        path='deliverables/:id'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Deliverables</PageTitle>
+          <AppraisalDeliverables/>
         </SuspensedView>} />
       <Route
         path='setup/payroll/tax/*'

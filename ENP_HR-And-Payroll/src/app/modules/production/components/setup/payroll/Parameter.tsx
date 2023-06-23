@@ -7,7 +7,7 @@ import { Api_Endpoint, deleteItem, fetchAppraisals, fetchDocument, postItem, upd
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useForm } from 'react-hook-form'
 import form from 'antd/es/form'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
 const Parameter = () => {
   const [gridData, setGridData] = useState([])
@@ -130,6 +130,9 @@ const Parameter = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
+          <Link to={`/objectives/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Objectives</span>
+          </Link>
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
