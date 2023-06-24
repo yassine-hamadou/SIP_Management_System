@@ -8,6 +8,8 @@ import { Api_Endpoint, fetchAppraisals, fetchAppraisalTransactions, fetchEmploye
 import { useQuery } from 'react-query'
 import "./cusStyle.css"
 import { useForm } from 'react-hook-form'
+import { PlusOutlined } from "@ant-design/icons"
+
 
 const AppraisalPerformance = () => {
   const [gridData, setGridData] = useState([])
@@ -39,6 +41,10 @@ const AppraisalPerformance = () => {
   const [radio4Value, setRadio4Value] = useState(1);
   const tenantId = localStorage.getItem('tenant')
   const [fieldInit, setFieldInit] = useState([])
+  const [isReviewDateModalOpen, setIsReviewDateModalOpen] = useState(false)
+  const [reivewDateSubmitLoading, setReviewDateSubmitLoading] = useState(false)
+
+  
 
   const [textareaValue, setTextareaValue] = useState('');
   const [textareaHeight, setTextareaHeight] = useState('auto');
@@ -98,6 +104,14 @@ const AppraisalPerformance = () => {
     setUpdateModalOpen(false)
 
   }
+
+  const handleReviewDateCancel = () => {
+    reset()
+    setIsReviewDateModalOpen(false)
+  }
+
+  
+
   const showTabModal = () => {
     setTabModalOpen(true)
   }
@@ -461,6 +475,20 @@ const AppraisalPerformance = () => {
     setGridData(filteredData)
   }
 
+  const submitReviewDate = async (values: any) => {
+    setSubmitLoading(true)
+    const data = {
+      date: values.date,  
+      description: values.description,
+    }
+    try {
+      setSubmitLoading(false)
+      handleReviewDateCancel()
+    } catch (error: any) {
+   
+    }
+  }
+
   const endpoint = `${Api_Endpoint}/AppraisalPerfTransactions`
   const submitApplicant = handleSubmit(async (values) => {
     setLoading(true)
@@ -494,6 +522,30 @@ const AppraisalPerformance = () => {
 
   })
 
+  const reviewDatesColumn = [
+    {
+      title: 'Date',
+      dataIndex: 'reviewDate',
+    }
+    ,
+    {
+      title: 'Description',
+      dataIndex: 'description',
+    },
+    {
+      title: 'Action',
+      render: (text: any, record: any) => (
+        <a className='btn btn-light-danger btn-sm' onClick={() => { }}>
+          Delete
+        </a>
+      ),
+    }
+  ]
+
+  const showReviewDateModal = () => {
+    setIsReviewDateModalOpen(true)
+  }
+
   return (
     <div
       style={{
@@ -505,7 +557,7 @@ const AppraisalPerformance = () => {
     >
       <form onSubmit={submitApplicant}>
         <div style={{ padding: "20px 0px 0 0px" }} className='col-12 row mb-0'>
-          <div className='col-4 mb-7'>
+          <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
             <select value={selectedValue1} onChange={(e) => setSelectedValue1(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option value="select paygroup">select paygroup</option>
@@ -514,7 +566,7 @@ const AppraisalPerformance = () => {
               ))}
             </select>
           </div>
-          <div className='col-4 mb-7'>
+          <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Appraisal Type</label>
             <select value={selectedValue2} onChange={handleSelectedChange} className="form-select form-select-solid" aria-label="Select example">
               <option value="select appraisal type">select appraisal type</option>
@@ -523,7 +575,9 @@ const AppraisalPerformance = () => {
               ))}
             </select>
           </div>
-          <div className='col-4 mb-7'>
+        </div>
+        <div style={{ padding: "0px 0px 0 0px" }} className='col-12 row mb-0'>
+          <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Start Period</label>
             <select value={selectedValue3} onChange={(e) => setSelectedValue3(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option value="select start period">select start period</option>
@@ -531,10 +585,8 @@ const AppraisalPerformance = () => {
                 <option value={item.id}>{item.name}</option>
               ))}
             </select>
-          </div>          
-        </div>
-        <div style={{ padding: "0px 0px 0 0px" }} className='col-12 row mb-0'>
-        <div className='col-4 mb-7'>
+          </div>
+          <div className='col-6 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">End Period</label>
             <select value={selectedValue4} onChange={(e) => setSelectedValue4(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option value="select end period"> select end period</option>
@@ -543,16 +595,7 @@ const AppraisalPerformance = () => {
               ))}
             </select>
           </div>
-          <div className='col-4 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Review Dates</label>
-            <select value={selectedValue5} onChange={(e) => setSelectedValue5(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
-              <option value="select paygroup">select review date</option>
-              {
-
-              }
-            </select>
-          </div>
-          </div>
+        </div>
       </form>
       {
         selectedValue1 === null
@@ -567,15 +610,45 @@ const AppraisalPerformance = () => {
             <div className='table-responsive'>
               {
                 <>
-                  <span className='form-label' >Objectives</span>
-                  <textarea
-                    name='objectives'
-                    id="resizable-textarea"
-                    className="form-control mb-7"
-                    value={textareaValue}
-                    onChange={handleTextareaChange}
-                    style={{ height: textareaHeight }}
-                  />
+                  <div style={{ padding: "0px 0px 0 0px" }} className='col-12 row mb-0'>
+                    <div className='col-6 mb-7'>
+                      <span className='form-label' >Objectives</span>
+                      <textarea
+                        name='objectives'
+                        id="resizable-textarea"
+                        className="form-control mb-7 mt-2"
+                        value={textareaValue}
+                        onChange={handleTextareaChange}
+                        style={{ height: textareaHeight }}
+                      />
+                    </div>
+
+                    <div className='col-6 mb-7'>
+                      <div className='d-flex justify-content-between'>
+                        <span className='form-label' >Review Dates</span>
+                      </div>
+                      <div
+                        style={{
+                          backgroundColor: 'white',
+                          padding: '20px',
+                          borderRadius: '5px',
+                          boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
+                        }}
+                        className="border border-gray-400"
+                      >
+                        <Space className="justify-content-end align-items-end d-flex mb-2" >
+                          <Button
+                            onClick={showReviewDateModal}
+                            className="btn btn-light-primary me-3 justify-content-center align-items-center d-flex"
+                            style={{ width: '32px', height: '32px', borderRadius: '100%' }}
+                            type="primary" shape="circle" icon={<PlusOutlined style={{ fontSize: '16px' }} />} size={'small'} />
+                        </Space>
+
+                        <Table columns={reviewDatesColumn} dataSource={[]} pagination={{ defaultPageSize: 3 }} />
+                      </div>
+                    </div>
+                  </div>
+
                 </>
               }
               <div className='d-flex justify-content-between'>
@@ -837,11 +910,51 @@ const AppraisalPerformance = () => {
               >
                 <h3>Will be updated soon</h3>
               </Modal>
+              <Modal
+                title='Add a review date'
+                open={isReviewDateModalOpen}
+                onCancel={handleReviewDateCancel}
+                closable={true}
+                footer={[
+                  <Button key='back' onClick={handleReviewDateCancel}>
+                    Cancel
+                  </Button>,
+                  <Button
+                    key='submit'
+                    type='primary'
+                    htmlType='submit'
+                    loading={reivewDateSubmitLoading}
+                    onClick={submitReviewDate}
+                  >
+                    Done
+                  </Button>,
+                ]}
+              >
+                <form>
+                  <div className='row mb-7 mt-7'>
+                    <div className='col-12 mb-7'>
+                      <label htmlFor='exampleFormControlInput1' className='form-label'>Review Date</label>
+                      <input
+                        {...register("reviewDate")}
+                        type='date'
+                        className='form-control form-control-solid'
+                      />
+                    </div>
+                    <div className='mb-3'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
+                      <input
+                        {...register("description")}
+                        // onChange={handleChange}
+                        className="form-control form-control-solid" />
+                    </div>
+                  </div>
+                </form>
+              </Modal>
             </div>
           </KTCardBody>
       }
 
-    </div>
+    </div >
   )
 }
 
