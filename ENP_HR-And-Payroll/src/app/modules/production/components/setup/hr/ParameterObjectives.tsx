@@ -7,7 +7,7 @@ const AppraisalObjectives = () => {
         <div>
             < AppraisalComponent 
                 title="Objectives"
-                endPoint = "objectives"
+                endPoint = "appraisalobjective"
              />  
         </div>
     )

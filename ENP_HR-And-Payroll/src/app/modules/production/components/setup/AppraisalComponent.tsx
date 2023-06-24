@@ -28,7 +28,7 @@ const AppraisalComponent = (
   const queryClient = useQueryClient()
   const statusList = ['Active', 'Inactive']
   let [pathName, setPathName] = useState<any>("")
-  const prevPath = title === 'Objectives' ? 'parameters' : 'objectives'
+  const prevPath = title === 'Objectives' ? 'parameters' : 'appraisalobjective'
   const { data: pathData } = useQuery('pathData', () => fetchDocument(`${prevPath}/tenant/${tenantId}`), { cacheTime: 5000 })
 
   const showModal = () => {
@@ -43,7 +43,7 @@ const AppraisalComponent = (
     reset()
     setIsModalOpen(false)
     setIsUpdateModalOpen(false)
-    setTempData(null)
+    setTempData({})
   }
 
   const handleChange = (event: any) => {
@@ -85,6 +85,19 @@ const AppraisalComponent = (
       },
     },
     {
+      title: 'Description',
+      dataIndex: 'description',
+      sorter: (a: any, b: any) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Weight(%)',
       dataIndex: 'weight',
       sorter: (a: any, b: any) => {
@@ -104,9 +117,9 @@ const AppraisalComponent = (
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-            <Link to={`/deliverables/${record.id}`}>
-              <span className='btn btn-light-info btn-sm'>{title}</span>
-            </Link>
+          <Link to={`/deliverables/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Deliverables</span>
+          </Link>
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -182,6 +195,7 @@ const AppraisalComponent = (
           }
           return 0
         },
+        render: (text: any) => <span>{text.toLocaleString()}</span>,
       },
 
       {
@@ -208,8 +222,7 @@ const AppraisalComponent = (
     setLoading(true)
     try {
       const response = await fetchDocument(`${endPoint}/tenant/${tenantId}`)
-      // const dummyData: any = title === 'Objectives' ? ObjectivesDummyData : DeliverablesDummyData
-      // setGridData(dummyData)
+      setGridData(response?.data)
 
       setLoading(false)
     } catch (error) {
@@ -231,11 +244,8 @@ const AppraisalComponent = (
       let res = await getItemName(param.id)
       setPathName(res?.name)
     })();
-    const dummyData: any = title === 'Objectives' ? ObjectivesDummyData : DeliverablesDummyData
-    setGridData(dummyData)
-    console.log('dummyData: ', dummyData)
     loadData()
-  }, [])
+  }, [param, pathData?.data])
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
@@ -290,26 +300,36 @@ const AppraisalComponent = (
   }
 
   const showUpdateModal = (values: any) => {
-    showModal()
     setIsUpdateModalOpen(true)
     setTempData(values);
+    showModal()
     console.log(values)
   }
 
-  const url = `${Api_Endpoint}/Parameters`
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const item = {
+    const item = title === 'Objectives' ? {
       data: {
-        equipmentId: values.equipmentId,
-        modelName: values.modelName,
-        description: values.equipmentDes,
+        name: values.name,
+        parameterId: parseInt(param.id),
+        description: values.description,
+        weight: parseInt(values.weight),
+        tenantId: tenantId,
+      },
+      url: endPoint,
+    } : {
+      data: {
+        name: values.name,
+        objectiveId: parseInt(param.id),
+        description: values.description,
+        subWeight: parseInt(values.subWeight),
+        unitOfMeasure: values.unitOfMeasure,
+        target: parseInt(values.target),
         tenantId: tenantId,
       },
       url: endPoint,
     }
     postData(item)
-
   })
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
@@ -367,11 +387,12 @@ const AppraisalComponent = (
               </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataByID} />
+          <Table columns={columns} dataSource={dataByID} loading={loading} />
           <Modal
             title={isUpdateModalOpen ? `Update ${title}` : `Add ${title}`}
             open={isModalOpen}
             onCancel={handleCancel}
+            width={title === 'Objectives' ? 500 : 800}
             closable={true}
             footer={[
               <Button key='back' onClick={handleCancel}>
@@ -392,13 +413,21 @@ const AppraisalComponent = (
             >
               <hr></hr>
               {
-                title === 'Objective' ?
+                title === 'Objectives' ?
                   <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
                     <div className='mb-7'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                       <input
                         {...register("name")}
                         defaultValue={isUpdateModalOpen === true ? tempData.name : null}
+                        onChange={handleChange}
+                        className="form-control form-control-solid" />
+                    </div>
+                    <div className='mb-7'>
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
+                      <input
+                        {...register("description")}
+                        defaultValue={isUpdateModalOpen === true ? tempData.description : null}
                         onChange={handleChange}
                         className="form-control form-control-solid" />
                     </div>
@@ -423,7 +452,7 @@ const AppraisalComponent = (
                           onChange={handleChange}
                           className="form-control form-control-solid" />
                       </div>
-                      <div className='col-4 mb-7'>
+                      <div className='col-8 mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
                         <input
                           {...register("description")}
@@ -431,21 +460,21 @@ const AppraisalComponent = (
                           onChange={handleChange}
                           className="form-control form-control-solid" />
                       </div>
-                      <div className='col-4 mb-7'>
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Target</label>
-                        <input
-                          {...register("target")}
-                          defaultValue={isUpdateModalOpen === true ? tempData.target : null}
-                          onChange={handleChange}
-                          className="form-control form-control-solid" />
-                      </div>
                     </div>
-                    <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                    <div style={{ padding: "0px 20px 20px 20px" }} className='row mb-0 '>
                       <div className='col-4 mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Unit of measure</label>
                         <input
                           {...register("unitOfMeasure")}
                           defaultValue={isUpdateModalOpen === true ? tempData.unitOfMeasure : null}
+                          onChange={handleChange}
+                          className="form-control form-control-solid" />
+                      </div>
+                      <div className='col-4 mb-7'>
+                        <label htmlFor="exampleFormControlInput1" className="form-label">Target</label>
+                        <input
+                          {...register("target")} type = 'number' min='0' 
+                          defaultValue={isUpdateModalOpen === true ? tempData.target : 0}
                           onChange={handleChange}
                           className="form-control form-control-solid" />
                       </div>

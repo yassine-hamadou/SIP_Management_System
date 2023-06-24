@@ -23,6 +23,7 @@ const Organogram = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
   const { data: allEmployees } = useQuery('employess', () => fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allOrganograms } = useQuery('organograms', () => fetchDocument(`organograms`), { cacheTime: 5000 })
   const [treeData, setTreeData] = useState<any>([])
   const [showTree, setShowTree] = useState<boolean>(false)
 
@@ -153,8 +154,14 @@ const Organogram = () => {
     return section?.gradeId?.toString() === param.id
   })
 
-  const createEmployeeTree = (data: any) => {
+  const createEmployeeTree = () => {
     const employeeMap: any = {};
+    const data = allOrganograms?.data;
+  
+    if (!data || !Array.isArray(data)) {
+      console.error('Invalid or missing data');
+      return []; // Return an empty array or handle the error as per your application's requirement
+    }
 
     // Populate the employeeMap with employee data and initialize children array
     for (const employee of data) {
@@ -193,8 +200,8 @@ const Organogram = () => {
       // filter for currentLevel equal to Level 0
       const data = response?.data.filter((item: any) => item.currentLevel === 'Level 0')
       setGridData(data)
-      const td = createEmployeeTree(response?.data)
-      setTreeData(td)
+      const td = createEmployeeTree()
+      // setTreeData(td)
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -202,13 +209,15 @@ const Organogram = () => {
   }
 
   useEffect(() => {
+    const td = createEmployeeTree()
+    setTreeData(td)
     loadData()
   }, [])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-  }))
+  // const dataWithIndex = gridData.map((item: any, index) => ({
+  //   ...item,
+  //   key: index,
+  // }))
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
