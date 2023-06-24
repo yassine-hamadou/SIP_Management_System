@@ -7,6 +7,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Api_Endpoint, fetchDocument, fetchGrades, fetchLeaveTypes, fetchPaygroups, updateGrade, updateGradeLeave, updateItem } from '../../../../../services/ApiCalls'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { Employee } from '../../employee/Employee'
 
 const OrgLevel = () => {
   const [gridData, setGridData] = useState([])
@@ -25,7 +26,7 @@ const OrgLevel = () => {
   const tenantId = localStorage.getItem('tenant')
   const [supervisorName, setSupervisorName] = useState('')
   const { data: allEmployees } = useQuery('employees', () => fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
-  const { data: allOrganograms } = useQuery('organograms', () => fetchDocument(`organograms`), { cacheTime: 5000 })
+  const { data: allOrganograms } = useQuery('organograms', async () => await fetchDocument(`organograms`), { cacheTime: 5000 })
   const [breadcrumbs, setBreadcrumbs]: any = useState<any>([])
   const [treeData, setTreeData] = useState<any>([])
 
@@ -202,28 +203,41 @@ const OrgLevel = () => {
     return rootEmployees;
   }
 
-
+  const pathName = () => {
+    const levelItem = allOrganograms?.data.find((item: any) => item.id.toString() === param.id)
+    const getSupervisor = allEmployees?.data?.find((employee: any) => employee.employeeId === levelItem?.employeeId)
+    const name = `${getSupervisor?.firstName} ${getSupervisor?.surname}`
+    setSupervisorName(name)
+  }
 
   const loadData = async () => {
     setLoading(true)
     try {
       const response = await fetchDocument(`organograms`)
-      const levelItem = response?.data.find((item: any) => item.id.toString() === param.id)
-      const getSupervisor = allEmployees?.data?.find((employee: any) => employee.employeeId === levelItem?.employeeId)
-      const name = `${getSupervisor?.firstName} ${getSupervisor?.surname}`
-      setSupervisorName(name)
+      if (param.level === '0') {
+        const data = response?.data.filter((item: any) => item.currentLevel === 'Level 0')
+        const employees = allEmployees?.data
+        console.log('employees', employees)
+        const getSupervisor = employees.find((employee: any) => employee.employeeId === data?.employeeId)
+        const name = `${getSupervisor?.firstName} ${getSupervisor?.surname}`
+        setSupervisorName(name)
+        console.log('name',name , getSupervisor)
+      }
+      pathName()
       const filteredBySupervisor = response?.data.filter((item: any) => item?.supervisorId === param.id)
       setGridData(filteredBySupervisor)
       setTreeData(createEmployeeTree(response?.data))
       setLoading(false)
     } catch (error) {
       console.log(error)
+      setLoading(false)
     }
   }
 
   useEffect(() => {
+    pathName()
     loadData()
-  }, [param, currentLevel, breadcrumbs])
+  }, [param, currentLevel, supervisorName])
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,

@@ -22,8 +22,8 @@ const Organogram = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
-  const { data: allEmployees } = useQuery('employess', () => fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
-  const { data: allOrganograms } = useQuery('organograms', () => fetchDocument(`organograms`), { cacheTime: 5000 })
+  const { data: allEmployees } = useQuery('employees', async () => await fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allOrganograms } = useQuery('organograms', async () => await fetchDocument(`organograms`), { cacheTime: 5000 })
   const [treeData, setTreeData] = useState<any>([])
   const [showTree, setShowTree] = useState<boolean>(false)
 
@@ -41,7 +41,7 @@ const Organogram = () => {
   }
 
   const onChange = (checked: boolean) => {
-   setShowTree(checked) 
+    setShowTree(checked)
   };
 
   const handleCancel = () => {
@@ -140,10 +140,9 @@ const Organogram = () => {
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
-          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm disabled'>
+          {/* <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm disabled'>
             Delete
-          </a>
-
+          </a> */}
         </Space>
       ),
 
@@ -154,10 +153,9 @@ const Organogram = () => {
     return section?.gradeId?.toString() === param.id
   })
 
-  const createEmployeeTree = () => {
+  const createEmployeeTree = (data: any) => {
     const employeeMap: any = {};
-    const data = allOrganograms?.data;
-  
+
     if (!data || !Array.isArray(data)) {
       console.error('Invalid or missing data');
       return []; // Return an empty array or handle the error as per your application's requirement
@@ -166,19 +164,19 @@ const Organogram = () => {
     // Populate the employeeMap with employee data and initialize children array
     for (const employee of data) {
       const { id, supervisorId, ...rest } = employee;
-      const employeeData = { id, ...rest, children: [], title: <> <span className='fw-bold text-gray-800 d-block fs-4'>{`${employeeName(employee.employeeId)} (${jobRole(employee.employeeId)})`}</span>  </>  };
+      const employeeData = { id, ...rest, children: [], title: <> <span className='fw-bold text-gray-800 d-block fs-4'>{`${employeeName(employee.employeeId)} (${jobRole(employee.employeeId)})`}</span>  </> };
       employeeMap[id] = employeeData;
     }
-  
+
     const rootEmployees = [];
-  
+
     // Build the tree structure by assigning children to their respective parent employees
     for (const employee of data) {
       const { id, supervisorId } = employee;
       const employeeData = employeeMap[id];
-  
+
       const parsedSupervisorId = parseInt(supervisorId, 10); // Parse supervisorId to int
-  
+
       if (!isNaN(parsedSupervisorId) && parsedSupervisorId in employeeMap) {
         const parentEmployee = employeeMap[parsedSupervisorId];
         parentEmployee.children.push(employeeData);
@@ -186,22 +184,18 @@ const Organogram = () => {
         rootEmployees.push(employeeData);
       }
     }
-      return rootEmployees;
-}
-
-
+    return rootEmployees;
+  }
 
   // this filters for only gradeLeaves for the pARAM ID 
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument(`organograms`)
-      // filter for currentLevel equal to Level 0
-      const data = response?.data.filter((item: any) => item.currentLevel === 'Level 0')
-      setGridData(data)
-      const td = createEmployeeTree()
-      // setTreeData(td)
+      const data = allOrganograms?.data
+      setGridData(data.filter((item: any) => item.currentLevel === 'Level 0'))
+      const td = createEmployeeTree(data)
+      setTreeData(td)
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -209,10 +203,8 @@ const Organogram = () => {
   }
 
   useEffect(() => {
-    const td = createEmployeeTree()
-    setTreeData(td)
     loadData()
-  }, [])
+  }, [allEmployees?.data])
 
   // const dataWithIndex = gridData.map((item: any, index) => ({
   //   ...item,
@@ -323,7 +315,7 @@ const Organogram = () => {
             showTree ?
               <>
                 <Tree
-                className='mt-4'
+                  className='mt-4'
                   showLine
                   treeData={treeData}
                 />
