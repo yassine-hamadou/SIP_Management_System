@@ -44,7 +44,7 @@ const AppraisalPerformance = () => {
   const [isReviewDateModalOpen, setIsReviewDateModalOpen] = useState(false)
   const [reivewDateSubmitLoading, setReviewDateSubmitLoading] = useState(false)
 
-  
+
 
   const [textareaValue, setTextareaValue] = useState('');
   const [textareaHeight, setTextareaHeight] = useState('auto');
@@ -110,7 +110,7 @@ const AppraisalPerformance = () => {
     setIsReviewDateModalOpen(false)
   }
 
-  
+
 
   const showTabModal = () => {
     setTabModalOpen(true)
@@ -478,14 +478,14 @@ const AppraisalPerformance = () => {
   const submitReviewDate = async (values: any) => {
     setSubmitLoading(true)
     const data = {
-      date: values.date,  
+      date: values.date,
       description: values.description,
     }
     try {
       setSubmitLoading(false)
       handleReviewDateCancel()
     } catch (error: any) {
-   
+
     }
   }
 
@@ -557,7 +557,7 @@ const AppraisalPerformance = () => {
     >
       <form onSubmit={submitApplicant}>
         <div style={{ padding: "20px 0px 0 0px" }} className='col-12 row mb-0'>
-          <div className='col-6 mb-7'>
+          <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
             <select value={selectedValue1} onChange={(e) => setSelectedValue1(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option value="select paygroup">select paygroup</option>
@@ -566,7 +566,7 @@ const AppraisalPerformance = () => {
               ))}
             </select>
           </div>
-          <div className='col-6 mb-7'>
+          <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Appraisal Type</label>
             <select value={selectedValue2} onChange={handleSelectedChange} className="form-select form-select-solid" aria-label="Select example">
               <option value="select appraisal type">select appraisal type</option>
@@ -575,9 +575,7 @@ const AppraisalPerformance = () => {
               ))}
             </select>
           </div>
-        </div>
-        <div style={{ padding: "0px 0px 0 0px" }} className='col-12 row mb-0'>
-          <div className='col-6 mb-7'>
+          <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Start Period</label>
             <select value={selectedValue3} onChange={(e) => setSelectedValue3(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option value="select start period">select start period</option>
@@ -586,7 +584,7 @@ const AppraisalPerformance = () => {
               ))}
             </select>
           </div>
-          <div className='col-6 mb-7'>
+          <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">End Period</label>
             <select value={selectedValue4} onChange={(e) => setSelectedValue4(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option value="select end period"> select end period</option>
