@@ -1,4 +1,4 @@
-import { Button, Divider, Form, Input, InputNumber, Modal, Space, Switch, Table, Tree } from 'antd'
+import { Button, Divider, Form, Input, InputNumber, Modal, Space, Switch, Table, Tree, message } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
@@ -26,7 +26,7 @@ const Organogram = () => {
   const { data: allOrganograms } = useQuery('organograms', async () => await fetchDocument(`organograms`), { cacheTime: 5000 })
   const [treeData, setTreeData] = useState<any>([])
   const [showTree, setShowTree] = useState<boolean>(false)
-
+  const queryClient = useQueryClient()
 
   const levels = [
     'Level 0', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6',
@@ -228,24 +228,32 @@ const Organogram = () => {
     setGridData(filteredData)
   }
 
-  const queryClient = useQueryClient()
+  
   const { isLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['organograms', tempData.id], data);
+      queryClient.invalidateQueries('organograms')
+      message.success('Organogram updated successfully')
       reset()
       setTempData({})
-      loadData()/*  */
       setIsUpdateModalOpen(false)
       setIsModalOpen(false)
+      loadData()
+      setLoading(false)
     },
     onError: (error) => {
       console.log('error: ', error)
+      message.error('Organogram update failed')
     }
   })
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
-    updateData(tempData)
+    setLoading(true)
+    const item = {
+      data: tempData,
+      url:'organograms'
+    }
+    updateData(item)
     console.log('update: ', tempData)
   }
 

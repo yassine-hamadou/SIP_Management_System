@@ -1,14 +1,15 @@
-import { Button, Input, Modal, Space, Table, RadioChangeEvent, Select, Divider } from 'antd'
+import { Button, Input, Modal, Space, Table, RadioChangeEvent, Select, Divider, message } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { Api_Endpoint, fetchAppraisals, fetchAppraisalTransactions, fetchEmployees, fetchJobTitles, fetchPaygroups, fetchPeriods, fetchParameters } from '../../../../../services/ApiCalls'
-import { useQuery } from 'react-query'
+import { Api_Endpoint, fetchAppraisals, fetchAppraisalTransactions, fetchEmployees, fetchJobTitles, fetchPaygroups, fetchPeriods, fetchParameters, postItem, deleteItem, fetchDocument, updateItem } from '../../../../../services/ApiCalls'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import "./cusStyle.css"
 import { useForm } from 'react-hook-form'
 import { PlusOutlined } from "@ant-design/icons"
+import moment from 'moment'
 
 
 const AppraisalPerformance = () => {
@@ -43,14 +44,19 @@ const AppraisalPerformance = () => {
   const [fieldInit, setFieldInit] = useState([])
   const [isReviewDateModalOpen, setIsReviewDateModalOpen] = useState(false)
   const [reivewDateSubmitLoading, setReviewDateSubmitLoading] = useState(false)
+  const [reviewDatesData, setReviewDatesData] = useState<any>([])
+  const queryClient = useQueryClient()
+  const [appraisalData, setAppraisalData] = useState<any>([])
+  const [currentDate, setCurrentDate] = useState<any>(new Date())
 
 
-
-  const [textareaValue, setTextareaValue] = useState('');
+  const [textAreaValue, setTextAreaValue] = useState<any>(null);
   const [textareaHeight, setTextareaHeight] = useState('auto');
 
   const handleTextareaChange = (event: any) => {
-    setTextareaValue(event.target.value);
+    // setAppraisalPerfObjective(event.target.value);
+    setAppraisalData([...appraisalData, { objective: event.target.value }])
+    setTextAreaValue(event.target.value);
     adjustTextareaHeight();
   };
 
@@ -110,6 +116,27 @@ const AppraisalPerformance = () => {
     setIsReviewDateModalOpen(false)
   }
 
+  const getTimeLeft = (reviewDate: any) => {
+
+    const currentDate = new Date();
+    const targetDate = new Date(reviewDate);
+    targetDate.setHours(0, 0, 0, 0); // Set targetDate to the start of the day
+
+    if (currentDate > targetDate) {
+      return "Expired";
+    }
+  
+    const timeDifference = targetDate.getTime() - currentDate.getTime();
+    const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)); // Calculate days left
+  
+    const monthsLeft = Math.floor(daysLeft / 30); // Calculate months left
+  
+    if (monthsLeft > 0) {
+      return `${monthsLeft} ${monthsLeft === 1 ? "month" : "months"}`;
+    } else {
+      return `${daysLeft} ${daysLeft === 1 ? "day" : "days"}`;
+    }
+  }
 
 
   const showTabModal = () => {
@@ -124,17 +151,34 @@ const AppraisalPerformance = () => {
     setEmployeeId(record)
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${ENP_URL}/AppraisalPerfTransactions/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data: any) => {
+      queryClient.setQueryData([data?.url, data], data);
+      loadData()
+    },
+    onError: (error) => {
+      message.error('Error deleting record')
     }
+  })
+
+  function handleDelete(element: any) {
+    const item = {
+      url: 'AppraisalPerfTransactions',
+      data: element
+    }
+    setLoading(true)
+    deleteData(item)
   }
+
+  function handleDeleteReviewDate(element: any) {
+    const item = {
+      url: 'AppraisalReviewDates',
+      data: element
+    }
+    setLoading(true)
+    deleteData(item)
+  }
+
   const [fileList, setFileList] = useState<UploadFile[]>([
 
   ]);
@@ -231,6 +275,21 @@ const AppraisalPerformance = () => {
         return 0
       },
     },
+    {
+      title: 'Email',
+      render: (row: any) => {
+        return getEmail(row.employeeId)
+      },
+      sorter: (a: any, b: any) => {
+        if (a.jobt > b.jobt) {
+          return 1
+        }
+        if (b.jobt > a.jobt) {
+          return -1
+        }
+        return 0
+      },
+    },
 
     {
       title: 'Action',
@@ -241,7 +300,9 @@ const AppraisalPerformance = () => {
           <a onClick={() => showUpdateModal(record.id)} className='btn btn-light-info btn-sm'>
             Details
           </a>
-
+          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
+            Delete
+          </a>
         </Space>
       ),
 
@@ -316,7 +377,16 @@ const AppraisalPerformance = () => {
     setLoading(true)
     try {
       const response = await axios.get(`${Api_Endpoint}/AppraisalPerfTransactions/tenant/${tenantId}`)
+      const appraisalReviewDatesResponse = await fetchDocument(`AppraisalReviewDates/tenant/${tenantId}`)
+      setReviewDatesData(appraisalReviewDatesResponse?.data)
       setGridData(response.data)
+
+      // find appraisal whose appraisalTypeId is equal to selectedValue2
+      const appraisalById = response.data.filter((item: any) => {
+        return item.appraisalTypeId === parseInt(selectedValue2)
+      })
+      console.log('appraisalById: ', appraisalById)
+
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -324,6 +394,10 @@ const AppraisalPerformance = () => {
   }
   const dataByID: any = gridData.filter((refId: any) => {
     return refId.appraisalTypeId === parseInt(selectedValue2)
+  })
+
+  const reviewDateByID: any = reviewDatesData.filter((appId: any) => {
+    return appId.appraisalId === parseInt(selectedValue2)
   })
 
   const emplyeesByPaygroup: any = alEmployees?.data?.filter((item: any) => {
@@ -360,6 +434,17 @@ const AppraisalPerformance = () => {
     })
     return surname
   }
+
+  const getEmail = (employeeId: any) => {
+    let email = null
+    alEmployees?.data.map((item: any) => {
+      if (item.id === employeeId) {
+        email = item.email
+      }
+    })
+    return email
+  }
+
   const getID = (employeeId: any) => {
     let Id = null
     alEmployees?.data.map((item: any) => {
@@ -452,10 +537,9 @@ const AppraisalPerformance = () => {
       return jobTitleName
     }
 
-
     getjobTitleName()
     loadData()
-  }, [allJobTitles?.data, employeeRecord?.jobTitleId])
+  }, [allJobTitles?.data, employeeRecord?.jobTitleId, selectedValue2])
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -463,7 +547,6 @@ const AppraisalPerformance = () => {
       loadData()
     }
   }
-
 
   const globalSearch = () => {
     // @ts-ignore
@@ -475,69 +558,104 @@ const AppraisalPerformance = () => {
     setGridData(filteredData)
   }
 
-  const submitReviewDate = async (values: any) => {
-    setSubmitLoading(true)
-    const data = {
-      date: values.date,
-      description: values.description,
+  const handleUpdate = (e: any) => {
+    e.preventDefault()
+    const item: any = {
+      url: 'AppraisalPerfTransactions',
+      data: appraisalData
     }
-    try {
-      setSubmitLoading(false)
-      handleReviewDateCancel()
-    } catch (error: any) {
-
-    }
+    updateData(item)
   }
 
-  const endpoint = `${Api_Endpoint}/AppraisalPerfTransactions`
-  const submitApplicant = handleSubmit(async (values) => {
-    setLoading(true)
-    const data = {
-      paygroupId: parseInt(selectedValue1),
-      appraisalTypeId: parseInt(selectedValue2),
-      employeeId: employeeRecord.id,
-      startPeriod: selectedValue3,
-      endPeriod: selectedValue4,
-      appraTranItems: fieldInit.map((item: any) => ({
-        parameterId: item.id,
-        score: item.score.toString(),
-        comment: item.comment,
-      })),
-      tenantId: tenantId,
-    }
-    console.log(data)
-    try {
 
-      const response = await axios.post(endpoint, data)
-      setSubmitLoading(false)
+  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
+    onSuccess: (data: any) => {
+      queryClient.setQueryData([data?.url, appraisalData], data);
       reset()
+      loadData()
+      message.success('Appraisal objective updated successfully')
+    },
+    onError: (error) => {
+      console.log('error: ', error)
+    }
+  })
+
+  const endpoint = isReviewDateModalOpen ? `AppraisalReviewDates` : `AppraisalPerfTransactions`
+  const submitApplicant = handleSubmit(async (values) => {
+    if (isReviewDateModalOpen && !values.reviewDate) {
+      message.error('Please select date')
+      return
+    }
+    const selectedDate = new Date(values.reviewDate);
+    const item = isReviewDateModalOpen ? {
+      data: {
+        appraisalId: parseInt(selectedValue2),
+        reviewDate: selectedDate.toISOString(),
+        description: values.description,
+        tenantId: tenantId,
+      },
+      url: endpoint,
+    } : {
+      data: {
+        paygroupId: parseInt(selectedValue1),
+        appraisalTypeId: parseInt(selectedValue2),
+        employeeId: employeeRecord.id,
+        startPeriod: selectedValue3,
+        endPeriod: selectedValue4,
+        appraTranItems: fieldInit.map((item: any) => ({
+          parameterId: item.id,
+          score: item.score.toString(),
+          comment: item.comment,
+        })),
+        tenantId: tenantId,
+      },
+      url: endpoint,
+    }
+    setLoading(true)
+    postData(item)
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData([endpoint, data], data);
+      reset()
+      setIsReviewDateModalOpen(false)
       setIsModalOpen(false)
       loadData()
-      return response.statusText
-
-    } catch (error: any) {
       setSubmitLoading(false)
-      return error.message
+    },
+    onError: (error: any) => {
+      setSubmitLoading(false)
+      console.log('post error: ', error)
     }
-
   })
 
   const reviewDatesColumn = [
     {
       title: 'Date',
       dataIndex: 'reviewDate',
-    }
-    ,
+      render: (text: any) => moment(text).format('DD/MM/YYYY')
+    },
     {
       title: 'Description',
       dataIndex: 'description',
     },
     {
+      title: 'Count down',
+      dataIndex: 'reviewDate',
+      render: (text: any) => getTimeLeft(text),
+    },
+    {
       title: 'Action',
       render: (text: any, record: any) => (
-        <a className='btn btn-light-danger btn-sm' onClick={() => { }}>
-          Delete
-        </a>
+        <Space>
+          <a className='text-primary me-2' onClick={() => { }}>
+            Send Notification
+          </a>
+          <a className='text-danger' onClick={() => handleDeleteReviewDate(record)}>
+            Delete
+          </a>
+        </Space>
       ),
     }
   ]
@@ -615,7 +733,7 @@ const AppraisalPerformance = () => {
                         name='objectives'
                         id="resizable-textarea"
                         className="form-control mb-7 mt-2"
-                        value={textareaValue}
+                        defaultValue={!appraisalData?.objective ? '' : appraisalData?.objective}
                         onChange={handleTextareaChange}
                         style={{ height: textareaHeight }}
                       />
@@ -638,15 +756,12 @@ const AppraisalPerformance = () => {
                           <Button
                             onClick={showReviewDateModal}
                             className="btn btn-light-primary me-3 justify-content-center align-items-center d-flex"
-                            style={{ width: '32px', height: '32px', borderRadius: '100%' }}
-                            type="primary" shape="circle" icon={<PlusOutlined style={{ fontSize: '16px' }} />} size={'small'} />
+                            type="primary" shape="circle" icon={<PlusOutlined style={{ fontSize: '16px' }} />} size={'middle'} />
                         </Space>
-
-                        <Table columns={reviewDatesColumn} dataSource={[]} pagination={{ defaultPageSize: 3 }} />
+                        <Table columns={reviewDatesColumn} dataSource={reviewDateByID} loading={loading} />
                       </div>
                     </div>
                   </div>
-
                 </>
               }
               <div className='d-flex justify-content-between'>
@@ -922,13 +1037,13 @@ const AppraisalPerformance = () => {
                     type='primary'
                     htmlType='submit'
                     loading={reivewDateSubmitLoading}
-                    onClick={submitReviewDate}
+                    onClick={submitApplicant}
                   >
                     Done
                   </Button>,
                 ]}
               >
-                <form>
+                <form onSubmit={submitApplicant}>
                   <div className='row mb-7 mt-7'>
                     <div className='col-12 mb-7'>
                       <label htmlFor='exampleFormControlInput1' className='form-label'>Review Date</label>

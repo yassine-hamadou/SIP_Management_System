@@ -297,7 +297,7 @@ const RoasterShifts = () => {
           </div>
           <Table columns={columns} dataSource={gridData} loading={loading} />
           <Modal
-            title={isUpdateModalOpen ? 'Update Roaster Shift' : 'Add Roaster Shift'}
+            title={isUpdateModalOpen ? 'Update Roster Shift' : 'Add Roster Shift'}
             open={isModalOpen}
             onCancel={handleCancel}
             closable={true}

@@ -348,7 +348,7 @@ const Employee = () => {
             className={`tab ${activeTab === 'roaster' ? 'active' : ''}`} 
             onClick={() => handleTabClick('roaster')}
           >
-            Roaster
+            Roster
           </button>
           <button 
             className={`tab ${activeTab === 'summary' ? 'active' : ''}`} 

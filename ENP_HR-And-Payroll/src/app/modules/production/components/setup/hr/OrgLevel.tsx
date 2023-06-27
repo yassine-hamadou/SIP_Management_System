@@ -264,31 +264,39 @@ const OrgLevel = () => {
   const queryClient = useQueryClient()
   const { isLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['organograms', tempData.id], data);
+      queryClient.invalidateQueries('organograms')
+      message.success('Organogram updated successfully')
       reset()
+      loadData()
       setTempData({})
-      loadData()/*  */
-      setIsUpdateModalOpen(false)
       setIsModalOpen(false)
+      setLoading(false)
     },
     onError: (error) => {
       console.log('error: ', error)
+      message.error('Organogram update failed')
     }
   })
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
+    setLoading(true)
+    const item: any = {
+      data: tempData,
+      url:'organograms'
+    }
     if (tempData.employeeId != updateItem.employeeId) {
       // verify that the employeeId is not already in the organogram table
       const checkEmployee = allOrganograms?.data.find((item: any) => item.employeeId === tempData.employeeId)
       if (checkEmployee) {
-        message.error('Employee already exists in the organogram table')
+       const name = employeeName(tempData.employeeId)
+        message.error(`${name} already exists in the organogram table`)
         return
       }
-      updateData(tempData)
+      updateData(item)
+      return
     }
-    updateData(tempData)
-    console.log('update: ', tempData)
+    updateData(item)
   }
 
   const showUpdateModal = (values: any) => {
@@ -320,7 +328,8 @@ const OrgLevel = () => {
       const checkEmployee = allOrganograms?.data.find((item: any) => item.employeeId === data.employeeId)
       if (checkEmployee) {
         setSubmitLoading(false)
-        message.error(`Employee already exists in the organogram`)
+        const name = employeeName(values.employeeId)
+        message.error(`${name} already exists in the organogram`)
         return
       }
 

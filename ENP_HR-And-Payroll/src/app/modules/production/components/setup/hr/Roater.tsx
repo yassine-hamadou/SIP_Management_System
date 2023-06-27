@@ -252,7 +252,7 @@ const Roaster = () => {
         </div>
         <Table columns={columns} dataSource={dataByID} loading={loading} />
         <Modal
-          title={isUpdateModalOpen ? 'Update Roaster' : 'Add Roaster'}
+          title={isUpdateModalOpen ? 'Update Roster' : 'Add Roster'}
           open={isModalOpen}
           onCancel={handleCancel}
           closable={true}

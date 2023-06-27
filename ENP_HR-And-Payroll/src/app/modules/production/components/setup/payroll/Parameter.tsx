@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { Button, Form, Input, InputNumber, Modal, Space, Table, message } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
@@ -25,6 +25,8 @@ const Parameter = () => {
   const queryClient = useQueryClient()
   const statusList = ['Active', 'Inactive']
   let [appraisalName, setAppraisalName] = useState<any>("")
+  const { data: parameters } = useQuery('Parameters', () => fetchDocument(`Parameters/tenant/${tenantId}`), { cacheTime: 5000 })
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -107,22 +109,19 @@ const Parameter = () => {
         return 0
       },
     },
-    // {
-    //   title: 'Status',
-    //   dataIndex: 'status',
-    //   render: (_: any, record: any) => {
-    //     return  record.status === '1'|| 1 ? 'Active' : 'Inactive'
-    //   },
-    //   sorter: (a: any, b: any) => {
-    //     if (a.status > b.status) {
-    //       return 1
-    //     }
-    //     if (b.status > a.status) {
-    //       return -1
-    //     }
-    //     return 0
-    //   },
-    // },
+    {
+      title: 'Weight per parameter (%)',
+      dataIndex: 'weight',
+      sorter: (a: any, b: any) => {
+        if (a.status > b.status) {
+          return 1
+        }
+        if (b.status > a.status) {
+          return -1
+        }
+        return 0
+      },
+    },
 
     {
       title: 'Action',
@@ -209,9 +208,9 @@ const Parameter = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(['Parameters', tempData], data);
       reset()
+      setIsUpdateModalOpen(false)
       setTempData({})
       loadData()
-      setIsUpdateModalOpen(false)
       setIsModalOpen(false)
     },
     onError: (error) => {
@@ -236,30 +235,49 @@ const Parameter = () => {
     console.log(values)
   }
 
+  const isTotalWeightValid = (newData: any) => {
+    const totalWeight = parameters?.data.reduce((sum: any, item: any) => 
+    sum + (item.weight || 0), 0) + newData.reduce((sum: any, item: any) => sum + (item.weight || 0), 0);
+    return totalWeight <= 100;
+  };
+  
+
   const url = `${Api_Endpoint}/Parameters`
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-     const  data = {
+    const item = {
+       data : {
         appraisalId: parseInt(param.id),
         name: values.name,
         code: values.code,
         tenantId: tenantId,
-        status: 1 //parseInt(values.status),
-      }
-      console.log(data)
-      try {
-        const response = await axios.post(url, data)
-        setSubmitLoading(false)
-        reset()
-        setIsModalOpen(false)
-        loadData()
-        return response.statusText
-      } catch (error: any) {
-        setSubmitLoading(false)
-        return error.statusText
-      }
+        status: 1, //parseInt(values.status),
+        weight: parseInt(values.weight)
+      },
+      url: 'parameters'
+    }
+    const canAdd = isTotalWeightValid([item.data]);
+    if (!canAdd) {
+      setLoading(false)
+      return message.error('Total weight cannot be more than 100%');
+    }
      
-   
+      postData(item)
+  })
+
+  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['parameters', tempData], data);
+      reset()
+      setTempData({})
+      loadData()
+      setIsModalOpen(false)
+      setSubmitLoading(false)
+    },
+    onError: (error: any) => {
+      setSubmitLoading(false)
+      console.log('post error: ', error)
+    }
   })
 
   return (
@@ -340,6 +358,14 @@ const Parameter = () => {
                   <input
                     {...register("name")}
                     defaultValue={isUpdateModalOpen === true ? tempData.name : ''}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+                </div>
+                <div className='mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">{`Parameter Weight (%)`}</label>
+                  <input
+                    {...register("weight")} type='number'
+                    defaultValue={isUpdateModalOpen === true ? tempData.weight : 0}
                     onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>

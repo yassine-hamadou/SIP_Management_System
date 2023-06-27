@@ -1259,6 +1259,7 @@ const EmployeeEditForm = () => {
       formData.append('residentialAddress', tempData.residentialAddress==null?"":tempData.residentialAddress)
       formData.append('email', tempData.email==null?"":tempData.email)
       formData.append('personalEmail', tempData.personalEmail==null?"":tempData.personalEmail)
+      formData.append('jobRole', tempData.jobRole==null?"":tempData.jobRole)
       formData.append('nextOfKin', tempData.nextOfKin==null?"":tempData.nextOfKin)
       formData.append('guarantor', tempData.guarantor==null?"":tempData.guarantor)
       formData.append('paygroupId', tempData.paygroupId==null?"":parseInt(tempData.paygroupId))
@@ -1277,6 +1278,7 @@ const EmployeeEditForm = () => {
       formData.append('ssf', tempData.ssf==null?"":tempData.ssf)
       formData.append('imageFile', tempImage?tempImage:"")
       formData.append('tenantId', tenantId)
+
 
       const config = {
         headers: {
@@ -1409,14 +1411,14 @@ const EmployeeEditForm = () => {
             }
            <br></br>
             <label htmlFor="imageFile" className='btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>Change Picture</label>
-            <input id='imageFile' style={{visibility:"hidden"}}  
+            <input id='imageFile' style={{visibility:"hidden"}}  {...register("imageUrl")}
               onChange={handleImageChange}
               type="file" />
           </div>
             <div className='row col-12'>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Employee ID</label>
-                  <input type="text"
+                  <input type="text" {...register("phone")}
                     name="employeeId"
                     onChange={handleChange}
                     value={tempData?.employeeId} className="form-control form-control-solid" />
@@ -1424,14 +1426,14 @@ const EmployeeEditForm = () => {
 
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">First Name</label>
-                  <input type="text"
+                  <input type="text" {...register("firstName")}
                     name="firstName"
                     onChange={handleChange}
                     value={tempData?.firstName} className="form-control form-control-solid" />
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Surname</label>
-                  <input type="text"
+                  <input type="text" {...register("surname")}
                     name="surname"
                     onChange={handleChange}
                     value={tempData?.surname} className="form-control form-control-solid" />
@@ -1439,14 +1441,14 @@ const EmployeeEditForm = () => {
               
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Other Name</label>
-                  <input type="text"
+                  <input type="text" {...register("otherName")}
                     name="otherName"
                     onChange={handleChange}
                     value={tempData?.otherName} className="form-control form-control-solid" />
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Date of Birth</label>
-                  <input type="date"
+                  <input type="date" {...register("date")}
                     name="dob"
                     onChange={handleChange}
                     value={tempData?.dob?.substring(0,10)} className="form-control form-control-solid" />
@@ -1456,9 +1458,9 @@ const EmployeeEditForm = () => {
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
                   <select
-                    name="gender"
+                    {...register("gender")} name="gender"
                     onChange={handleChange}
-                    value={tempData?.gender}
+                    value={tempData?.gender.trim()}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option value="MALE">MALE</option>
                     <option value="FEMALE">FEMALE</option>
@@ -1467,9 +1469,9 @@ const EmployeeEditForm = () => {
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Marital Status</label>
                   <select
-                    name="maritalStatus"
+                    {...register("maritalStatus")} name="maritalStatus"
                     onChange={handleChange}
-                    value={tempData?.maritalStatus}
+                    value={tempData?.maritalStatus.trim()}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option value="SINGLE">SINGLE</option>
                     <option value="MARRIED">MARRIED</option>
@@ -1480,9 +1482,9 @@ const EmployeeEditForm = () => {
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Nationality</label>
                   <select
-                    name="nationality"
+                    {...register("nationality")} name="nationality"
                     onChange={handleChange}
-                    value={tempData?.nationality}
+                    value={parseInt(tempData?.nationality)}
                     className="form-select form-select-solid" aria-label="Select example">
                     {allNations?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
@@ -1492,7 +1494,7 @@ const EmployeeEditForm = () => {
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">National ID</label>
-                  <input type="text" 
+                  <input type="text" {...register("nationalId")}
                     name="nationalId"
                     onChange={handleChange}
                     value={tempData?.nationalId} className="form-control form-control-solid" />
@@ -1509,7 +1511,7 @@ const EmployeeEditForm = () => {
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Phone Number</label>
                   <input type="phone"
-                    name="phone"
+                    {...register("phone")} name="phone" 
                     onChange={handleChange}
                     value={tempData?.phone}
                     pattern="[0-9]*" className="form-control form-control-solid" />
@@ -1517,7 +1519,7 @@ const EmployeeEditForm = () => {
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Alternative Phone number</label>
                   <input type="phone" value={tempData?.alternativePhone}
-                    name="alternativePhone"
+                    {...register("alternativePhone")} name="alternativePhone" 
                     maxLength={15}
                     onKeyPress={validatePhoneNumber}
                     onChange={handleChange}
@@ -1527,33 +1529,33 @@ const EmployeeEditForm = () => {
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Address</label>
                   <input type="text"
-                    name="address"
+                    {...register("address")} name="address" 
                     value={tempData?.address}
                     onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Residential Address</label>
-                  <input type="text" name="residentialAddress"
+                  <input type="text" {...register("residentialAddress")} name="residentialAddress" 
                     value={tempData?.residentialAddress} onChange={handleChange} className="form-control form-control-solid" />
                 </div>
               
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Email</label>
-                  <input type="email" name="email" value={tempData?.email?.toLowerCase()} onChange={handleChange} className="form-control form-control-solid" />
+                  <input type="email" {...register("email")} name="email"  value={tempData?.email?.toLowerCase()} onChange={handleChange} className="form-control form-control-solid" />
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Personal Email</label>
-                  <input type="email" name="pemail" value={tempData?.personalEmail} onChange={handleChange} className="form-control form-control-solid" />
+                  <input type="email" {...register("personalEmail")} name="personalEmail"  value={tempData?.personalEmail} onChange={handleChange} className="form-control form-control-solid" />
                 </div>
               
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Next of kin</label>
-                  <input type="text" name="email" value={tempData?.nextOfKin} onChange={handleChange} className="form-control form-control-solid" />
+                  <input type="text" {...register("nextOfKin")} name="nextOfKin"  value={tempData?.nextOfKin} onChange={handleChange} className="form-control form-control-solid" />
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Guarantor</label>
-                  <input type="text" name="guarantor" value={tempData?.guarantor} onChange={handleChange} className="form-control form-control-solid" />
+                  <input type="text" {...register("guarantor")} name="guarantor"  value={tempData?.guarantor} onChange={handleChange} className="form-control form-control-solid" />
                 </div>
               </div>
            
@@ -1563,7 +1565,7 @@ const EmployeeEditForm = () => {
             <div className='row col-12'>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Group</label>
-                  <select onChange={handleChange} value={tempData?.paygroupId} name='paygroupId' className="form-select form-select-solid" aria-label="Select example">
+                  <select {...register("paygroupId")} value={tempData?.paygroupId} name='paygroupId' onChange={handleChange}  className="form-select form-select-solid" aria-label="Select example">
                     {paygroups?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
                     ))}
@@ -1571,7 +1573,7 @@ const EmployeeEditForm = () => {
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
-                  <select name="categoryId" onChange={handleChange} value={tempData?.categoryId} className="form-select form-select-solid" aria-label="Select example">
+                  <select  {...register("categoryId")} name="categoryId" onChange={handleChange} value={tempData?.categoryId} className="form-select form-select-solid" aria-label="Select example">
                     {allCategories?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
                     ))}
@@ -1579,7 +1581,7 @@ const EmployeeEditForm = () => {
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
-                  <select name="divisionId" onChange={handleChange} value={tempData?.divisionId} className="form-select form-select-solid" aria-label="Select example">
+                  <select  {...register("divisionId")} name="divisionId" onChange={handleChange} value={tempData?.divisionId} className="form-select form-select-solid" aria-label="Select example">
                     {allDivisions?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
                     ))}
@@ -1587,7 +1589,7 @@ const EmployeeEditForm = () => {
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Salary Grade</label>
-                  <select name="gradeId" onChange={handleChange} value={tempData?.gradeId} className="form-select form-select-solid" aria-label="Select example">
+                  <select  {...register("gradeId")} name="gradeId" onChange={handleChange} value={tempData?.gradeId} className="form-select form-select-solid" aria-label="Select example">
                     {allGrades?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
                     ))}
@@ -1597,7 +1599,7 @@ const EmployeeEditForm = () => {
               
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
-                  <select name="departmentId" onChange={handleChange} value={tempData?.departmentId} className="form-select form-select-solid" aria-label="Select example">
+                  <select  {...register("departmentId")} name="departmentId" onChange={handleChange} value={tempData?.departmentId} className="form-select form-select-solid" aria-label="Select example">
                     {allDepartments?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
                     ))}
@@ -1605,7 +1607,7 @@ const EmployeeEditForm = () => {
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Notch</label>
-                  <select name="notchId" onChange={handleChange} value={tempData?.notchId} className="form-select form-select-solid" aria-label="Select example">
+                  <select  {...register("notchId")} name="notchId" onChange={handleChange} value={tempData?.notchId} className="form-select form-select-solid" aria-label="Select example">
                     {allNotches?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
                     ))}
@@ -1614,7 +1616,7 @@ const EmployeeEditForm = () => {
               
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
-                  <select name="unitId" onChange={handleChange} value={tempData?.unitId} className="form-select form-select-solid" aria-label="Select example">
+                  <select  {...register("unitId")} name="unitId" onChange={handleChange} value={tempData?.unitId} className="form-select form-select-solid" aria-label="Select example">
                     {allUnits?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
                     ))}
@@ -1622,7 +1624,7 @@ const EmployeeEditForm = () => {
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
-                  <select name="jobTitleId" onChange={handleChange} value={tempData?.gradeId} className="form-select form-select-solid" aria-label="Select example">
+                  <select  {...register("jobTitleId")} name="jobTitleId" onChange={handleChange} value={tempData?.gradeId} className="form-select form-select-solid" aria-label="Select example">
                     <option>{jobTName} </option>
                     {allJobTitles?.data.map((item: any) => (
                       <option value={item.id}>{item.name}</option>
@@ -1633,12 +1635,12 @@ const EmployeeEditForm = () => {
               
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Job Roles</label>
-                  <textarea name="jobRole" value={tempData?.jobRole} onChange={handleChange} className="form-control form-control-solid" placeholder='list job roles (seperate each role with a comma)' aria-label="With textarea"></textarea>
+                  <textarea  {...register("jobRole")} name="jobRole" value={tempData?.jobRole} onChange={handleChange} className="form-control form-control-solid" placeholder='list job roles (seperate each role with a comma)' aria-label="With textarea"></textarea>
 
                 </div>
                 <div className='col-3 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Employment Date</label>
-                  <input type="date" name="employmentDate" value={tempData?.employmentDate?.substring(0,10)} onChange={handleChange} className="form-control form-control-solid" />
+                  <input type="date"  {...register("employmentDate")} name="employmentDate" value={tempData?.employmentDate?.substring(0,10)} onChange={handleChange} className="form-control form-control-solid" />
 
                 </div>
                 <div className='col-3 mb-7'>

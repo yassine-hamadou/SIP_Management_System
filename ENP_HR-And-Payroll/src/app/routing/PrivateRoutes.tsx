@@ -162,7 +162,7 @@ const PrivateRoutes = () => (
         <Route
         path='roasterShifts/:id'
         element={<SuspensedView>
-          <PageTitle breadcrumbs={accountBreadCrumbs}>Roaster Shifts</PageTitle>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Roster Shifts</PageTitle>
           <RoasterShifts />
         </SuspensedView>} />
 
