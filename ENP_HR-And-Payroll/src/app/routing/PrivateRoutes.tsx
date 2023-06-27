@@ -122,6 +122,10 @@ import { LoanTransaction } from '../modules/production/components/transactions/p
 import { Shifts } from '../modules/production/components/setup/hr/Shift'
 import { Bank } from '../modules/production/components/setup/payroll/Bank'
 import { RoasterShifts } from '../modules/production/components/setup/hr/RoaterShifts'
+import { Organogram } from '../modules/production/components/setup/hr/Organogram'
+import { OrgLevel } from '../modules/production/components/setup/hr/OrgLevel'
+import { AppraisalDeliverables } from '../modules/production/components/setup/hr/ObjectiveDeliverables'
+import { AppraisalObjectives } from '../modules/production/components/setup/hr/ParameterObjectives'
 
 
 
@@ -549,6 +553,18 @@ const PrivateRoutes = () => (
           <Recruitments />
         </SuspensedView>} />
       <Route
+        path='next/:id/:level'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Organogram</PageTitle>
+          <OrgLevel />
+        </SuspensedView>} />
+      <Route
+        path='setup/hr/organogram/*'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Organogram</PageTitle>
+          <Organogram />
+        </SuspensedView>} />
+      <Route
         path='setup/hr/training/*'
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Trainings </PageTitle>
@@ -638,6 +654,18 @@ const PrivateRoutes = () => (
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Parameters</PageTitle>
           <Parameter />
+        </SuspensedView>} />
+      <Route
+        path='objectives/:id'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Objectives</PageTitle>
+          <AppraisalObjectives/>
+        </SuspensedView>} />
+      <Route
+        path='deliverables/:id'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Deliverables</PageTitle>
+          <AppraisalDeliverables/>
         </SuspensedView>} />
       <Route
         path='setup/payroll/tax/*'

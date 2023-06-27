@@ -3,6 +3,7 @@ import axios from 'axios';
 // const tenantId = localStorage.getItem('tenant')
 
 export const Api_Endpoint = "http://208.117.44.15/hrwebapi/api";
+// export const Api_Endpoint = "https://localhost:5001/api";
 export const UsersEndpoint = "http://208.117.44.15/userapi/api";
 
 export let axioInstance = axios.create({

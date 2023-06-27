@@ -42,7 +42,6 @@ export function HeaderWrapper() {
             <Link to='/dashboard' className='d-lg-none'>
               <h3 style={{color:"#009EF7"}}>HR - PAYROLL</h3>
               {/* <img alt='Logo' src={toAbsoluteUrl('/media/logos/default-small.svg')} className='h-30px' /> */}
-=======
               {/* <img alt='Logo' src={toAbsoluteUrl('/media/logos/default-small.svg')} className='h-30px' /> */}
               <h3 style={{color: "#009EF7"}}>HR - PAYROLL</h3>
             </Link>

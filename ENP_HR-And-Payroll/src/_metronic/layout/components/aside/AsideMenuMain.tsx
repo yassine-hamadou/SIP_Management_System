@@ -255,6 +255,7 @@ export function AsideMenuMain() {
                     ||currentUserRoles?.find((rolId:any)=>rolId?.includes('2'))
                     ||currentUserRoles?.find((rolId:any)=>rolId?.includes('3'))
                     ? <AsideMenuItemWithSub to='#' title='Setups' icon='/media/icons/duotune/technology/teh004.svg' hasBullet={false}>
+                                <AsideMenuItem to='setup/hr/organogram' hasBullet={true} title='Organogram' />
                         <AsideMenuItem to='setup/hr/recruitments' hasBullet={true} title='Recruitments' />
                         <AsideMenuItem to='setup/hr/training' hasBullet={true} title='Trainings' />
                         <AsideMenuItem to='setup/hr/company-assets' hasBullet={true} title='Company Assets' />

@@ -95,6 +95,7 @@ const GradePerks = () => {
     },
   ]
 
+
   const loadData = async () => {
     setLoading(true)
     try {

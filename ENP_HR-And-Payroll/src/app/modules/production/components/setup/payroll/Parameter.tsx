@@ -7,7 +7,7 @@ import { Api_Endpoint, deleteItem, fetchAppraisals, fetchDocument, postItem, upd
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useForm } from 'react-hook-form'
 import form from 'antd/es/form'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
 const Parameter = () => {
   const [gridData, setGridData] = useState([])
@@ -107,22 +107,22 @@ const Parameter = () => {
         return 0
       },
     },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      render: (_: any, record: any) => {
-        return  record.status === '1'|| 1 ? 'Active' : 'Inactive'
-      },
-      sorter: (a: any, b: any) => {
-        if (a.status > b.status) {
-          return 1
-        }
-        if (b.status > a.status) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    //   render: (_: any, record: any) => {
+    //     return  record.status === '1'|| 1 ? 'Active' : 'Inactive'
+    //   },
+    //   sorter: (a: any, b: any) => {
+    //     if (a.status > b.status) {
+    //       return 1
+    //     }
+    //     if (b.status > a.status) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
 
     {
       title: 'Action',
@@ -130,6 +130,9 @@ const Parameter = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
+          <Link to={`/objectives/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Objectives</span>
+          </Link>
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -241,7 +244,7 @@ const Parameter = () => {
         name: values.name,
         code: values.code,
         tenantId: tenantId,
-        status: parseInt(values.status),
+        status: 1 //parseInt(values.status),
       }
       console.log(data)
       try {
@@ -340,7 +343,7 @@ const Parameter = () => {
                     onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
-                <div className='mb-7'>
+                {/* <div className='mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
                   <select 
                     {...register("status")} 
@@ -351,7 +354,7 @@ const Parameter = () => {
                     <option value='0'>Inactive</option>
                     <option value='1'>Active</option>
                   </select>
-                </div>
+                </div> */}
               </div>
             </form>
           </Modal>
