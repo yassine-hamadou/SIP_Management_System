@@ -5,7 +5,7 @@ import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchDocument, fetchGrades, fetchLeaveTypes, fetchPaygroups, updateGrade, updateGradeLeave, updateItem } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, deleteItem, fetchDocument, fetchGrades, fetchLeaveTypes, fetchPaygroups, updateGrade, updateGradeLeave, updateItem } from '../../../../../services/ApiCalls'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Employee } from '../../employee/Employee'
 
@@ -20,7 +20,7 @@ const OrgLevel = () => {
   const currentLevel = parseInt(param.level) + 1
   const navigate = useNavigate();
   const [tempData, setTempData] = useState<any>()
-  const [updateItem, setUpdateItem] = useState<any>()
+  const [itemToUpdate, setUpdateItem] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
@@ -58,20 +58,23 @@ const OrgLevel = () => {
     }
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${Api_Endpoint}/organograms/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries('organograms')
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
+      message.error('Error deleting record')
     }
-  }
+  })
 
   function handleDelete(element: any) {
-    deleteData(element)
+    const item = {
+      url: 'organograms',
+      data: element
+    }
+    deleteData(item)
   }
 
   const employeeName = (employeeId: any) => {
@@ -217,11 +220,9 @@ const OrgLevel = () => {
       if (param.level === '0') {
         const data = response?.data.filter((item: any) => item.currentLevel === 'Level 0')
         const employees = allEmployees?.data
-        console.log('employees', employees)
         const getSupervisor = employees.find((employee: any) => employee.employeeId === data?.employeeId)
         const name = `${getSupervisor?.firstName} ${getSupervisor?.surname}`
         setSupervisorName(name)
-        console.log('name',name , getSupervisor)
       }
       pathName()
       const filteredBySupervisor = response?.data.filter((item: any) => item?.supervisorId === param.id)
@@ -283,13 +284,13 @@ const OrgLevel = () => {
     setLoading(true)
     const item: any = {
       data: tempData,
-      url:'organograms'
+      url: 'organograms'
     }
-    if (tempData.employeeId != updateItem.employeeId) {
+    if (tempData.employeeId != itemToUpdate.employeeId) {
       // verify that the employeeId is not already in the organogram table
       const checkEmployee = allOrganograms?.data.find((item: any) => item.employeeId === tempData.employeeId)
       if (checkEmployee) {
-       const name = employeeName(tempData.employeeId)
+        const name = employeeName(tempData.employeeId)
         message.error(`${name} already exists in the organogram table`)
         return
       }

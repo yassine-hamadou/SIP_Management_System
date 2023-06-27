@@ -1768,11 +1768,11 @@ const EmployeeEditForm = () => {
 
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">TIN </label>
-                  <input type="text" name="tin" onChange={handleChange} value={tempData.tin} className="form-control form-control-solid" />
+                  <input type="text" name="tin" onChange={handleChange} value={tempData?.tin} className="form-control form-control-solid" />
                 </div>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">SSN </label>
-                  <input type="text" name="ssf" onChange={handleChange} value={tempData.ssf} className="form-control form-control-solid" />
+                  <input type="text" name="ssf" onChange={handleChange} value={tempData?.ssf} className="form-control form-control-solid" />
                 </div>
               </div>
           }

@@ -146,7 +146,7 @@ const Parameter = () => {
   ]
 
 
-  const { data: allAppraisals } = useQuery('appraisals', ()=> fetchAppraisals(tenantId), { cacheTime: 5000 })
+  const { data: allAppraisals } = useQuery('appraisals', () => fetchAppraisals(tenantId), { cacheTime: 5000 })
   const loadData = async () => {
     setLoading(true)
     try {
@@ -235,18 +235,34 @@ const Parameter = () => {
     console.log(values)
   }
 
-  const isTotalWeightValid = (newData: any) => {
-    const totalWeight = parameters?.data.reduce((sum: any, item: any) => 
-    sum + (item.weight || 0), 0) + newData.reduce((sum: any, item: any) => sum + (item.weight || 0), 0);
+  const isTotalWeightValid = (newItem: any) => {
+    const { appraisalId } = newItem;
+    const itemsWithSameAppraisalId = parameters?.data
+      .filter((item: { appraisalId: any }) => item.appraisalId === appraisalId);
+
+    const totalWeight = itemsWithSameAppraisalId.reduce((sum: any, item: any) => sum + (item.weight || 0), 0) + (newItem.weight || 0);
+
     return totalWeight <= 100;
   };
-  
+
 
   const url = `${Api_Endpoint}/Parameters`
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const item = {
-       data : {
+
+    // make sure all values have been entered
+    if (!values.name || !values.code || !values.weight || values.weight === '') {
+      setLoading(false)
+      return message.error('Please fill all fields');
+    }
+    // make sure weight is not zero
+    if (parseInt(values.weight) === 0) {
+      setLoading(false)
+      return message.error('Weight cannot be zero');
+    }
+
+    const itemToPost = {
+      data: {
         appraisalId: parseInt(param.id),
         name: values.name,
         code: values.code,
@@ -256,18 +272,26 @@ const Parameter = () => {
       },
       url: 'parameters'
     }
-    const canAdd = isTotalWeightValid([item.data]);
-    if (!canAdd) {
-      setLoading(false)
-      return message.error('Total weight cannot be more than 100%');
+    const weightSum = parameters?.data
+      .filter((item: any) => item.appraisalId === itemToPost.data.appraisalId)
+      .map((item: any) => item.weight)
+      .reduce((a: any, b: any) => a + b, 0);
+
+    if (weightSum > 0) {
+      if (weightSum + itemToPost.data.weight > 100) {
+        setLoading(false)
+        return message.error('Total weight cannot exceed 100%');
+      } else {
+        postData(itemToPost)
+      }
+    } else {
+      postData(itemToPost)
     }
-     
-      postData(item)
   })
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['parameters', tempData], data);
+      queryClient.invalidateQueries('parameters')
       reset()
       setTempData({})
       loadData()

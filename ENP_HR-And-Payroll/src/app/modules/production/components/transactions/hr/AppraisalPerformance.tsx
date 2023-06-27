@@ -30,10 +30,10 @@ const AppraisalPerformance = () => {
   const [employeeRecord, setEmployeeRecord] = useState<any>([])
   const [employeeId, setEmployeeId] = useState<any>()
   const [jobTitleName, setjobTitleName] = useState<any>(null);
-  const [selectedValue1, setSelectedValue1] = useState<any>(null);
-  const [selectedValue2, setSelectedValue2] = useState<any>(null);
-  const [selectedValue3, setSelectedValue3] = useState<any>(null);
-  const [selectedValue4, setSelectedValue4] = useState<any>(null);
+  const [selectedPaygroup, setSelectedPaygroup] = useState<any>(null);
+  const [selectedAppraisalType, setSelectedAppraisaltype] = useState<any>(null);
+  const [selectedStartPeriod, setSelectedStartPeriod] = useState<any>(null);
+  const [selectedEndPeriod, setSelectedEndPeriod] = useState<any>(null);
   const [selectedValue5, setSelectedValue5] = useState<any>(null);
   const [radioValue, setRadioValue] = useState(1);
   const [radio1Value, setRadio1Value] = useState(1);
@@ -48,15 +48,28 @@ const AppraisalPerformance = () => {
   const queryClient = useQueryClient()
   const [appraisalData, setAppraisalData] = useState<any>([])
   const [currentDate, setCurrentDate] = useState<any>(new Date())
+  const [referenceId, setReferenceId] = useState<any>(`${selectedPaygroup}-${selectedAppraisalType}-${selectedStartPeriod}-${selectedEndPeriod}`)
+  const [currentObjective, setCurrentObjective] = useState<any>([])
+
+  const { data: alEmployees } = useQuery('employees', () => fetchEmployees(tenantId), { cacheTime: 5000 })
+  const { data: allAppraisals } = useQuery('appraisals', () => fetchAppraisals(tenantId), { cacheTime: 5000 })
+  const { data: allPeriods } = useQuery('periods', () => fetchPeriods(tenantId), { cacheTime: 5000 })
+  const { data: allJobTitles } = useQuery('jobTitles', () => fetchJobTitles(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('recruitments', () => fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: allAppraisalTransactions } = useQuery('appraisalTransactions', () => fetchAppraisalTransactions(tenantId), { cacheTime: 5000 })
+  const { data: allParameters } = useQuery('parameters', () => fetchParameters(tenantId), { cacheTime: 5000 })
+  const { data: allObjectives } = useQuery('appraisalperfobjectives', () => fetchDocument(`appraisalperfobjectives/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allReviewdates } = useQuery('reviewDates', () => fetchDocument(`AppraisalReviewDates/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allAppraisalsPerfTrans } = useQuery('appraisalPerfTransactions', () => fetchDocument(`AppraisalPerfTransactions/tenant/${tenantId}`), { cacheTime: 5000 })
 
 
-  const [textAreaValue, setTextAreaValue] = useState<any>(null);
+  const [textAreaValue, setTextAreaValue] = useState<any>('');
   const [textareaHeight, setTextareaHeight] = useState('auto');
 
   const handleTextareaChange = (event: any) => {
-    // setAppraisalPerfObjective(event.target.value);
-    setAppraisalData([...appraisalData, { objective: event.target.value }])
+    event.preventDefault()
     setTextAreaValue(event.target.value);
+    setCurrentObjective({...currentObjective, [event.target.name]: event.target.value})
     adjustTextareaHeight();
   };
 
@@ -125,12 +138,12 @@ const AppraisalPerformance = () => {
     if (currentDate > targetDate) {
       return "Expired";
     }
-  
+
     const timeDifference = targetDate.getTime() - currentDate.getTime();
     const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)); // Calculate days left
-  
+
     const monthsLeft = Math.floor(daysLeft / 30); // Calculate months left
-  
+
     if (monthsLeft > 0) {
       return `${monthsLeft} ${monthsLeft === 1 ? "month" : "months"}`;
     } else {
@@ -188,13 +201,6 @@ const AppraisalPerformance = () => {
   };
 
 
-  const { data: alEmployees } = useQuery('employees', () => fetchEmployees(tenantId), { cacheTime: 5000 })
-  const { data: allAppraisals } = useQuery('appraisals', () => fetchAppraisals(tenantId), { cacheTime: 5000 })
-  const { data: allPeriods } = useQuery('periods', () => fetchPeriods(tenantId), { cacheTime: 5000 })
-  const { data: allJobTitles } = useQuery('jobTitles', () => fetchJobTitles(tenantId), { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('recruitments', () => fetchPaygroups(tenantId), { cacheTime: 5000 })
-  const { data: allAppraisalTransactions } = useQuery('appraisalTransactions', () => fetchAppraisalTransactions(tenantId), { cacheTime: 5000 })
-  const { data: allParameters } = useQuery('parameters', () => fetchParameters(tenantId), { cacheTime: 5000 })
 
   const columns: any = [
     {
@@ -377,31 +383,31 @@ const AppraisalPerformance = () => {
     setLoading(true)
     try {
       const response = await axios.get(`${Api_Endpoint}/AppraisalPerfTransactions/tenant/${tenantId}`)
-      const appraisalReviewDatesResponse = await fetchDocument(`AppraisalReviewDates/tenant/${tenantId}`)
-      setReviewDatesData(appraisalReviewDatesResponse?.data)
+      setReviewDatesData(allReviewdates?.data)
       setGridData(response.data)
-
-      // find appraisal whose appraisalTypeId is equal to selectedValue2
-      const appraisalById = response.data.filter((item: any) => {
-        return item.appraisalTypeId === parseInt(selectedValue2)
+      //find objective with matching referenceId from all objectives
+      const objectiveData: any = allObjectives?.data?.filter((item: any) => {
+        return item.referenceId === referenceId
       })
-      console.log('appraisalById: ', appraisalById)
-
+      setCurrentObjective(objectiveData[0])
+      console.log('objs: ',objectiveData)
       setLoading(false)
     } catch (error) {
       console.log(error)
+      setLoading(false)
     }
   }
-  const dataByID: any = gridData.filter((refId: any) => {
-    return refId.appraisalTypeId === parseInt(selectedValue2)
+
+  const dataByID: any = allAppraisalsPerfTrans?.data?.filter((refId: any) => {
+    return refId.referenceId === referenceId
   })
 
-  const reviewDateByID: any = reviewDatesData.filter((appId: any) => {
-    return appId.appraisalId === parseInt(selectedValue2)
+  const reviewDateByID: any = allReviewdates?.data?.filter((refId: any) => {
+    return refId?.referenceId === referenceId
   })
 
   const emplyeesByPaygroup: any = alEmployees?.data?.filter((item: any) => {
-    return item.paygroupId === parseInt(selectedValue1)
+    return item.paygroupId === parseInt(selectedPaygroup)
   })
 
   const emplyeeDetails: any = allAppraisalTransactions?.data?.find((item: any) => {
@@ -489,7 +495,7 @@ const AppraisalPerformance = () => {
     return jobTitleName
   }
 
-  const parameterByAppraisal = allParameters?.data.filter((section: any) => section.appraisalId === parseInt(selectedValue2))
+  const parameterByAppraisal = allParameters?.data.filter((section: any) => section.appraisalId === parseInt(selectedAppraisalType))
     .map((item: any) => ({
       ...item,
       score: '',
@@ -502,7 +508,7 @@ const AppraisalPerformance = () => {
   }
 
   const handleSelectedChange = (e: any) => {
-    setSelectedValue2(e.target.value)
+    setSelectedAppraisaltype(e.target.value)
     setFieldInit(parameterByAppraisal)
   }
   const handleScoreChange = (e: any, userId: any) => {
@@ -526,6 +532,7 @@ const AppraisalPerformance = () => {
   };
 
   useEffect(() => {
+    loadData()
     const getjobTitleName = () => {
       let jobTitleName = ""
       allJobTitles?.data.map((item: any) => {
@@ -533,13 +540,16 @@ const AppraisalPerformance = () => {
           jobTitleName = item.name
         }
       })
+      setReferenceId(`${selectedPaygroup}-${selectedAppraisalType}-${selectedStartPeriod}-${selectedEndPeriod}`)
       setjobTitleName(jobTitleName)
       return jobTitleName
     }
-
     getjobTitleName()
-    loadData()
-  }, [allJobTitles?.data, employeeRecord?.jobTitleId, selectedValue2])
+  }, [
+    allJobTitles?.data, employeeRecord?.jobTitleId, selectedAppraisalType,
+    selectedPaygroup, selectedStartPeriod, selectedEndPeriod, allObjectives?.data,
+    allReviewdates?.data, currentObjective
+  ])
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -589,25 +599,27 @@ const AppraisalPerformance = () => {
     const selectedDate = new Date(values.reviewDate);
     const item = isReviewDateModalOpen ? {
       data: {
-        appraisalId: parseInt(selectedValue2),
+        appraisalId: parseInt(selectedAppraisalType),
         reviewDate: selectedDate.toISOString(),
         description: values.description,
         tenantId: tenantId,
+        referenceId: referenceId,
       },
       url: endpoint,
     } : {
       data: {
-        paygroupId: parseInt(selectedValue1),
-        appraisalTypeId: parseInt(selectedValue2),
+        paygroupId: parseInt(selectedPaygroup),
+        appraisalTypeId: parseInt(selectedAppraisalType),
         employeeId: employeeRecord.id,
-        startPeriod: selectedValue3,
-        endPeriod: selectedValue4,
+        startPeriod: selectedStartPeriod,
+        endPeriod: selectedEndPeriod,
         appraTranItems: fieldInit.map((item: any) => ({
           parameterId: item.id,
           score: item.score.toString(),
           comment: item.comment,
         })),
         tenantId: tenantId,
+        referenceId: referenceId,
       },
       url: endpoint,
     }
@@ -616,13 +628,15 @@ const AppraisalPerformance = () => {
   })
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
-    onSuccess: (data) => {
-      queryClient.setQueryData([endpoint, data], data);
+    onSuccess: () => {
+      queryClient.invalidateQueries('appraisalPerfTransactions')
+      queryClient.invalidateQueries('appraisalPerfTransactions')
       reset()
       setIsReviewDateModalOpen(false)
       setIsModalOpen(false)
       loadData()
       setSubmitLoading(false)
+      setTextAreaValue('')
     },
     onError: (error: any) => {
       setSubmitLoading(false)
@@ -660,6 +674,36 @@ const AppraisalPerformance = () => {
     }
   ]
 
+  const handleObjectiveSave = handleSubmit(async (values) => {
+    if (textAreaValue === '') {
+      message.error('Please enter objective description')
+      return
+    }
+
+    // check if current objective exist allObjectives using referenceId
+    const currentObjective = allObjectives?.data.find((item: any) => item.referenceId === referenceId)
+    if (currentObjective) {
+      const item = {
+        data: currentObjective,
+        url: 'appraisalperfobjectives'
+      }
+      console.log('objItem: ', item)
+      updateData(item)
+      return
+    } else {
+      const item = {
+        data: {
+          description: textAreaValue,
+          tenantId: tenantId,
+          referenceId: referenceId,
+        },
+        url: 'appraisalperfobjectives',
+      }
+      console.log('objItem: ', item)
+      postData(item)
+    }
+  })
+
   const showReviewDateModal = () => {
     setIsReviewDateModalOpen(true)
   }
@@ -677,7 +721,7 @@ const AppraisalPerformance = () => {
         <div style={{ padding: "20px 0px 0 0px" }} className='col-12 row mb-0'>
           <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Paygroup</label>
-            <select value={selectedValue1} onChange={(e) => setSelectedValue1(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+            <select value={selectedPaygroup} onChange={(e) => setSelectedPaygroup(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option value="select paygroup">select paygroup</option>
               {allPaygroups?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
@@ -686,7 +730,7 @@ const AppraisalPerformance = () => {
           </div>
           <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Appraisal Type</label>
-            <select value={selectedValue2} onChange={handleSelectedChange} className="form-select form-select-solid" aria-label="Select example">
+            <select value={selectedAppraisalType} onChange={handleSelectedChange} className="form-select form-select-solid" aria-label="Select example">
               <option value="select appraisal type">select appraisal type</option>
               {allAppraisals?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
@@ -695,7 +739,7 @@ const AppraisalPerformance = () => {
           </div>
           <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">Start Period</label>
-            <select value={selectedValue3} onChange={(e) => setSelectedValue3(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+            <select value={selectedStartPeriod} onChange={(e) => setSelectedStartPeriod(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option value="select start period">select start period</option>
               {allPeriods?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
@@ -704,7 +748,7 @@ const AppraisalPerformance = () => {
           </div>
           <div className='col-3 mb-7'>
             <label htmlFor="exampleFormControlInput1" className=" form-label">End Period</label>
-            <select value={selectedValue4} onChange={(e) => setSelectedValue4(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
+            <select value={selectedEndPeriod} onChange={(e) => setSelectedEndPeriod(e.target.value)} className="form-select form-select-solid" aria-label="Select example">
               <option value="select end period"> select end period</option>
               {allPeriods?.data.map((item: any) => (
                 <option value={item.id}>{item.name}</option>
@@ -714,31 +758,35 @@ const AppraisalPerformance = () => {
         </div>
       </form>
       {
-        selectedValue1 === null
-          || selectedValue2 === null
-          || selectedValue3 === null
-          || selectedValue4 === null
-          || selectedValue1 === "select paygroup"
-          || selectedValue2 === "select appraisal type"
-          || selectedValue3 === "select start period"
-          || selectedValue4 === "select end period" ? "" :
+        selectedPaygroup === null
+          || selectedAppraisalType === null
+          || selectedStartPeriod === null
+          || selectedEndPeriod === null
+          || selectedPaygroup === "select paygroup"
+          || selectedAppraisalType === "select appraisal type"
+          || selectedStartPeriod === "select start period"
+          || selectedEndPeriod === "select end period" ? "" :
           <KTCardBody className='py-4 '>
             <div className='table-responsive'>
               {
                 <>
                   <div style={{ padding: "0px 0px 0 0px" }} className='col-12 row mb-0'>
                     <div className='col-6 mb-7'>
-                      <span className='form-label' >Objectives</span>
-                      <textarea
-                        name='objectives'
-                        id="resizable-textarea"
-                        className="form-control mb-7 mt-2"
-                        defaultValue={!appraisalData?.objective ? '' : appraisalData?.objective}
-                        onChange={handleTextareaChange}
-                        style={{ height: textareaHeight }}
-                      />
-                    </div>
+                      <form onSubmit={handleObjectiveSave}>
 
+                        <span className='form-label' >Objectives</span>
+                        <textarea
+                          {...register("description")}
+                          name='objectives'
+                          id="resizable-textarea"
+                          className="form-control mb-0 mt-2"
+                          value={!appraisalData?.description ? textAreaValue : appraisalData?.description}
+                          onChange={handleTextareaChange}
+                          style={{ height: textareaHeight }}
+                        />
+                      </form>
+                      <a className='justify-content-end align-items-end d-flex btn text-primary' onClick={() => handleObjectiveSave()}>Save Objective</a>
+                    </div>
                     <div className='col-6 mb-7'>
                       <div className='d-flex justify-content-between'>
                         <span className='form-label' >Review Dates</span>

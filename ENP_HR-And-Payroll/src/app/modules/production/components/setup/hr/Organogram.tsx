@@ -27,6 +27,8 @@ const Organogram = () => {
   const [treeData, setTreeData] = useState<any>([])
   const [showTree, setShowTree] = useState<boolean>(false)
   const queryClient = useQueryClient()
+  const [itemToUpdate, setUpdateItem] = useState<any>()
+
 
   const levels = [
     'Level 0', 'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6',
@@ -193,7 +195,7 @@ const Organogram = () => {
     setLoading(true)
     try {
       const data = allOrganograms?.data
-      setGridData(data.filter((item: any) => item.currentLevel === 'Level 0'))
+      setGridData(allOrganograms?.data.filter((item: any) => item.currentLevel === 'Level 0'))
       const td = createEmployeeTree(data)
       setTreeData(td)
       setLoading(false)
@@ -203,8 +205,9 @@ const Organogram = () => {
   }
 
   useEffect(() => {
+
     loadData()
-  }, [allEmployees?.data])
+  }, [allEmployees?.data, allOrganograms?.data])
 
   // const dataWithIndex = gridData.map((item: any, index) => ({
   //   ...item,
@@ -228,7 +231,7 @@ const Organogram = () => {
     setGridData(filteredData)
   }
 
-  
+
   const { isLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
       queryClient.invalidateQueries('organograms')
@@ -241,6 +244,7 @@ const Organogram = () => {
       setLoading(false)
     },
     onError: (error) => {
+      setLoading(false)
       console.log('error: ', error)
       message.error('Organogram update failed')
     }
@@ -249,18 +253,29 @@ const Organogram = () => {
   const handleUpdate = (e: any) => {
     e.preventDefault()
     setLoading(true)
-    const item = {
+    const item: any = {
       data: tempData,
-      url:'organograms'
+      url: 'organograms'
+    }
+    if (tempData.employeeId != itemToUpdate.employeeId) {
+      // verify that the employeeId is not already in the organogram table
+      const checkEmployee = allOrganograms?.data.find((item: any) => item.employeeId === tempData.employeeId)
+      if (checkEmployee) {
+        const name = employeeName(tempData.employeeId)
+        message.error(`${name} already exists in the organogram table`)
+        return
+      }
+      updateData(item)
+      return
     }
     updateData(item)
-    console.log('update: ', tempData)
   }
 
   const showUpdateModal = (values: any) => {
     setIsUpdateModalOpen(true)
     showModal()
     setTempData(values);
+    setUpdateItem(values)
     console.log(values)
   }
 
