@@ -2,7 +2,7 @@
     "name": "demo1",
     "version": "8.1.0",
     "private": true,
-    "homepage": "/project-planner",
+    "homepage": "/project-finance",
     "dependencies": {
         "@devexpress/analytics-core": "^22.1.5",
         "@emotion/react": "^11.10.5",

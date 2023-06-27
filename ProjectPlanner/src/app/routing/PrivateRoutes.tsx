@@ -19,6 +19,16 @@ import { Activity } from '../modules/production/components/Setup/Activity'
 import { CostCategory } from '../modules/production/components/Setup/CostCategory'
 import { Project } from '../modules/production/components/Project'
 import { CostDetail } from '../modules/production/components/Setup/CostDetail'
+import { ProjectActivity } from '../modules/production/components/ProjectActivity'
+import { Documents } from '../modules/production/components/Document'
+import { ProjectActivityCost } from '../modules/production/components/ProjectActivityCost'
+import { ProjectCategory } from '../modules/production/components/Setup/ProjectCategory'
+import { ProjectSchedule } from '../modules/production/components/ProjectSchedule'
+import { FinanceOption } from '../modules/production/components/Entry/FinanceOption'
+import { FinanceOptionSchedule } from '../modules/production/components/Entry/FinanceOptionSchedule'
+import { CashFlow } from '../modules/production/components/Reports/CashFlowReport'
+import { Bank } from '../modules/production/components/Setup/Bank'
+import { PopaySchedule } from '../modules/production/components/PopaySchedule'
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: '',
@@ -105,6 +115,15 @@ const PrivateRoutes = () => {
            </SuspensedView>
          }
         />
+        <Route
+         path='projectCategories/*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Project Categories</PageTitle>
+             <ProjectCategory />
+           </SuspensedView>
+         }
+        />
 
         <Route
          path='purchaseorders/*'
@@ -164,11 +183,97 @@ const PrivateRoutes = () => {
          }
         />
         <Route
+         path='finance-options/*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Finance Options</PageTitle>
+             <FinanceOption />
+           </SuspensedView>
+         }
+        />
+        <Route
          path='costDetails/:id'
          element={
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>All Cost Details</PageTitle>
              <CostDetail />
+           </SuspensedView>
+         }
+        />
+
+        <Route
+         path='project-activities/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Project Activities</PageTitle>
+             <ProjectActivity />
+           </SuspensedView>
+         }
+        />
+
+        <Route
+         path='documents/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Documents</PageTitle>
+             <Documents />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='project-schedules/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Payment Schedules</PageTitle>
+             <ProjectSchedule />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='finance-option-schedules/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Finance Option Schedules</PageTitle>
+             <FinanceOptionSchedule />
+           </SuspensedView>
+         }
+        />
+
+        <Route
+         path='project-activity-costs/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All Project Activity Costs</PageTitle>
+             <ProjectActivityCost />
+           </SuspensedView>
+         }
+        />
+
+        <Route
+         path='cashflow/*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Financial Projections</PageTitle>
+             <CashFlow />
+           </SuspensedView>
+         }
+        />
+
+        <Route
+         path='banks/*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>Banks</PageTitle>
+             <Bank />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='popayschedules/:id*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>PO Payment Schedule</PageTitle>
+             <PopaySchedule />
            </SuspensedView>
          }
         />

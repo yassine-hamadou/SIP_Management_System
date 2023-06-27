@@ -21,7 +21,7 @@ const AuthLayout = () => {
       {/* begin::Content */}
       <div className='d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20'>
         {/* begin::Logo */}
-          <img width={350} src={toAbsoluteUrl('/media/plaimage.jpg')} alt="" />
+          <img width={350} src={toAbsoluteUrl('/media/omnilogo.png')} alt="" />
         <h1 className='mb-12'>
           Welcome to Project Finance Software
         </h1>
