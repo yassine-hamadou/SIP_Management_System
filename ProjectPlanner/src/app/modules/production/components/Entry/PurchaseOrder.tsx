@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
-import { useAuth } from '../../../auth'
 
 const PurchaseOrder = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -15,8 +14,6 @@ const PurchaseOrder = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { register, reset, handleSubmit } = useForm()
-  const param: any = useParams();
-  const navigate = useNavigate();
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const queryClient = useQueryClient()
@@ -53,7 +50,7 @@ const PurchaseOrder = () => {
 
   const handleDelete = (element: any) => {
     const item = {
-      url: 'Users',
+      url: 'PurchaseOrders',
       data: element
     }
     deleteData(item)
@@ -61,8 +58,24 @@ const PurchaseOrder = () => {
 
   const columns: any = [
     {
+      title: 'PO Number',
+      dataIndex: 'ponumber',
+      sorter: (a: any, b: any) => {
+        if (a.projectId > b.projectId) {
+          return 1
+        }
+        if (b.projectId > a.projectId) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'Project',
-      dataIndex: 'projectId',
+      key: 'projectId',
+      render: (row:any)=>{
+        return getProjectName(row.projectId)
+      },
       sorter: (a: any, b: any) => {
         if (a.projectId > b.projectId) {
           return 1
@@ -75,7 +88,10 @@ const PurchaseOrder = () => {
     },
     {
       title: 'Activity',
-      dataIndex: 'activityId',
+      key: 'activityId',
+      render: (row:any)=>{
+        return getActivityname(row.activityId)
+      },
       sorter: (a: any, b: any) => {
         if (a.activityId > b.activityId) {
           return 1
@@ -86,10 +102,12 @@ const PurchaseOrder = () => {
         return 0
       },
     },
-
     {
       title: 'Cost Detail',
-      dataIndex: 'costDetailId',
+      key: 'costDetailId',
+      render: (row:any)=>{
+        return getCostDetailName(row.costDetailId)
+      },
       sorter: (a: any, b: any) => {
         if (a.costDetailId > b.costDetailId) {
           return 1
@@ -100,7 +118,6 @@ const PurchaseOrder = () => {
         return 0
       },
     },
-
     {
       title: 'Date',
       dataIndex: 'date',
@@ -116,7 +133,10 @@ const PurchaseOrder = () => {
     },
     {
       title: 'Supplier',
-      dataIndex: 'supplierId',
+      key: 'supplierId',
+      render: (row:any)=>{
+        return getSupplierName(row.supplierId)
+      },
       sorter: (a: any, b: any) => {
         if (a.supplierId > b.supplierId) {
           return 1
@@ -127,19 +147,20 @@ const PurchaseOrder = () => {
         return 0
       },
     },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      sorter: (a: any, b: any) => {
-        if (a.amount > b.amount) {
-          return 1
-        }
-        if (b.amount > a.amount) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Amount',
+    //   dataIndex: 'amount',
+    //   align:"right",
+    //   sorter: (a: any, b: any) => {
+    //     if (a.amount > b.amount) {
+    //       return 1
+    //     }
+    //     if (b.amount > a.amount) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
 
     {
       title: 'Action',
@@ -147,7 +168,9 @@ const PurchaseOrder = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
+           <Link to={`/popayschedules/${record.id}`}>
+                <span className='btn btn-light-info btn-sm'>PaySchedules</span>
+          </Link>
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -159,7 +182,14 @@ const PurchaseOrder = () => {
 
     },
   ]
-  
+
+  const { data: Activities } = useQuery('activities', ()=> fetchDocument('Activities'), { cacheTime: 5000 })
+  const { data: Projects } = useQuery('projects', ()=> fetchDocument('Projects'), { cacheTime: 5000 })
+  const { data: Suppliers } = useQuery('suppliers', ()=> fetchDocument('Suppliers'), { cacheTime: 5000 })
+  const { data: CostDetails } = useQuery('costDetails', ()=> fetchDocument('CostDetails'), { cacheTime: 5000 })
+  const { data: PurchaseOrders } = useQuery('PurchaseOrders', ()=> fetchDocument('PurchaseOrders'), { cacheTime: 5000 })
+
+
   const loadData = async () => {
     setLoading(true)
     try {
@@ -171,16 +201,52 @@ const PurchaseOrder = () => {
     }
   }
 
-
-
+  const getCostDetailName = (Id: any) => {
+    let costDetailName  = null
+    CostDetails?.data.map((item: any) => {
+      if (item.id === Id) {
+        costDetailName =item.name
+      }
+    })
+    return costDetailName 
+  }
+  const getSupplierName = (Id: any) => {
+    let supplierName = null
+    Suppliers?.data.map((item: any) => {
+      if (item.id === Id) {
+        supplierName=item.name
+      }
+    })
+    return supplierName
+  }
+  const getProjectName = (Id: any) => {
+    let projectName = null
+    Projects?.data.map((item: any) => {
+      if (item.id === Id) {
+        projectName=item.name
+      }
+    })
+    return projectName
+  }
+  const getActivityname = (Id: any) => {
+    let activityName = null
+    Activities?.data.map((item: any) => {
+      if (item.id === Id) {
+        activityName=item.name
+      }
+    })
+    return activityName
+  }
   useEffect(() => {
 
     loadData()
   }, [])
 
-  const dataByID = gridData.filter((user: any) => {
-    return user.id !== 42
-  })
+  const dataWithIndex = gridData.map((item: any) => ({
+    ...item,
+    date: item.date.substring(0,10),
+    amount: item.amount+ ".00",
+}))
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -188,20 +254,6 @@ const PurchaseOrder = () => {
       loadData()
     }
   }
-
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex.filter((value) => {
-      return (
-        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
-      )
-    })
-    setGridData(filteredData)
-  }
-
 
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
@@ -220,17 +272,14 @@ const PurchaseOrder = () => {
   const handleUpdate = (e: any) => {
     e.preventDefault()
     // object item to be passed down to updateItem function 
-    if (tempData.firstName.length >= 0) {
+    
       const item = {
-        url: 'Users',
+        url: 'PurchaseOrders',
         data: tempData
       }
       updateData(item)
       console.log('update: ', item.data)
-    } else {
-      setLoading(false)
-      message.error('First Name must be more than 5 characters')
-    }
+    
   }
 
   const showUpdateModal = (values: any) => {
@@ -246,12 +295,12 @@ const PurchaseOrder = () => {
     // object item to be passed down to postItem function
       const item = {
         data: {
-          firstName: values.firstName,
-          username: values.username,
-          password: values.password,
-          surname: values.surname,
-          email: values.email,
-          // gender: values.gender,
+          projectId: values.projectId,
+          activityId: values.activityId,
+          costDetailId: values.costDetailId,
+          date: values.date,
+          supplierId: values.supplierId,
+          amount: parseFloat(values.amount).toFixed(2),
         },
         url: endpoint
       }
@@ -292,7 +341,7 @@ const PurchaseOrder = () => {
                 allowClear
                 value={searchText}
               />
-              <Button type='primary' onClick={globalSearch}>
+              <Button type='primary'>
                 Search
               </Button>
             </Space>
@@ -303,7 +352,7 @@ const PurchaseOrder = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns} />
+          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
           <Modal
             title={isUpdateModalOpen ? 'Update Purchase Order' : 'Add Purchase Order'}
             open={isModalOpen}
@@ -332,67 +381,70 @@ const PurchaseOrder = () => {
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
                 
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Project</label>
+                  <label className="form-label">Project</label>
                   <select 
                     {...register("projectId")} 
                     value={isUpdateModalOpen === true ? tempData?.currencyId?.toString() : null}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option>Select Project</option> : null}
-                    {/* {Currencies?.data.map((item: any) => (
+                    {Projects?.data.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
-                    ))} */}
+                    ))}
                   </select>
                 </div>
+
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Activity</label>
+                  <label className="form-label">Activity</label>
                   <select 
                     {...register("activityId")} 
                     value={isUpdateModalOpen === true ? tempData?.currencyId?.toString() : null}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option>Select Activity</option> : null}
-                    {/* {Currencies?.data.map((item: any) => (
+                    {Activities?.data.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
-                    ))} */}
+                    ))}
                   </select>
                 </div>
+
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Cost Detail</label>
+                  <label className="form-label">Cost Detail</label>
                   <select 
                     {...register("costDetailId")} 
                     value={isUpdateModalOpen === true ? tempData?.currencyId?.toString() : null}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option>Select Cost Detail</option> : null}
-                    {/* {Currencies?.data.map((item: any) => (
+                    {CostDetails?.data.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
-                    ))} */}
+                    ))}
                   </select>
                 </div>
+
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
+                  <label className="form-label">Date</label>
                   <input type="date" {...register("date")}
-                    defaultValue={isUpdateModalOpen === true ? tempData.date : ''}
+                    defaultValue={isUpdateModalOpen === true ? tempData.date?.substring(0,10) : ''}
                     onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
                 
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Supplier</label>
+                  <label className="form-label">Supplier</label>
                   <select 
                     {...register("supplierId")} 
                     value={isUpdateModalOpen === true ? tempData?.currencyId?.toString() : null}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option>Select Supplier</option> : null}
-                    {/* {Currencies?.data.map((item: any) => (
+                    {Suppliers?.data.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
-                    ))} */}
+                    ))}
                   </select>
                 </div>
                 <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Amount</label>
+                  <label className="form-label">Amount</label>
                   <input type="number"
                     min={0}
                     {...register("amount")}

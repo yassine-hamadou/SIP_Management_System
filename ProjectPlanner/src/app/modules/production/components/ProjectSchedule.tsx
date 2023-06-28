@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
-import { useAuth } from '../../../auth'
+import { KTCardBody, KTSVG } from '../../../../_metronic/helpers'
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../../services/ApiCalls'
 
-const Payment = () => {
+const ProjectSchedule = () => {
   const [gridData, setGridData] = useState<any>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -20,6 +19,8 @@ const Payment = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const queryClient = useQueryClient()
+  const [detailName, setDetailName] = useState('')
+  const [invoiceNum, setInvoiceNum] = useState("")
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -43,8 +44,7 @@ const Payment = () => {
 
   const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['payments', tempData], data);
-      loadData()
+      queryClient.invalidateQueries('projectSchedules');
     },
     onError: (error) => {
       console.log('delete error: ', error)
@@ -53,13 +53,14 @@ const Payment = () => {
 
   const handleDelete = (element: any) => {
     const item = {
-      url: 'Payments',
+      url: 'ProjectSchedules',
       data: element
     }
     deleteData(item)
   }
 
   const columns: any = [
+   
     {
       title: 'Invoice Number',
       dataIndex: 'invoiceNumber',
@@ -101,26 +102,11 @@ const Payment = () => {
       },
     },
     {
-      title: 'Paid By',
-      dataIndex: 'payeeName',
-      sorter: (a: any, b: any) => {
-        if (a.payeeName > b.payeeName) {
-          return 1
-        }
-        if (b.payeeName > a.payeeName) {
-          return -1
-        }
-        return 0
-      },
-    },
-      
-    {
       title: 'Action',
       fixed: 'right',
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -132,11 +118,14 @@ const Payment = () => {
 
     },
   ]
+
+  const { data: Activities } = useQuery('activities', ()=> fetchDocument('Activities'), { cacheTime: 5000 })
+  const { data: Projects } = useQuery('projects', ()=> fetchDocument('Projects'), { cacheTime: 5000 })
   
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument('Payments')
+      const response = await fetchDocument('ProjectSchedules')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -144,18 +133,52 @@ const Payment = () => {
     }
   }
 
+  const getActivityname = (gradeId: any) => {
+    let activityName = null
+    Activities?.data.map((item: any) => {
+      if (item.id === gradeId) {
+        activityName=item.name
+      }
+    })
+    return activityName
+  }
+  
+  const getItemName = async (param: any) => {
 
+    let newName = null
 
+    const itemTest = await Projects?.data.find((item: any) =>
+      item.id.toString() === param
+    )
+    newName = await itemTest
+    return newName
+  }
+
+ 
   useEffect(() => {
-
+    (async () => {
+        let res = await getItemName(param.id)
+        setDetailName(res?.name)
+    })();
     loadData()
   }, [])
 
-  const dataByID = gridData.map((item: any) => ({
+  const numberFormat = (value:any) =>
+  new Intl.NumberFormat('en-Eg', {
+    style: 'currency',
+    currency: 'CEDIS'
+  }).format(value);
+
+  const dataByID = gridData.filter((user: any) => {
+    return user.projectId === parseInt(param.id)
+  })
+
+
+  const dataWithIndex = dataByID?.map((item: any) => ({
     ...item,
+    amount: item.amount+ ".00",
     date: item.date.substring(0,10),
-    amount: item.amount +".00",
-  }))
+}))
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -164,10 +187,9 @@ const Payment = () => {
     }
   }
 
-
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['Payments', tempData], data);
+      queryClient.setQueryData(['projectSchedules', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -182,14 +204,17 @@ const Payment = () => {
   const handleUpdate = (e: any) => {
     e.preventDefault()
     // object item to be passed down to updateItem function 
-   
+ 
       const item = {
-        url: 'Payments',
+        url: 'ProjectSchedules',
         data: tempData
       }
       updateData(item)
       console.log('update: ', item.data)
-    
+    // } else {
+    //   setLoading(false)
+    //   message.error('First Name must be more than 5 characters')
+    // }
   }
 
   const showUpdateModal = (values: any) => {
@@ -198,17 +223,16 @@ const Payment = () => {
     setTempData(values);
   }
 
-
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const endpoint = 'Payments'
+    const endpoint = 'ProjectSchedules'
     // object item to be passed down to postItem function
       const item = {
         data: {
-          invoiceNumber: values.invoiceNumber,
-          date: values.date,
-          amount: parseFloat(values.amount).toFixed(2),
-          payeeName: values.payeeName,
+          projectId:parseInt(param.id),
+          date:values.date,
+          invoiceNumber:values.invoiceNumber,
+          amount:parseFloat(values.amount).toFixed(2)
         },
         url: endpoint
       }
@@ -218,7 +242,7 @@ const Payment = () => {
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['payments', tempData], data);
+      queryClient.setQueryData(['projectSchedules', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -228,7 +252,7 @@ const Payment = () => {
       console.log('post error: ', error)
     }
   })
-
+  
   return (
     <div
       style={{
@@ -240,6 +264,12 @@ const Payment = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <div>
+            <span className="fw-bold text-gray-800 d-block fs-2 mb-3 ">{detailName}</span>
+            
+            <br></br>
+            <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        </div>
           <div className='d-flex justify-content-between'>
             <Space style={{ marginBottom: 16 }}>
               <Input
@@ -260,9 +290,9 @@ const Payment = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataByID} loading={loading} />
+          <Table columns={columns} dataSource={dataWithIndex} loading={loading} />
           <Modal
-            title={isUpdateModalOpen ? 'Update Payment' : 'Add Payment'}
+            title={isUpdateModalOpen ? 'Update Payment Schedule' : 'Add Payment Schedule'}
             open={isModalOpen}
             onCancel={handleCancel}
             closable={true}
@@ -287,37 +317,30 @@ const Payment = () => {
               <hr></hr>
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
                 <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Invoice Number</label>
+                  <label  className="form-label">Invoice Number</label>
                   <input type="text" {...register("invoiceNumber")}
                     defaultValue={isUpdateModalOpen === true ? tempData.invoiceNumber : ''}
                     onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
                 <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
+                  <label  className="form-label">Date</label>
                   <input type="date" {...register("date")}
                     defaultValue={isUpdateModalOpen === true ? tempData.date : ''}
                     onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
+               
                 <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Amount</label>
-                  <input type="number" 
-                    min={0}
-                    {...register("amount")}
+                  <label  className="form-label">Amount</label>
+                  <input type="number" {...register("amount")}
                     defaultValue={isUpdateModalOpen === true ? tempData.amount : ''}
                     onChange={handleChange}
+                    min={0}
+                    step={0.01}
                     className="form-control form-control-solid" />
                 </div>
-                <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Name of Payee </label>
-                  <input type="text" {...register("payeeName")}
-                    defaultValue={isUpdateModalOpen === true ? tempData.payeeName : ''}
-                    onChange={handleChange}
-                    placeholder='fullname'
-                    className="form-control form-control-solid" />
-                </div>
-
+                
               </div>
             </form>
           </Modal>
@@ -327,5 +350,5 @@ const Payment = () => {
   )
 }
 
-export { Payment }
+export { ProjectSchedule }
 

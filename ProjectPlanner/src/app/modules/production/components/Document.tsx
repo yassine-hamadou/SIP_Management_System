@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
-import { useAuth } from '../../../auth'
+import { KTCardBody, KTSVG } from '../../../../_metronic/helpers'
+import { deleteItem, fetchDocument, postItem, updateItem } from '../../../services/ApiCalls'
 
-const Payment = () => {
+const Documents = () => {
   const [gridData, setGridData] = useState<any>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -20,7 +19,7 @@ const Payment = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const queryClient = useQueryClient()
-
+  const [detailName, setDetailName] = useState('')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -43,7 +42,7 @@ const Payment = () => {
 
   const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['payments', tempData], data);
+      queryClient.setQueryData(['purchaseOrders', tempData], data);
       loadData()
     },
     onError: (error) => {
@@ -53,7 +52,7 @@ const Payment = () => {
 
   const handleDelete = (element: any) => {
     const item = {
-      url: 'Payments',
+      url: 'Users',
       data: element
     }
     deleteData(item)
@@ -61,59 +60,20 @@ const Payment = () => {
 
   const columns: any = [
     {
-      title: 'Invoice Number',
-      dataIndex: 'invoiceNumber',
+      title: 'Document',
+      dataIndex: 'projectId',
       sorter: (a: any, b: any) => {
-        if (a.invoiceNumber > b.invoiceNumber) {
+        if (a.projectId > b.projectId) {
           return 1
         }
-        if (b.invoiceNumber > a.invoiceNumber) {
+        if (b.projectId > a.projectId) {
           return -1
         }
         return 0
       },
     },
-    {
-      title: 'Date',
-      dataIndex: 'date',
-      sorter: (a: any, b: any) => {
-        if (a.date > b.date) {
-          return 1
-        }
-        if (b.date > a.date) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      align:"right",
-      sorter: (a: any, b: any) => {
-        if (a.amount > b.amount) {
-          return 1
-        }
-        if (b.amount > a.amount) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Paid By',
-      dataIndex: 'payeeName',
-      sorter: (a: any, b: any) => {
-        if (a.payeeName > b.payeeName) {
-          return 1
-        }
-        if (b.payeeName > a.payeeName) {
-          return -1
-        }
-        return 0
-      },
-    },
-      
+    
+
     {
       title: 'Action',
       fixed: 'right',
@@ -132,11 +92,14 @@ const Payment = () => {
 
     },
   ]
-  
+
+
+  const { data: Projects } = useQuery('projects', ()=> fetchDocument('Projects'), { cacheTime: 5000 })
+
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument('Payments')
+      const response = await fetchDocument('Documents')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -144,18 +107,28 @@ const Payment = () => {
     }
   }
 
+  const getItemName = async (param: any) => {
 
+    let newName = null
+
+    const itemTest = await Projects?.data.find((item: any) =>
+      item.id.toString() === param
+    )
+    newName = await itemTest
+    return newName
+  }
 
   useEffect(() => {
-
+    (async () => {
+        let res = await getItemName(param.id)
+        setDetailName(res?.name)
+    })();
     loadData()
   }, [])
 
-  const dataByID = gridData.map((item: any) => ({
-    ...item,
-    date: item.date.substring(0,10),
-    amount: item.amount +".00",
-  }))
+  const dataByID = gridData.filter((user: any) => {
+    return user.id !== 42
+  })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -164,10 +137,23 @@ const Payment = () => {
     }
   }
 
+  const globalSearch = () => {
+    // @ts-ignore
+    filteredData = dataWithIndex.filter((value) => {
+      return (
+        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
+        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
+      )
+    })
+    setGridData(filteredData)
+  }
+
 
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['Payments', tempData], data);
+      queryClient.setQueryData(['documents', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -182,14 +168,17 @@ const Payment = () => {
   const handleUpdate = (e: any) => {
     e.preventDefault()
     // object item to be passed down to updateItem function 
-   
+    if (tempData.firstName.length >= 0) {
       const item = {
-        url: 'Payments',
+        url: 'Documents',
         data: tempData
       }
       updateData(item)
       console.log('update: ', item.data)
-    
+    } else {
+      setLoading(false)
+      message.error('First Name must be more than 5 characters')
+    }
   }
 
   const showUpdateModal = (values: any) => {
@@ -201,14 +190,16 @@ const Payment = () => {
 
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const endpoint = 'Payments'
+    const endpoint = 'Documents'
     // object item to be passed down to postItem function
       const item = {
         data: {
-          invoiceNumber: values.invoiceNumber,
-          date: values.date,
-          amount: parseFloat(values.amount).toFixed(2),
-          payeeName: values.payeeName,
+          firstName: values.firstName,
+          username: values.username,
+          password: values.password,
+          surname: values.surname,
+          email: values.email,
+          // gender: values.gender,
         },
         url: endpoint
       }
@@ -218,7 +209,7 @@ const Payment = () => {
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['payments', tempData], data);
+      queryClient.setQueryData(['documents', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -240,6 +231,11 @@ const Payment = () => {
     >
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
+        <div>
+            <span className="fw-bold text-gray-800 d-block fs-2 mb-3 ">{detailName}</span>
+            <br></br>
+            <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
+        </div>
           <div className='d-flex justify-content-between'>
             <Space style={{ marginBottom: 16 }}>
               <Input
@@ -249,7 +245,7 @@ const Payment = () => {
                 allowClear
                 value={searchText}
               />
-              <Button type='primary'>
+              <Button type='primary' onClick={globalSearch}>
                 Search
               </Button>
             </Space>
@@ -260,9 +256,9 @@ const Payment = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={dataByID} loading={loading} />
+          <Table columns={columns} />
           <Modal
-            title={isUpdateModalOpen ? 'Update Payment' : 'Add Payment'}
+            title={isUpdateModalOpen ? 'Update Document' : 'Add Document'}
             open={isModalOpen}
             onCancel={handleCancel}
             closable={true}
@@ -286,38 +282,14 @@ const Payment = () => {
             >
               <hr></hr>
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
-                <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Invoice Number</label>
-                  <input type="text" {...register("invoiceNumber")}
-                    defaultValue={isUpdateModalOpen === true ? tempData.invoiceNumber : ''}
-                    onChange={handleChange}
-                    className="form-control form-control-solid" />
-                </div>
-                <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
-                  <input type="date" {...register("date")}
-                    defaultValue={isUpdateModalOpen === true ? tempData.date : ''}
-                    onChange={handleChange}
-                    className="form-control form-control-solid" />
-                </div>
-                <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Amount</label>
-                  <input type="number" 
-                    min={0}
-                    {...register("amount")}
-                    defaultValue={isUpdateModalOpen === true ? tempData.amount : ''}
-                    onChange={handleChange}
-                    className="form-control form-control-solid" />
-                </div>
-                <div className=' mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Name of Payee </label>
-                  <input type="text" {...register("payeeName")}
+                
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Document</label>
+                  <input type="file" {...register("payeeName")}
                     defaultValue={isUpdateModalOpen === true ? tempData.payeeName : ''}
                     onChange={handleChange}
-                    placeholder='fullname'
                     className="form-control form-control-solid" />
                 </div>
-
               </div>
             </form>
           </Modal>
@@ -327,5 +299,5 @@ const Payment = () => {
   )
 }
 
-export { Payment }
+export { Documents }
 

@@ -9,7 +9,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 // common setup component
 const SharedComponent = (props: any) => {
     const [gridData, setGridData] = useState([])
-    const [loading, setLoading] = useState(false)
+    // const [loading, setLoading] = useState(false)
     const [searchText, setSearchText] = useState('')
     let [filteredData] = useState([])
     const [submitLoading, setSubmitLoading] = useState(false)
@@ -18,7 +18,6 @@ const SharedComponent = (props: any) => {
     const [tempData, setTempData] = useState<any>()
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
     const queryClient = useQueryClient()
-    const tenantId = localStorage.getItem('tenant')
     const param: any = useParams();
     const navigate = useNavigate();
     
@@ -45,8 +44,7 @@ const SharedComponent = (props: any) => {
 
     const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
         onSuccess: (data) => {
-            queryClient.setQueryData([props.data.url, tempData], data);
-            loadData()
+            queryClient.invalidateQueries(props.data.url);
         },
         onError: (error) => {
             console.log('delete error: ', error)
@@ -112,44 +110,45 @@ const SharedComponent = (props: any) => {
         },
     ]
 
-    const { data: CostCategories } = useQuery('costCategories', ()=> fetchDocument('CostCategories'), { cacheTime: 5000 })
+    const { data: GridData, isLoading } = useQuery(`${props.data.url}`, ()=> fetchDocument(`${props.data.url}`), { cacheTime: 5000 })
+    // const { data: CostCategories } = useQuery('costCategories', ()=> fetchDocument('CostCategories'), { cacheTime: 5000 })
 
     // if title is products then remove the code column from the table
     if (props.data.title === 'Products') {
         columns.shift()
     }
 
-    const loadData = async () => {
-        setLoading(true)
-        try {
-            const response =  await fetchDocument(`${props.data.url}`) 
-            setGridData(response.data)
-            setLoading(false)
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    // const loadData = async () => {
+    //     setLoading(true)
+    //     try {
+    //         const response =  await fetchDocument(`${props.data.url}`) 
+    //         setGridData(response.data)
+    //         setLoading(false)
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 
-    const getItemName = async (param: any) => {
+    // const getItemName = async (param: any) => {
 
-        let newName = null
+    //     let newName = null
     
-        const itemTest = await CostCategories?.data.find((item: any) =>
-          item.id.toString() === param
-        )
-        newName = await itemTest
-        return newName
-      }
+    //     const itemTest = await CostCategories?.data.find((item: any) =>
+    //       item.id.toString() === param
+    //     )
+    //     newName = await itemTest
+    //     return newName
+    //   }
 
-    useEffect(() => {
-        (async () => {
-            let res = await getItemName(param.id)
-            setDetailName(res?.name)
-        })();
-        loadData()
-    }, [])
+    // useEffect(() => {
+    //     (async () => {
+    //         let res = await getItemName(param.id)
+    //         setDetailName(res?.name)
+    //     })();
+    //     loadData()
+    // }, [])
 
-    const dataWithIndex = gridData.map((item: any, index) => ({
+    const dataWithIndex:any = gridData.map((item: any, index) => ({
         ...item,
         key: index,
     }))
@@ -157,7 +156,7 @@ const SharedComponent = (props: any) => {
     const handleInputChange = (e: any) => {
         setSearchText(e.target.value)
         if (e.target.value === '') {
-            loadData()
+            queryClient.invalidateQueries(props.data.url)
         }
     }
 
@@ -173,10 +172,9 @@ const SharedComponent = (props: any) => {
 
     const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
         onSuccess: (data) => {
-            queryClient.setQueryData([props.data.url, tempData], data);
+            queryClient.invalidateQueries(props.data.url)
             reset()
             setTempData({})
-            loadData()
             setIsUpdateModalOpen(false)
             setIsModalOpen(false)
         },
@@ -204,38 +202,37 @@ const SharedComponent = (props: any) => {
 
 
     const OnSubmit = handleSubmit(async (values) => {
-        setLoading(true)
+        // setLoading(true)
         const item: any = {
             data: {
                 name: values.name,
                 code: values.code,
                 costCategoryId: parseInt(param.id),
-                tenantId: tenantId,
             },
             url: props.data.url
         }
+
+
         // if title is not Products, remove costCategoryId from item data
         if (props.data.title !== 'CostDetail') {
             const { costCategoryId, ...dataWithoutcostCategoryId } = item.data;
             item.data = dataWithoutcostCategoryId;
         }
-
-        // console.log('before post', item.data)
         postData(item)
     })
-
+    
     const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
         onSuccess: (data) => {
-            queryClient.setQueryData([props.data.url, tempData], data);
+            queryClient.invalidateQueries(props.data.url);
             reset()
             setTempData({})
-            loadData()
             setIsModalOpen(false)
         },
         onError: (error) => {
             console.log('post error: ', error)
         }
     })
+
 
     return (
         <div
@@ -285,7 +282,7 @@ const SharedComponent = (props: any) => {
                             </button>
                         </Space>
                     </div>
-                    <Table columns={columns} dataSource={gridData} loading={loading} />
+                    <Table columns={columns} dataSource={GridData?.data} loading={isUpdateModalOpen?postLoading:isLoading} />
                     <Modal
                         title={isUpdateModalOpen ? `${props.data.title} Update` : `${props.data.title} Setup`}
                         open={isModalOpen}

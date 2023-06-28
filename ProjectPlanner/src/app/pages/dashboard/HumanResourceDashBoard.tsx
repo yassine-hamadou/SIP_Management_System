@@ -1,4 +1,5 @@
 import {PageTitle} from '../../../_metronic/layout/core'
+import { BarCharts } from './charts/BarChart'
 import { HRChart } from './charts/HRChart'
 import { TestChart } from './charts/TestChart'
 
@@ -17,6 +18,11 @@ const HRDashboardPage = () => {
       </div>
       <div className='col-xxl-6'>
       <TestChart className='mb-xl-8'
+          chartColor='primary'
+          chartHeight='350px'/>
+      </div>
+      <div className=''>
+      <BarCharts className='mb-xl-8'
           chartColor='primary'
           chartHeight='350px'/>
       </div>

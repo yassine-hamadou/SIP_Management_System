@@ -8,18 +8,6 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import * as Yup from 'yup'
 import clsx from 'clsx'
 
-
-const loginSchema = Yup.object().shape({
-    username: Yup.string()
-      .min(5, 'Minimum 5 charaters')
-      .max(50, 'Maximum 50 charaters')
-      .required('Username is required'),
-    password: Yup.string()
-      .min(6, 'Minimum 6 charaters')
-      .max(50, 'Maximum 50 charaters')
-      .required('Password is required'),
-  })
-
 // common setup component
 
 const SharedComponent2 = (props: any) => {
@@ -90,58 +78,19 @@ const SharedComponent2 = (props: any) => {
             },
         },
         {
-            title: 'First Name',
-            dataIndex: 'firstName',
+            title: 'Name',
+            dataIndex: 'name',
             sorter: (a: any, b: any) => {
-                if (a.firstName > b.firstName) {
+                if (a.name > b.name) {
                     return 1
                 }
-                if (b.firstName > a.firstName) {
+                if (b.name > a.name) {
                     return -1
                 }
                 return 0
             },
         },
-        {
-            title: 'Surname',
-            dataIndex: 'surname',
-            sorter: (a: any, b: any) => {
-                if (a.surname > b.surname) {
-                    return 1
-                }
-                if (b.surname > a.surname) {
-                    return -1
-                }
-                return 0
-            },
-        },
-        {
-            title: 'Other Name',
-            dataIndex: 'otherName',
-            sorter: (a: any, b: any) => {
-                if (a.otherName > b.otherName) {
-                    return 1
-                }
-                if (b.otherName > a.otherName) {
-                    return -1
-                }
-                return 0
-            },
-        },
-
-        {
-            title: 'Gender',
-            dataIndex: 'gender',
-            sorter: (a: any, b: any) => {
-                if (a.gender > b.gender) {
-                    return 1
-                }
-                if (b.gender > a.gender) {
-                    return -1
-                }
-                return 0
-            },
-        },
+       
         {
             title: 'Email',
             dataIndex: 'email',
@@ -273,10 +222,7 @@ const SharedComponent2 = (props: any) => {
         setLoading(true)
         const item: any = {
             data: {
-                firstName: values.firstName,
-                surname: values.surname,
-                otherName: values.otherName,
-                gender: values.gender,
+                name: values.name,
                 email: values.email,
                 address: values.address,
                 phone: values.phone,
@@ -355,7 +301,7 @@ const SharedComponent2 = (props: any) => {
                             </button>
                         </Space>
                     </div>
-                    <Table columns={columns}  />
+                    <Table columns={columns} dataSource={gridData} loading={loading} />
                     <Modal
                         title={isUpdateModalOpen ? `${props.data.title} Update` : `${props.data.title} Setup`}
                         open={isModalOpen}
@@ -391,31 +337,8 @@ const SharedComponent2 = (props: any) => {
                                     onChange={handleChange} className="form-control form-control-solid" />
                                 </div>
                                 <div className='col-6 mb-7'>
-                                    <label  className="form-label">First Name</label>
-                                    <input type="text" {...register("firstName")} defaultValue={isUpdateModalOpen === true ? tempData.firstName : ''} onChange={handleChange} className="form-control form-control-solid" />
-                                </div>
-                                
-                                <div className='col-6 mb-7'>
-                                    <label  className="form-label">Surname</label>
-                                    <input type="text" {...register("surname")} defaultValue={isUpdateModalOpen === true ? tempData.surname : ''} onChange={handleChange} className="form-control form-control-solid" />
-                                </div>
-
-                                <div className='col-6 mb-7'>
-                                    <label  className="form-label">Other Name</label>
-                                    <input type="text" {...register("otherName")} defaultValue={isUpdateModalOpen === true ? tempData.otherName : ''} onChange={handleChange} className="form-control form-control-solid" />
-                                </div>
-                                <div className='col-6 mb-7'>
-                                    <label  className="form-label">Gender</label>
-                                    <select 
-                                        {...register("gender")} 
-                                        value={isUpdateModalOpen === true ? tempData?.gender?.toString() : null}
-                                        onChange={handleChange}
-                                        className="form-select form-select-solid" aria-label="Select example">
-                                        {isUpdateModalOpen === false ? <option>Select Gender</option> : null}
-                                        <option value="MALE">MALE</option>
-                                        <option value="FAMALE">FAMALE</option>
-                                    </select>
-                                  
+                                    <label  className="form-label">Name</label>
+                                    <input type="text" {...register("name")} defaultValue={isUpdateModalOpen === true ? tempData.name : ''} onChange={handleChange} className="form-control form-control-solid" />
                                 </div>
                                 <div className='col-6 mb-7'>
                                     <label  className="form-label">Email</label>

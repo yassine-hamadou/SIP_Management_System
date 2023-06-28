@@ -20,9 +20,22 @@ const Invoice = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const queryClient = useQueryClient()
+const [invoiceNum, setInvoiceNum] = useState("")
 
+function GenerateInvoiceNumber() {
+  let result = '';
+  const characters = 'IViv0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < 10) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return setInvoiceNum(result);
+}
   const showModal = () => {
     setIsModalOpen(true)
+    GenerateInvoiceNumber()
   }
 
   const handleOk = () => {
@@ -41,9 +54,11 @@ const Invoice = () => {
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
+
+
   const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['users', tempData], data);
+      queryClient.setQueryData(['invoices', tempData], data);
       loadData()
     },
     onError: (error) => {
@@ -53,7 +68,7 @@ const Invoice = () => {
 
   const handleDelete = (element: any) => {
     const item = {
-      url: 'Users',
+      url: 'Invoices',
       data: element
     }
     deleteData(item)
@@ -62,7 +77,10 @@ const Invoice = () => {
   const columns: any = [
     {
         title: 'Project',
-        dataIndex: 'projectId',
+        key: 'projectId',
+        render: (row: any) => {
+          return getProjectName(row.projectId)
+        },
         sorter: (a: any, b: any) => {
           if (a.projectId > b.projectId) {
             return 1
@@ -75,7 +93,10 @@ const Invoice = () => {
     },
     {
       title: 'Supplier',
-      dataIndex: 'supplierId',
+      key: 'supplierId',
+      render: (row: any) => {
+        return getSupplierName(row.supplierId)
+      },
       sorter: (a: any, b: any) => {
         if (a.supplierId > b.supplierId) {
           return 1
@@ -89,12 +110,15 @@ const Invoice = () => {
     
     {
       title: 'PO Number',
-      dataIndex: 'poNumber',
+      key: 'purchaseOrderId',
+      render: (row: any) => {
+        return getPoNumber(row.purchaseOrderId)
+      },
       sorter: (a: any, b: any) => {
-        if (a.poNumber > b.poNumber) {
+        if (a.purchaseOrderId > b.purchaseOrderId) {
           return 1
         }
-        if (b.poNumber > a.poNumber) {
+        if (b.purchaseOrderId > a.purchaseOrderId) {
           return -1
         }
         return 0
@@ -118,11 +142,25 @@ const Invoice = () => {
     {
       title: 'Amount',
       dataIndex: 'amount',
+      align:"right",
       sorter: (a: any, b: any) => {
         if (a.amount > b.amount) {
           return 1
         }
         if (b.amount > a.amount) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Due Date',
+      dataIndex: 'dueDate',
+      sorter: (a: any, b: any) => {
+        if (a.dueDate > b.dueDate) {
+          return 1
+        }
+        if (b.dueDate > a.dueDate) {
           return -1
         }
         return 0
@@ -135,12 +173,7 @@ const Invoice = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <Link to={`/user-applications/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Applications</span>
-          </Link>
-          <Link to={`/user-roles/${record.id}`}>
-            <span className='btn btn-light-info btn-sm'>Roles</span>
-          </Link>
+         
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
@@ -152,11 +185,16 @@ const Invoice = () => {
 
     },
   ]
+
+  const { data: Activities } = useQuery('activities', ()=> fetchDocument('Activities'), { cacheTime: 5000 })
+  const { data: Projects } = useQuery('projects', ()=> fetchDocument('Projects'), { cacheTime: 5000 })
+  const { data: Suppliers } = useQuery('suppliers', ()=> fetchDocument('Suppliers'), { cacheTime: 5000 })
+  const { data: PurchaseOrders } = useQuery('purchaseOrders', ()=> fetchDocument('PurchaseOrders'), { cacheTime: 5000 })
   
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument('Users')
+      const response = await fetchDocument('Invoices')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -164,16 +202,41 @@ const Invoice = () => {
     }
   }
 
+  const getSupplierName = (gradeId: any) => {
+    let SupplierName = null
+    Suppliers?.data.map((item: any) => {
+      if (item.id === gradeId) {
+        SupplierName=item.name
+      }
+    })
+    return SupplierName
+  }
+
+  const getProjectName = (gradeId: any) => {
+    let ProjectName = null
+    Projects?.data.map((item: any) => {
+      if (item.id === gradeId) {
+        ProjectName=item.name
+      }
+    })
+    return ProjectName
+  }
+
+  const getPoNumber = (id: any) => {
+    let PoNumber = null
+    PurchaseOrders?.data.map((item: any) => {
+      if (item.id === id) {
+        PoNumber=item.ponumber
+      }
+    })
+    return PoNumber
+  }
 
 
   useEffect(() => {
 
     loadData()
   }, [])
-
-  const dataByID = gridData.filter((user: any) => {
-    return user.id !== 42
-  })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -182,23 +245,16 @@ const Invoice = () => {
     }
   }
 
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex.filter((value) => {
-      return (
-        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
-      )
-    })
-    setGridData(filteredData)
-  }
+  const dataByID = gridData.map((item: any) => ({
+    ...item,
+    dueDate: item.dueDate.substring(0,10),
+    amount: item.amount +".00",
+  }))
 
 
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['users', tempData], data);
+      queryClient.setQueryData(['invoices', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -213,17 +269,14 @@ const Invoice = () => {
   const handleUpdate = (e: any) => {
     e.preventDefault()
     // object item to be passed down to updateItem function 
-    if (tempData.firstName.length >= 0) {
+ 
       const item = {
-        url: 'Users',
+        url: 'Invoices',
         data: tempData
       }
       updateData(item)
       console.log('update: ', item.data)
-    } else {
-      setLoading(false)
-      message.error('First Name must be more than 5 characters')
-    }
+   
   }
 
   const showUpdateModal = (values: any) => {
@@ -235,16 +288,16 @@ const Invoice = () => {
 
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const endpoint = 'Users'
+    const endpoint = 'Invoices'
     // object item to be passed down to postItem function
       const item = {
         data: {
-          firstName: values.firstName,
-          username: values.username,
-          password: values.password,
-          surname: values.surname,
-          email: values.email,
-          // gender: values.gender,
+          projectId: values.projectId,
+          supplierId: values.supplierId,
+          invoiceNumber: values.invoiceNumber,
+          purchaseOrderId: values.purchaseOrderId,
+          amount: parseFloat(values.amount).toFixed(2),
+          dueDate: values.dueDate,
         },
         url: endpoint
       }
@@ -254,7 +307,7 @@ const Invoice = () => {
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['users', tempData], data);
+      queryClient.setQueryData(['invoices', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -285,7 +338,7 @@ const Invoice = () => {
                 allowClear
                 value={searchText}
               />
-              <Button type='primary' onClick={globalSearch}>
+              <Button type='primary' >
                 Search
               </Button>
             </Space>
@@ -296,7 +349,7 @@ const Invoice = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns}  />
+          <Table columns={columns} dataSource={dataByID} loading={loading} />
           <Modal
             title={isUpdateModalOpen ? 'Update Invoice' : 'Add Invoice'}
             open={isModalOpen}
@@ -326,47 +379,49 @@ const Invoice = () => {
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Project</label>
                   <select 
-                    {...register("currencyId")} 
-                    value={isUpdateModalOpen === true ? tempData?.currencyId?.toString() : null}
+                    {...register("projectId")} 
+                    value={isUpdateModalOpen === true ? tempData?.projectId?.toString() : null}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option>Select Project</option> : null}
-                    {/* {Currencies?.data.map((item: any) => (
+                    {Projects?.data.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
-                    ))} */}
+                    ))}
                   </select>
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Supplier</label>
                   <select 
                     {...register("supplierId")} 
-                    value={isUpdateModalOpen === true ? tempData?.currencyId?.toString() : null}
+                    value={isUpdateModalOpen === true ? tempData?.supplierId?.toString() : null}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
                     {isUpdateModalOpen === false ? <option>Select Supplier</option> : null}
-                    {/* {Currencies?.data.map((item: any) => (
+                    {Suppliers?.data.map((item: any) => (
                         <option value={item.id}>{item.name}</option>
-                    ))} */}
+                    ))}
                   </select>
                 </div>
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">PO Number</label>
                   <select 
-                    {...register("ponumber")} 
-                    value={isUpdateModalOpen === true ? tempData?.currencyId?.toString() : null}
+                    {...register("purchaseOrderId")} 
+                    value={isUpdateModalOpen === true ? tempData?.purchaseOrderId?.toString() : null}
                     onChange={handleChange}
                     className="form-select form-select-solid" aria-label="Select example">
-                    {isUpdateModalOpen === false ? <option>Select Supplier</option> : null}
-                    {/* {Currencies?.data.map((item: any) => (
-                        <option value={item.id}>{item.name}</option>
-                    ))} */}
+                    {isUpdateModalOpen === false ? <option>Select PO Number</option> : null}
+                    {PurchaseOrders?.data.map((item: any) => (
+                        <option value={item.id}>{item.ponumber}</option>
+                    ))}
                   </select>
                 </div>
                 
                 <div className='col-6 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Invoice Number</label>
-                  <input type="text" {...register("username")}
-                    defaultValue={isUpdateModalOpen === true ? tempData.username : ''}
+                  <input type="text" 
+                  {...register("invoiceNumber")}
+                  value={invoiceNum}
+                    // defaultValue={isUpdateModalOpen === true ? tempData.invoiceNumber : ''}
                     onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
@@ -374,7 +429,18 @@ const Invoice = () => {
                   <label htmlFor="exampleFormControlInput1" className="form-label">Amount</label>
                   <input type="number" 
                     {...register("amount")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.amount : ''}
                     min={0}
+                    onChange={handleChange}
+                    className="form-control form-control-solid" />
+                </div>
+                <div className='col-6 mb-7'>
+                  <label htmlFor="exampleFormControlInput1" className="form-label">Due Date</label>
+                  <input type="date" 
+                    {...register("dueDate")}
+                    defaultValue={isUpdateModalOpen === true ? tempData.dueDate : ''}
+                    min={0}
+                    onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
 

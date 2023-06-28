@@ -2,8 +2,8 @@ import axios from 'axios';
 
 
 
+// export const Api_Endpoint = "https://app.sipconsult.net/ProjectFinanceAPI/api";
 export const Api_Endpoint = "https://app.sipconsult.net/ProjectFinanceAPI/api";
-// const token:any = localStorage.getItem("accessToken")?.replace(/['"]/g, '')
 
 //dynamic fetch function
 export function fetchDocument(url: string) {
