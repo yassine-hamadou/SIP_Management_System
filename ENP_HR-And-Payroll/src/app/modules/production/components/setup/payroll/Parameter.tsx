@@ -5,7 +5,7 @@ import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { Api_Endpoint, deleteItem, fetchAppraisals, fetchDocument, postItem, updateItem } from '../../../../../services/ApiCalls'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { useForm } from 'react-hook-form'
+import { set, useForm } from 'react-hook-form'
 import form from 'antd/es/form'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
@@ -21,11 +21,13 @@ const Parameter = () => {
   const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [tempData, setTempData] = useState<any>()
+  const [secondTempData, setSecondTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const queryClient = useQueryClient()
   const statusList = ['Active', 'Inactive']
   let [appraisalName, setAppraisalName] = useState<any>("")
   const { data: parameters } = useQuery('Parameters', () => fetchDocument(`Parameters/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allAppraisals } = useQuery('appraisals', () => fetchAppraisals(tenantId), { cacheTime: 5000 })
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -65,20 +67,34 @@ const Parameter = () => {
   //   deleteData(item)
   // }
 
-  const deleteData = async (element: any) => {
+  const loadData = async () => {
+    setLoading(true)
     try {
-      const response = await axios.delete(`${Api_Endpoint}/Parameters/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
+      const response = await fetchDocument(`Parameters/tenant/${tenantId}`)
+      setGridData(response?.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
     }
   }
 
+  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('parameters')
+      loadData()
+    },
+    onError: (error) => {
+      console.log('delete error: ', error)
+      message.error('Error deleting record')
+    }
+  })
+
   function handleDelete(element: any) {
-    deleteData(element)
+    const item = {
+      url: 'parameters',
+      data: element
+    }
+    deleteData(item)
   }
 
   const columns: any = [
@@ -146,29 +162,19 @@ const Parameter = () => {
   ]
 
 
-  const { data: allAppraisals } = useQuery('appraisals', () => fetchAppraisals(tenantId), { cacheTime: 5000 })
-  const loadData = async () => {
-    setLoading(true)
-    try {
-      // const response = await fetchDocument('Parameters')
-      const response = await axios.get(`${Api_Endpoint}/Parameters/tenant/${tenantId}`)
-      setGridData(response.data)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   const getItemName = async (param: any) => {
-
     let newName = null
-
     const itemTest = await allAppraisals?.data.find((item: any) =>
       item.id.toString() === param
     )
     newName = await itemTest
     return newName
   }
+
+
+  const dataByID = gridData?.filter((section: any) => {
+    return section.appraisalId?.toString() === param.id
+  })
 
   useEffect(() => {
     (async () => {
@@ -178,19 +184,11 @@ const Parameter = () => {
     loadData()
   }, [])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-  }))
 
-  const dataByID = gridData.filter((section: any) => {
-    return section.appraisalId?.toString() === param.id
-  })
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
-      loadData()
     }
   }
 
@@ -204,13 +202,21 @@ const Parameter = () => {
     setGridData(filteredData)
   }
 
+  // to find the sum of weights per appraisal needed for validation
+  const weightSum = (itemToPost: any) => {
+    return parameters?.data.filter((item: any) => item.appraisalId === itemToPost.appraisalId)
+      .map((item: any) => item.weight)
+      .reduce((a: any, b: any) => a + b, 0);
+  };
+
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(['Parameters', tempData], data);
+    onSuccess: () => {
+      queryClient.invalidateQueries('parameters')
+      loadData()
       reset()
       setIsUpdateModalOpen(false)
       setTempData({})
-      loadData()
+      setSecondTempData({})
       setIsModalOpen(false)
     },
     onError: (error) => {
@@ -220,30 +226,61 @@ const Parameter = () => {
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
-    const item = {
-      url: 'Parameters',
-      data: tempData
+
+    // make sure tempData properties are not empty
+    if (!tempData.name || !tempData.code || !tempData.weight || tempData.weight === '') {
+      return message.error('Please fill all fields');
+    } else if (parseInt(tempData.weight) <= 0) {
+      return message.error('Weight cannot be zero or negative')
+    } else if (parseInt(tempData.weight) > 100) {
+      message.error('Weight cannot be greater than 100')
+      setLoading(false)
+      return
     }
-    updateData(item)
-    console.log('update: ', item.data)
+
+    // check if tempData is the same as secondTempData
+    if (tempData.name === secondTempData.name && tempData.code === secondTempData.code) {
+      // check if weight is greater than 100
+      if ((weightSum(tempData) - secondTempData.weight) + parseInt(tempData.weight) > 100) {
+        return message.error(`Total weight for ${appraisalName} cannot be greater than 100`);
+      } else {
+        const item = {
+          url: 'Parameters',
+          data: tempData
+        }
+        updateData(item)
+      }
+    } else {
+      //cheeck if new name already exists
+      const itemExists = gridData.find((item: any) =>
+        item.name === tempData.name &&
+        item.code === tempData.code
+      )
+
+      if (itemExists) {
+        return message.error(`Parameter with name ${tempData.name} and code ${tempData.code} already exists`);
+      } else {
+        // check if weight is greater than 100
+        if ((weightSum(tempData) - secondTempData.weight) + parseInt(tempData.weight) > 100) {
+          return message.error(`Total weight for ${appraisalName} cannot be greater than 100`);
+        } else {
+          const item = {
+            url: 'Parameters',
+            data: tempData
+          }
+          console.log('update', item)
+          updateData(item)
+        }
+      }
+    }
   }
 
   const showUpdateModal = (values: any) => {
     showModal()
     setIsUpdateModalOpen(true)
     setTempData(values);
-    console.log(values)
+    setSecondTempData(values);
   }
-
-  const isTotalWeightValid = (newItem: any) => {
-    const { appraisalId } = newItem;
-    const itemsWithSameAppraisalId = parameters?.data
-      .filter((item: { appraisalId: any }) => item.appraisalId === appraisalId);
-
-    const totalWeight = itemsWithSameAppraisalId.reduce((sum: any, item: any) => sum + (item.weight || 0), 0) + (newItem.weight || 0);
-
-    return totalWeight <= 100;
-  };
 
 
   const url = `${Api_Endpoint}/Parameters`
@@ -254,11 +291,14 @@ const Parameter = () => {
     if (!values.name || !values.code || !values.weight || values.weight === '') {
       setLoading(false)
       return message.error('Please fill all fields');
-    }
-    // make sure weight is not zero
-    if (parseInt(values.weight) === 0) {
+    } else if (parseInt(values.weight) <= 0) {
+      message.error('Weight cannot be zero or negative')
       setLoading(false)
-      return message.error('Weight cannot be zero');
+      return
+    } else if (parseInt(values.weight) > 100) {
+      message.error('Weight cannot be greater than 100')
+      setLoading(false)
+      return
     }
 
     const itemToPost = {
@@ -272,15 +312,25 @@ const Parameter = () => {
       },
       url: 'parameters'
     }
-    const weightSum = parameters?.data
-      .filter((item: any) => item.appraisalId === itemToPost.data.appraisalId)
-      .map((item: any) => item.weight)
-      .reduce((a: any, b: any) => a + b, 0);
 
-    if (weightSum > 0) {
-      if (weightSum + itemToPost.data.weight > 100) {
+    // check if item already exists
+    const itemExists = gridData.find((item: any) =>
+      item.name === itemToPost.data.name &&
+      item.code === itemToPost.data.code &&
+      item.appraisalId === itemToPost.data.appraisalId &&
+      item.tenantId === itemToPost.data.tenantId
+    )
+    if (itemExists) {
+      setLoading(false)
+      return message.error('Item already exists');
+    }
+
+    const sums = weightSum(itemToPost.data)
+
+    if (sums > 0) {
+      if (sums + itemToPost.data.weight > 100) {
         setLoading(false)
-        return message.error('Total weight cannot exceed 100%');
+        return message.error(`Total weight for ${appraisalName} cannot be greater than 100`);
       } else {
         postData(itemToPost)
       }
@@ -292,11 +342,12 @@ const Parameter = () => {
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
       queryClient.invalidateQueries('parameters')
+      loadData()
       reset()
       setTempData({})
-      loadData()
       setIsModalOpen(false)
       setSubmitLoading(false)
+      message.success('Item added successfully')
     },
     onError: (error: any) => {
       setSubmitLoading(false)

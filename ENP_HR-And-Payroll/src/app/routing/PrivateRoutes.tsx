@@ -1,9 +1,9 @@
-import {FC, Suspense} from 'react'
-import {Route, Routes, Navigate, Outlet} from 'react-router-dom'
-import {MasterLayout} from '../../_metronic/layout/MasterLayout'
+import { FC, Suspense } from 'react'
+import { Route, Routes, Navigate, Outlet } from 'react-router-dom'
+import { MasterLayout } from '../../_metronic/layout/MasterLayout'
 import TopBarProgress from 'react-topbar-progress-indicator'
-import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
-import {WithChildren} from '../../_metronic/helpers'
+import { getCSSVariableValue } from '../../_metronic/assets/ts/_utils'
+import { WithChildren } from '../../_metronic/helpers'
 import { Audit } from '../modules/production/components/setup/administration/Audit'
 import { PageLink, PageTitle } from '../../_metronic/layout/core'
 import { Company } from '../modules/production/components/setup/administration/Company'
@@ -87,8 +87,8 @@ import EmployeeDivisionSummaryReport from '../modules/production/components/repo
 import LeaveEmployeeReport from '../modules/production/components/report/LeaveEmployeeReport'
 import LeaveSummaryReport from '../modules/production/components/report/LeaveSummaryReport'
 import NoteCategoryReport from '../modules/production/components/report/NoteCategoryReport'
-import {LeavePlanning} from "../modules/production/components/transactions/hr/leavePlanning/LeavePlanning";
-import {LeaveApproval} from "../modules/production/components/transactions/hr/leavePlanning/LeaveApproval";
+import { LeavePlanning } from "../modules/production/components/transactions/hr/leavePlanning/LeavePlanning";
+import { LeaveApproval } from "../modules/production/components/transactions/hr/leavePlanning/LeaveApproval";
 import { EmployeeDetail } from '../modules/production/components/transactions/hr/leavePlanning/EmployeeDetail'
 import LeaveDepartmentReport from '../modules/production/components/report/LeaveDepartmentReport'
 import NotesEmployeeReport from '../modules/production/components/report/NotesEmployeeReport'
@@ -126,6 +126,7 @@ import { Organogram } from '../modules/production/components/setup/hr/Organogram
 import { OrgLevel } from '../modules/production/components/setup/hr/OrgLevel'
 import { AppraisalDeliverables } from '../modules/production/components/setup/hr/ObjectiveDeliverables'
 import { AppraisalObjectives } from '../modules/production/components/setup/hr/ParameterObjectives'
+import ErrorBoundary from 'antd/es/alert/ErrorBoundary'
 
 
 
@@ -159,7 +160,7 @@ const PrivateRoutes = () => (
           <Employee />
         </SuspensedView>} />
 
-        <Route
+      <Route
         path='roasterShifts/:id'
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Roster Shifts</PageTitle>
@@ -502,7 +503,7 @@ const PrivateRoutes = () => (
           <PageTitle breadcrumbs={accountBreadCrumbs}>Perks</PageTitle>
           <Perks />
         </SuspensedView>} />
-   
+
       {/* HR Routes  */}
       <Route
         path='setup/hr/appraisals/*'
@@ -581,8 +582,8 @@ const PrivateRoutes = () => (
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Shifts</PageTitle>
           <Shifts />
-        </SuspensedView>} 
-        />
+        </SuspensedView>}
+      />
 
 
       {/* Payroll Routes  */}
@@ -653,19 +654,19 @@ const PrivateRoutes = () => (
         path='parameters/:id'
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Parameters</PageTitle>
-          <Parameter />
+            <Parameter />    
         </SuspensedView>} />
       <Route
         path='objectives/:id'
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Objectives</PageTitle>
-          <AppraisalObjectives/>
+          <AppraisalObjectives />
         </SuspensedView>} />
       <Route
         path='deliverables/:id'
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Deliverables</PageTitle>
-          <AppraisalDeliverables/>
+          <AppraisalDeliverables />
         </SuspensedView>} />
       <Route
         path='setup/payroll/tax/*'
@@ -892,7 +893,7 @@ const PrivateRoutes = () => (
   </Routes>
 )
 
-const SuspensedView: FC<WithChildren> = ({children}) => {
+const SuspensedView: FC<WithChildren> = ({ children }) => {
   const baseColor = getCSSVariableValue('--kt-primary')
   TopBarProgress.config({
     barColors: {
@@ -904,4 +905,4 @@ const SuspensedView: FC<WithChildren> = ({children}) => {
   return <Suspense fallback={<TopBarProgress />}>{children}</Suspense>
 }
 
-export {PrivateRoutes}
+export { PrivateRoutes }

@@ -8,11 +8,8 @@ import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { Api_Endpoint, deleteItem, fetchAppraisals, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
 import { end } from '@popperjs/core'
 
-const AppraisalComponent = (
-  {
-    title, endPoint
-  }: any,
-) => {
+const AppraisalComponent = ({ title, endPoint }: any) => {
+
   const [gridData, setGridData] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -24,12 +21,15 @@ const AppraisalComponent = (
   const tenantId = localStorage.getItem('tenant')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [tempData, setTempData] = useState<any>()
+  const [secondTempData, setSecondTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const queryClient = useQueryClient()
   const statusList = ['Active', 'Inactive']
   let [pathName, setPathName] = useState<any>("")
   const prevPath = title === 'Objectives' ? 'parameters' : 'appraisalobjective'
-  const { data: pathData } = useQuery('pathData', () => fetchDocument(`${prevPath}/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: prevPathData } = useQuery('pathData', () => fetchDocument(`${prevPath}/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: pathData } = useQuery(`${endPoint}`, () => fetchDocument(`${endPoint}/tenant/${tenantId}`), { cacheTime: 5000 })
+
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -53,7 +53,7 @@ const AppraisalComponent = (
 
   const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData([endPoint, tempData], data);
+      queryClient.invalidateQueries(`${endPoint}`)
       loadData()
     },
     onError: (error) => {
@@ -223,29 +223,28 @@ const AppraisalComponent = (
     try {
       const response = await fetchDocument(`${endPoint}/tenant/${tenantId}`)
       setGridData(response?.data)
-
       setLoading(false)
     } catch (error) {
       console.log(error)
     }
   }
 
-  const getItemName = async (param: any) => {
-    let newName = null
-    const itemTest = await pathData?.data.find((item: any) =>
+  const getItemData = async (param: any) => {
+    let data = null
+    const itemTest = await prevPathData?.data.find((item: any) =>
       item.id.toString() === param
     )
-    newName = await itemTest
-    return newName
+    data = await itemTest
+    return data
   }
 
   useEffect(() => {
     (async () => {
-      let res = await getItemName(param.id)
+      let res = await getItemData(param.id)
       setPathName(res?.name)
     })();
     loadData()
-  }, [param, pathData?.data])
+  }, [param, prevPathData?.data])
 
   const dataWithIndex = gridData.map((item: any, index) => ({
     ...item,
@@ -275,40 +274,187 @@ const AppraisalComponent = (
     setGridData(filteredData)
   }
 
+
+  // to find the sum of the weight of the objectives or deliverables needed for validation
+  const weightSum = (itemToPost: any) => {
+    return title === 'Objectives' ? pathData?.data.filter((item: any) => item.parameterId === itemToPost.parameterId)
+      .map((item: any) => item.weight)
+      .reduce((a: any, b: any) => a + b, 0) :
+      pathData?.data.filter((item: any) => item.objectiveId === itemToPost.objectiveId)
+        .map((item: any) => item.subWeight)
+        .reduce((a: any, b: any) => a + b, 0)
+  };
+
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
-    onSuccess: (data) => {
-      queryClient.setQueryData([endPoint, tempData], data);
+    onSuccess: () => {
+      queryClient.invalidateQueries(`${endPoint}`)
+      loadData()
       reset()
       setTempData({})
-      loadData()
+      setSecondTempData({})
       setIsUpdateModalOpen(false)
       setIsModalOpen(false)
+      message.success('Item updated successfully')
     },
     onError: (error) => {
       console.log('error: ', error)
+      message.error('Error updating item')
     }
   })
 
-  const handleUpdate = (e: any) => {
+  const handleUpdate = async (e: any) => {
     e.preventDefault()
-    const item: any = {
-      url: endPoint,
-      data: tempData
+    const data = await getItemData(param.id)
+    // input validation
+    if (title === 'Objectives') {
+      // make sure all values are filled
+      if (!tempData.name || !tempData.description || !tempData.weight || tempData.weight === '') {
+        return message.error('Please fill all fields')
+      } else if (parseInt(tempData.weight) <= 0) {
+        return message.error('Weight cannot be zero or negative')
+      } else if (parseInt(tempData.weight) > 100) {
+        message.error('Weight cannot be greater than 100')
+        setLoading(false)
+        return
+      }
+    } else {
+
+      // make sure all values are filled
+      if (!tempData.name || !tempData.description || !tempData.subWeight ||
+        tempData.subWeight === '' || !tempData.unitOfMeasure || !tempData.target ||
+        tempData.target === '') {
+        return message.error('Please fill all fields')
+      } else if (parseInt(tempData.subWeight) <= 0) {
+        return message.error('Sub Weight cannot be zero or negative')
+      } else if (parseInt(tempData.target) <= 0) {
+        return message.error('Target cannot be zero or negative')
+      } else if (parseInt(tempData.weight) > 100) {
+        message.error('Weight cannot be greater than 100')
+        setLoading(false)
+        return
+      }
     }
-    updateData(item)
-    console.log('update: ', item.data)
+
+    //logic validation
+    if (title === 'Objectives') {
+
+      if (tempData.name === secondTempData.name && tempData.description === secondTempData.description) {
+        if ((weightSum(tempData) - secondTempData.weight) + parseInt(tempData.weight) > data?.weight) {
+          return message.error(`Total weight for ${pathName} cannot be greater than ${data?.weight}`);
+        } else {
+          const item: any = {
+            url: endPoint,
+            data: tempData
+          }
+          updateData(item)
+        }
+      } else {
+        //cheeck if new name already exists
+        const itemExists = gridData.find((item: any) =>
+          item.name === tempData.name &&
+          item.code === tempData.description
+        )
+
+        if (itemExists) { return message.error('Item already exists') } else {
+          if ((weightSum(tempData) - secondTempData.weight) + parseInt(tempData.weight) > data?.weight) {
+            return message.error(`Total weight for ${pathName} cannot be greater than ${data?.weight}`);
+          } else {
+            const item: any = {
+              url: endPoint,
+              data: tempData
+            }
+            updateData(item)
+          }
+        }
+      }
+
+    } else {
+      // deliverables branch
+      if (tempData.name === secondTempData.name && tempData.description === secondTempData.description &&
+        tempData.unitOfMeasure === secondTempData.unitOfMeasure && tempData.target === secondTempData.target) {
+        if ((weightSum(tempData) - secondTempData.subWeight) + parseInt(tempData.subWeight) > 100) {
+          return message.error(`Total sub-weight for ${pathName} cannot be greater than 100`);
+        } else {
+          const item: any = {
+            url: endPoint,
+            data: tempData
+          }
+          updateData(item)
+        }
+
+      } else {
+        //cheeck if new name already exists
+        const itemExists = gridData.find((item: any) =>
+          item.name === tempData.name &&
+          item.description === tempData.description &&
+          item.unitOfMeasure === tempData.unitOfMeasure &&
+          item.target === tempData.target
+        )
+
+        if (itemExists) { return message.error('Item already exists') } else {
+          const item: any = {
+            url: endPoint,
+            data: tempData
+          }
+          updateData(item)
+        }
+      }
+    }
   }
 
   const showUpdateModal = (values: any) => {
     setIsUpdateModalOpen(true)
     setTempData(values);
+    setSecondTempData(values);
     showModal()
     console.log(values)
   }
 
+
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const item = title === 'Objectives' ? {
+
+    // input validations
+    if (title === 'Objectives') {
+      // make sure all values are filled
+      if (!values.name || !values.description || values.weight === '') {
+        message.error('Please fill all fields')
+        setLoading(false)
+        return
+      } else if (parseInt(values.weight) <= 0) {
+        message.error('Weight cannot be zero or negative')
+        setLoading(false)
+        return
+      } else if (parseInt(values.weight) > 100) {
+        message.error('Weight cannot be greater than 100')
+        setLoading(false)
+        return
+      }
+
+    } else {
+
+      // make sure all values are filled
+      if (!values.name || !values.description || !values.subWeight ||
+        !values.unitOfMeasure || !values.target) {
+        message.error('Please fill all fields')
+        setLoading(false)
+        return
+      } else if (parseInt(values.subWeight) <= 0) {
+        message.error('Sub Weight cannot be zero or negative')
+        setLoading(false)
+        return
+      } else if (parseInt(values.target) <= 0) {
+        message.error('Target cannot be zero or negative')
+        setLoading(false)
+        return
+      } else if (parseInt(values.weight) > 100) {
+        message.error('Weight cannot be greater than 100')
+        setLoading(false)
+        return
+      }
+    }
+
+    const itemToPost = title === 'Objectives' ? {
       data: {
         name: values.name,
         parameterId: parseInt(param.id),
@@ -329,21 +475,72 @@ const AppraisalComponent = (
       },
       url: endPoint,
     }
-    postData(item)
+
+    // check if item already exist
+    const itemExist = title === 'Objectives' ?
+      gridData.find((item: any) =>
+        item.name === itemToPost.data.name &&
+        item.parameterId === itemToPost.data.parameterId &&
+        item.description === itemToPost.data.description &&
+        item.weight === itemToPost.data.weight
+      ) : gridData.find((item: any) =>
+        item.name === itemToPost.data.name &&
+        item.objectiveId === itemToPost.data.objectiveId &&
+        item.description === itemToPost.data.description &&
+        item.subWeight === itemToPost.data.subWeight &&
+        item.unitOfMeasure === itemToPost.data.unitOfMeasure &&
+        item.target === itemToPost.data.target
+      )
+
+    if (itemExist) {
+      message.error('Item already exist')
+      setLoading(false)
+      return
+    }
+
+    const sums = weightSum(itemToPost.data)
+
+    if (title === 'Deliverables') {
+      if (sums > 0) {
+        if (sums + itemToPost.data.subWeight > 100) {
+          setLoading(false)
+          return message.error(`Total weight for ${pathName} cannot be greater than 100`);
+        } else {
+          postData(itemToPost)
+        }
+      } else {
+        postData(itemToPost)
+      }
+    } else {
+      if (sums > 0) {
+        const data = await getItemData(param.id)
+        if (sums + itemToPost.data.weight > data?.weight) {
+          setLoading(false)
+          return message.error(`Total weight for ${pathName} cannot be greater than ${data?.weight}`);
+        } else {
+          postData(itemToPost)
+        }
+      } else {
+        postData(itemToPost)
+      }
+    }
   })
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
-    onSuccess: (data) => {
-      queryClient.setQueryData([endPoint, tempData], data);
+    onSuccess: () => {
+      queryClient.invalidateQueries(`${endPoint}`)
       reset()
       setTempData({})
+      setSecondTempData({})
       loadData()
       setIsModalOpen(false)
       setSubmitLoading(false)
+      message.success('Item added successfully')
     },
     onError: (error: any) => {
       setSubmitLoading(false)
       console.log('post error: ', error)
+      message.error('Error adding item')
     }
   })
 
@@ -473,7 +670,7 @@ const AppraisalComponent = (
                       <div className='col-4 mb-7'>
                         <label htmlFor="exampleFormControlInput1" className="form-label">Target</label>
                         <input
-                          {...register("target")} type = 'number' min='0' 
+                          {...register("target")} type='number' min='0'
                           defaultValue={isUpdateModalOpen === true ? tempData.target : 0}
                           onChange={handleChange}
                           className="form-control form-control-solid" />
@@ -498,57 +695,4 @@ const AppraisalComponent = (
   )
 }
 
-// dummy data for objectives
-const ObjectivesDummyData = [
-  {
-    id: 1,
-    name: 'Objective 1',
-    parameterId: 5,
-    weight: 10,
-  },
-  {
-    id: 2,
-    name: 'Objective 2',
-    parameterId: 4,
-    weight: 20,
-  },
-  {
-    id: 3,
-    name: 'Objective 3',
-    parameterId: 5,
-    weight: 30,
-  },
-]
-
-// dummy data for deliverables
-const DeliverablesDummyData = [
-  {
-    id: 1,
-    name: 'Deliverable 1',
-    description: 'Deliverable 1 description',
-    objectiveId: 1,
-    subWeight: 10,
-    unitOfMeasure: 'Unit 1',
-    target: 10,
-  },
-  {
-    id: 2,
-    name: 'Deliverable 2',
-    description: 'Deliverable 2 description',
-    objectiveId: 1,
-    subWeight: 20,
-    unitOfMeasure: 'Unit 2',
-    target: 20,
-  },
-  {
-    id: 3,
-    name: 'Deliverable 3',
-    description: 'Deliverable 3 description',
-    objectiveId: 3,
-    subWeight: 30,
-    unitOfMeasure: 'Unit 3',
-    target: 30,
-  },
-]
-
-export { AppraisalComponent, ObjectivesDummyData, DeliverablesDummyData }
+export { AppraisalComponent }
