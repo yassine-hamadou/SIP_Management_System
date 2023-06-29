@@ -51,7 +51,7 @@ const AppraisalPerformance = () => {
   const [referenceId, setReferenceId] = useState<any>(`${selectedPaygroup}-${selectedAppraisalType}-${selectedStartPeriod}-${selectedEndPeriod}`)
   const [currentObjective, setCurrentObjective] = useState<any>([])
 
-  const { data: alEmployees } = useQuery('employees', () => fetchEmployees(tenantId), { cacheTime: 5000 })
+  const { data: allEmployees } = useQuery('employees', () => fetchEmployees(tenantId), { cacheTime: 5000 })
   const { data: allAppraisals } = useQuery('appraisals', () => fetchAppraisals(tenantId), { cacheTime: 5000 })
   const { data: allPeriods } = useQuery('periods', () => fetchPeriods(tenantId), { cacheTime: 5000 })
   const { data: allJobTitles } = useQuery('jobTitles', () => fetchJobTitles(tenantId), { cacheTime: 5000 })
@@ -61,6 +61,8 @@ const AppraisalPerformance = () => {
   const { data: allObjectives } = useQuery('appraisalperfobjectives', () => fetchDocument(`appraisalperfobjectives/tenant/${tenantId}`), { cacheTime: 5000 })
   const { data: allReviewdates } = useQuery('reviewDates', () => fetchDocument(`AppraisalReviewDates/tenant/${tenantId}`), { cacheTime: 5000 })
   const { data: allAppraisalsPerfTrans } = useQuery('appraisalPerfTransactions', () => fetchDocument(`AppraisalPerfTransactions/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allOrganograms } = useQuery('organograms', async () => await fetchDocument(`organograms`), { cacheTime: 5000 })
+
 
 
   const [textAreaValue, setTextAreaValue] = useState<any>('');
@@ -69,7 +71,7 @@ const AppraisalPerformance = () => {
   const handleTextareaChange = (event: any) => {
     event.preventDefault()
     setTextAreaValue(event.target.value);
-    setCurrentObjective({...currentObjective, [event.target.name]: event.target.value})
+    setCurrentObjective({ ...currentObjective, [event.target.name]: event.target.value })
     adjustTextareaHeight();
   };
 
@@ -204,6 +206,20 @@ const AppraisalPerformance = () => {
 
   const columns: any = [
     {
+      title: 'Id',
+      dataIndex: 'employeeId',
+      key: 'employeeId',
+      sorter: (a: any, b: any) => {
+        if (a.employeeId > b.employeeId) {
+          return 1
+        }
+        if (b.employeeId > a.employeeId) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
       title: 'First Name',
       key: 'employeeId',
       render: (row: any) => {
@@ -236,36 +252,21 @@ const AppraisalPerformance = () => {
         return 0
       },
     },
-    {
-      title: 'DOB',
-      render: (row: any) => {
-        return getDOB(row.employeeId)
-      },
-      sorter: (a: any, b: any) => {
-        if (a.dob > b.dob) {
-          return 1
-        }
-        if (b.dob > a.dob) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Gender',
-      render: (row: any) => {
-        return getGender(row.employeeId)
-      },
-      sorter: (a: any, b: any) => {
-        if (a.sex > b.sex) {
-          return 1
-        }
-        if (b.sex > a.sex) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'DOB',
+    //   render: (row: any) => {
+    //     return getDOB(row.employeeId)
+    //   },
+    //   sorter: (a: any, b: any) => {
+    //     if (a.dob > b.dob) {
+    //       return 1
+    //     }
+    //     if (b.dob > a.dob) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
       title: 'Job Title',
       render: (row: any) => {
@@ -285,6 +286,22 @@ const AppraisalPerformance = () => {
       title: 'Email',
       render: (row: any) => {
         return getEmail(row.employeeId)
+      },
+      sorter: (a: any, b: any) => {
+        if (a.jobt > b.jobt) {
+          return 1
+        }
+        if (b.jobt > a.jobt) {
+          return -1
+        }
+        return 0
+      },
+    },
+    {
+      title: 'Line Manager',
+      dataIndex: 'employeeId',
+      render: (row: any) => {
+        return getSupervisor(row)
       },
       sorter: (a: any, b: any) => {
         if (a.jobt > b.jobt) {
@@ -390,7 +407,7 @@ const AppraisalPerformance = () => {
         return item.referenceId === referenceId
       })
       setCurrentObjective(objectiveData[0])
-      console.log('objs: ',objectiveData)
+      console.log('objs: ', objectiveData)
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -399,14 +416,14 @@ const AppraisalPerformance = () => {
   }
 
   const dataByID: any = allAppraisalsPerfTrans?.data?.filter((refId: any) => {
-    return refId.referenceId === referenceId
+    return refId.paygroupId === parseInt(selectedPaygroup)
   })
 
   const reviewDateByID: any = allReviewdates?.data?.filter((refId: any) => {
     return refId?.referenceId === referenceId
   })
 
-  const emplyeesByPaygroup: any = alEmployees?.data?.filter((item: any) => {
+  const emplyeesByPaygroup: any = allEmployees?.data?.filter((item: any) => {
     return item.paygroupId === parseInt(selectedPaygroup)
   })
 
@@ -417,14 +434,14 @@ const AppraisalPerformance = () => {
   // console.log(emplyeeDetails)
 
   const onEmployeeChange = (objectId: any) => {
-    const newEmplo = alEmployees?.data?.find((item: any) => {
+    const newEmplo = allEmployees?.data?.find((item: any) => {
       return item.id === parseInt(objectId)
     })
     setEmployeeRecord(newEmplo)
   }
   const getFirstName = (employeeId: any) => {
     let firstName = null
-    alEmployees?.data.map((item: any) => {
+    allEmployees?.data.map((item: any) => {
       if (item.id === employeeId) {
         firstName = item.firstName
       }
@@ -433,7 +450,7 @@ const AppraisalPerformance = () => {
   }
   const getSurname = (employeeId: any) => {
     let surname = null
-    alEmployees?.data.map((item: any) => {
+    allEmployees?.data.map((item: any) => {
       if (item.id === employeeId) {
         surname = item.surname
       }
@@ -443,7 +460,7 @@ const AppraisalPerformance = () => {
 
   const getEmail = (employeeId: any) => {
     let email = null
-    alEmployees?.data.map((item: any) => {
+    allEmployees?.data.map((item: any) => {
       if (item.id === employeeId) {
         email = item.email
       }
@@ -453,7 +470,7 @@ const AppraisalPerformance = () => {
 
   const getID = (employeeId: any) => {
     let Id = null
-    alEmployees?.data.map((item: any) => {
+    allEmployees?.data.map((item: any) => {
       if (item.id === employeeId) {
         Id = item.id
       }
@@ -462,7 +479,7 @@ const AppraisalPerformance = () => {
   }
   const getGender = (employeeId: any) => {
     let gender = null
-    alEmployees?.data.map((item: any) => {
+    allEmployees?.data.map((item: any) => {
       if (item.id === employeeId) {
         gender = item.gender
       }
@@ -471,7 +488,7 @@ const AppraisalPerformance = () => {
   }
   const getDOB = (employeeId: any) => {
     let surname = ""
-    alEmployees?.data.map((item: any) => {
+    allEmployees?.data.map((item: any) => {
       if (item.id === employeeId) {
         surname = item?.dob?.substring(0, 10)
       }
@@ -481,7 +498,7 @@ const AppraisalPerformance = () => {
 
   const getJobTitle = (employeeId: any) => {
     let jobTitleId: any = null
-    alEmployees?.data.map((item: any) => {
+    allEmployees?.data.map((item: any) => {
       if (item.id === employeeId) {
         jobTitleId = item.jobTitleId
       }
@@ -493,6 +510,32 @@ const AppraisalPerformance = () => {
       }
     })
     return jobTitleName
+  }
+
+  // get supervisor name from organogram table
+  const getSupervisor = (employeeId: any) => {
+
+    // get employee code from employee table
+    const employeeIdFromEmployee = allEmployees?.data?.find((item: any) => {
+      return item.id === employeeId
+    })
+
+    // get supervisor  id from organogram table
+    const supervisorFromEmployeeInOrganogram = allOrganograms?.data?.find((item: any) => {
+      return item.employeeId === employeeIdFromEmployee?.employeeId
+    })
+
+    const employeeIdOfSupervisorFromOrganogram = parseInt(supervisorFromEmployeeInOrganogram?.supervisorId) === 0 ?
+    supervisorFromEmployeeInOrganogram :
+      allOrganograms?.data.find((item: any) => {
+        return item.id === parseInt(supervisorFromEmployeeInOrganogram?.supervisorId)
+      })
+
+    const supervisorName = allEmployees?.data?.find((item: any) => {
+      return item.employeeId === employeeIdOfSupervisorFromOrganogram?.employeeId
+    })
+
+    return supervisorName === undefined ? 'No Supervisor' : `${supervisorName?.firstName} ${supervisorName?.surname}`
   }
 
   const parameterByAppraisal = allParameters?.data.filter((section: any) => section.appraisalId === parseInt(selectedAppraisalType))
@@ -789,7 +832,7 @@ const AppraisalPerformance = () => {
                     </div>
                     <div className='col-6 mb-7'>
                       <div className='d-flex justify-content-between'>
-                        <span className='form-label' >Review Dates</span>
+                        <span className='form-label'>Schedule Dates</span>
                       </div>
                       <div
                         style={{

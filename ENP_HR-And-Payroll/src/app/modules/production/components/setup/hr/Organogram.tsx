@@ -58,14 +58,14 @@ const Organogram = () => {
   }
 
   const employeeName = (employeeId: any) => {
-    const employee = allEmployees?.data?.find((employee: any) => employee.employeeId.trim() === employeeId.trim())
+    const employee = allEmployees?.data?.find((employee: any) => employee?.employeeId === employeeId)
     const name = `${employee?.firstName} ${employee?.surname}`
     return name
   }
 
   // jobrole
   const jobRole = (employeeId: any) => {
-    const jobRole = allEmployees?.data?.find((employee: any) => employee.employeeId.trim() === employeeId.trim())
+    const jobRole = allEmployees?.data?.find((employee: any) => employee.employeeId === employeeId)
     const name = `${jobRole?.jobRole}`
     return name
   }
