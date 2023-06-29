@@ -23,7 +23,7 @@ const Organogram = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
   const { data: allEmployees } = useQuery('employees', async () => await fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
-  const { data: allOrganograms } = useQuery('organograms', async () => await fetchDocument(`organograms`), { cacheTime: 5000 })
+  const { data: allOrganograms } = useQuery('organograms',() => fetchDocument(`organograms/tenant/${tenantId}`), { cacheTime: 5000 })
   const [treeData, setTreeData] = useState<any>([])
   const [showTree, setShowTree] = useState<boolean>(false)
   const queryClient = useQueryClient()

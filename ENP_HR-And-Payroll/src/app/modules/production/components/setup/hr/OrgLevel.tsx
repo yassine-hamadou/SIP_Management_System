@@ -26,7 +26,7 @@ const OrgLevel = () => {
   const tenantId = localStorage.getItem('tenant')
   const [supervisorName, setSupervisorName] = useState('')
   const { data: allEmployees } = useQuery('employees', () => fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
-  const { data: allOrganograms } = useQuery('organograms', async () => await fetchDocument(`organograms`), { cacheTime: 5000 })
+  const { data: allOrganograms } = useQuery('organograms',() => fetchDocument(`organograms/tenant/${tenantId}`), { cacheTime: 5000 })
   const [breadcrumbs, setBreadcrumbs]: any = useState<any>([])
   const [treeData, setTreeData] = useState<any>([])
 
@@ -216,18 +216,18 @@ const OrgLevel = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument(`organograms`)
+      const response = allOrganograms?.data
       if (param.level === '0') {
-        const data = response?.data.filter((item: any) => item.currentLevel === 'Level 0')
+        const data = response.filter((item: any) => item.currentLevel === 'Level 0')
         const employees = allEmployees?.data
         const getSupervisor = employees.find((employee: any) => employee.employeeId === data?.employeeId)
         const name = `${getSupervisor?.firstName} ${getSupervisor?.surname}`
         setSupervisorName(name)
       }
       pathName()
-      const filteredBySupervisor = response?.data.filter((item: any) => item?.supervisorId === param.id)
+      const filteredBySupervisor = response.filter((item: any) => item?.supervisorId === param.id)
       setGridData(filteredBySupervisor)
-      setTreeData(createEmployeeTree(response?.data))
+      setTreeData(createEmployeeTree(response))
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -353,8 +353,7 @@ const OrgLevel = () => {
         padding: '20px',
         borderRadius: '5px',
         boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-      }}
-    >
+      }}>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
           <div className="mb-0">

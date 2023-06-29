@@ -127,6 +127,7 @@ import { OrgLevel } from '../modules/production/components/setup/hr/OrgLevel'
 import { AppraisalDeliverables } from '../modules/production/components/setup/hr/ObjectiveDeliverables'
 import { AppraisalObjectives } from '../modules/production/components/setup/hr/ParameterObjectives'
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary'
+import { AppraisalForm } from '../modules/production/components/AppraisalForm'
 
 
 
@@ -887,8 +888,13 @@ const PrivateRoutes = () => (
           <PageTitle breadcrumbs={accountBreadCrumbs}>SavSchemeTransactionInputReport</PageTitle>
           <SavSchemeTransactionInputReport />
         </SuspensedView>} />
-
       <Route path='*' element={<Navigate to='/error/404' />} />
+      <Route
+        path='setup/administration/appraisalForm'
+        element={<SuspensedView>
+          <PageTitle>{''}</PageTitle>
+          <AppraisalForm />
+        </SuspensedView>} />
     </Route>
   </Routes>
 )

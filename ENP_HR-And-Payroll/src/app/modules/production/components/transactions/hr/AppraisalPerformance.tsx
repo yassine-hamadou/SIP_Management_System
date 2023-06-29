@@ -61,7 +61,7 @@ const AppraisalPerformance = () => {
   const { data: allObjectives } = useQuery('appraisalperfobjectives', () => fetchDocument(`appraisalperfobjectives/tenant/${tenantId}`), { cacheTime: 5000 })
   const { data: allReviewdates } = useQuery('reviewDates', () => fetchDocument(`AppraisalReviewDates/tenant/${tenantId}`), { cacheTime: 5000 })
   const { data: allAppraisalsPerfTrans } = useQuery('appraisalPerfTransactions', () => fetchDocument(`AppraisalPerfTransactions/tenant/${tenantId}`), { cacheTime: 5000 })
-  const { data: allOrganograms } = useQuery('organograms', async () => await fetchDocument(`organograms`), { cacheTime: 5000 })
+  const { data: allOrganograms } = useQuery('organograms',() => fetchDocument(`organograms/tenant/${tenantId}`), { cacheTime: 5000 })
 
 
 
@@ -209,6 +209,9 @@ const AppraisalPerformance = () => {
       title: 'Id',
       dataIndex: 'employeeId',
       key: 'employeeId',
+      render: (text: any) =>{
+      return <span className='text-primary'>{getEmployeeCode(text)}</span>
+      },
       sorter: (a: any, b: any) => {
         if (a.employeeId > b.employeeId) {
           return 1
@@ -285,7 +288,7 @@ const AppraisalPerformance = () => {
     {
       title: 'Email',
       render: (row: any) => {
-        return getEmail(row.employeeId)
+      return <span className='text-primar'>{ getEmail(row.employeeId)}</span>
       },
       sorter: (a: any, b: any) => {
         if (a.jobt > b.jobt) {
@@ -510,6 +513,13 @@ const AppraisalPerformance = () => {
       }
     })
     return jobTitleName
+  }
+
+  const getEmployeeCode = (employeeId: any) => {
+    const employeeCode = allEmployees?.data?.find((item: any) => {
+      return item.id === employeeId
+    })
+    return employeeCode?.employeeId
   }
 
   // get supervisor name from organogram table
