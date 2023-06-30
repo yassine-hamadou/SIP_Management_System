@@ -857,7 +857,7 @@ const AppraisalPerformance = () => {
                           <Button
                             onClick={showReviewDateModal}
                             className="btn btn-light-primary me-3 justify-content-center align-items-center d-flex"
-                            type="primary" shape="circle" icon={<PlusOutlined style={{ fontSize: '16px' }} />} size={'middle'} />
+                            type="primary" shape="circle" icon={<PlusOutlined style={{ fontSize: '16px' }} rev ={''} />} size={'middle'} />
                         </Space>
                         <Table columns={reviewDatesColumn} dataSource={reviewDateByID} loading={loading} />
                       </div>

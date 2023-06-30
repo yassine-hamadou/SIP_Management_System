@@ -1,39 +1,8 @@
-import { Space, Table } from "antd"
+import { Divider, Space, Table } from "antd"
 import { render } from "react-dom"
+import { AppraisalFormComponent } from "./AppraisalFormComponent"
 
 const AppraisalForm = () => {
-
-    const deliverableColumns = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-        },
-        {
-            title: 'Description',
-            dataIndex: 'description',
-        },
-        {
-            title: 'Sub weight',
-            dataIndex: 'subWeight',
-        },
-        {
-            title: 'Unit of measure',
-            dataIndex: 'unitOfMeasure',
-        },
-        {
-            title: 'Target',
-            dataIndex: 'target',
-        },
-        {
-            title: 'Actual',
-            width: 200,
-            render: (text: any, record: any) => (
-                <div className="d-flex align-items-center">
-                    <input type="number" className="form-control" placeholder="Enter actual here" />
-                </div>
-            )
-        },
-    ]
 
     return (
         <div style={{
@@ -46,59 +15,24 @@ const AppraisalForm = () => {
                 <div className=' fs-1 fw-bold mb-2 text-primary'>
                     Employee Name
                 </div>
-                <div
-                    style={{
-                        display: 'flex', flexDirection: 'column', flexWrap: 'wrap', borderRadius: '5px',
-                        boxShadow: '2px 2px 15px rgba(0,0,0,0.08)', padding: '20px',
-                    }}>
-                    <Space className="mb-3">
-                        <div className='form-label fs-4'>
-                            STAFF ID :
-                        </div>
-                        <div className='form-label fs-4'>
-                            {``}
-                        </div>
-                    </Space>
-                    <Space className="mb-3">
-                        <div className='form-label fs-4'>
-                            DEPARTMENT :
-                        </div>
-                        <div className='form-label fs-4'>
-                            {``}
-                        </div>
-                    </Space>
-                    <Space className="mb-3">
-                        <div className='form-label fs-4'>
-                            LINE MANAGER :
-                        </div>
-                        <div className='form-label fs-4'>
-                            {``}
-                        </div>
-                    </Space>
-
-                </div>
-
-            </div>
-            <div className="d-flex flex-column align-items-start mt-7 col-12" >
-                <span className=' fs-3 fw-bold mb-5'>Title of parameter</span>
-                <div className="col-12" style={{
-                   borderRadius: '5px',
-                   padding: '20px',
-                   border: '1px solid #ebedf2',
-                }}>
-                    <Space className="mb-5">
-                        <span className='fs-3 fw-bold mb-2'>{`{Objective}`}</span>
-                        <div className="bullet"></div>
-                        <span className=' fs-3 fw-bold mb-2 text-primary'>{`{Description}`}</span>
-                    </Space>
-                    <Table columns={deliverableColumns} dataSource={[]} />
+                <Divider className="mb-3 mt-0" />
+                <div className='d-flex row-auto mb-3'>
+                    <div className='col-4 me-5'>
+                        <h5 style={{ color: "GrayText" }}>EmployeeId: <span style={{ color: "black" }}>{''}</span></h5>
+                    </div>
+                    <div className='col-4 me-5'>
+                        <h5 style={{ color: "GrayText" }}>Department: <span style={{ color: "black" }}>{''}</span></h5>
+                    </div>
+                    <div className='col-4 me-5'>
+                        <h5 style={{ color: "GrayText" }}>{`Line Manager`}: <span style={{ color: "black" }}>{''}</span></h5>
+                    </div>
                 </div>
             </div>
+            <AppraisalFormComponent appraisalId= {12} />
         </div>
     )
 }
 
-export { AppraisalForm }
 
 const EmployyDummyData = [
     {
@@ -166,3 +100,5 @@ const ParameterDummyData = [
         name: 'Parameter 3',
     }
 ]
+
+export { AppraisalForm, EmployyDummyData, DeliverableDummyData, ObjectiveDummyData, ParameterDummyData }
