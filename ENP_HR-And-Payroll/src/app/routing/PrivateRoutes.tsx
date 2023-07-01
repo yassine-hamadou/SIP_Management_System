@@ -126,7 +126,7 @@ import { Organogram } from '../modules/production/components/setup/hr/Organogram
 import { OrgLevel } from '../modules/production/components/setup/hr/OrgLevel'
 import { AppraisalDeliverables } from '../modules/production/components/setup/hr/ObjectiveDeliverables'
 import { AppraisalObjectives } from '../modules/production/components/setup/hr/ParameterObjectives'
-import ErrorBoundary from 'antd/es/alert/ErrorBoundary'
+import {ErrorBoundary} from '@ant-design/pro-components'
 import { AppraisalForm } from '../modules/production/components/AppraisalForm'
 
 
@@ -893,7 +893,9 @@ const PrivateRoutes = () => (
         path='setup/administration/appraisalForm'
         element={<SuspensedView>
           <PageTitle>{''}</PageTitle>
-          <AppraisalForm />
+          <ErrorBoundary>
+            <AppraisalForm />
+          </ErrorBoundary>
         </SuspensedView>} />
     </Route>
   </Routes>

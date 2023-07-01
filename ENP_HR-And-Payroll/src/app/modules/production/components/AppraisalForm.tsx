@@ -1,8 +1,34 @@
-import { Divider, Space, Table } from "antd"
+import { CollapseProps, Divider, Space, Table } from "antd"
 import { render } from "react-dom"
 import { AppraisalFormComponent } from "./AppraisalFormComponent"
+import { useQuery } from "react-query"
+import { fetchDocument } from "../../../services/ApiCalls"
+import { useEffect, useState } from "react"
 
 const AppraisalForm = () => {
+    const [parametersData, setParametersData] = useState<any>([])
+    const [objectivesData, setObjectivesData] = useState<any>([])
+    const [parmObjectsData, setParmObjectsData] = useState<any>([])
+
+    const tenantId = localStorage.getItem('tenant')
+    const { data: parameters } = useQuery('parameters', () => fetchDocument(`parameters/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: appraisalobjective } = useQuery('appraisalobjective', () => fetchDocument(`appraisalobjective/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: appraisaldeliverable } = useQuery('appraisaldeliverable', () => fetchDocument(`appraisaldeliverable/tenant/${tenantId}`), { cacheTime: 5000 })
+
+    const loadData = async () => {
+        try {
+            const objectivesResponse = appraisalobjective?.data
+            const parametersResponse = parameters?.data?.filter((item: any) => item.appraisalId === 12)
+            setParametersData(parametersResponse)
+            setObjectivesData(objectivesResponse)
+        } catch (error) {
+            console.log('loadError: ', error)
+        }
+    }
+
+    useEffect(() => {
+        loadData()
+    }, [parameters?.data, appraisalobjective?.data, appraisaldeliverable?.data])
 
     return (
         <div style={{
@@ -28,7 +54,14 @@ const AppraisalForm = () => {
                     </div>
                 </div>
             </div>
-            <AppraisalFormComponent appraisalId= {12} />
+            {
+                parametersData?.map((item: any) => (
+                    <div className="align-items-start mt-7" >
+                        <span className=' fs-3 fw-bold mb-5'>{item?.name}</span>
+                        <AppraisalFormComponent parameterId={item.id} />
+                    </div>
+                ))
+            }
         </div>
     )
 }

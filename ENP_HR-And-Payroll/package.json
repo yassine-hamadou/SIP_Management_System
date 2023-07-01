@@ -4,6 +4,7 @@
     "private": true,
     "homepage": "/enp-hr-payroll",
     "dependencies": {
+        "@ant-design/pro-components": "^2.6.3",
         "@devexpress/analytics-core": "22.2.6",
         "@emotion/react": "^11.10.5",
         "@emotion/styled": "^11.10.5",

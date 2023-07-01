@@ -4,64 +4,54 @@ import { useQuery } from "react-query"
 import { fetchDocument } from "../../../services/ApiCalls"
 import { useEffect, useState } from "react"
 import { set } from "react-hook-form"
+import { param } from "jquery"
 
-const AppraisalFormComponent = ({ appraisalId }: any) => {
+const AppraisalFormComponent = ({ parameterId }: any) => {
 
     const [parametersData, setParametersData] = useState<any>([])
     const [objectivesData, setObjectivesData] = useState<any>([])
+    const [parmObjectsData, setParmObjectsData] = useState<any>([])
+    const [collapseitems, setCollapseitems] = useState<CollapseProps['items']>([])
+    const [itemsData, setItemsData] = useState<CollapseProps['items']>([])
 
     const tenantId = localStorage.getItem('tenant')
     const { data: parameters } = useQuery('parameters', () => fetchDocument(`parameters/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: appraisalobjective } = useQuery('appraisalobjective', () => fetchDocument(`appraisalobjective/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: appraisaldeliverable } = useQuery('appraisaldeliverable', () => fetchDocument(`appraisaldeliverable/tenant/${tenantId}`), { cacheTime: 5000 })
 
-
     const onChange = (key: string | string[]) => {
         console.log(key);
-    };
-
-    const getObjectivesByParameterId = (parameterData: any, objectivesData: any) => {
-        return objectivesData?.filter((objective: any) => objective.parameterId === parameterData.id);
     };
 
 
     const loadData = async () => {
         try {
-            const objectivesResponse = appraisalobjective?.data
-            const parametersResponse = parameters?.data?.filter((item: any) => item.appraisalId === appraisalId)
-            setParametersData(parametersResponse)
+            const objectivesResponse = appraisalobjective?.data.filter((item: any) => item.parameterId === parameterId)
             setObjectivesData(objectivesResponse)
-            console.log('objectivesData', objectivesResponse)
-            console.log('parametersData', parametersResponse)
+
+            const itemData = objectivesResponse?.map((item: any) => ({
+                key: item?.id,
+                label: item?.name,
+                children: <AppraisalFormDeliverableComponent appraisalObjectivesData={item} />
+            }
+            ))
+            setItemsData(itemData)
+            console.log('itemsData', itemData)
+
         } catch (error) {
-            console.log(error)
+            console.log('loadError: ', error)
         }
     }
 
     useEffect(() => {
         loadData()
-    }, [parameters?.data])
 
-    const items: CollapseProps['items'] = parametersData?.map((param: any) => {
-        getObjectivesByParameterId(param, objectivesData)?.map((obj: any) => {
-            return {
-                label: obj?.name,
-                children: <AppraisalFormObjectiveComponent appraisalParameterData={obj} className="mb-7" />
-            }
-        })
-    })
+    }, [parameters?.data, appraisalobjective?.data, appraisaldeliverable?.data])
 
     return (
         <div >
-            {
-                parametersData?.map((item: any) => (
-                    <div className="align-items-start mt-7" >
-                        <span className=' fs-3 fw-bold mb-5'>{item?.name}</span>
-                        <Collapse size="large"
-                            items={items} defaultActiveKey={['1']} onChange={onChange} />
-                    </div>
-                ))
-            }
+            <Collapse size="large" defaultActiveKey={['1']} 
+                items={itemsData} onChange={onChange} />
         </div>
     )
 }
@@ -155,11 +145,7 @@ const AppraisalFormDeliverableComponent = ({ appraisalObjectivesData }: any) => 
 
     return (
         <div className="d-flex flex-column align-items-start mt-7 col-12" >
-            <div className="col-12" style={{
-                borderRadius: '5px',
-                padding: '20px',
-                border: '1px solid #ebedf2',
-            }}>
+            <div className="col-12">
                 <Space className="mb-5">
                     <span className='fs-3 fw-bold mb-2'>{appraisalObjectivesData?.name}</span>
                     <div className="bullet"></div>
