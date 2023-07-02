@@ -892,7 +892,6 @@ const PrivateRoutes = () => (
       <Route
         path='setup/administration/appraisalForm'
         element={<SuspensedView>
-          <PageTitle>{''}</PageTitle>
           <ErrorBoundary>
             <AppraisalForm />
           </ErrorBoundary>

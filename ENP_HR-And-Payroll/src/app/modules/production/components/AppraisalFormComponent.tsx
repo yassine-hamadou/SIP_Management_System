@@ -50,8 +50,7 @@ const AppraisalFormComponent = ({ parameterId }: any) => {
 
     return (
         <div >
-            <Collapse size="large" defaultActiveKey={['1']} 
-                items={itemsData} onChange={onChange} />
+            <Collapse size="large" items={itemsData} onChange={onChange} />
         </div>
     )
 }
@@ -137,7 +136,7 @@ const AppraisalFormDeliverableComponent = ({ appraisalObjectivesData }: any) => 
             width: 200,
             render: (text: any, record: any) => (
                 <div className="d-flex align-items-center">
-                    <input type="number" className="form-control" placeholder="Enter actual here" />
+                    <input type="number" className="form-control" placeholder="Enter actual here" required />
                 </div>
             )
         },
@@ -146,7 +145,7 @@ const AppraisalFormDeliverableComponent = ({ appraisalObjectivesData }: any) => 
     return (
         <div className="d-flex flex-column align-items-start mt-7 col-12" >
             <div className="col-12">
-                <Space className="mb-5">
+                <Space className="mb-5 align-content-center align-items-center d-flex">
                     <span className='fs-3 fw-bold mb-2'>{appraisalObjectivesData?.name}</span>
                     <div className="bullet"></div>
                     <span className=' fs-3 fw-bold mb-2 text-primary'>{appraisalObjectivesData?.description}</span>

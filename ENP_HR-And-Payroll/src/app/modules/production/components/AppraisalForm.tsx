@@ -1,14 +1,12 @@
-import { CollapseProps, Divider, Space, Table } from "antd"
-import { render } from "react-dom"
-import { AppraisalFormComponent } from "./AppraisalFormComponent"
+import { Divider } from "antd"
+import { useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { fetchDocument } from "../../../services/ApiCalls"
-import { useEffect, useState } from "react"
+import { AppraisalFormComponent } from "./AppraisalFormComponent"
 
 const AppraisalForm = () => {
     const [parametersData, setParametersData] = useState<any>([])
-    const [objectivesData, setObjectivesData] = useState<any>([])
-    const [parmObjectsData, setParmObjectsData] = useState<any>([])
+
 
     const tenantId = localStorage.getItem('tenant')
     const { data: parameters } = useQuery('parameters', () => fetchDocument(`parameters/tenant/${tenantId}`), { cacheTime: 5000 })
@@ -17,10 +15,8 @@ const AppraisalForm = () => {
 
     const loadData = async () => {
         try {
-            const objectivesResponse = appraisalobjective?.data
             const parametersResponse = parameters?.data?.filter((item: any) => item.appraisalId === 12)
             setParametersData(parametersResponse)
-            setObjectivesData(objectivesResponse)
         } catch (error) {
             console.log('loadError: ', error)
         }
@@ -62,76 +58,15 @@ const AppraisalForm = () => {
                     </div>
                 ))
             }
+            <div className='d-flex align-items-end justify-content-end align-content-end' >
+                <button type='button' className='btn btn-primary me-3 mt-7' onClick={() => { }}>
+                    Submit
+                </button>
+            </div>
+
         </div>
     )
 }
 
 
-const EmployyDummyData = [
-    {
-        id: 1,
-        name: 'John Doe',
-        department: 'IT',
-        lineManager: 'Jane Doe',
-        staffId: 'JD-001',
-    },
-]
-
-const DeliverableDummyData = [
-    {
-        id: 1,
-        objectiveId: 1,
-        name: 'Deliverable 1',
-        description: 'Initiate and close deals for 10 new revenue generating corporate clients',
-        subWeight: '20%',
-        unitOfMeasure: 'KPI',
-        target: '100%',
-    },
-    {
-        id: 2,
-        objectiveId: 1,
-        name: 'Deliverable 2',
-        description: 'Achieve an annual revenue target of GHS2',
-        subWeight: '20%',
-        unitOfMeasure: 'KPI',
-        target: '100%',
-    },
-]
-
-const ObjectiveDummyData = [
-    {
-        id: 1,
-        parentId: 1,
-        name: 'Objective 1',
-        description: 'Revenue Growth and Business Development',
-    },
-    {
-        id: 2,
-        parentId: 1,
-        name: 'Objective 2',
-        description: 'Strategy and direction',
-    },
-    {
-        id: 3,
-        parentId: 2,
-        name: 'Objective 3',
-        description: 'Customer Service',
-    },
-]
-
-const ParameterDummyData = [
-    {
-        id: 1,
-        name: 'Parameter 1',
-    },
-    {
-        id: 2,
-        name: 'Parameter 2',
-    },
-    {
-        id: 3,
-        name: 'Parameter 3',
-    }
-]
-
-export { AppraisalForm, EmployyDummyData, DeliverableDummyData, ObjectiveDummyData, ParameterDummyData }
+export { AppraisalForm }
