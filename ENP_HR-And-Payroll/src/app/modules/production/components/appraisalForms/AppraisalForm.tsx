@@ -1,7 +1,7 @@
 import { Divider } from "antd"
 import { useEffect, useState } from "react"
 import { useQuery } from "react-query"
-import { fetchDocument } from "../../../services/ApiCalls"
+import { fetchDocument } from "../../../../services/ApiCalls"
 import { AppraisalFormComponent } from "./AppraisalFormComponent"
 
 const AppraisalForm = () => {
@@ -9,9 +9,9 @@ const AppraisalForm = () => {
 
 
     const tenantId = localStorage.getItem('tenant')
-    const { data: parameters } = useQuery('parameters', () => fetchDocument(`parameters/tenant/${tenantId}`), { cacheTime: 5000 })
-    const { data: appraisalobjective } = useQuery('appraisalobjective', () => fetchDocument(`appraisalobjective/tenant/${tenantId}`), { cacheTime: 5000 })
-    const { data: appraisaldeliverable } = useQuery('appraisaldeliverable', () => fetchDocument(`appraisaldeliverable/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: parameters } = useQuery('parameters', () => fetchDocument(`parameters/tenant/test`), { cacheTime: 5000 })
+    const { data: appraisalobjective } = useQuery('appraisalobjective', () => fetchDocument(`appraisalobjective/tenant/test`), { cacheTime: 5000 })
+    const { data: appraisaldeliverable } = useQuery('appraisaldeliverable', () => fetchDocument(`appraisaldeliverable/tenant/test`), { cacheTime: 5000 })
 
     const loadData = async () => {
         try {
@@ -31,7 +31,8 @@ const AppraisalForm = () => {
             backgroundColor: 'white',
             padding: '40px',
             borderRadius: '5px',
-            boxShadow: '2px 2px 15px rgba(0,0,0,0.08)'
+            boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
+            margin: '40px'
         }}>
             <div className="d-flex flex-column align-items-start mb-5">
                 <div className=' fs-1 fw-bold mb-2 text-primary'>

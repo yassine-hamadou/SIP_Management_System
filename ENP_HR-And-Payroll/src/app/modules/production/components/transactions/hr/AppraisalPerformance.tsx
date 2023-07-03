@@ -50,6 +50,7 @@ const AppraisalPerformance = () => {
   const [currentDate, setCurrentDate] = useState<any>(new Date())
   const [referenceId, setReferenceId] = useState<any>(`${selectedPaygroup}-${selectedAppraisalType}-${selectedStartPeriod}-${selectedEndPeriod}`)
   const [currentObjective, setCurrentObjective] = useState<any>([])
+  const [isEmailSent, setIsEmailSent] = useState<any>(false)
 
   const { data: allEmployees } = useQuery('employees', () => fetchEmployees(tenantId), { cacheTime: 5000 })
   const { data: allAppraisals } = useQuery('appraisals', () => fetchAppraisals(tenantId), { cacheTime: 5000 })
@@ -61,7 +62,7 @@ const AppraisalPerformance = () => {
   const { data: allObjectives } = useQuery('appraisalperfobjectives', () => fetchDocument(`appraisalperfobjectives/tenant/${tenantId}`), { cacheTime: 5000 })
   const { data: allReviewdates } = useQuery('reviewDates', () => fetchDocument(`AppraisalReviewDates/tenant/${tenantId}`), { cacheTime: 5000 })
   const { data: allAppraisalsPerfTrans } = useQuery('appraisalPerfTransactions', () => fetchDocument(`AppraisalPerfTransactions/tenant/${tenantId}`), { cacheTime: 5000 })
-  const { data: allOrganograms } = useQuery('organograms',() => fetchDocument(`organograms/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allOrganograms } = useQuery('organograms', () => fetchDocument(`organograms/tenant/${tenantId}`), { cacheTime: 5000 })
 
 
 
@@ -209,8 +210,8 @@ const AppraisalPerformance = () => {
       title: 'Id',
       dataIndex: 'employeeId',
       key: 'employeeId',
-      render: (text: any) =>{
-      return <span className='text-primary'>{getEmployeeCode(text)}</span>
+      render: (text: any) => {
+        return <span className='text-primary'>{getEmployeeCode(text)}</span>
       },
       sorter: (a: any, b: any) => {
         if (a.employeeId > b.employeeId) {
@@ -288,7 +289,7 @@ const AppraisalPerformance = () => {
     {
       title: 'Email',
       render: (row: any) => {
-      return <span className='text-primar'>{ getEmail(row.employeeId)}</span>
+        return <span className='text-primar'>{getEmail(row.employeeId)}</span>
       },
       sorter: (a: any, b: any) => {
         if (a.jobt > b.jobt) {
@@ -410,7 +411,7 @@ const AppraisalPerformance = () => {
         return item.referenceId === referenceId
       })
       setCurrentObjective(objectiveData[0])
-      console.log('objs: ', objectiveData)
+      console.log('objectiveData: ', objectiveData[0])
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -421,6 +422,14 @@ const AppraisalPerformance = () => {
   const dataByID: any = allAppraisalsPerfTrans?.data?.filter((refId: any) => {
     return refId.paygroupId === parseInt(selectedPaygroup)
   })
+
+  // return from employees, all employees that are in dataByID using employeeId
+  const employeesInDataByID = allEmployees?.data?.filter((item: any) => {
+    return dataByID?.map((item: any) => {
+      return item.employeeId
+    })?.includes(item.id)
+  })
+
 
   const reviewDateByID: any = allReviewdates?.data?.filter((refId: any) => {
     return refId?.referenceId === referenceId
@@ -536,7 +545,7 @@ const AppraisalPerformance = () => {
     })
 
     const employeeIdOfSupervisorFromOrganogram = parseInt(supervisorFromEmployeeInOrganogram?.supervisorId) === 0 ?
-    supervisorFromEmployeeInOrganogram :
+      supervisorFromEmployeeInOrganogram :
       allOrganograms?.data.find((item: any) => {
         return item.id === parseInt(supervisorFromEmployeeInOrganogram?.supervisorId)
       })
@@ -597,11 +606,10 @@ const AppraisalPerformance = () => {
       setjobTitleName(jobTitleName)
       return jobTitleName
     }
-    getjobTitleName()
   }, [
     allJobTitles?.data, employeeRecord?.jobTitleId, selectedAppraisalType,
     selectedPaygroup, selectedStartPeriod, selectedEndPeriod, allObjectives?.data,
-    allReviewdates?.data, currentObjective
+    allReviewdates?.data, currentObjective, referenceId
   ])
 
   const handleInputChange = (e: any) => {
@@ -676,6 +684,7 @@ const AppraisalPerformance = () => {
       },
       url: endpoint,
     }
+    console.log('item: ', item)
     setLoading(true)
     postData(item)
   })
@@ -683,19 +692,41 @@ const AppraisalPerformance = () => {
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: () => {
       queryClient.invalidateQueries('appraisalPerfTransactions')
-      queryClient.invalidateQueries('appraisalPerfTransactions')
       reset()
+      isEmailSent && message.success('Email notifications sent successfully')
       setIsReviewDateModalOpen(false)
       setIsModalOpen(false)
       loadData()
       setSubmitLoading(false)
       setTextAreaValue('')
+      setIsEmailSent(false)
     },
     onError: (error: any) => {
       setSubmitLoading(false)
       console.log('post error: ', error)
     }
   })
+
+  const handleNotificationSend = () => {
+
+    //map throw dataById and return employeeId and name of employee as a new array
+    const employeeMailAndName = employeesInDataByID?.map((item: any) => ({
+      email: item.email,
+      username: `${item.firstName} ${item.surname}`
+    }))
+    console.log('employeeMailAndName: ', employeeMailAndName)
+
+    const item = {
+      data: {
+        subject: 'Appraisal Review Date',
+        formLink: `http://208.117.44.15/enp-hr-payroll/appraisalForm'`,
+        recipients: employeeMailAndName
+      },
+      url: 'appraisalperftransactions/sendMail',
+    }
+    setIsEmailSent(true)
+    postData(item)
+  }
 
   const reviewDatesColumn = [
     {
@@ -716,7 +747,7 @@ const AppraisalPerformance = () => {
       title: 'Action',
       render: (text: any, record: any) => (
         <Space>
-          <a className='text-primary me-2' onClick={() => { }}>
+          <a className='text-primary me-2' onClick={() => handleNotificationSend()}>
             Send Notification
           </a>
           <a className='text-danger' onClick={() => handleDeleteReviewDate(record)}>
@@ -833,7 +864,7 @@ const AppraisalPerformance = () => {
                           name='objectives'
                           id="resizable-textarea"
                           className="form-control mb-0 mt-2"
-                          value={!appraisalData?.description ? textAreaValue : appraisalData?.description}
+                          value={!appraisalData?.description ? textAreaValue : currentObjective}
                           onChange={handleTextareaChange}
                           style={{ height: textareaHeight }}
                         />
@@ -857,7 +888,7 @@ const AppraisalPerformance = () => {
                           <Button
                             onClick={showReviewDateModal}
                             className="btn btn-light-primary me-3 justify-content-center align-items-center d-flex"
-                            type="primary" shape="circle" icon={<PlusOutlined style={{ fontSize: '16px' }} rev ={''} />} size={'middle'} />
+                            type="primary" shape="circle" icon={<PlusOutlined style={{ fontSize: '16px' }} rev={''} />} size={'middle'} />
                         </Space>
                         <Table columns={reviewDatesColumn} dataSource={reviewDateByID} loading={loading} />
                       </div>
@@ -973,6 +1004,8 @@ const AppraisalPerformance = () => {
                   </div>
                   <hr></hr>
                   {fieldInit?.map((user: any) => (
+
+
                     <div style={{ padding: '10px 20px 10px 20px' }} className="col-12" key={user.id}>
                       <label style={{ fontWeight: "bold" }} htmlFor="exampleFormControlInput1" className="form-label">
                         {user.name}

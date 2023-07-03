@@ -1,23 +1,22 @@
-import { App, Collapse, CollapseProps, Divider, Space, Table } from "antd"
-import { render } from "react-dom"
-import { useQuery } from "react-query"
-import { fetchDocument } from "../../../services/ApiCalls"
+import { Collapse, CollapseProps, Space, Table } from "antd"
 import { useEffect, useState } from "react"
-import { set } from "react-hook-form"
-import { param } from "jquery"
+import { useQuery } from "react-query"
+import { fetchDocument } from "../../../../services/ApiCalls"
+import { useForm } from "react-hook-form"
 
-const AppraisalFormComponent = ({ parameterId }: any) => {
+function AppraisalFormComponent({ parameterId }: any) {
 
     const [parametersData, setParametersData] = useState<any>([])
     const [objectivesData, setObjectivesData] = useState<any>([])
     const [parmObjectsData, setParmObjectsData] = useState<any>([])
     const [collapseitems, setCollapseitems] = useState<CollapseProps['items']>([])
     const [itemsData, setItemsData] = useState<CollapseProps['items']>([])
+    const { register, reset, handleSubmit } = useForm()
 
     const tenantId = localStorage.getItem('tenant')
-    const { data: parameters } = useQuery('parameters', () => fetchDocument(`parameters/tenant/${tenantId}`), { cacheTime: 5000 })
-    const { data: appraisalobjective } = useQuery('appraisalobjective', () => fetchDocument(`appraisalobjective/tenant/${tenantId}`), { cacheTime: 5000 })
-    const { data: appraisaldeliverable } = useQuery('appraisaldeliverable', () => fetchDocument(`appraisaldeliverable/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: parameters } = useQuery('parameters', () => fetchDocument(`parameters/tenant/test`), { cacheTime: 5000 })
+    const { data: appraisalobjective } = useQuery('appraisalobjective', () => fetchDocument(`appraisalobjective/tenant/test`), { cacheTime: 5000 })
+    const { data: appraisaldeliverable } = useQuery('appraisaldeliverable', () => fetchDocument(`appraisaldeliverable/tenant/test`), { cacheTime: 5000 })
 
     const onChange = (key: string | string[]) => {
         console.log(key);
@@ -60,8 +59,8 @@ const AppraisalFormObjectiveComponent = ({ appraisalParameterData }: any) => {
     const [objectivesData, setObjectivesData] = useState<any>([])
     const tenantId = localStorage.getItem('tenant')
 
-    const { data: appraisalobjective } = useQuery('appraisalobjective', () => fetchDocument(`appraisalobjective/tenant/${tenantId}`), { cacheTime: 5000 })
-    const { data: appraisaldeliverable } = useQuery('appraisaldeliverable', () => fetchDocument(`appraisaldeliverable/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: appraisalobjective } = useQuery('appraisalobjective', () => fetchDocument(`appraisalobjective/tenant/test`), { cacheTime: 5000 })
+    const { data: appraisaldeliverable } = useQuery('appraisaldeliverable', () => fetchDocument(`appraisaldeliverable/tenant/test`), { cacheTime: 5000 })
 
     const loadData = async () => {
         try {
@@ -90,11 +89,12 @@ const AppraisalFormObjectiveComponent = ({ appraisalParameterData }: any) => {
 const AppraisalFormDeliverableComponent = ({ appraisalObjectivesData }: any) => {
 
     const [deliverablesData, setDeliverablesData] = useState<any>([])
+    const { register, reset, handleSubmit } = useForm()
 
     const tenantId = localStorage.getItem('tenant')
 
-    const { data: appraisalobjective } = useQuery('appraisalobjective', () => fetchDocument(`appraisalobjective/tenant/${tenantId}`), { cacheTime: 5000 })
-    const { data: appraisaldeliverable } = useQuery('appraisaldeliverable', () => fetchDocument(`appraisaldeliverable/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: appraisalobjective } = useQuery('appraisalobjective', () => fetchDocument(`appraisalobjective/tenant/test`), { cacheTime: 5000 })
+    const { data: appraisaldeliverable } = useQuery('appraisaldeliverable', () => fetchDocument(`appraisaldeliverable/tenant/test`), { cacheTime: 5000 })
 
     const loadData = async () => {
         try {
@@ -136,7 +136,7 @@ const AppraisalFormDeliverableComponent = ({ appraisalObjectivesData }: any) => 
             width: 200,
             render: (text: any, record: any) => (
                 <div className="d-flex align-items-center">
-                    <input type="number" className="form-control" placeholder="Enter actual here" required />
+                    <input type="number" {...register('actualValue')} className="form-control" placeholder="Enter actual here" required />
                 </div>
             )
         },
@@ -160,4 +160,4 @@ const AppraisalFormDeliverableComponent = ({ appraisalObjectivesData }: any) => 
 
 
 
-export { AppraisalFormComponent, AppraisalFormObjectiveComponent, AppraisalFormDeliverableComponent }
+export { AppraisalFormComponent, AppraisalFormDeliverableComponent, AppraisalFormObjectiveComponent }
