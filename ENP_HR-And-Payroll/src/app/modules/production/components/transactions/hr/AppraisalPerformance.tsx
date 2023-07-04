@@ -66,13 +66,13 @@ const AppraisalPerformance = () => {
 
 
 
-  const [textAreaValue, setTextAreaValue] = useState<any>('');
+  const [objValue, setObjValue] = useState<any>('');
   const [textareaHeight, setTextareaHeight] = useState('auto');
 
   const handleTextareaChange = (event: any) => {
     event.preventDefault()
-    setTextAreaValue(event.target.value);
-    setCurrentObjective({ ...currentObjective, [event.target.name]: event.target.value })
+    setObjValue(event.target.value);
+    // setCurrentObjective({ ...currentObjective, [event.target.name]: event.target.value })
     adjustTextareaHeight();
   };
 
@@ -93,31 +93,31 @@ const AppraisalPerformance = () => {
   };
 
 
-  const handleTabClick = (tab: any) => {
-    setActiveTab(tab);
-  };
+  // const handleTabClick = (tab: any) => {
+  //   setActiveTab(tab);
+  // };
 
 
-  const onRadioChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadioValue(e.target.value);
-  };
-  const onRadio1Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio1Value(e.target.value);
-  };
-  const onRadio2Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio2Value(e.target.value);
-  };
-  const onRadio3Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio3Value(e.target.value);
-  };
-  const onRadio4Change = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
-    setRadio4Value(e.target.value);
-  };
+  // const onRadioChange = (e: RadioChangeEvent) => {
+  //   console.log('radio checked', e.target.value);
+  //   setRadioValue(e.target.value);
+  // };
+  // const onRadio1Change = (e: RadioChangeEvent) => {
+  //   console.log('radio checked', e.target.value);
+  //   setRadio1Value(e.target.value);
+  // };
+  // const onRadio2Change = (e: RadioChangeEvent) => {
+  //   console.log('radio checked', e.target.value);
+  //   setRadio2Value(e.target.value);
+  // };
+  // const onRadio3Change = (e: RadioChangeEvent) => {
+  //   console.log('radio checked', e.target.value);
+  //   setRadio3Value(e.target.value);
+  // };
+  // const onRadio4Change = (e: RadioChangeEvent) => {
+  //   console.log('radio checked', e.target.value);
+  //   setRadio4Value(e.target.value);
+  // };
 
   const handleCancel = () => {
     reset()
@@ -403,15 +403,17 @@ const AppraisalPerformance = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/AppraisalPerfTransactions/tenant/${tenantId}`)
+      const response = allAppraisalsPerfTrans?.data
       setReviewDatesData(allReviewdates?.data)
-      setGridData(response.data)
+      setGridData(response)
       //find objective with matching referenceId from all objectives
       const objectiveData: any = allObjectives?.data?.filter((item: any) => {
         return item.referenceId === referenceId
       })
+      const objText = !objectiveData ? '' : objectiveData[0]?.description
+      setObjValue(objText)
       setCurrentObjective(objectiveData[0])
-      console.log('objectiveData: ', objectiveData[0])
+
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -480,33 +482,6 @@ const AppraisalPerformance = () => {
     return email
   }
 
-  const getID = (employeeId: any) => {
-    let Id = null
-    allEmployees?.data.map((item: any) => {
-      if (item.id === employeeId) {
-        Id = item.id
-      }
-    })
-    return Id
-  }
-  const getGender = (employeeId: any) => {
-    let gender = null
-    allEmployees?.data.map((item: any) => {
-      if (item.id === employeeId) {
-        gender = item.gender
-      }
-    })
-    return gender
-  }
-  const getDOB = (employeeId: any) => {
-    let surname = ""
-    allEmployees?.data.map((item: any) => {
-      if (item.id === employeeId) {
-        surname = item?.dob?.substring(0, 10)
-      }
-    })
-    return surname
-  }
 
   const getJobTitle = (employeeId: any) => {
     let jobTitleId: any = null
@@ -595,17 +570,8 @@ const AppraisalPerformance = () => {
 
   useEffect(() => {
     loadData()
-    const getjobTitleName = () => {
-      let jobTitleName = ""
-      allJobTitles?.data.map((item: any) => {
-        if (item.id === employeeRecord?.jobTitleId) {
-          jobTitleName = item.name
-        }
-      })
-      setReferenceId(`${selectedPaygroup}-${selectedAppraisalType}-${selectedStartPeriod}-${selectedEndPeriod}`)
-      setjobTitleName(jobTitleName)
-      return jobTitleName
-    }
+    setReferenceId(`${selectedPaygroup}-${selectedAppraisalType}-${selectedStartPeriod}-${selectedEndPeriod}`)
+  
   }, [
     allJobTitles?.data, employeeRecord?.jobTitleId, selectedAppraisalType,
     selectedPaygroup, selectedStartPeriod, selectedEndPeriod, allObjectives?.data,
@@ -629,19 +595,10 @@ const AppraisalPerformance = () => {
     setGridData(filteredData)
   }
 
-  const handleUpdate = (e: any) => {
-    e.preventDefault()
-    const item: any = {
-      url: 'AppraisalPerfTransactions',
-      data: appraisalData
-    }
-    updateData(item)
-  }
 
 
-  const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
-    onSuccess: (data: any) => {
-      queryClient.setQueryData([data?.url, appraisalData], data);
+  const {mutate: updateData } = useMutation(updateItem, {
+    onSuccess: () => {
       reset()
       loadData()
       message.success('Appraisal objective updated successfully')
@@ -689,7 +646,7 @@ const AppraisalPerformance = () => {
     postData(item)
   })
 
-  const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+  const { mutate: postData } = useMutation(postItem, {
     onSuccess: () => {
       queryClient.invalidateQueries('appraisalPerfTransactions')
       reset()
@@ -698,7 +655,7 @@ const AppraisalPerformance = () => {
       setIsModalOpen(false)
       loadData()
       setSubmitLoading(false)
-      setTextAreaValue('')
+      setObjValue('')
       setIsEmailSent(false)
     },
     onError: (error: any) => {
@@ -759,7 +716,7 @@ const AppraisalPerformance = () => {
   ]
 
   const handleObjectiveSave = handleSubmit(async (values) => {
-    if (textAreaValue === '') {
+    if (objValue === '') {
       message.error('Please enter objective description')
       return
     }
@@ -777,7 +734,7 @@ const AppraisalPerformance = () => {
     } else {
       const item = {
         data: {
-          description: textAreaValue,
+          description: values.description,
           tenantId: tenantId,
           referenceId: referenceId,
         },
@@ -864,8 +821,8 @@ const AppraisalPerformance = () => {
                           name='objectives'
                           id="resizable-textarea"
                           className="form-control mb-0 mt-2"
-                          value={!appraisalData?.description ? textAreaValue : currentObjective}
-                          onChange={handleTextareaChange}
+                          defaultValue={currentObjective?.description }
+                          // onChange={handleTextareaChange}
                           style={{ height: textareaHeight }}
                         />
                       </form>
@@ -922,7 +879,7 @@ const AppraisalPerformance = () => {
                 </Space>
               </div>
 
-              <Table columns={columns} key={dataByID.id} dataSource={dataByID} />
+              <Table columns={columns} dataSource={dataByID} />
 
               <Modal
                 title='Employee Details '
@@ -1046,92 +1003,6 @@ const AppraisalPerformance = () => {
                     <input {...register("documentUrl")} className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
                   </div>
 
-                  {/* <form>
-                    <hr></hr>
-                  <div>
-                    <div style={{display:"flex", }} className="tabs">
-                      <div
-                        className={`tab ${activeTab === "tab1" ? "active" : ""}`}
-                        onClick={() => handleTabClick("tab1")}
-                      >
-                        Accomplishments
-                      </div>
-
-                      <div className={`tab ${activeTab === "tab2" ? "active" : ""}`}
-                        onClick={() => handleTabClick("tab2")}
-                      >
-                        Areas of Improvements
-                      </div>
-                      <div
-                        className={`tab ${activeTab === "tab3" ? "active" : ""}`}
-                        onClick={() => handleTabClick("tab3")}
-                      >
-                        Goals for Performance
-                      </div>
-                      <div
-                        className={`tab ${activeTab === "tab4" ? "active" : ""}`}
-                        onClick={() => handleTabClick("tab4")}
-                      >
-                        Supporting Documentation
-                      </div>
-                    </div>
-                    <div className="tab-content">
-                      {activeTab === "tab1" && 
-                      <div>
-                        <div className='col-12 mb-3'>
-                          <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
-                          <Radio.Group onChange={onRadio1Change} value={radio1Value}>
-                            <Radio value={1}>1</Radio>
-                            <Radio value={2}>2</Radio>
-                            <Radio value={3}>3</Radio>
-                            <Radio value={4}>4</Radio>
-                            <Radio value={5}>5</Radio>
-                          </Radio.Group>
-                          <textarea style={{ margin: "10px 0px 0 0px" }} {...register("accomComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
-                        </div>
-                        
-                      </div>}
-                      
-                      {activeTab === "tab2" && 
-                      <div>
-                        <div className='col-12 mb-3'>
-                          <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
-                          <Radio.Group onChange={onRadio2Change} value={radio2Value}>
-                            <Radio value={1}>1</Radio>
-                            <Radio value={2}>2</Radio>
-                            <Radio value={3}>3</Radio>
-                            <Radio value={4}>4</Radio>
-                            <Radio value={5}>5</Radio>
-                          </Radio.Group>
-                          <textarea style={{ margin: "10px 0px 0 0px" }} {...register("improvComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
-                        </div>
-                      </div>}
-
-                      {activeTab === "tab3" && 
-                      <div>
-                        <div className='col-12 mb-3'>
-                          <label style={{ padding: "0px 40px 0 0px" }} htmlFor="exampleFormControlInput1" className=" form-label">Score</label>
-                          <Radio.Group onChange={onRadio3Change} value={radio3Value}>
-                            <Radio value={1}>1</Radio>
-                            <Radio value={2}>2</Radio>
-                            <Radio value={3}>3</Radio>
-                            <Radio value={4}>4</Radio>
-                            <Radio value={5}>5</Radio>
-                          </Radio.Group>
-                          <textarea style={{ margin: "10px 0px 0 0px" }} {...register("goalComment")} className="form-control form-control-solid" placeholder='comments (optional)' aria-label="With textarea"></textarea>
-                        </div>
-                      </div>}
-
-                      {activeTab === "tab4" && 
-                      <div>
-                        <div className='col-12 mb-3'>
-                          <input {...register("documentUrl")}  className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' type="file" />
-                        
-                        </div>
-                      </div>}
-                    </div>
-                  </div>
-                </form> */}
                 </form>
               </Modal>
               <Modal
@@ -1180,7 +1051,7 @@ const AppraisalPerformance = () => {
                 <form onSubmit={submitApplicant}>
                   <div className='row mb-7 mt-7'>
                     <div className='col-12 mb-7'>
-                      <label htmlFor='exampleFormControlInput1' className='form-label'>Review Date</label>
+                      <label htmlFor='exampleFormControlInput1' className='form-label'>Schedule Date</label>
                       <input
                         {...register("reviewDate")}
                         type='date'
@@ -1191,7 +1062,6 @@ const AppraisalPerformance = () => {
                       <label htmlFor="exampleFormControlInput1" className="form-label">Description</label>
                       <input
                         {...register("description")}
-                        // onChange={handleChange}
                         className="form-control form-control-solid" />
                     </div>
                   </div>

@@ -1,10 +1,12 @@
-import { Divider } from "antd"
+import { Collapse, CollapseProps, Divider, Space, Table } from "antd"
 import { useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { fetchDocument } from "../../../../services/ApiCalls"
-import { ReviewFormComponent } from "./ReviewFormComponent"
+import { useForm } from "react-hook-form"
+import { AppraisalObjectivesComponent } from "./AppraisalObjectivesComponent"
+import { ErrorBoundary } from "@ant-design/pro-components"
 
-const AppraisalForm = () => {
+const ObjectivesForm = () => {
     const [parametersData, setParametersData] = useState<any>([])
 
 
@@ -54,8 +56,10 @@ const AppraisalForm = () => {
             {
                 parametersData?.map((item: any) => (
                     <div className="align-items-start mt-7" >
-                        <span className=' fs-3 fw-bold mb-5'>{item?.name}</span>
-                        <ReviewFormComponent parameterId={item.id} />
+                        <span className=' fs-2 fw-bold mb-5 mt-7'>{item?.name}</span>
+                        <ErrorBoundary>
+                            <AppraisalObjectivesComponent parameterId={item.id} />
+                        </ErrorBoundary>
                     </div>
                 ))
             }
@@ -69,5 +73,7 @@ const AppraisalForm = () => {
     )
 }
 
+export { ObjectivesForm }
 
-export { AppraisalForm }
+
+

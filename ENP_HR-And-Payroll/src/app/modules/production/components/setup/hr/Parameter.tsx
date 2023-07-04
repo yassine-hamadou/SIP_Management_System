@@ -145,9 +145,9 @@ const Parameter = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <Link to={`/objectives/${record.id}`}>
+          {/* <Link to={`/objectives/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Objectives</span>
-          </Link>
+          </Link> */}
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
