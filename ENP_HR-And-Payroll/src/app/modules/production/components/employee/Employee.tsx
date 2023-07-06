@@ -4,7 +4,7 @@ import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
 import { ENP_URL } from '../../urls'
 import { Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import {read, utils, writeFile} from "xlsx"
 import { Api_Endpoint, axioInstance, fetchDepartments, fetchEmployees, fetchGrades, fetchNotches, fetchPaygroups } from '../../../../services/ApiCalls'
 import { Roaster } from '../setup/hr/Roater'
@@ -22,6 +22,7 @@ const Employee = () => {
   const [imgNew, setImgNew] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState('employeeDetail');
+  const queryClient = useQueryClient()
 
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
@@ -220,7 +221,7 @@ const Employee = () => {
     },
   ]
 
-  const {data:allEmployee} = useQuery('employee',() =>fetchEmployees(tenantId), {cacheTime:5000})
+  const {data:allEmployee, isLoading} = useQuery('employees',() =>fetchEmployees(tenantId), {cacheTime:5000})
   const {data:allDepartments} = useQuery('department',() => fetchDepartments(tenantId), {cacheTime:5000})
   const {data:allPaygroups} = useQuery('paygroup',() => fetchPaygroups(tenantId), {cacheTime:5000})
   const {data:allNotches} = useQuery('notches',() => fetchNotches(tenantId), {cacheTime:5000})
@@ -263,12 +264,12 @@ const Employee = () => {
     return notchName
   } 
   const tenantId = localStorage.getItem('tenant')
+
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${Api_Endpoint}/Employees/tenant/${tenantId}`,
-      )
-      setGridData(response.data)
+      const response = allEmployee?.data
+      setGridData(response)
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -277,12 +278,12 @@ const Employee = () => {
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, [allEmployee?.data])
 
   
   var out_data:any = {};
   
-  gridData.forEach(function(row:any) {
+  gridData?.forEach(function(row:any) {
     if (out_data[row.departmentId]) {
       out_data[row.departmentId].push(row);
     } else {
@@ -300,7 +301,7 @@ const Employee = () => {
     writeFile(wb, "Report.xlsx")
   }
   
-  const dataWithIndex = gridData.map((item: any, index:any) => ({
+  const dataWithIndex = allEmployee?.data?.map((item: any, index:any) => ({
     ...item,
     key: index,
   }))
@@ -308,13 +309,14 @@ const Employee = () => {
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
     if (e.target.value === '') {
-      loadData()
+      queryClient.invalidateQueries('employees')  
+      // loadData()
     }
   }
 
   const globalSearch = () => {
     // @ts-ignore
-    filteredData = dataWithIndex.filter((value) => {
+    filteredData = dataWithIndex?.filter((value) => {
       return (
         value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
         value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -392,7 +394,7 @@ const Employee = () => {
                 </button>
                 </Space>
               </div>
-              <Table columns={columns} dataSource={dataWithIndex}  loading={loading}/>
+              <Table columns={columns} dataSource={dataWithIndex}  loading={isLoading}/>
             </>
           }
 

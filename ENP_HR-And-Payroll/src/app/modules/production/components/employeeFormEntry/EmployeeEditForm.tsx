@@ -1093,7 +1093,7 @@ const EmployeeEditForm = () => {
   const queryClient = useQueryClient()
   const { isLoading, mutate } = useMutation(updateEmployee, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['employees', tempData.id], data);
+      queryClient.invalidateQueries('employees')
       navigate('/employee', { replace: true })
       // queryClient.invalidateQueries(['employees', tempData.id]);
     }
