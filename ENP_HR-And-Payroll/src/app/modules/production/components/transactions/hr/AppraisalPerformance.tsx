@@ -301,22 +301,22 @@ const AppraisalPerformance = () => {
         return 0
       },
     },
-    {
-      title: 'Line Manager',
-      dataIndex: 'employeeId',
-      render: (row: any) => {
-        return getSupervisor(row)
-      },
-      sorter: (a: any, b: any) => {
-        if (a.jobt > b.jobt) {
-          return 1
-        }
-        if (b.jobt > a.jobt) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Line Manager',
+    //   dataIndex: 'employeeId',
+    //   render: (row: any) => {
+    //     return getSupervisor(row)
+    //   },
+    //   sorter: (a: any, b: any) => {
+    //     if (a.jobt > b.jobt) {
+    //       return 1
+    //     }
+    //     if (b.jobt > a.jobt) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
 
     {
       title: 'Action',
@@ -809,7 +809,7 @@ const AppraisalPerformance = () => {
           || selectedEndPeriod === "select end period" ? "" :
           <KTCardBody className='py-4 '>
             <div className='table-responsive'>
-              {
+              {/* {
                 <>
                   <div style={{ padding: "0px 0px 0 0px" }} className='col-12 row mb-0'>
                     <div className='col-6 mb-7'>
@@ -852,7 +852,7 @@ const AppraisalPerformance = () => {
                     </div>
                   </div>
                 </>
-              }
+              } */}
               <div className='d-flex justify-content-between'>
                 <Space style={{ marginBottom: 16 }}>
                   <Input
