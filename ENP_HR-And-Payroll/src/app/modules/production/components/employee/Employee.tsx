@@ -1,11 +1,11 @@
-import {Button, Form, Input, InputNumber, Modal, Space, Table} from 'antd'
-import {useEffect, useState} from 'react'
+import { Button, Form, Input, InputNumber, Modal, Space, Table } from 'antd'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
-import {KTCardBody, KTSVG} from '../../../../../_metronic/helpers'
+import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { ENP_URL } from '../../urls'
 import { Link } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
-import {read, utils, writeFile} from "xlsx"
+import { read, utils, writeFile } from "xlsx"
 import { Api_Endpoint, axioInstance, fetchDepartments, fetchEmployees, fetchGrades, fetchNotches, fetchPaygroups } from '../../../../services/ApiCalls'
 import { Roaster } from '../setup/hr/Roater'
 import { EmpSummaryDashBoard } from '../../../../pages/dashboard/charts/HRNewDashBoard'
@@ -24,7 +24,7 @@ const Employee = () => {
   const [activeTab, setActiveTab] = useState('employeeDetail');
   const queryClient = useQueryClient()
 
-  const handleTabClick = (tab:any) => {
+  const handleTabClick = (tab: any) => {
     setActiveTab(tab);
   }
 
@@ -52,21 +52,21 @@ const Employee = () => {
       return e
     }
   }
- 
+
 
   function handleDelete(element: any) {
     deleteData(element)
   }
   const columns: any = [
-   {
+    {
       title: 'Profile',
       key: 'imageUrl',
-      render: (row:any) => {
-       
-        return  (
-          row.imageUrl!==null?  
-          <img style={{borderRadius:"10px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/${row.imageUrl}`} width={50} height={50}></img>:
-          <img style={{borderRadius:"10px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={50} height={50}></img>
+      render: (row: any) => {
+
+        return (
+          row.imageUrl !== null ?
+            <img style={{ borderRadius: "10px" }} src={`http://208.117.44.15/hrwebapi/uploads/employee/${row.imageUrl}`} width={50} height={50}></img> :
+            <img style={{ borderRadius: "10px" }} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={50} height={50}></img>
         )
       }
     },
@@ -96,7 +96,7 @@ const Employee = () => {
         return 0
       },
     },
-   
+
     {
       title: 'Surname',
       dataIndex: 'surname',
@@ -178,7 +178,7 @@ const Employee = () => {
       render: (row: any) => {
         return getDepartmentName(row.departmentId)
       },
-      
+
       sorter: (a: any, b: any) => {
         if (a.departmentId > b.departmentId) {
           return 1
@@ -217,52 +217,52 @@ const Employee = () => {
           </Link>
         </Space>
       ),
-      
+
     },
   ]
 
-  const {data:allEmployee, isLoading} = useQuery('employees',() =>fetchEmployees(tenantId), {cacheTime:5000})
-  const {data:allDepartments} = useQuery('department',() => fetchDepartments(tenantId), {cacheTime:5000})
-  const {data:allPaygroups} = useQuery('paygroup',() => fetchPaygroups(tenantId), {cacheTime:5000})
-  const {data:allNotches} = useQuery('notches',() => fetchNotches(tenantId), {cacheTime:5000})
-  const {data:allGrades} = useQuery('grades',() => fetchGrades(tenantId), {cacheTime:5000})
- 
+  const { data: allEmployee, isLoading } = useQuery('employees', () => fetchEmployees(tenantId), { cacheTime: 5000 })
+  const { data: allDepartments } = useQuery('department', () => fetchDepartments(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroup', () => fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: allNotches } = useQuery('notches', () => fetchNotches(tenantId), { cacheTime: 5000 })
+  const { data: allGrades } = useQuery('grades', () => fetchGrades(tenantId), { cacheTime: 5000 })
+
   const getDepartmentName = (departmentId: any) => {
     let departmentName = null
     allDepartments?.data.map((item: any) => {
       if (item.id === departmentId) {
-        departmentName=item.name
+        departmentName = item.name
       }
     })
     return departmentName
-  } 
+  }
   const getGradeName = (gradeId: any) => {
     let gradeName = null
     allGrades?.data.map((item: any) => {
       if (item.id === gradeId) {
-        gradeName=item.name
+        gradeName = item.name
       }
     })
     return gradeName
-  } 
+  }
   const getPaygroupName = (paygroupId: any) => {
     let paygroupName = null
     allPaygroups?.data.map((item: any) => {
       if (item.id === paygroupId) {
-        paygroupName=item.name
+        paygroupName = item.name
       }
     })
     return paygroupName
-  } 
+  }
   const getNotchName = (notchId: any) => {
     let notchName = null
     allNotches?.data.map((item: any) => {
       if (item.id === notchId) {
-        notchName=item.name
+        notchName = item.name
       }
     })
     return notchName
-  } 
+  }
   const tenantId = localStorage.getItem('tenant')
 
   const loadData = async () => {
@@ -280,10 +280,10 @@ const Employee = () => {
     loadData()
   }, [allEmployee?.data])
 
-  
-  var out_data:any = {};
-  
-  gridData?.forEach(function(row:any) {
+
+  var out_data: any = {};
+
+  gridData?.forEach(function (row: any) {
     if (out_data[row.departmentId]) {
       out_data[row.departmentId].push(row);
     } else {
@@ -291,44 +291,41 @@ const Employee = () => {
     }
   });
 
-  const handleExport = ()=>{
-    const headings = [["FirstName", "Surname","Gender", "Paygroup", "Salary-Grade", "Unit"]]
+  const handleExport = () => {
+    const headings = [["FirstName", "Surname", "Gender", "Paygroup", "Salary-Grade", "Unit"]]
     const wb = utils.book_new()
     const ws = utils.json_to_sheet([])
     utils.sheet_add_aoa(ws, headings)
-    utils.sheet_add_json(ws, gridData, {origin: "A2", skipHeader: true})
-    utils.book_append_sheet(wb,ws, "Report")
+    utils.sheet_add_json(ws, gridData, { origin: "A2", skipHeader: true })
+    utils.book_append_sheet(wb, ws, "Report")
     writeFile(wb, "Report.xlsx")
   }
-  
-  const dataWithIndex = allEmployee?.data?.map((item: any, index:any) => ({
+
+  const dataWithIndex = allEmployee?.data?.map((item: any, index: any) => ({
     ...item,
     key: index,
   }))
 
   const handleInputChange = (e: any) => {
-    setSearchText(e.target.value)
+    // setSearchText(e.target.value)
+    globalSearch(e.target.value)
     if (e.target.value === '') {
-      queryClient.invalidateQueries('employees')  
-      // loadData()
+      loadData()
     }
   }
 
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex?.filter((value) => {
+  const globalSearch = (searchValue: string) => {
+
+    const searchResult = dataWithIndex?.filter((item: any) => {
       return (
-        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
       )
     })
-    setGridData(filteredData)
+    setGridData(searchResult)
   }
 
   return (
-    <div 
+    <div
       style={{
         backgroundColor: 'white',
         padding: '20px',
@@ -338,84 +335,84 @@ const Employee = () => {
     >
       <KTCardBody className='py-1 '>
         <div className='table-responsive'>
-        <div className="tabs">
-          
-          <button 
-            className={`tab ${activeTab === 'employeeDetail' ? 'active' : ''}`} 
-            onClick={() => handleTabClick('employeeDetail')}
-          >
-            Details
-          </button>
-          <button 
-            className={`tab ${activeTab === 'roaster' ? 'active' : ''}`} 
-            onClick={() => handleTabClick('roaster')}
-          >
-            Roster
-          </button>
-          <button 
-            className={`tab ${activeTab === 'summary' ? 'active' : ''}`} 
-            onClick={() => handleTabClick('summary')}
-          >
-            Summary
-          </button>        
-          
-          
-        </div>
-          
+          <div className="tabs">
+
+            <button
+              className={`tab ${activeTab === 'employeeDetail' ? 'active' : ''}`}
+              onClick={() => handleTabClick('employeeDetail')}
+            >
+              Details
+            </button>
+            <button
+              className={`tab ${activeTab === 'roaster' ? 'active' : ''}`}
+              onClick={() => handleTabClick('roaster')}
+            >
+              Roster
+            </button>
+            <button
+              className={`tab ${activeTab === 'summary' ? 'active' : ''}`}
+              onClick={() => handleTabClick('summary')}
+            >
+              Summary
+            </button>
+
+
+          </div>
+
           <div className="tab-content">
 
-          {activeTab === 'employeeDetail' && 
-            <>
-            
-              <div className='d-flex justify-content-between'>
-                <Space style={{marginBottom: 16}}>
-                  <Input
-                    placeholder='Enter Search Text'
-                    onChange={handleInputChange}
-                    type='text'
-                    allowClear
-                    value={searchText}
-                  />
-                  <Button type='primary' onClick={globalSearch}>
-                    Search
-                  </Button>
-                </Space>
-                <Space style={{marginBottom: 16}}>
-                  <Link to='/employee-form'>
-                  <button type='button' className='btn btn-primary me-3'>
-                    <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                    Add
-                  </button>
-                  </Link>
-                  {/* <a onClick={handleExport} className='btn btn-light-primary me-3'>Export Data</a> */}
-                  <button onClick={handleExport} type='button' className='btn btn-light-primary me-3'>
-                    <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                    Export
-                </button>
-                </Space>
+            {activeTab === 'employeeDetail' &&
+              <>
+
+                <div className='d-flex justify-content-between'>
+                  <Space style={{ marginBottom: 16 }}>
+                    <Input
+                      placeholder='Enter Search Text'
+                      onChange={handleInputChange}
+                      type='text'
+                      allowClear
+                      value={searchText}
+                    />
+                    <Button type='primary' onClick={handleInputChange}>
+                      Search
+                    </Button>
+                  </Space>
+                  <Space style={{ marginBottom: 16 }}>
+                    <Link to='/employee-form'>
+                      <button type='button' className='btn btn-primary me-3'>
+                        <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                        Add
+                      </button>
+                    </Link>
+                    {/* <a onClick={handleExport} className='btn btn-light-primary me-3'>Export Data</a> */}
+                    <button onClick={handleExport} type='button' className='btn btn-light-primary me-3'>
+                      <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
+                      Export
+                    </button>
+                  </Space>
+                </div>
+                <Table columns={columns} dataSource={dataWithIndex} loading={isLoading} />
+              </>
+            }
+
+            {activeTab === 'roaster' &&
+              <div>
+                <Roaster />
               </div>
-              <Table columns={columns} dataSource={dataWithIndex}  loading={isLoading}/>
-            </>
-          }
+            }
 
-          {activeTab === 'roaster' && 
-            <div>
-              <Roaster/>
-            </div>
-          }
+            {activeTab === 'summary' &&
+              <div>
+                <EmpSummaryDashBoard />
+              </div>
+            }
 
-          {activeTab === 'summary' && 
-            <div>
-              <EmpSummaryDashBoard/>
-            </div>
-          }
+          </div>
 
-        </div>
-          
         </div>
       </KTCardBody>
     </div>
   )
 }
 
-export {Employee}
+export { Employee }

@@ -1233,10 +1233,7 @@ const EmployeeEditForm = () => {
       setSubmitLoading(false)
       return error.statusText
     }
-  })
-
-  console.log('New', param.id);
-  
+  })  
 
   const uRL = `${Api_Endpoint}/Employees/${param.id}`
     const OnSUbmitUpdate = handleSubmit( async ( )=> {
@@ -1460,7 +1457,7 @@ const EmployeeEditForm = () => {
                   <select
                     {...register("gender")} name="gender"
                     onChange={handleChange}
-                    value={tempData?.gender.trim()}
+                    value={tempData?.gender}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option value="MALE">MALE</option>
                     <option value="FEMALE">FEMALE</option>
@@ -1471,7 +1468,7 @@ const EmployeeEditForm = () => {
                   <select
                     {...register("maritalStatus")} name="maritalStatus"
                     onChange={handleChange}
-                    value={tempData?.maritalStatus.trim()}
+                    value={tempData?.maritalStatus}
                     className="form-select form-select-solid" aria-label="Select example">
                     <option value="SINGLE">SINGLE</option>
                     <option value="MARRIED">MARRIED</option>
