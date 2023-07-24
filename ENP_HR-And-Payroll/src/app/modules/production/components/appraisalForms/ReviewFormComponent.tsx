@@ -4,7 +4,7 @@ import { useQuery } from "react-query"
 import { fetchDocument } from "../../../../services/ApiCalls"
 import { useForm } from "react-hook-form"
 
-function AppraisalFormComponent({ parameterId }: any) {
+function ReviewFormComponent({ parameterId }: any) {
 
     const [parametersData, setParametersData] = useState<any>([])
     const [objectivesData, setObjectivesData] = useState<any>([])
@@ -160,4 +160,4 @@ const AppraisalFormDeliverableComponent = ({ appraisalObjectivesData }: any) => 
 
 
 
-export { AppraisalFormComponent, AppraisalFormDeliverableComponent, AppraisalFormObjectiveComponent }
+export { ReviewFormComponent, AppraisalFormDeliverableComponent, AppraisalFormObjectiveComponent }
