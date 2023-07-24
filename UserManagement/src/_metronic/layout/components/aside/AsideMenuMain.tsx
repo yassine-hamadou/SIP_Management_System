@@ -28,12 +28,12 @@ export function AsideMenuMain() {
             icon='/media/icons/duotune/general/gen062.svg'
             title='Applications' 
           />
-        {/* <AsideMenuItem 
-            to='company/' 
+        <AsideMenuItem 
+            to='user-activity/' 
             hasBullet={false} 
             icon='/media/icons/duotune/finance/fin005.svg'
-            title='Companies' 
-          /> */}
+            title='User Activity Logs'
+          />
 
     </>
   )
