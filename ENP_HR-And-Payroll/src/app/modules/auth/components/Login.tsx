@@ -6,7 +6,7 @@ import { useFormik } from 'formik'
 import { login, parseJwt } from '../core/_requests'
 import { useAuth } from '../core/Auth'
 import { useQuery } from 'react-query'
-import { fetchCompanies, fetchUserApplications } from '../../../services/ApiCalls'
+import { fetchCompanies, fetchDocument, fetchUserApplications, fetchUserCompany } from '../../../services/ApiCalls'
 
 const loginSchema = Yup.object().shape({
   username: Yup.string()
@@ -36,13 +36,12 @@ const initialValues = {
 export function Login() {
   const [loading, setLoading] = useState(false)
   const { saveAuth, setCurrentUser , saveTenant} = useAuth()
-  const tenantId = localStorage.getItem('tenant')
+  
 
   const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
   const { data: allCompanies } = useQuery('companies', fetchCompanies, { cacheTime: 5000 })
-  // const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(currentUser?.id)).map((filteredItem:any) => {
-  //   return filteredItem.applicationId.toString()
-  // })
+  const { data: userCompanies } = useQuery('userCompanies', fetchUserCompany, { cacheTime: 5000 })
+  
  
   const formik = useFormik({
     initialValues,
@@ -65,30 +64,65 @@ export function Login() {
          //now I have to assign the !
          const curUser:any =  parseJwt(token)
 
-        //  if(appId===1){
-           setCurrentUser(curUser)
-        //  }else{
-        //   setStatus("you don't have access to this application")
-        //  }
+        setCurrentUser(curUser)
+
         saveTenant(values.tenantId)
+
         const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(curUser?.id)).map((filteredItem:any) => {
           return filteredItem?.applicationId?.toString()
         })
 
+        const  userCom = userCompanies?.data.filter((item:any )=> item.userId === parseInt(curUser?.id)).map((filteredItem:any) => {
+          return filteredItem?.companyId?.toString()
+        })
+
+        // console.log('userApp:', userApp);
+
+        // for each item in userCom, get the comapny name from allCompanies
+        // const newCompanyNames = allCompanies?.data.filter((item:any)=> {
+        //   return userCom?.includes(item?.id?.toString())
+        // })
+
+        // const newCompanyNames2 = newCompanyNames?.map((item:any)=> {
+        //   return item?.name?.toLowerCase()
+        // })
+
+        const newCompanyNames = allCompanies?.data
+          .filter((item : any) => userCom?.includes(item?.id?.toString()))
+          .map((item : any) => item?.name?.toLowerCase());
+        
+        // console.log('newCompanyNames:', newCompanyNames);
+        
+
+        // console.log('comCheck:', userCom);
+
         const newIt = userApp?.find((applicationId:any)=>{
           return applicationId==='10'
         })
+
+        const comCheck = newCompanyNames?.some((companyId:any)=>{
+          return companyId === values.tenantId
+        })
         
-        if(!newIt)
+        // console.log('comCheck:', comCheck);
+        
+        if(!comCheck)
         {
           setStatus("You can't access this application, contact your Administrator!")
           setSubmitting(false)
           setLoading(false)
         }
-        
+
+        if(!comCheck)
+        {
+          setStatus("You can't access this company, contact your Administrator!")
+          setSubmitting(false)
+          setLoading(false)
+        }
       
       } catch (error) {
         console.error(error)
+        
         setStatus('The login detail is incorrect')
         setSubmitting(false)
         setLoading(false)

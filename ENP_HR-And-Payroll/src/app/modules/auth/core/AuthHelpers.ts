@@ -65,7 +65,6 @@ const setTenant = (tenant: any) => {
 
   try {
     localStorage.setItem(TenantKey, tenant)
-    console.log('tenant', tenant)
   } catch (error) {
     console.error('TENANT LOCAL STORAGE SAVE ERROR', error)
   }
