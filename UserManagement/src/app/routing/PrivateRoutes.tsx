@@ -12,7 +12,9 @@ import { Roles } from '../modules/production/components/Role/Role'
 import { User } from '../modules/production/components/User/User'
 import { UserRole } from '../modules/production/components/User/UserRole'
 import { UserApplication } from '../modules/production/components/User/UserApplication'
+import { UserActivity } from '../modules/production/components/UserActivity/UserActivity'
 import { Companies } from '../modules/production/components/Company/Company'
+import { UserCompany } from '../modules/production/components/User/UserCompany'
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: '',
@@ -112,6 +114,24 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}>All Companies</PageTitle>
              <Companies />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='user-activity/*'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All User Activities</PageTitle>
+             <UserActivity />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='user-companies/:id'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}>All User Companies</PageTitle>
+             <UserCompany />
            </SuspensedView>
          }
         />

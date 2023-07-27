@@ -8,7 +8,7 @@ import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { deleteItem, fetchDocument, postItem } from '../../../../services/ApiCalls'
 
 
-const UserRole = () => {
+const UserCompany = () => {
   const [gridData, setGridData] = useState<any>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -21,9 +21,10 @@ const UserRole = () => {
   const navigate = useNavigate();
   let [userFName, setUserFName] = useState<any>("")
   const queryClient = useQueryClient()
-    const {data:allRoles} = useQuery('userRoles',() => fetchDocument('UserRoles'), {cacheTime:5000})
-    const {data:allUsers} = useQuery('users',() => fetchDocument('Users'), {cacheTime:5000})
-    const {data:roles} = useQuery('roles',() => fetchDocument('Roles'), {cacheTime:5000})
+
+    const {data: userCompanies} = useQuery('userCompanies',() => fetchDocument('UserCompanies'), {cacheTime:5000})
+    const {data: allUsers} = useQuery('users',() => fetchDocument('Users'), {cacheTime:5000})
+    const {data: companies} = useQuery('companies',() => fetchDocument('Companies'), {cacheTime:5000})
   
 
   const showModal = () => {
@@ -40,7 +41,7 @@ const UserRole = () => {
 
   const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['users'], data);
+      queryClient.setQueryData(['userCompanies'], data);
       loadData()
     },
     onError: (error) => {
@@ -50,7 +51,7 @@ const UserRole = () => {
 
   const handleDelete = (element: any) => {
     const item = {
-      url: 'UserRoles',
+      url: 'UserCompanies',
       data: element
     }
     deleteData(item)
@@ -60,16 +61,16 @@ const UserRole = () => {
 
   const columns: any = [    
     {
-      title: 'Role Name',
-      key: 'roleId',
+      title: 'Company Name',
+      key: 'companyId',
       render:(i:any)=>{
-        return getRoleName(i.roleId)
+        return getRoleName(i.companyId)
       },
       sorter: (a: any, b: any) => {
-        if (a.roleId > b.roleId) {
+        if (a.companyId > b.companyId) {
           return 1
         }
-        if (b.roleId > a.roleId) {
+        if (b.companyId > a.companyId) {
           return -1
         }
         return 0
@@ -96,7 +97,7 @@ const UserRole = () => {
 
   const getRoleName = (perkId: any) => {
     let RoleName = null
-    roles?.data.map((item: any) => {
+    companies?.data.map((item: any) => {
       if (item.id === perkId) {
         RoleName=item.name
       }
@@ -107,7 +108,7 @@ const UserRole = () => {
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument('UserRoles')
+      const response = await fetchDocument('UserCompanies')
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
@@ -156,10 +157,10 @@ const UserRole = () => {
     setGridData(filteredData)
   }
 
-  const checkRole = (roleId: any) => {
+  const checkCompany = (companyId: any) => {
     let isAssigned = false
-    allRoles?.data.map((item: any) => {
-      if (item.userId.toString() === param.id && item.roleId.toString() === roleId.toString()) {
+    userCompanies?.data.map((item: any) => {
+      if (item.userId?.toString() === param.id && item.companyId?.toString() === companyId?.toString()) {
         isAssigned = true
       }
     })
@@ -168,25 +169,25 @@ const UserRole = () => {
 
   const OnSubmit = handleSubmit(async (values) => {
     setLoading(true)
-    const endpoint = 'UserRoles'
-    if(!checkRole(values.roleId)){
+    const endpoint = 'UserCompanies'
+    if(!checkCompany(values.companyId)){
       const item = {
         data: {
           userId: parseInt(param.id),
-          roleId: values.roleId,
+          companyId: values.companyId,
         },
         url: endpoint
       }
       console.log(item.data)
       postData(item)
     }else{
-      message.error('Role already assigned')
+      message.error('Company already assigned')
     }
   })
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['userRoless'], data);
+      queryClient.setQueryData(['userCompanies'], data);
       reset()
       loadData()
       setIsModalOpen(false)
@@ -233,7 +234,7 @@ const UserRole = () => {
           </div>
           <Table columns={columns} dataSource={dataByID} />
           <Modal
-                title='Add New UserRole'
+                title='Add New User Company'
                 open={isModalOpen}
                 onCancel={handleCancel}
                 closable={true}
@@ -262,10 +263,10 @@ const UserRole = () => {
                       <input type="text" {...register("code")}  className="form-control form-control-solid"/>
                     </div> */}
                     <div className=' mb-7'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Role</label>
-                        <select {...register("roleId")} className="form-select form-select-solid"  aria-label="Select example">
+                      <label htmlFor="exampleFormControlInput1" className="form-label">Company</label>
+                        <select {...register("companyId")} className="form-select form-select-solid"  aria-label="Select example">
                             <option value=""> Select </option>
-                            {roles?.data.map((item: any) => (
+                            {companies?.data.map((item: any) => (
                                 <option value={item.id}>{item.name}</option>
                             ))}
                         </select>
@@ -281,5 +282,5 @@ const UserRole = () => {
   )
 }
 
-export { UserRole }
+export { UserCompany }
 

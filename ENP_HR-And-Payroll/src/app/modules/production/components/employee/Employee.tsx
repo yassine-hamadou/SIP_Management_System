@@ -310,6 +310,7 @@ const Employee = () => {
     // setSearchText(e.target.value)
     globalSearch(e.target.value)
     if (e.target.value === '') {
+      queryClient.invalidateQueries('employees')  
       loadData()
     }
   }
