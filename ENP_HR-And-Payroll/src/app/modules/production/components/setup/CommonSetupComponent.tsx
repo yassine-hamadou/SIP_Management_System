@@ -23,6 +23,11 @@ const SetupComponent = (props: any) => {
     const navigate = useNavigate();
     const [detailName, setDetailName] = useState('')
     const { data: medicals } = useQuery('medicals', () => fetchDocument(`Medicals/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: allDepartments } = useQuery('departments', () => fetchDocument(`departments/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: allDivisions } = useQuery('divisions', () => fetchDocument(`divisions/tenant/${tenantId}`), { cacheTime: 5000 })
+    const path = props.data.title === 'Units' ? 'Departments' : 'Divisions'
+    const { data: prevPath } = useQuery(`${path}`, () => fetchDocument(`${path}/tenant/${tenantId}`), { cacheTime: 5000 })
+
     const showModal = () => {
         setIsModalOpen(true)
     }
@@ -43,9 +48,9 @@ const SetupComponent = (props: any) => {
         setTempData({ ...tempData, [event.target.name]: event.target.value });
     }
 
-    const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
-        onSuccess: (data) => {
-            queryClient.setQueryData([props.data.url, tempData], data);
+    const { mutate: deleteData } = useMutation(deleteItem, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(props.data.url)
             loadData()
         },
         onError: (error) => {
@@ -100,7 +105,11 @@ const SetupComponent = (props: any) => {
                             <span className='btn btn-light-info btn-sm'>Department</span>
                         </Link>
                     }
-
+                    {
+                        props.data.title === 'Departments' && <Link to={`/units/${record.id}`}>
+                            <span className='btn btn-light-info btn-sm'>Units</span>
+                        </Link>
+                    }
                     {
                         props.data.title === 'Medicals' && <Link to={`/products/${record.id}`}>
                             <span className='btn btn-light-info btn-sm'>Products</span>
@@ -127,14 +136,16 @@ const SetupComponent = (props: any) => {
         try {
             const response = props.data.url === 'Products' ? await fetchDocument(`${props.data.url}`) : await fetchDocument(`${props.data.url}/tenant/${tenantId}`)
             if (props.data.url === 'Products') {
-                const getMedicals = medicals?.data.find((item: any) => item.id.toString() === param.id)
-                const detName = getMedicals?.name
-                setDetailName(detName)
-                const data = response.data.filter((item: any) => item.medicalTypeId?.toString() === param.id)
-                // console.log('data', data)
+                const data = response?.data?.filter((item: any) => item.medicalTypeId === parseInt(param.id))
+                setGridData(data)
+            } else if (props.data.url === 'Departments') {
+                const data = response?.data?.filter((item: any) => item.divisionId === parseInt(param.id))
+                setGridData(data)
+            } else if (props.data.url === 'Units') {
+                const data = response?.data?.filter((item: any) => item.departmentId === parseInt(param.id))
                 setGridData(data)
             } else {
-                setGridData(response.data)
+                setGridData(response?.data)
             }
             setLoading(false)
         } catch (error) {
@@ -142,9 +153,26 @@ const SetupComponent = (props: any) => {
         }
     }
 
+    const pathName = () => {
+        if (props.data.url === 'Products') {
+            const getPathData = medicals?.data.find((item: any) => item.id === parseInt(param.id))
+            const pathName = getPathData?.name
+            setDetailName(pathName)
+        } else if (props.data.url === 'Departments') {
+            const getPathData = prevPath?.data.find((item: any) => item.id === parseInt(param.id))
+            const pathName = getPathData?.name
+            setDetailName(pathName)
+        } else if (props.data.url === 'Units') {
+            const getPathData = prevPath?.data.find((item: any) => item.id === parseInt(param.id))
+            const pathName = getPathData?.name
+            setDetailName(pathName)
+        }
+    }
+
     useEffect(() => {
+        pathName()
         loadData()
-    }, [])
+    }, [param])
 
     const dataWithIndex = gridData.map((item: any, index) => ({
         ...item,
@@ -168,9 +196,9 @@ const SetupComponent = (props: any) => {
         setGridData(filteredData)
     }
 
-    const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
-        onSuccess: (data) => {
-            queryClient.setQueryData([props.data.url, tempData], data);
+    const { mutate: updateData } = useMutation(updateItem, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(props.data.url)
             reset()
             setTempData({})
             loadData()
@@ -184,12 +212,35 @@ const SetupComponent = (props: any) => {
 
     const handleUpdate = (e: any) => {
         e.preventDefault()
-        const item = {
-            url: props.data.url,
-            data: tempData
+        if (props.data.title === 'Departments') {
+            const item = {
+                url: props.data.url,
+                data: {
+                    ...tempData,
+                    departmentId: parseInt(tempData.divisionId)
+                }
+            }
+            updateData(item)
+            console.log('update: ', item.data)
+
+        } else if (props.data.title === 'Units') {
+            const item = {
+                url: props.data.url,
+                data: {
+                    ...tempData,
+                    departmentId: parseInt(tempData.departmentId)
+                }
+            }
+            updateData(item)
+            console.log('update: ', item.data)
+        } else {
+            const item = {
+                url: props.data.url,
+                data: tempData
+            }
+            updateData(item)
+            console.log('update: ', item.data)
         }
-        updateData(item)
-        console.log('update: ', item.data)
     }
 
     const showUpdateModal = (values: any) => {
@@ -221,9 +272,9 @@ const SetupComponent = (props: any) => {
         postData(item)
     })
 
-    const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
+    const { mutate: postData } = useMutation(postItem, {
         onSuccess: (data) => {
-            queryClient.setQueryData([props.data.url, tempData], data);
+            queryClient.invalidateQueries(props.data.url)
             reset()
             setTempData({})
             loadData()
@@ -247,13 +298,11 @@ const SetupComponent = (props: any) => {
                 <div className='table-responsive'>
                     <div className="mb-5">
                         {
-                            props.data.title === 'Products' &&
-                            <>
+                            props.data.title === 'Products' || props.data.title === 'Departments' || props.data.title === 'Units' ?
                                 <div>
                                     <span className="fw-bold text-gray-800 d-block fs-2 mb-3 ">{detailName}</span>
                                     <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
-                                </div>
-                            </>
+                                </div> : null
                         }
 
                     </div>
@@ -316,6 +365,36 @@ const SetupComponent = (props: any) => {
                                     <label htmlFor="exampleFormControlInput1" className="form-label">Name</label>
                                     <input type="text" {...register("name")} defaultValue={isUpdateModalOpen === true ? tempData.name : ''} onChange={handleChange} className="form-control form-control-solid" />
                                 </div>
+                                {
+                                    isUpdateModalOpen && props.data.title === 'Units' ?
+                                        <div className='mb-7'>
+                                            <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
+                                            <select {...register("departmentId")}
+                                                value={isUpdateModalOpen === true ? tempData?.departmentId : null}
+                                                onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                                                {
+                                                    allDepartments?.data.map((item: any) => (
+                                                        <option value={item.id}>{item.name}</option>
+                                                    ))
+                                                }
+                                            </select>
+                                        </div> : null
+                                }
+                                {
+                                    isUpdateModalOpen && props.data.title === 'Departments' ?
+                                        <div className='mb-7'>
+                                            <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
+                                            <select {...register("divisionId")}
+                                                value={isUpdateModalOpen === true ? tempData?.divisionId : null}
+                                                onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                                                {
+                                                    allDivisions?.data.map((item: any) => (
+                                                        <option value={item.id}>{item.name}</option>
+                                                    ))
+                                                }
+                                            </select>
+                                        </div> : null
+                                }
                             </div>
                         </form>
                     </Modal>

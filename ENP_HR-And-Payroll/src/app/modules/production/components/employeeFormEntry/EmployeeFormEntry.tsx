@@ -369,15 +369,6 @@ const MultiTabForm= () =>{
                   ))}
                 </select>
               </div>
-              <div className='col-4 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
-                  <select {...register("categoryId")} className="form-select form-select-solid" aria-label="Select example">
-                    <option>select </option>
-                    {allCategories?.data.map((item: any) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                </select>
-              </div>
             
               <div className='col-4 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
@@ -386,6 +377,16 @@ const MultiTabForm= () =>{
                   {allDivisions?.data.map((item: any) => (
                     <option value={item.id}>{item.name}</option>
                   ))}
+                </select>
+              </div>
+
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
+                  <select {...register("categoryId")} className="form-select form-select-solid" aria-label="Select example">
+                    <option>select </option>
+                    {allCategories?.data.map((item: any) => (
+                      <option value={item.id}>{item.name}</option>
+                    ))}
                 </select>
               </div>
               <div className='col-4 mb-7'>
@@ -408,6 +409,17 @@ const MultiTabForm= () =>{
                   ))}
                 </select>
               </div>
+              
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
+                <select {...register("jobTitleId")} className="form-select form-select-solid" aria-label="Select example">
+                  <option>Select </option>
+                  {allJobTitles?.data.map((item: any) => (
+                      <option value={item.id}>{item.name}</option>
+                    ))}
+                </select>
+              </div>
+              
               <div className='col-4 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Notch</label>
                   <select {...register("notchId")} className="form-select form-select-solid" aria-label="Select example">
@@ -427,15 +439,7 @@ const MultiTabForm= () =>{
                   ))}
                 </select>
               </div>
-              <div className='col-4 mb-7'>
-                <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
-                <select {...register("jobTitleId")} className="form-select form-select-solid" aria-label="Select example">
-                  <option>Select </option>
-                  {allJobTitles?.data.map((item: any) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                </select>
-              </div>
+              
               
               <div className='col-4 mb-7'>
                 <label htmlFor="exampleFormControlInput1" className=" form-label">Job Roles</label>
