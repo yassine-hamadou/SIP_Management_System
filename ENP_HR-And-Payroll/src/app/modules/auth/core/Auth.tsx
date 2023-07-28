@@ -31,8 +31,7 @@ const initAuthContextPropsState = {
   currentUser: undefined,
   tenant: undefined,
   setCurrentUser: () => {},
-  saveTenant: () => {
-  },
+  saveTenant: () => {},
   logout: () => {},
 }
 
