@@ -63,7 +63,7 @@ const EmployeeEditForm = () => {
   const handleTab2Click = (tab2: any) => {
     setActiveTab2(tab2);
   }
-  
+
   const openStatus = () => {
     setIsStatusModalOpen(true)
   }
@@ -437,7 +437,7 @@ const EmployeeEditForm = () => {
   ]
 
   const statusColumns: any = [
-   
+
     {
       title: 'Status',
       dataIndex: 'status',
@@ -454,8 +454,8 @@ const EmployeeEditForm = () => {
     {
       title: 'Date',
       key: 'date',
-      render: (row:any )=>{
-        return row.date?.substring(0,10)
+      render: (row: any) => {
+        return row.date?.substring(0, 10)
       },
       sorter: (a: any, b: any) => {
         if (a.date > b.date) {
@@ -853,21 +853,21 @@ const EmployeeEditForm = () => {
     }
 
   }
-  const { data: allEmployees } = useQuery('employees',()=> fetchEmployees(tenantId), { cacheTime: 5000 })
-  const { data: allDepartments } = useQuery('departments',()=> fetchDepartments(tenantId), { cacheTime: 5000 })
-  const { data: allDivisions } = useQuery('divisions',()=> fetchDivisions(tenantId), { cacheTime: 5000 })
-  const { data: allCategories } = useQuery('categories',()=> fetchCategories(tenantId), { cacheTime: 5000 })
-  const { data: allPaygroups } = useQuery('paygroups', ()=>fetchPaygroups(tenantId), { cacheTime: 5000 })
-  const { data: allUnits } = useQuery('units',()=> fetchUnits(tenantId), { cacheTime: 5000 })
-  const { data: allGrades } = useQuery('grades',()=> fetchGrades(tenantId), { cacheTime: 5000 })
-  const { data: allNotches } = useQuery('notches',()=> fetchNotches(tenantId), { cacheTime: 5000 })
-  const { data: allNations } = useQuery('nations',()=> fetchNationalities(tenantId), { cacheTime: 5000 })
-  const { data: allSkills } = useQuery('skill',()=> fetchSkills(tenantId), { cacheTime: 5000 })
-  const { data: allQualifications } = useQuery('qualifications',()=> fetchQualifications(tenantId), { cacheTime: 5000 })
-  const { data: allExperiences } = useQuery('experiences',()=> fetchExperiences(tenantId), { cacheTime: 5000 })
-  const { data: allJobTitles } = useQuery('jobtitle',()=> fetchJobTitles(tenantId), { cacheTime: 5000 })
-  const { data: paygroups } = useQuery('paygroups',()=> fetchPaygroups(tenantId), { cacheTime: 5000 })
-  const { data: medicals } = useQuery('medicals',()=> fetchMedicals(tenantId), { cacheTime: 5000 })
+  const { data: allEmployees } = useQuery('employees', () => fetchEmployees(tenantId), { cacheTime: 5000 })
+  const { data: allDepartments } = useQuery('departments', () => fetchDepartments(tenantId), { cacheTime: 5000 })
+  const { data: allDivisions } = useQuery('divisions', () => fetchDivisions(tenantId), { cacheTime: 5000 })
+  const { data: allCategories } = useQuery('categories', () => fetchCategories(tenantId), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroups', () => fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: allUnits } = useQuery('units', () => fetchUnits(tenantId), { cacheTime: 5000 })
+  const { data: allGrades } = useQuery('grades', () => fetchGrades(tenantId), { cacheTime: 5000 })
+  const { data: allNotches } = useQuery('notches', () => fetchNotches(tenantId), { cacheTime: 5000 })
+  const { data: allNations } = useQuery('nations', () => fetchNationalities(tenantId), { cacheTime: 5000 })
+  const { data: allSkills } = useQuery('skill', () => fetchSkills(tenantId), { cacheTime: 5000 })
+  const { data: allQualifications } = useQuery('qualifications', () => fetchQualifications(tenantId), { cacheTime: 5000 })
+  const { data: allExperiences } = useQuery('experiences', () => fetchExperiences(tenantId), { cacheTime: 5000 })
+  const { data: allJobTitles } = useQuery('jobtitle', () => fetchJobTitles(tenantId), { cacheTime: 5000 })
+  const { data: paygroups } = useQuery('paygroups', () => fetchPaygroups(tenantId), { cacheTime: 5000 })
+  const { data: medicals } = useQuery('medicals', () => fetchMedicals(tenantId), { cacheTime: 5000 })
 
 
 
@@ -944,7 +944,7 @@ const EmployeeEditForm = () => {
 
 
   useEffect(() => {
-    
+
 
     const getDepartmentName = () => {
       let departmentName = null
@@ -1061,16 +1061,16 @@ const EmployeeEditForm = () => {
     return section.employeeId.toString() === param.id
   })
 
-  const statusByEmployee:any = statusData.filter((section: any) => {
+  const statusByEmployee: any = statusData.filter((section: any) => {
     return section.employeeId.toString() === param.id
   })
 
-  const recentStatus: any = statusByEmployee?.find((item:any)=>{
-    return item.index === (statusByEmployee.length -1)
+  const recentStatus: any = statusByEmployee?.find((item: any) => {
+    return item.index === (statusByEmployee.length - 1)
   })
-  
-  let highestIdItem:any = null;
-  let highestId:any = -1;
+
+  let highestIdItem: any = null;
+  let highestId: any = -1;
 
   for (let i = 0; i < statusByEmployee.length; i++) {
     if (statusByEmployee[i]?.id > highestId) {
@@ -1078,9 +1078,9 @@ const EmployeeEditForm = () => {
       highestIdItem = statusByEmployee[i];
     }
   }
-  
+
   // check date be make sure users can not select date before today
-  const today = new Date().toISOString().split('T')[0];  
+  const today = new Date().toISOString().split('T')[0];
 
   const qualificationByEmployee = qualificationData.filter((qualification: any) => {
     return qualification.employeeId.toString() === param.id
@@ -1104,12 +1104,12 @@ const EmployeeEditForm = () => {
     mutate(tempData)
   }
 
-  const handleImageChange = (e:any) => {
+  const handleImageChange = (e: any) => {
     const file = e.target.files[0];
     setTempImage(file);
 
     if (file) {
-      const reader:any = new FileReader();
+      const reader: any = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result);
       };
@@ -1119,7 +1119,7 @@ const EmployeeEditForm = () => {
     }
   };
 
-// for posting employee statuses
+  // for posting employee statuses
   const urlSta = `${Api_Endpoint}/EmployeeStatus`
   const OnSubmitStatus = handleSubmit(async (values: any) => {
     setLoading(true)
@@ -1129,7 +1129,7 @@ const EmployeeEditForm = () => {
       employeeId: parseInt(param.id),
     }
     console.log(data);
-    
+
     try {
       const response = await axios.post(urlSta, data)
       setSubmitLoading(false)
@@ -1233,68 +1233,69 @@ const EmployeeEditForm = () => {
       setSubmitLoading(false)
       return error.statusText
     }
-  })  
+  })
 
   const uRL = `${Api_Endpoint}/Employees/${param.id}`
-    const OnSUbmitUpdate = handleSubmit( async ( )=> {
-      
-      setLoading(true)
-      const formData:any = new FormData();
-      formData.append('id', parseInt(tempData.id))
-      formData.append('employeeId', tempData.employeeId==null?"":tempData.employeeId)
-      formData.append('firstName', tempData.firstName==null?"":tempData.firstName)
-      formData.append('surname', tempData.surname==null?"":tempData.surname)
-      formData.append('otherName', tempData.otherName==null?"":tempData.otherName)
-      formData.append('dob', tempData.dob==null?"":tempData.dob)
-      formData.append('gender', tempData.gender==null?"":tempData.gender)
-      formData.append('maritalStatus', tempData.maritalStatus==null?"":tempData.maritalStatus)
-      formData.append('nationality', tempData.nationality==null?"":tempData.nationality)
-      formData.append('nationalId', tempData.nationalId==null?"":tempData.nationalId)
-      formData.append('phone', tempData.phone==null?"":tempData.phone)
-      formData.append('alternativePhone', tempData.alternativePhone==null?"":tempData.alternativePhone)
-      formData.append('address', tempData.address==null?"":tempData.address)
-      formData.append('residentialAddress', tempData.residentialAddress==null?"":tempData.residentialAddress)
-      formData.append('email', tempData.email==null?"":tempData.email)
-      formData.append('personalEmail', tempData.personalEmail==null?"":tempData.personalEmail)
-      formData.append('jobRole', tempData.jobRole==null?"":tempData.jobRole)
-      formData.append('nextOfKin', tempData.nextOfKin==null?"":tempData.nextOfKin)
-      formData.append('guarantor', tempData.guarantor==null?"":tempData.guarantor)
-      formData.append('paygroupId', tempData.paygroupId==null?"":parseInt(tempData.paygroupId))
-      formData.append('categoryId', tempData.categoryId==null?"":parseInt(tempData.categoryId))
-      formData.append('divisionId', tempData.divisionId==null?"":parseInt(tempData.divisionId))
-      formData.append('departmentId', tempData.departmentId==null?"":parseInt(tempData.departmentId))
-      formData.append('gradeId', tempData.gradeId==null?"":parseInt(tempData.gradeId))
-      formData.append('notchId', tempData.notchId==null?"":tempData.notchId)
-      formData.append('jobTitleId', tempData.jobTitleId==null?"":parseInt(tempData.jobTitleId))
-      formData.append('employmentDate', tempData.employmentDate==null?"":tempData.employmentDate)
-      formData.append('payType', tempData.payType==null?"":tempData.payType)
-      formData.append('paymentMethod', tempData.paymentMethod==null?"":tempData.paymentMethod)
-      formData.append('bankId', tempData.bankId==null?"":tempData.bankId)
-      formData.append('account', tempData.account==null?"":tempData.account)
-      formData.append('tin', tempData.tin==null?"":tempData.tin)
-      formData.append('ssf', tempData.ssf==null?"":tempData.ssf)
-      formData.append('imageFile', tempImage?tempImage:"")
-      formData.append('tenantId', tenantId)
+  const OnSUbmitUpdate = handleSubmit(async () => {
+
+    setLoading(true)
+    const formData: any = new FormData();
+    formData.append('id', parseInt(tempData.id))
+    formData.append('employeeId', tempData.employeeId == null ? "" : tempData.employeeId)
+    formData.append('firstName', tempData.firstName == null ? "" : tempData.firstName)
+    formData.append('surname', tempData.surname == null ? "" : tempData.surname)
+    formData.append('otherName', tempData.otherName == null ? "" : tempData.otherName)
+    formData.append('dob', tempData.dob == null ? "" : tempData.dob)
+    formData.append('gender', tempData.gender == null ? "" : tempData.gender)
+    formData.append('maritalStatus', tempData.maritalStatus == null ? "" : tempData.maritalStatus)
+    formData.append('nationality', tempData.nationality == null ? "" : tempData.nationality)
+    formData.append('nationalId', tempData.nationalId == null ? "" : tempData.nationalId)
+    formData.append('phone', tempData.phone == null ? "" : tempData.phone)
+    formData.append('alternativePhone', tempData.alternativePhone == null ? "" : tempData.alternativePhone)
+    formData.append('address', tempData.address == null ? "" : tempData.address)
+    formData.append('residentialAddress', tempData.residentialAddress == null ? "" : tempData.residentialAddress)
+    formData.append('email', tempData.email == null ? "" : tempData.email)
+    formData.append('personalEmail', tempData.personalEmail == null ? "" : tempData.personalEmail)
+    formData.append('jobRole', tempData.jobRole == null ? "" : tempData.jobRole)
+    formData.append('nextOfKin', tempData.nextOfKin == null ? "" : tempData.nextOfKin)
+    formData.append('guarantor', tempData.guarantor == null ? "" : tempData.guarantor)
+    formData.append('paygroupId', tempData.paygroupId == null ? "" : parseInt(tempData.paygroupId))
+    formData.append('categoryId', tempData.categoryId == null ? "" : parseInt(tempData.categoryId))
+    formData.append('divisionId', tempData.divisionId == null ? "" : parseInt(tempData.divisionId))
+    formData.append('departmentId', tempData.departmentId == null ? "" : parseInt(tempData.departmentId))
+    formData.append('gradeId', tempData.gradeId == null ? "" : parseInt(tempData.gradeId))
+    formData.append('notchId', tempData.notchId == null ? "" : tempData.notchId)
+    formData.append('jobTitleId', tempData.jobTitleId == null ? "" : parseInt(tempData.jobTitleId))
+    formData.append('employmentDate', tempData.employmentDate == null ? "" : tempData.employmentDate)
+    formData.append('payType', tempData.payType == null ? "" : tempData.payType)
+    formData.append('paymentMethod', tempData.paymentMethod == null ? "" : tempData.paymentMethod)
+    formData.append('bankId', tempData.bankId == null ? "" : tempData.bankId)
+    formData.append('account', tempData.account == null ? "" : tempData.account)
+    formData.append('tin', tempData.tin == null ? "" : tempData.tin)
+    formData.append('ssf', tempData.ssf == null ? "" : tempData.ssf)
+    formData.append('imageFile', tempImage ? tempImage : "")
+    formData.append('tenantId', tenantId)
 
 
-      const config = {
-        headers: {
-          'content-type': 'multipart/form-data',
-        },}
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    }
 
-      console.log(Object.fromEntries(formData))
-      try {
-        const response = await axios.put(uRL, formData, config)
-        setSubmitLoading(false)
-        navigate('/employee', {replace: true})
-        return response.statusText
-      } catch (error: any) {
-        setSubmitLoading(false)
-        return error.statusText
-      }
-    })
+    console.log(Object.fromEntries(formData))
+    try {
+      const response = await axios.put(uRL, formData, config)
+      setSubmitLoading(false)
+      navigate('/employee', { replace: true })
+      return response.statusText
+    } catch (error: any) {
+      setSubmitLoading(false)
+      return error.statusText
+    }
+  })
 
-    // 
+  // 
 
   return (
     <div
@@ -1391,28 +1392,28 @@ const EmployeeEditForm = () => {
 
           {/* Details */}
           {activeTab === 'tab1' &&
-          <>
-            <div className='col-4 mb-7'>
-            {
-              !previewImage&&(
-              tempData?.imageUrl!==null?
-              <img style={{borderRadius:"10px", marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/${tempData?.imageUrl}`} width={150} height={150}></img>:
-              <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={150} height={150}></img>
-              )
-            }
-            {
-              previewImage&&(
+            <>
+              <div className='col-4 mb-7'>
+                {
+                  !previewImage && (
+                    tempData?.imageUrl !== null ?
+                      <img style={{ borderRadius: "10px", marginBottom: "20px" }} src={`http://208.117.44.15/hrwebapi/uploads/employee/${tempData?.imageUrl}`} width={150} height={150}></img> :
+                      <img style={{ borderRadius: "10px", marginBottom: "20px" }} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={150} height={150}></img>
+                  )
+                }
+                {
+                  previewImage && (
 
-                <img style={{borderRadius:"10px",marginBottom:"20px"}} src={previewImage} width={150} height={150}></img>
-              )
-            }
-           <br></br>
-            <label htmlFor="imageFile" className='btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>Change Picture</label>
-            <input id='imageFile' style={{visibility:"hidden"}}  {...register("imageUrl")}
-              onChange={handleImageChange}
-              type="file" />
-          </div>
-            <div className='row col-12'>
+                    <img style={{ borderRadius: "10px", marginBottom: "20px" }} src={previewImage} width={150} height={150}></img>
+                  )
+                }
+                <br></br>
+                <label htmlFor="imageFile" className='btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary'>Change Picture</label>
+                <input id='imageFile' style={{ visibility: "hidden" }}  {...register("imageUrl")}
+                  onChange={handleImageChange}
+                  type="file" />
+              </div>
+              <div className='row col-12'>
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Employee ID</label>
                   <input type="text" {...register("phone")}
@@ -1435,7 +1436,7 @@ const EmployeeEditForm = () => {
                     onChange={handleChange}
                     value={tempData?.surname} className="form-control form-control-solid" />
                 </div>
-              
+
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className="form-label">Other Name</label>
                   <input type="text" {...register("otherName")}
@@ -1448,9 +1449,9 @@ const EmployeeEditForm = () => {
                   <input type="date" {...register("date")}
                     name="dob"
                     onChange={handleChange}
-                    value={tempData?.dob?.substring(0,10)} className="form-control form-control-solid" />
+                    value={tempData?.dob?.substring(0, 10)} className="form-control form-control-solid" />
                 </div>
-              
+
 
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Gender</label>
@@ -1475,7 +1476,7 @@ const EmployeeEditForm = () => {
 
                   </select>
                 </div>
-              
+
                 <div className='col-4 mb-7'>
                   <label htmlFor="exampleFormControlInput1" className=" form-label">Nationality</label>
                   <select
@@ -1497,281 +1498,279 @@ const EmployeeEditForm = () => {
                     value={tempData?.nationalId} className="form-control form-control-solid" />
                 </div>
               </div>
-              </>
+            </>
           }
 
           {/* Communications */}
           {
             activeTab === 'tab2' &&
             <div className='row col-12'>
-              
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Phone Number</label>
-                  <input type="phone"
-                    {...register("phone")} name="phone" 
-                    onChange={handleChange}
-                    value={tempData?.phone}
-                    pattern="[0-9]*" className="form-control form-control-solid" />
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Alternative Phone number</label>
-                  <input type="phone" value={tempData?.alternativePhone}
-                    {...register("alternativePhone")} name="alternativePhone" 
-                    maxLength={15}
-                    onKeyPress={validatePhoneNumber}
-                    onChange={handleChange}
-                    className="form-control form-control-solid" />
-                </div>
-              
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Address</label>
-                  <input type="text"
-                    {...register("address")} name="address" 
-                    value={tempData?.address}
-                    onChange={handleChange}
-                    className="form-control form-control-solid" />
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Residential Address</label>
-                  <input type="text" {...register("residentialAddress")} name="residentialAddress" 
-                    value={tempData?.residentialAddress} onChange={handleChange} className="form-control form-control-solid" />
-                </div>
-              
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Email</label>
-                  <input type="email" {...register("email")} name="email"  value={tempData?.email?.toLowerCase()} onChange={handleChange} className="form-control form-control-solid" />
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Personal Email</label>
-                  <input type="email" {...register("personalEmail")} name="personalEmail"  value={tempData?.personalEmail} onChange={handleChange} className="form-control form-control-solid" />
-                </div>
-              
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Next of kin</label>
-                  <input type="text" {...register("nextOfKin")} name="nextOfKin"  value={tempData?.nextOfKin} onChange={handleChange} className="form-control form-control-solid" />
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Guarantor</label>
-                  <input type="text" {...register("guarantor")} name="guarantor"  value={tempData?.guarantor} onChange={handleChange} className="form-control form-control-solid" />
-                </div>
+
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Phone Number</label>
+                <input type="phone"
+                  {...register("phone")} name="phone"
+                  onChange={handleChange}
+                  value={tempData?.phone}
+                  pattern="[0-9]*" className="form-control form-control-solid" />
               </div>
-           
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Alternative Phone number</label>
+                <input type="phone" value={tempData?.alternativePhone}
+                  {...register("alternativePhone")} name="alternativePhone"
+                  maxLength={15}
+                  onKeyPress={validatePhoneNumber}
+                  onChange={handleChange}
+                  className="form-control form-control-solid" />
+              </div>
+
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Address</label>
+                <input type="text"
+                  {...register("address")} name="address"
+                  value={tempData?.address}
+                  onChange={handleChange}
+                  className="form-control form-control-solid" />
+              </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Residential Address</label>
+                <input type="text" {...register("residentialAddress")} name="residentialAddress"
+                  value={tempData?.residentialAddress} onChange={handleChange} className="form-control form-control-solid" />
+              </div>
+
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Email</label>
+                <input type="email" {...register("email")} name="email" value={tempData?.email?.toLowerCase()} onChange={handleChange} className="form-control form-control-solid" />
+              </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Personal Email</label>
+                <input type="email" {...register("personalEmail")} name="personalEmail" value={tempData?.personalEmail} onChange={handleChange} className="form-control form-control-solid" />
+              </div>
+
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Next of kin</label>
+                <input type="text" {...register("nextOfKin")} name="nextOfKin" value={tempData?.nextOfKin} onChange={handleChange} className="form-control form-control-solid" />
+              </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Guarantor</label>
+                <input type="text" {...register("guarantor")} name="guarantor" value={tempData?.guarantor} onChange={handleChange} className="form-control form-control-solid" />
+              </div>
+            </div>
+
           }
           {/* Administration */}
           {activeTab === 'tab3' &&
             <div className='row col-12'>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Group</label>
-                  <select {...register("paygroupId")} value={tempData?.paygroupId} name='paygroupId' onChange={handleChange}  className="form-select form-select-solid" aria-label="Select example">
-                    {paygroups?.data.map((item: any) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
-                  <select  {...register("categoryId")} name="categoryId" onChange={handleChange} value={tempData?.categoryId} className="form-select form-select-solid" aria-label="Select example">
-                    {allCategories?.data.map((item: any) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
-                  <select  {...register("divisionId")} name="divisionId" onChange={handleChange} value={tempData?.divisionId} className="form-select form-select-solid" aria-label="Select example">
-                    {allDivisions?.data.map((item: any) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Salary Grade</label>
-                  <select  {...register("gradeId")} name="gradeId" onChange={handleChange} value={tempData?.gradeId} className="form-select form-select-solid" aria-label="Select example">
-                    {allGrades?.data.map((item: any) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-              
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
-                  <select  {...register("departmentId")} name="departmentId" onChange={handleChange} value={tempData?.departmentId} className="form-select form-select-solid" aria-label="Select example">
-                    {allDepartments?.data.map((item: any) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Notch</label>
-                  <select  {...register("notchId")} name="notchId" onChange={handleChange} value={tempData?.notchId} className="form-select form-select-solid" aria-label="Select example">
-                    {allNotches?.data.map((item: any) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                  </select>
-                </div>
-              
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
-                  <select  {...register("unitId")} name="unitId" onChange={handleChange} value={tempData?.unitId} className="form-select form-select-solid" aria-label="Select example">
-                    {allUnits?.data.map((item: any) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
-                  <select  {...register("jobTitleId")} name="jobTitleId" onChange={handleChange} value={tempData?.gradeId} className="form-select form-select-solid" aria-label="Select example">
-                    <option>{jobTName} </option>
-                    {allJobTitles?.data.map((item: any) => (
-                      <option value={item.id}>{item.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-              
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Job Roles</label>
-                  <textarea  {...register("jobRole")} name="jobRole" value={tempData?.jobRole} onChange={handleChange} className="form-control form-control-solid" placeholder='list job roles (seperate each role with a comma)' aria-label="With textarea"></textarea>
-
-                </div>
-                <div className='col-3 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Employment Date</label>
-                  <input type="date"  {...register("employmentDate")} name="employmentDate" value={tempData?.employmentDate?.substring(0,10)} onChange={handleChange} className="form-control form-control-solid" />
-
-                </div>
-                <div className='col-3 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Most Recent Status</label>
-                  <br></br>
-                  <span className="form-control form-control-solid">{highestIdItem?.status} - {highestIdItem?.date.substring(0,10)}</span>
-                  
-                  {/* <input  disabled value={highestIdItem?.status - highestIdItem?.date.substring(0,10)} className="form-control form-control-solid" /> */}
-
-                </div>
-                <div className='col-3 mb-7'>
-                  <br></br>
-                  <a onClick={openStatusGrid} className="btn btn-danger"> Change Status</a>
-                  <Modal
-                        title={`Status for ${tempData?.firstName} ${tempData?.surname}`}
-                        open={statusGridModalOpen}
-                        onCancel={handleCancel}
-                        closable={true}
-                        footer={[
-                            <Button key='back' onClick={handleCancel}>
-                                Close
-                            </Button>,
-                            
-                        ]}
-                    >
-                      <div style={{margin:"20px 0px"}}>
-
-                        <button type='button' className='btn btn-primary me-3' onClick={openStatus}>
-                          <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                          Add
-                        </button>
-                      </div>
-                      <hr></hr>
-                      <Table columns={statusColumns} dataSource={statusByEmployee} />
-                        
-                        <Modal
-                        title={isUpdateModalOpen ? `Update` : `Setup`}
-                        open={statusModalOpen}
-                        onCancel={handleStatusCancel}
-                        closable={true}
-                        footer={[
-                            <Button key='back' onClick={handleStatusCancel}>
-                                Cancel
-                            </Button>,
-                            <Button
-                                key='submit'
-                                type='primary'
-                                htmlType='submit'
-                                loading={submitLoading}
-                                onClick={isUpdateModalOpen ? handleUpdate : OnSubmitStatus}
-                            >
-                                Submit
-                            </Button>,
-                        ]}
-                    >
-                        <form
-                            onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmitStatus}
-                        >
-                            <hr></hr>
-                            <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
-                                <div className=' mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
-                                    <select className="form-select form-select-solid" {...register("status")} defaultValue={isUpdateModalOpen === true ? tempData.status : ''} onChange={handleChange} aria-label="Select example">
-                                      <option> select</option>
-                                      <option value="Activate"> Activate</option>
-                                      <option value="Terminate"> Terminate</option>
-                                      <option value="Suspended"> Suspended</option>
-                                      <option value="End of Contract">End of Contract</option>
-                                    </select>
-                                    {/* <input type="text" {...register("status")} defaultValue={isUpdateModalOpen === true ? tempData.status : ''} onChange={handleChange} className="form-control form-control-solid" /> */}
-                                </div>
-                                <div className=' mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="form-label">Comment</label>
-                                    <input type="text" {...register("comment")} defaultValue={isUpdateModalOpen === true ? tempData.comment : ''} onChange={handleChange} className="form-control form-control-solid" />
-                                </div>
-                                <div className=' mb-7'>
-                                    <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
-                                    <input type="date" {...register("date")} min={today} defaultValue={isUpdateModalOpen === true ? tempData.date : ''} onChange={handleChange} className="form-control form-control-solid" />
-                                </div>
-                            </div>
-                        </form>
-                    </Modal>
-                    </Modal>
-                </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Group</label>
+                <select {...register("paygroupId")} value={tempData?.paygroupId} name='paygroupId' onChange={handleChange} className="form-select form-select-solid" aria-label="Select example">
+                  {paygroups?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
               </div>
-}
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Division</label>
+                <select  {...register("divisionId")} name="divisionId" onChange={handleChange} value={tempData?.divisionId} className="form-select form-select-solid" aria-label="Select example">
+                  {allDivisions?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Category</label>
+                <select  {...register("categoryId")} name="categoryId" onChange={handleChange} value={tempData?.categoryId} className="form-select form-select-solid" aria-label="Select example">
+                  {allCategories?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Salary Grade</label>
+                <select  {...register("gradeId")} name="gradeId" onChange={handleChange} value={tempData?.gradeId} className="form-select form-select-solid" aria-label="Select example">
+                  {allGrades?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
+
+
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
+                <select  {...register("departmentId")} name="departmentId" onChange={handleChange} value={tempData?.departmentId} className="form-select form-select-solid" aria-label="Select example">
+                  {allDepartments?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Job Title</label>
+                <select  {...register("jobTitleId")} name="jobTitleId" onChange={handleChange} value={tempData?.gradeId} className="form-select form-select-solid" aria-label="Select example">
+                  <option>{jobTName} </option>
+                  {allJobTitles?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Notch</label>
+                <select  {...register("notchId")} name="notchId" onChange={handleChange} value={tempData?.notchId} className="form-select form-select-solid" aria-label="Select example">
+                  {allNotches?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Unit</label>
+                <select  {...register("unitId")} name="unitId" onChange={handleChange} value={tempData?.unitId} className="form-select form-select-solid" aria-label="Select example">
+                  {allUnits?.data.map((item: any) => (
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Job Roles</label>
+                <textarea  {...register("jobRole")} name="jobRole" value={tempData?.jobRole} onChange={handleChange} className="form-control form-control-solid" placeholder='list job roles (seperate each role with a comma)' aria-label="With textarea"></textarea>
+
+              </div>
+              <div className='col-3 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Employment Date</label>
+                <input type="date"  {...register("employmentDate")} name="employmentDate" value={tempData?.employmentDate?.substring(0, 10)} onChange={handleChange} className="form-control form-control-solid" />
+
+              </div>
+              <div className='col-3 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Most Recent Status</label>
+                <br></br>
+                <span className="form-control form-control-solid">{highestIdItem?.status} - {highestIdItem?.date.substring(0, 10)}</span>
+
+                {/* <input  disabled value={highestIdItem?.status - highestIdItem?.date.substring(0,10)} className="form-control form-control-solid" /> */}
+
+              </div>
+              <div className='col-3 mb-7 py-2'>
+                <br></br>
+                <a onClick={openStatusGrid} className="btn btn-danger"> Change Status</a>
+                <Modal
+                  title={`Status for ${tempData?.firstName} ${tempData?.surname}`}
+                  open={statusGridModalOpen}
+                  onCancel={handleCancel}
+                  closable={true}
+                  footer={[
+                    <Button key='back' onClick={handleCancel}>
+                      Close
+                    </Button>,
+
+                  ]}
+                >
+                  <div style={{ margin: "20px 0px" }}>
+
+                    <button type='button' className='btn btn-primary me-3' onClick={openStatus}>
+                      <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                      Add
+                    </button>
+                  </div>
+                  <hr></hr>
+                  <Table columns={statusColumns} dataSource={statusByEmployee} />
+
+                  <Modal
+                    title={isUpdateModalOpen ? `Update` : `Setup`}
+                    open={statusModalOpen}
+                    onCancel={handleStatusCancel}
+                    closable={true}
+                    footer={[
+                      <Button key='back' onClick={handleStatusCancel}>
+                        Cancel
+                      </Button>,
+                      <Button
+                        key='submit'
+                        type='primary'
+                        htmlType='submit'
+                        loading={submitLoading}
+                        onClick={isUpdateModalOpen ? handleUpdate : OnSubmitStatus}
+                      >
+                        Submit
+                      </Button>,
+                    ]}
+                  >
+                    <form
+                      onSubmit={isUpdateModalOpen ? handleUpdate : OnSubmitStatus}
+                    >
+                      <hr></hr>
+                      <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
+                        <div className=' mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Status</label>
+                          <select className="form-select form-select-solid" {...register("status")} defaultValue={isUpdateModalOpen === true ? tempData.status : ''} onChange={handleChange} aria-label="Select example">
+                            <option> select</option>
+                            <option value="Activate"> Activate</option>
+                            <option value="Terminate"> Terminate</option>
+                            <option value="Suspended"> Suspended</option>
+                            <option value="End of Contract">End of Contract</option>
+                          </select>
+                          {/* <input type="text" {...register("status")} defaultValue={isUpdateModalOpen === true ? tempData.status : ''} onChange={handleChange} className="form-control form-control-solid" /> */}
+                        </div>
+                        <div className=' mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Comment</label>
+                          <input type="text" {...register("comment")} defaultValue={isUpdateModalOpen === true ? tempData.comment : ''} onChange={handleChange} className="form-control form-control-solid" />
+                        </div>
+                        <div className=' mb-7'>
+                          <label htmlFor="exampleFormControlInput1" className="form-label">Date</label>
+                          <input type="date" {...register("date")} min={today} defaultValue={isUpdateModalOpen === true ? tempData.date : ''} onChange={handleChange} className="form-control form-control-solid" />
+                        </div>
+                      </div>
+                    </form>
+                  </Modal>
+                </Modal>
+              </div>
+            </div>
+          }
 
           {/* Payroll */}
           {activeTab === 'tab4' &&
             <div className='row col-12'>
-  
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Type</label>
-                  <select name="payType" onChange={handleChange} value={tempData?.payType} className="form-select form-select-solid" aria-label="Select example">
-                    <option value="MONTHLY">MONTHLY</option>
-                    <option value="WEEKLY">WEEKLY</option>
-                    <option value="HOURLY">HOURLY </option>
-                  </select>
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Payment Method</label>
-                  <select name="paymentMethod" onChange={handleChange} value={tempData?.paymentMethod} className="form-select form-select-solid" aria-label="Select example">
-                    <option value="BANK">BANK</option>
-                    <option value="CASH">CASH</option>
-                  </select>
 
-                </div>
-  
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Bank</label>
-
-                  <br></br>
-
-                  <select onChange={handleChange} value={tempData?.bankId} name='bankId' className="form-select form-select-solid" aria-label="Select example">
-                    {BANKS.map((item: any) => (
-                      <option value={item.code}>{item.branch}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">Account </label>
-                  <input type="text" name="account" onChange={handleChange} value={tempData?.account} className="form-control form-control-solid" />
-                </div>
-  
-
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">TIN </label>
-                  <input type="text" name="tin" onChange={handleChange} value={tempData?.tin} className="form-control form-control-solid" />
-                </div>
-                <div className='col-4 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className=" form-label">SSN </label>
-                  <input type="text" name="ssf" onChange={handleChange} value={tempData?.ssf} className="form-control form-control-solid" />
-                </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Pay Type</label>
+                <select name="payType" onChange={handleChange} value={tempData?.payType} className="form-select form-select-solid" aria-label="Select example">
+                  <option value="MONTHLY">MONTHLY</option>
+                  <option value="WEEKLY">WEEKLY</option>
+                  <option value="HOURLY">HOURLY </option>
+                </select>
               </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Payment Method</label>
+                <select name="paymentMethod" onChange={handleChange} value={tempData?.paymentMethod} className="form-select form-select-solid" aria-label="Select example">
+                  <option value="BANK">BANK</option>
+                  <option value="CASH">CASH</option>
+                </select>
+
+              </div>
+
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Bank</label>
+
+                <br></br>
+
+                <select onChange={handleChange} value={tempData?.bankId} name='bankId' className="form-select form-select-solid" aria-label="Select example">
+                  {BANKS.map((item: any) => (
+                    <option value={item.code}>{item.branch}</option>
+                  ))}
+                </select>
+              </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Account </label>
+                <input type="text" name="account" onChange={handleChange} value={tempData?.account} className="form-control form-control-solid" />
+              </div>
+
+
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">TIN </label>
+                <input type="text" name="tin" onChange={handleChange} value={tempData?.tin} className="form-control form-control-solid" />
+              </div>
+              <div className='col-4 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">SSN </label>
+                <input type="text" name="ssf" onChange={handleChange} value={tempData?.ssf} className="form-control form-control-solid" />
+              </div>
+            </div>
           }
 
           {/* skills & qualifications */}
