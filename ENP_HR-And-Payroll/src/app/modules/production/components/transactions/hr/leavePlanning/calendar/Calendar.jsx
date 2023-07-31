@@ -30,6 +30,7 @@ import {
   postLeavePlanning, updateLeavePlanning
 } from "../../../../../../../services/ApiCalls";
 import {fetchLeavePlannings} from "./requests";
+import { log } from 'console';
 
 /**
  *  Schedule editor custom fields sample
@@ -56,10 +57,12 @@ const Calendar = ({chosenFilter: any}) => {
   //Get
   const tenantId = localStorage.getItem('tenant')
 
-  const {data: employeeData} = useQuery('employeeData',()=> fetchEmployees(tenantId), {
-    refetchOnWindowFocus: false,
-    staleTime: 300000,
-  })
+  // const {data: employeeData} = useQuery('employeeData',()=> fetchEmployees(tenantId), {
+  //   refetchOnWindowFocus: false,
+  //   staleTime: 300000,
+  // })
+
+  const {data:allEmployee, isLoading} = useQuery('employees',() =>fetchEmployees(tenantId), {cacheTime:5000})
 
   const {data: leaveTypes} = useQuery('leaveTypes', ()=>fetchLeaveTypes(tenantId), {
     refetchOnWindowFocus: false,
@@ -112,7 +115,7 @@ const Calendar = ({chosenFilter: any}) => {
             Id: leave.id,
             StartTime: leave.fromDate,
             EndTime: leave.toDate,
-            Subject: `${employeeData?.data?.find((employee) => {
+            Subject: `${allEmployee?.data?.find((employee) => {
               return employee.id === leave.employeeId
             })?.surname}: ${leaveTypes?.data?.find((leaveType) => {
               return leaveType.id === leave.leaveId
@@ -148,27 +151,34 @@ const Calendar = ({chosenFilter: any}) => {
     //   // dropDownListObject.dataBind() // refresh the dropdown list
     // }
     function getEmployeeDeparment(e) {
-      console.log("e", e)
+      // console.log("e", e)
       if (e.itemData) {
-        console.log("e.itemData", e.itemData)
+        // console.log("e.itemData", e.itemData)
         // udpate location dropdown component to automatically select the selected employee unit
         // console.log("employeeDatay", employeesQueryData.)
-        const employeeDepartId = employeesQueryData.getQueryData('employeeData')?.data?.find((employee) => employee.id === e.itemData.value).departmentId
-        const unitInputField = document.getElementById("Location")
-        console.log("unitInputField", unitInputField)
+        const employeeDetail = allEmployee?.data?.find((employee) => {
+          return employee.id === e.itemData.value
+        })
+
+         const employeeDepartId = employeeDetail?.departmentId //get the department id of the selected employee
+         
+
+
+        // const unitInputField = document.getElementById("Location")
+        // console.log("unitInputField", unitInputField)
         //get the unit of the selected employee
 
-        if (employeeDepartId === null || employeeDepartId === undefined) {
-          message.error("Employee does not have a department").then(r => r)
-        }
-        else {
-          unitInputField.value = unitQuery.data?.data?.find((unit) => unit.departmentId === employeeDepartId)?.name
-          console.log("unitInputField", unitInputField)
-        }
+        // if (employeeDepartId === null || employeeDepartId === undefined) {
+        //   message.error("Employee does not have a department").then(r => r)
+        // }
+        // else {
+        //   unitInputField.value = unitQuery.data?.data?.find((unit) => unit.departmentId === employeeDepartId)?.name
+        //   console.log("unitInputField", unitInputField)
+        // }
        // console.log("employeeDepartId", employeeDepartId)
       }
     }
-
+    const today = new Date();
 
     return props !== undefined ? (
       <table className='custom-event-editor' style={{width: '100%'}} cellPadding={5}>
@@ -185,9 +195,9 @@ const Calendar = ({chosenFilter: any}) => {
                 data-name='employeeId'
                 className='e-field'
                 style={{width: '100%'}}
-                dataSource={employeeData?.data?.map((employee) => {
+                dataSource={allEmployee?.data?.map((employee) => {
                   return {
-                    text: `${employee.firstName} ${employee.surname}`,
+                    text: `${employee.firstName} - ${employee.firstName} ${employee.surname}`,
                     value: employee.id, //this is the value that will be sent to the backend
                   }
                 })}
@@ -204,7 +214,7 @@ const Calendar = ({chosenFilter: any}) => {
                 id='Location'
                 readOnly
                 disabled={true}
-                placeholder='Choose Employee'
+                placeholder='employee department'
                 data-name='locationId'
                 className='e-field'
                 style={{width: '100%', fontColor: 'black'}}
@@ -216,7 +226,7 @@ const Calendar = ({chosenFilter: any}) => {
             <td colSpan={4}>
               <DropDownListComponent
                 id='leaveType'
-                placeholder='Choose Type of Leave'
+                placeholder='Choose Leave Type'
                 data-name='leaveType'
                 className='e-field'
                 // ref={(scope) => (dropDownListObject = scope)}
@@ -237,6 +247,7 @@ const Calendar = ({chosenFilter: any}) => {
             <td colSpan={4}>
               <DateTimePickerComponent
                 id='StartTime'
+                min={today}
                 format='dd/MM/yy hh:mm a'
                 data-name='timeStart'
                 value={props && props.timeStart ? new Date(props?.timeStart) : props?.StartTime}
@@ -267,16 +278,16 @@ const Calendar = ({chosenFilter: any}) => {
 
   // Fired before the editorTemplate closes.
   const onActionBegin = (args) => {
-    console.log('args in action begin', args)
+    // console.log('args in action begin', args)
     let data = args.data instanceof Array ? args.data[0] : args.data
     if (args.requestType === 'eventCreate') {
-      console.log(scheduleObj)
+      // console.log(scheduleObj)
       // make data in array so that I can map though it
       const preparedData = [{...data}]
-      console.log('preparedData', preparedData)
+      // console.log('preparedData', preparedData)
       // map through the array and set each field to what the calendar will understand
       const formattedDataToPost = preparedData.map((schedule) => {
-        console.log('leavePlanning', schedule)
+        // console.log('leavePlanning', schedule)
         return {
           employeeId: schedule.employeeId,
           id: schedule.Id,
@@ -288,18 +299,20 @@ const Calendar = ({chosenFilter: any}) => {
       })
       //Since format is an array, I need to change it to the format that the API will understand which is an object
       const dataToPost = formattedDataToPost[0]
-        console.log('dataToPost', dataToPost)
+        // console.log('dataToPost', dataToPost)
       addLeavePlanning(dataToPost)
     }
+
     if (args.requestType === 'eventRemove') {
       args.cancel = true
-      console.log('data to delete', data)
+      // console.log('data to delete', data)
       rmLeavePlanning(data.Id)
     }
+
     if (args.requestType === 'eventChange') {
       args.cancel = true
-      console.log('data', data)
-      console.log('args in eventChange', args)
+      // console.log('data', data)
+      // console.log('args in eventChange', args)
       const preparedData = [{...data}]
       const formattedDataToEdit = preparedData.map((schedule) => {
         return {
@@ -382,13 +395,14 @@ const Calendar = ({chosenFilter: any}) => {
   // }
 
   const onPopupOpen = (props) => {
-    console.log('onPop Open props', props)
+    // console.log('onPop Open props', props)
     if (props?.type === 'Editor') {
-      console.log('empDropDownObj Open props', empDropDownObj)
+      // console.log('empDropDownObj Open props', empDropDownObj)
       empDropDownObj.value = props.data.employeeId
       empDropDownObj.dataBind()
     }
   }
+
   return (
     <div className='schedule-control-section'>
       <div className='col-lg-12 control-section'>
@@ -430,7 +444,7 @@ const Calendar = ({chosenFilter: any}) => {
               currentView='Month'
               id='schedule'
               editorTemplate={editorTemplate}
-              popupOpen={onPopupOpen}
+              // popupOpen={onPopupOpen}
               actionBegin={onActionBegin}
           >
             <ViewsDirective>
