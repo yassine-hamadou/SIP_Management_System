@@ -5,12 +5,12 @@ import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, fetchDocument, fetchGrades, fetchLeaveTypes, fetchPaygroups, updateGrade, updateGradeLeave, updateItem } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchDocument, fetchGrades, fetchLeaveTypes, fetchPaygroups, postItem, updateGrade, updateGradeLeave, updateItem } from '../../../../../services/ApiCalls'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 
 
 const Organogram = () => {
-  const [gridData, setGridData] = useState([])
+  const [gridData, setGridData] = useState<any>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
@@ -23,7 +23,7 @@ const Organogram = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
   const { data: allEmployees } = useQuery('employees', async () => await fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
-  const { data: allOrganograms } = useQuery('organograms',() => fetchDocument(`organograms/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allOrganograms } = useQuery('organograms', () => fetchDocument(`organograms/tenant/${tenantId}`), { cacheTime: 5000 })
   const [treeData, setTreeData] = useState<any>([])
   const [showTree, setShowTree] = useState<boolean>(false)
   const queryClient = useQueryClient()
@@ -70,65 +70,22 @@ const Organogram = () => {
     return name
   }
 
-  const deleteData = async (element: any) => {
-    try {
-      const response = await axios.delete(`${Api_Endpoint}/organograms/${element.id}`)
-      // update the local state so that react can refecth and re-render the table with the new data
-      const newData = gridData.filter((item: any) => item.id !== element.id)
-      setGridData(newData)
-      return response.status
-    } catch (e) {
-      return e
-    }
-  }
-
-  function handleDelete(element: any) {
-    deleteData(element)
-  }
   const columns: any = [
     {
       title: 'Employee',
       dataIndex: 'employeeId',
-      sorter: (a: any, b: any) => {
-        if (a.code > b.code) {
-          return 1
-        }
-        if (b.code > a.code) {
-          return -1
-        }
-        return 0
-      },
       render: (employeeId: any) => {
         return <span>{employeeName(employeeId)}</span>
       }
-
     },
     {
       title: 'Job Role',
       dataIndex: 'employeeId',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
       render: (employeeId: any) => jobRole(employeeId)
     },
     {
       title: 'Current Level',
       dataIndex: 'currentLevel',
-      sorter: (a: any, b: any) => {
-        if (a.startDate > b.startDate) {
-          return 1
-        }
-        if (b.startDate > a.startDate) {
-          return -1
-        }
-        return 0
-      },
     },
     {
       title: 'Action',
@@ -136,18 +93,17 @@ const Organogram = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <Link to={`/next/${record.id}/0`}>
-            <span className='btn btn-light-info btn-sm'>Next</span>
-          </Link>
+          {
+            record?.employeeId === null ? null :
+              <Link to={`/next/${record.id}/0`}>
+                <span className='btn btn-light-info btn-sm'>Next</span>
+              </Link>
+          }
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
-          {/* <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm disabled'>
-            Delete
-          </a> */}
         </Space>
       ),
-
     },
   ]
 
@@ -195,7 +151,21 @@ const Organogram = () => {
     setLoading(true)
     try {
       const data = allOrganograms?.data
-      setGridData(allOrganograms?.data.filter((item: any) => item.currentLevel === 'Level 0'))
+      const orgHead = data?.find((item: any) => item.currentLevel === 'Level 0')
+
+      // if there is no orgHead, then set a default orgHead with null values
+      if (!orgHead) {
+        const dummy: any = {
+          currentLevel: 'Level 0',
+          employeeId: '',
+          supervisorId: '',
+          isAssistant: "0",
+          tenantId: tenantId,
+        }
+        setGridData([dummy])
+      } else {
+        setGridData(allOrganograms?.data.filter((item: any) => item.currentLevel === 'Level 0'))
+      }
       const td = createEmployeeTree(data)
       setTreeData(td)
       setLoading(false)
@@ -205,7 +175,6 @@ const Organogram = () => {
   }
 
   useEffect(() => {
-
     loadData()
   }, [allEmployees?.data, allOrganograms?.data])
 
@@ -232,8 +201,8 @@ const Organogram = () => {
   }
 
 
-  const { isLoading, mutate: updateData } = useMutation(updateItem, {
-    onSuccess: (data) => {
+  const { mutate: updateData } = useMutation(updateItem, {
+    onSuccess: () => {
       queryClient.invalidateQueries('organograms')
       message.success('Organogram updated successfully')
       reset()
@@ -280,27 +249,33 @@ const Organogram = () => {
   }
 
 
-  const url = `${Api_Endpoint}/organograms`
   const OnSubmit = handleSubmit(async (values) => {
-    setLoading(true)
-    const data = {
-      employeeId: values.employeeId,
-      supervisorId: values.employeeId,
-      currentLevel: 'Level 0',
-      isAssistant: '0',
-      tenantId: tenantId,
+    const item = {
+      data: {
+        employeeId: values.employeeId,
+        supervisorId: values.employeeId,
+        currentLevel: 'Level 0',
+        isAssistant: '0',
+        tenantId: tenantId,
+      },
+      url: 'organograms'
     }
-    console.log(data)
-    try {
-      const response = await axios.post(url, data)
-      setSubmitLoading(false)
-      reset()
-      setIsModalOpen(false)
+    postData(item)
+  })
+
+  const { mutate: postData } = useMutation(postItem, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('organograms')
       loadData()
-      return response.statusText
-    } catch (error: any) {
+      reset()
+      setTempData({})
+      setIsModalOpen(false)
       setSubmitLoading(false)
-      return error.statusText
+      message.success('Item added successfully')
+    },
+    onError: (error: any) => {
+      setSubmitLoading(false)
+      console.log('post error: ', error)
     }
   })
 
@@ -341,6 +316,7 @@ const Organogram = () => {
                   className='mt-4'
                   showLine
                   treeData={treeData}
+                  defaultExpandAll={true}
                 />
               </> :
               <Table columns={columns} dataSource={gridData} loading={loading} />

@@ -1,18 +1,18 @@
-import { Breadcrumb, Button, Form, Input, InputNumber, Modal, Space, Table, message } from 'antd'
+import { Breadcrumb, Button, Form, Input, InputNumber, Modal, Skeleton, Space, Table, message } from 'antd'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Api_Endpoint, deleteItem, fetchDocument, fetchGrades, fetchLeaveTypes, fetchPaygroups, updateGrade, updateGradeLeave, updateItem } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, deleteItem, fetchDocument, fetchGrades, fetchLeaveTypes, fetchPaygroups, postItem, updateGrade, updateGradeLeave, updateItem } from '../../../../../services/ApiCalls'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Employee } from '../../employee/Employee'
+import { ArrowLeftOutlined } from "@ant-design/icons"
 
 const OrgLevel = () => {
-  const [gridData, setGridData] = useState([])
-  const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
+  const [gridData, setGridData] = useState([])
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const { register, reset, handleSubmit } = useForm()
@@ -25,14 +25,12 @@ const OrgLevel = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const tenantId = localStorage.getItem('tenant')
   const [supervisorName, setSupervisorName] = useState('')
-  const { data: allEmployees } = useQuery('employees', () => fetchDocument(`employees/tenant/${tenantId}`), { cacheTime: 5000 })
-  const { data: allOrganograms } = useQuery('organograms',() => fetchDocument(`organograms/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allEmployees } = useQuery('employees', () => fetchDocument(`employees`), { cacheTime: 5000 })
+  const { data: allOrganograms, isLoading: loading } = useQuery('organograms', () => fetchDocument(`organograms`), { cacheTime: 5000 })
   const [breadcrumbs, setBreadcrumbs]: any = useState<any>([])
   const [treeData, setTreeData] = useState<any>([])
 
-  const levels = [
-    'Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5', 'Level 6',
-  ]
+
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -53,13 +51,13 @@ const OrgLevel = () => {
   }
 
   const reRenderScreen = () => {
-    if (currentLevel <= 6) {
+    if (currentLevel <= 10) {
       navigate(`/next/${param.id}/${currentLevel}`)
     }
   }
 
-  const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
-    onSuccess: (data) => {
+  const { mutate: deleteData } = useMutation(deleteItem, {
+    onSuccess: () => {
       queryClient.invalidateQueries('organograms')
       loadData()
     },
@@ -140,7 +138,7 @@ const OrgLevel = () => {
       render: (_: any, record: any) => (
         <Space size='middle'>
           {
-            currentLevel < 6 ?
+            currentLevel < 10 ?
               <Link to={`/next/${record.id}/${currentLevel}`} onClick={() => addItemtoBreadcrumb(record)} >
                 <span className='btn btn-light-info btn-sm' >Next</span>
               </Link>
@@ -152,7 +150,6 @@ const OrgLevel = () => {
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
             Delete
           </a>
-
         </Space>
       ),
 
@@ -214,7 +211,6 @@ const OrgLevel = () => {
   }
 
   const loadData = async () => {
-    setLoading(true)
     try {
       const response = allOrganograms?.data
       if (param.level === '0') {
@@ -228,10 +224,8 @@ const OrgLevel = () => {
       const filteredBySupervisor = response.filter((item: any) => item?.supervisorId === param.id)
       setGridData(filteredBySupervisor)
       setTreeData(createEmployeeTree(response))
-      setLoading(false)
     } catch (error) {
       console.log(error)
-      setLoading(false)
     }
   }
 
@@ -240,10 +234,7 @@ const OrgLevel = () => {
     loadData()
   }, [param, currentLevel, supervisorName])
 
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-  }))
+
 
   const handleInputChange = (e: any) => {
     setSearchText(e.target.value)
@@ -263,15 +254,14 @@ const OrgLevel = () => {
   }
 
   const queryClient = useQueryClient()
-  const { isLoading, mutate: updateData } = useMutation(updateItem, {
-    onSuccess: (data) => {
+  const { mutate: updateData } = useMutation(updateItem, {
+    onSuccess: () => {
       queryClient.invalidateQueries('organograms')
       message.success('Organogram updated successfully')
       reset()
       loadData()
       setTempData({})
       setIsModalOpen(false)
-      setLoading(false)
     },
     onError: (error) => {
       console.log('error: ', error)
@@ -281,7 +271,6 @@ const OrgLevel = () => {
 
   const handleUpdate = (e: any) => {
     e.preventDefault()
-    setLoading(true)
     const item: any = {
       data: tempData,
       url: 'organograms'
@@ -311,38 +300,50 @@ const OrgLevel = () => {
 
   const url = `${Api_Endpoint}/organograms`
   const OnSubmit = handleSubmit(async (values) => {
-    setLoading(true)
     if (values.employeeId === 'Select') {
       message.error('Please select an employee')
       return
     }
-    const data = {
-      employeeId: values.employeeId,
-      supervisorId: param.id,
-      currentLevel: `Level ${currentLevel}`,
-      isAssistant: values.isAssistant === 'Select' ? '0' : values.isAssistant,
-      tenantId: tenantId,
+    const item = {
+      data: {
+        employeeId: values.employeeId,
+        supervisorId: param.id,
+        currentLevel: `Level ${currentLevel}`,
+        isAssistant: values.isAssistant === 'Select' ? '0' : values.isAssistant,
+        tenantId: tenantId,
+      },
+      url: 'organograms'
     }
-    console.log(data)
-    try {
-      //if employeeId already exists in the organogram table, return error
-      const checkEmployee = allOrganograms?.data.find((item: any) => item.employeeId === data.employeeId)
-      if (checkEmployee) {
-        setSubmitLoading(false)
-        const name = employeeName(values.employeeId)
-        message.error(`${name} already exists in the organogram`)
-        return
-      }
+    console.log(item.data)
 
-      setIsModalOpen(false)
-      const response = await axios.post(url, data)
+    //if employeeId already exists in the organogram table, return error
+    const checkEmployee = allOrganograms?.data.find((item: any) => item.employeeId === item.data.employeeId)
+    if (checkEmployee) {
+      setSubmitLoading(false)
+      const name = employeeName(values.employeeId)
+      message.error(`${name} already exists in the organogram`)
+      return
+    }
+
+    setIsModalOpen(false)
+    postData(item)
+    setSubmitLoading(false)
+    reset()
+  })
+
+  const { mutate: postData } = useMutation(postItem, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('organograms')
       loadData()
-      setSubmitLoading(false)
       reset()
-      return response.statusText
-    } catch (error: any) {
+      setTempData({})
+      setIsModalOpen(false)
       setSubmitLoading(false)
-      return error.statusText
+      message.success('Item added successfully')
+    },
+    onError: (error: any) => {
+      setSubmitLoading(false)
+      console.log('post error: ', error)
     }
   })
 
@@ -356,11 +357,18 @@ const OrgLevel = () => {
       }}>
       <KTCardBody className='py-4 '>
         <div className='table-responsive'>
-          <div className="mb-0">
-            <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
-          </div>
-          <Space >
-            <span className="fw-bold text-gray-800 d-block fs-2 mb-3 ">{supervisorName}</span>
+          <Space className='d-flex align-items-center align-content-center mb-3 flex-direction-row' >
+            <Button
+              onClick={() => navigate(-1)}
+              className="btn btn-light-primary me-4"
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                display: 'flex',
+              }}
+              type="primary" shape="circle" icon={<ArrowLeftOutlined rev={''} />} size={'large'}
+            />
+            <span className="fw-bold text-gray-600 d-block fs-2 mb-3 ">{supervisorName}</span>
             {/* <> <Breadcrumb separator=">" items={breadcrumbs} className="mb-3" /> </> */}
           </Space>
           <div className='d-flex justify-content-between'>
@@ -388,7 +396,10 @@ const OrgLevel = () => {
               </button>
             </Space>
           </div>
-          <Table columns={columns} dataSource={gridData} loading={loading} />
+          {
+            loading ? <Skeleton active /> :
+              <Table columns={columns} dataSource={gridData} />
+          }
           <Modal
             title={isUpdateModalOpen ? 'Update Organogram ' : 'Add Employee to Organogram'}
             open={isModalOpen}
