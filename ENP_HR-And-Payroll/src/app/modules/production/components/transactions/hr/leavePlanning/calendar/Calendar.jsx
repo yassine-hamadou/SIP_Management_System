@@ -54,11 +54,12 @@ const Calendar = ({chosenFilter: any}) => {
   const queryClient = useQueryClient()
   // React Query
   //Get
+  const tenantId = localStorage.getItem('tenant')
+
   const {data: employeeData} = useQuery('employeeData',()=> fetchEmployees(tenantId), {
     refetchOnWindowFocus: false,
     staleTime: 300000,
   })
- const tenantId = localStorage.getItem('tenant')
 
   const {data: leaveTypes} = useQuery('leaveTypes', ()=>fetchLeaveTypes(tenantId), {
     refetchOnWindowFocus: false,
@@ -121,21 +122,21 @@ const Calendar = ({chosenFilter: any}) => {
         }
     }),
   }
-  console.log("dataSource", localData)
+  // console.log("dataSource", localData)
 
 
   //Access the same location query from cycle details component
-  console.log('employeeData', employeeData)
-  console.log('leaveData', leaveData)
+  // console.log('employeeData', employeeData)
+  // console.log('leaveData', leaveData)
 
     // let dropDownListObject;
 
   const employeesQueryData = useQueryClient()
   const unitQuery = useQuery('unitData', fetchUnits)
 
-  console.log('employeesQueryData', employeesQueryData)
+  // console.log('employeesQueryData', employeesQueryData)
   function editorTemplate(props) {
-    console.log('props', props)
+    // console.log('props', props)
     // if (props.serviceTypeId) {
     //   const fleetModel = vmQuery.getQueryData('vmequps')?.data?.find((fleet) => fleet.fleetID.trimEnd() === props.fleetId.trimEnd())?.modlName
     //   // const serviceTypesOfSelectedModel = serviceTypes?.data?.filter((service) => service.model.trimEnd() === fleetModel.trimEnd())
@@ -161,12 +162,14 @@ const Calendar = ({chosenFilter: any}) => {
           message.error("Employee does not have a department").then(r => r)
         }
         else {
-          unitInputField.value = unitQuery.data?.data?.find((unit) => unit.departmentId === employeeDepartId).name
+          unitInputField.value = unitQuery.data?.data?.find((unit) => unit.departmentId === employeeDepartId)?.name
           console.log("unitInputField", unitInputField)
         }
        // console.log("employeeDepartId", employeeDepartId)
       }
     }
+
+
     return props !== undefined ? (
       <table className='custom-event-editor' style={{width: '100%'}} cellPadding={5}>
         <tbody>
@@ -184,7 +187,7 @@ const Calendar = ({chosenFilter: any}) => {
                 style={{width: '100%'}}
                 dataSource={employeeData?.data?.map((employee) => {
                   return {
-                    text: `${employee.firstName} ${employee.surname} - Code: ${employee.id}`,
+                    text: `${employee.firstName} ${employee.surname}`,
                     value: employee.id, //this is the value that will be sent to the backend
                   }
                 })}

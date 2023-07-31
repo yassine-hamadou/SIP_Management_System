@@ -11,6 +11,11 @@ const LeavePlanning = () => {
   const [chosenFilter, setChosenFilter] = useState(null)
   const navigate = useNavigate()
 
+  const tenantId = localStorage.getItem('tenant')
+
+  const {data:leaveTypes, isLoading} = useQuery('leaveTypes',() =>fetchLeaveTypes(tenantId), {cacheTime:5000}) 
+  const {data:departments} = useQuery('departments',() =>fetchDepartments(tenantId), {cacheTime:5000}) 
+
   return (
     <>
       <KTCard>
@@ -21,7 +26,7 @@ const LeavePlanning = () => {
                     id='filterByLeaveType'
                   placeholder='Filter by Leave type'
                   type='text'
-                  dataSource={useQuery('leaveTypeForFilter', fetchLeaveTypes)?.data?.data}
+                  dataSource={leaveTypes?.data}
                     fields={{text: 'name', value: 'id'}}
                   change={(e: any) => {
                     setChosenFilter(e.value)
@@ -36,10 +41,10 @@ const LeavePlanning = () => {
                   id='filterByDep'
                   placeholder='Filter by Department'
                   type='text'
-                  dataSource={useQuery('depForFilter', fetchDepartments)?.data?.data}
+                  dataSource={departments?.data}
                   fields={{text: 'name', value: 'id'}}
                   change={(e: any) => {
-                      setChosenFilter(e.value)
+                      // setChosenFilter(e.value)
                       //reset above dropdown
                       const filterByLeaveType = (document.getElementById('filterByLeaveType') as any)
                       const filterByStatus = (document.getElementById('filterByStatus') as any)
