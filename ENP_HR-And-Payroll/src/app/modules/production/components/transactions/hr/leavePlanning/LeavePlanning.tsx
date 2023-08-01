@@ -1,4 +1,4 @@
-import {Calendar} from './calendar/Calendar'
+// import {Calendar} from './calendar/Calendar'
 import {Link, useNavigate} from 'react-router-dom'
 import {useQuery} from 'react-query'
 import {useState} from 'react'
@@ -77,7 +77,7 @@ const LeavePlanning = () => {
                 </Link>
             </Space>
           </div>
-          <Calendar chosenFilter={chosenFilter} />
+          {/* <Calendar chosenFilter={chosenFilter} /> */}
         </KTCardBody>
       </KTCard>
     </>
