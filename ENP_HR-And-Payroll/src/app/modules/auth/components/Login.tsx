@@ -6,7 +6,12 @@ import { useFormik } from 'formik'
 import { login, parseJwt } from '../core/_requests'
 import { useAuth } from '../core/Auth'
 import { useQuery } from 'react-query'
-import { fetchCompanies, fetchDocument, fetchUserApplications, fetchUserCompany } from '../../../services/ApiCalls'
+import { 
+  fetchCompanies, 
+  fetchDocument, 
+  fetchUserApplications, 
+  fetchUserCompany } from '../../../services/ApiCalls'
+import ChangePasswordModal from './ChangePasswordModal'
 
 const loginSchema = Yup.object().shape({
   username: Yup.string()
@@ -27,22 +32,13 @@ const initialValues = {
   tenantId: '',
 }
 
-/*
-  Formik+YUP+Typescript:
-  https://jaredpalmer.com/formik/docs/tutorial#getfieldprops
-  https://medium.com/@maurice.de.beijer/yup-validation-and-typescript-and-formik-6c342578a20e
-*/
-
 export function Login() {
   const [loading, setLoading] = useState(false)
   const { saveAuth, setCurrentUser , saveTenant} = useAuth()
-  
-
   const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
   const { data: allCompanies } = useQuery('companies', fetchCompanies, { cacheTime: 5000 })
   const { data: userCompanies } = useQuery('userCompanies', fetchUserCompany, { cacheTime: 5000 })
-  
- 
+
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
@@ -51,50 +47,22 @@ export function Login() {
       try {
         const { data: auth } = await login(values.username, values.password)
         saveAuth(auth)
-
         //this gets the jwtToken of the login user!
         const token:any = localStorage.getItem("accessToken")
-        
-        // const {data: user} = await getUserByToken(auth.jwtToken)
-        // setCurrentUser(auth.jwtToken)
-
-         //this goes to decode the token and return the user details!
          parseJwt(token)
-        
          //now I have to assign the !
          const curUser:any =  parseJwt(token)
-
         setCurrentUser(curUser)
-
         saveTenant(values.tenantId)
-
         const  userApp = userApplications?.data.filter((item:any )=> item.userId === parseInt(curUser?.id)).map((filteredItem:any) => {
           return filteredItem?.applicationId?.toString()
         })
-
         const  userCom = userCompanies?.data.filter((item:any )=> item.userId === parseInt(curUser?.id)).map((filteredItem:any) => {
           return filteredItem?.companyId?.toString()
         })
-
-        // console.log('userApp:', userApp);
-
-        // for each item in userCom, get the comapny name from allCompanies
-        // const newCompanyNames = allCompanies?.data.filter((item:any)=> {
-        //   return userCom?.includes(item?.id?.toString())
-        // })
-
-        // const newCompanyNames2 = newCompanyNames?.map((item:any)=> {
-        //   return item?.name?.toLowerCase()
-        // })
-
         const newCompanyNames = allCompanies?.data
           .filter((item : any) => userCom?.includes(item?.id?.toString()))
           .map((item : any) => item?.name?.toLowerCase());
-        
-        // console.log('newCompanyNames:', newCompanyNames);
-        
-
-        // console.log('comCheck:', userCom);
 
         const newIt = userApp?.find((applicationId:any)=>{
           return applicationId==='10'
@@ -103,8 +71,6 @@ export function Login() {
         const comCheck = newCompanyNames?.some((companyId:any)=>{
           return companyId === values.tenantId
         })
-        
-        // console.log('comCheck:', comCheck);
         
         if(!comCheck)
         {
@@ -129,9 +95,6 @@ export function Login() {
       }
     },
   })
-
-// localStorage.setItem('tenant', formik.values.tenantId)
-
 
   return (
     <form
@@ -195,6 +158,8 @@ export function Login() {
             </div>
           </div>
         )}
+        <br></br>
+        <ChangePasswordModal />
       </div>
       <div className='fv-row mb-10'>
         <div className='mb-10'>

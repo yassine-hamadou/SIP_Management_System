@@ -49,24 +49,6 @@ const Parameter = () => {
     setTempData({ ...tempData, [event.target.name]: event.target.value });
   }
 
-  // const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
-  //   onSuccess: (data) => {
-  //     queryClient.setQueryData(['loan', tempData], data);
-  //     loadData()
-  //   },
-  //   onError: (error) => {
-  //     console.log('delete error: ', error)
-  //   }
-  // })
-
-  // function handleDelete(element: any) {
-  //   const item = {
-  //     url: 'Parameters',
-  //     data: element
-  //   }
-  //   deleteData(item)
-  // }
-
   const loadData = async () => {
     setLoading(true)
     try {
