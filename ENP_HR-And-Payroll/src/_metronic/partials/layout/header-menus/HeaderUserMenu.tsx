@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import {useAuth} from '../../../../app/modules/auth'
 import {Languages} from './Languages'
 import {toAbsoluteUrl} from '../../../helpers'
+import ChangePasswordModal from '../../../../app/modules/auth/components/ChangePasswordModal'
 
 const HeaderUserMenu: FC = () => {
   const {currentUser, logout} = useAuth()
@@ -32,15 +33,14 @@ const HeaderUserMenu: FC = () => {
 
       <div className='separator my-2'></div>
 
-      {/*<div className='menu-item px-5'>*/}
-      {/*  <Link to={'/crafted/pages/profile'} className='menu-link px-5'>*/}
-      {/*    My Profile*/}
-      {/*  </Link>*/}
-      {/*</div>*/}
+      <div className='menu-item px-5 '>
+       
+       <ChangePasswordModal/> 
+      </div>
 
       <div className='menu-item px-5'>
-        <a onClick={logout} className='menu-link px-5'>
-          Sign Out
+        <a onClick={logout} className='menu-link px-5' style={{textAlign:"center"}}>
+          Logout
         </a>
       </div>
     </div>

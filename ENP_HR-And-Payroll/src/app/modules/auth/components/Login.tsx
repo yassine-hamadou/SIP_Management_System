@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom';
 import * as Yup from 'yup'
 import clsx from 'clsx'
 import { useFormik } from 'formik'
@@ -38,6 +39,9 @@ export function Login() {
   const { data: userApplications } = useQuery('userApplications', fetchUserApplications, { cacheTime: 5000 })
   const { data: allCompanies } = useQuery('companies', fetchCompanies, { cacheTime: 5000 })
   const { data: userCompanies } = useQuery('userCompanies', fetchUserCompany, { cacheTime: 5000 })
+
+  let location = useLocation();
+  console.log(location.pathname);
 
   const formik = useFormik({
     initialValues,
@@ -158,8 +162,8 @@ export function Login() {
             </div>
           </div>
         )}
-        <br></br>
-        <ChangePasswordModal />
+        {/* <br></br> */}
+        {/* <ChangePasswordModal /> */}
       </div>
       <div className='fv-row mb-10'>
         <div className='mb-10'>
