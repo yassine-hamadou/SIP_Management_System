@@ -56,7 +56,7 @@ const ChangePasswordModal = () => {
                 'Content-Type': 'application/json-patch+json'
             }
             })
-            
+
             message.success("Password changed successfully")
             setLoading(false)
             setIsModalOpen(false)
@@ -68,7 +68,7 @@ const ChangePasswordModal = () => {
     return (
 
         <>
-        <a style={{color:"blue", cursor:"pointer", fontWeight:"600"}} onClick={showModal}>Forgot password?</a>
+            <a className='btn btn-light-primary btn-sm' onClick={showModal}>Forgot password?</a>
         <Modal
             title="Change Password"
             open={isModalOpen}
@@ -99,7 +99,11 @@ const ChangePasswordModal = () => {
                   <input type="text" {...register("username")} onChange={handleChange} className="form-control form-control-solid" />
                 </div>
                 <div className=' mb-7'>
-                  <label htmlFor="password" className="form-label">Password</label>
+                  <label htmlFor="password" className="form-label">Old Password</label>
+                  <input type="password" {...register("password")} onChange={handleChange} className="form-control form-control-solid" />
+                </div>
+                <div className=' mb-7'>
+                  <label htmlFor="password" className="form-label">New Password</label>
                   <input type="password" {...register("password")} onChange={handleChange} className="form-control form-control-solid" />
                 </div>
                 <div className=' mb-7'>
