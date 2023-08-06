@@ -19,22 +19,26 @@ const AuthLayout = () => {
 
   return (
     <div
-      className='d-flex flex-column flex-column-fluid bgi-position-y-bottom position-x-center bgi-no-repeat bgi-size-contain bgi-attachment-fixed'
-      // style={{
-      //   backgroundImage: `url(${toAbsoluteUrl('/media/illustrations/sketchy-1/14.png')})`,
-      // }}
+      className='
+      d-flex flex-column 
+      flex-column-fluid 
+      bgi-position-y-bottom 
+      position-x-center 
+      bgi-no-repeat 
+      bgi-size-contain 
+      bgi-attachment-fixed'
+      
     >
       {/* begin::Content */}
       <div className='d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20'>
        {
-        location.pathname==="/auth/request-password"? 
-        
+        location.pathname==="/auth/login"? 
         <h1 className='mb-12'>
-          Reset password
+          Sign in to HR/Payroll
         </h1>
         :
         <h1 className='mb-12'>
-          Sign in to HR/Payroll
+          Reset password
         </h1>
        }
         
@@ -53,7 +57,7 @@ const AuthPage = () => (
       <Route path='login' element={<Login />} />
       <Route path='registration' element={<Registration />} />
       <Route path='forgot-password' element={<ForgotPassword />} />
-      <Route path='request-password' element={<RequestPassword />} />
+      <Route path='request-password/:id' element={<RequestPassword />} />
       <Route index element={<Login />} />
     </Route>
   </Routes>

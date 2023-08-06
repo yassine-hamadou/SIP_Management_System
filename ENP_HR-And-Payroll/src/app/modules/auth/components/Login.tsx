@@ -13,6 +13,7 @@ import {
   fetchUserApplications, 
   fetchUserCompany } from '../../../services/ApiCalls'
 import ChangePasswordModal from './ChangePasswordModal'
+import ForgotPasswordModal from './ForgotPasswordModal';
 
 const loginSchema = Yup.object().shape({
   username: Yup.string()
@@ -162,8 +163,8 @@ export function Login() {
             </div>
           </div>
         )}
-        {/* <br></br> */}
-        {/* <ChangePasswordModal /> */}
+        <br></br>
+        <ForgotPasswordModal />
       </div>
       <div className='fv-row mb-10'>
         <div className='mb-10'>
