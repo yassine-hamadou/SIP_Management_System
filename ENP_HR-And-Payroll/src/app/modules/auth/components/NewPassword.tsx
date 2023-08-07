@@ -1,9 +1,5 @@
 import React, {useState} from 'react'
-import * as Yup from 'yup'
-import clsx from 'clsx'
-import {Link} from 'react-router-dom'
-import {useFormik} from 'formik'
-import {requestPassword} from '../core/_requests'
+import {Link, useNavigate, useParams} from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Api_Endpoint } from '../../../services/ApiCalls'
 import axios from 'axios'
@@ -13,27 +9,29 @@ import { message } from 'antd'
 export function RequestPassword() {
     const [loading, setLoading] = useState(false)
     const tenantId = localStorage.getItem('tenant')
-    const [isModalOpen, setIsModalOpen] = useState(false)
     const { register, reset, handleSubmit } = useForm()
+    const param = useParams()
+    const navigate = useNavigate();
 
-    const showModal = () => {
-        setIsModalOpen(true)
-      }
+    // en
 
-      const handleCancel = () => {
-        reset()
-        setIsModalOpen(false)
-      }
+
+    console.log(param?.id);
+    
 
       const OnSUbmit = handleSubmit(async (values) => {
         setLoading(true)
         if(values.password !== values.confirmPassword){
             message.warning("Password and Confirm Password must be the same")
-            return
+            return setLoading(false)
+        }
+        if(values.password === "" || values.confirmPassword === ""){
+            message.warning("Enter a new password")
+            return setLoading(false)
         }
 
         try {
-            const response = axios.patch(`${Api_Endpoint}/Users/PasswordRe`,
+            const response = axios.patch(`${Api_Endpoint}/Users/${param.id}`,
             [{
                 "op": "replace",
                 "path": "/password",
@@ -45,12 +43,20 @@ export function RequestPassword() {
             }
             })
 
+            console.log('response', (await response).data);
+            
+
             message.success("Password changed successfully")
             setLoading(false)
-            setIsModalOpen(false)
+            reset()
+            // redirect to login
+            navigate('/auth/login', {replace: true})
+            
+            
             
         } catch (error) {
-            message.error("Error changing password")
+            message.error("Error reseting password")
+            setLoading(false)
         }
       })
 
@@ -71,6 +77,22 @@ export function RequestPassword() {
                 <label htmlFor="confirm-password" className="form-label">Confirm Password </label>
                 <input type="password" {...register("confirmPassword")} className="form-control form-control-solid" />
             </div>
+            </div>
+            <div className='text-center'>
+                <button
+                type='submit'
+                // id='kt_sign_in_submit'
+                onClick={OnSUbmit}
+                className='btn btn-lg btn-primary w-100 mb-5'
+                >
+                {!loading && <span className='indicator-label'>Continue</span>}
+                {loading && (
+                    <span className='indicator-progress' style={{ display: 'block' }}>
+                    Please wait...
+                    <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                    </span>
+                )}
+                </button>
             </div>
         </form>
       

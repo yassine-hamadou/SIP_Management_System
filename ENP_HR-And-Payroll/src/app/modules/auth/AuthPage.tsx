@@ -32,7 +32,7 @@ const AuthLayout = () => {
       {/* begin::Content */}
       <div className='d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20'>
        {
-        location.pathname==="/auth/login"? 
+        location.pathname==="/auth/login" || location.pathname==="/auth"? 
         <h1 className='mb-12'>
           Sign in to HR/Payroll
         </h1>

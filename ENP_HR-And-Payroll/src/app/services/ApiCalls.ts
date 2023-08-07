@@ -41,6 +41,9 @@ export function postItem(item: any) {
 export const fetchUserRoles = () => {
     return axios.get(`${UsersEndpoint}/UserRoles`)
 }
+export const fetchUsers = () => {
+    return axios.get(`${UsersEndpoint}/Users`)
+}
 export const fetchUserApplications = () => {
     return axios.get(`${UsersEndpoint}/UserApplications`)
 }
