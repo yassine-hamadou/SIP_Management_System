@@ -2,7 +2,7 @@ import axios from 'axios'
 import {AuthModel, UserModel} from './_models'
 
 // const API_URL = process.env.REACT_APP_API_URL
-const API_URL = "http://208.117.44.15/hrwebapi/api/Users"
+const API_URL = "https://208.117.44.15/hrwebapi/api/Users"
 
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/verify_token`
 export const LOGIN_URL = `${API_URL}/Login/Super`

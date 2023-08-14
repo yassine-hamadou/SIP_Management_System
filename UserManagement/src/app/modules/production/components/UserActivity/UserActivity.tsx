@@ -8,13 +8,14 @@ import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../ser
 
 const UserActivity = () => {
   const [gridData, setGridData] = useState<any>([])
+  const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
 
 
 
-  const {data: UserActivity} = useQuery('userActivity',() => fetchDocument('UserActivity'), {cacheTime:5000})
+  const {data: UserActivity, isLoading} = useQuery('userActivity',() => fetchDocument('UserActivity'), {cacheTime:5000})
   
   const columns: any = [
     {
@@ -30,19 +31,19 @@ const UserActivity = () => {
         return 0
       },
     },
-    {
-      title: 'Data Item',
-      dataIndex: 'dataItem',
-      sorter: (a: any, b: any) => {
-        if (a.dataItem > b.dataItem) {
-          return 1
-        }
-        if (b.dataItem > a.dataItem) {
-          return -1
-        }
-        return 0
-      },
-    },
+    // {
+    //   title: 'Data Item',
+    //   dataIndex: 'dataItem',
+    //   sorter: (a: any, b: any) => {
+    //     if (a.dataItem > b.dataItem) {
+    //       return 1
+    //     }
+    //     if (b.dataItem > a.dataItem) {
+    //       return -1
+    //     }
+    //     return 0
+    //   },
+    // },
     {
       title: 'Request Time',
       dataIndex: 'requestTime',
@@ -99,42 +100,36 @@ const UserActivity = () => {
 
     // },
   ]
-
-//   const loadData = async () => {
-//     setLoading(true)
-//     try {
-//       const response = await fetchDocument('Roles')
-//       setGridData(response.data)
-//       setLoading(false)
-//     } catch (error) {
-//       console.log(error)
-//     }
-//   }
-  
-//   useEffect(() => {
-//     loadData()
-//   }, [])
-
-
-  const handleInputChange = (e: any) => {
-    setSearchText(e.target.value)
-    if (e.target.value === '') {
-    //   loadData()
+  const loadData = async () => {
+    setLoading(true)
+    try {
+      const response = await fetchDocument('UserActivity')
+      setGridData(response.data)
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
     }
   }
+  useEffect(() => {
+    loadData()
+    setGridData(UserActivity?.data)
+    setBeforeSearch(UserActivity?.data)
+  }, [])
 
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex.filter((value) => {
+  const globalSearch = (searchValue: string) => {
+    const searchResult = UserActivity?.data?.filter((item: any) => {
       return (
-        value.username.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.dataItem.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.ipaddress.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.requestTime.toLowerCase().includes(searchText.toLowerCase())||
-        value.url.toLowerCase().includes(searchText.toLowerCase())
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
       )
-    })
-    setGridData(filteredData)
+    })//search the grid data
+    setGridData(searchResult)
+  }
+
+  const handleInputChange = (e: any) => {
+    globalSearch(e.target.value)
+    if (e.target.value === '') {
+      setGridData(beforeSearch)
+    }
   }
   
 
@@ -156,22 +151,10 @@ const UserActivity = () => {
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
-              />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
+              />      
             </Space>
-            {/* <Space style={{ marginBottom: 16 }}>
-
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
-
-            </Space> */}
           </div>
-          <Table columns={columns} dataSource={UserActivity?.data} loading={loading} />
+          <Table columns={columns} dataSource={gridData} loading={isLoading} />
         </div>
       </KTCardBody>
     </div>

@@ -4,11 +4,13 @@ import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
-import { deleteItem, fetchDocument, fetchUsers, postItem, updateItem } from '../../../../services/ApiCalls'
+import { Api_Endpoint, deleteItem, fetchDocument, fetchUsers, postItem, updateItem } from '../../../../services/ApiCalls'
 import { AUTH_LOCAL_STORAGE_KEY, useAuth } from '../../../auth'
+import axios from 'axios'
 
 const User = () => {
   const [gridData, setGridData] = useState<any>([])
+  const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
@@ -46,7 +48,7 @@ const User = () => {
 
   const { mutate: deleteData, isLoading: deleteLoading } = useMutation(deleteItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['users', tempData], data);
+      // queryClient.setQueryData(['users', tempData], data);
       loadData()
     },
     onError: (error) => {
@@ -118,19 +120,6 @@ const User = () => {
       },
     },
     {
-      title: 'Gender',
-      dataIndex: 'gender',
-      sorter: (a: any, b: any) => {
-        if (a.gender > b.gender) {
-          return 1
-        }
-        if (b.gender > a.gender) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
       title: 'Action',
       fixed: 'right',
       width: 100,
@@ -157,70 +146,56 @@ const User = () => {
     },
   ]
 
-  // const {data:taxes} = useQuery('taxes', fetchTaxes, {cacheTime:5000})
   const { data: allUsers } = useQuery('users', fetchUsers, { cacheTime: 5000 })
-  // console.log(taxes)
-  // const {data:allEmployee} = useQuery('employee', fetchEmployees, {cacheTime:5000})
-
-  // const getNotchName = (notchId: any) => {
-  //   let notchName = null
-  //   allNotches?.data.map((item: any) => {
-  //     if (item.id === notchId) {
-  //       notchName=item.name
-  //     }
-  //   })
-  //   return notchName
-  // } 
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await fetchDocument('Users')
+      const response = await axios.get(`${Api_Endpoint}/Users`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
     }
   }
-
-
-
+  
   useEffect(() => {
 
     loadData()
+    
+      setGridData(allUsers?.data)
+      setBeforeSearch(allUsers?.data)
+    
   }, [])
 
-  const dataByID = gridData.filter((user: any) => {
+  const dataByID = gridData?.filter((user: any) => {
     return user.id !== 42
   })
 
-  const handleInputChange = (e: any) => {
-    setSearchText(e.target.value)
-    if (e.target.value === '') {
-      loadData()
-    }
+  const globalSearch = (searchValue: string) => {
+    const searchResult = allUsers?.data?.filter((item: any) => {
+      return (
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
+      )
+    })//search the grid data
+    setGridData(searchResult)
   }
 
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex.filter((value) => {
-      return (
-        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
-      )
-    })
-    setGridData(filteredData)
+  const handleInputChange = (e: any) => {
+    globalSearch(e.target.value)
+    if (e.target.value === '') {
+      setGridData(beforeSearch)
+    }
   }
 
 
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['users', tempData], data);
+      // queryClient.setQueryData(['users', tempData], data);
       reset()
       setTempData({})
       loadData()
+      queryClient.invalidateQueries('users')
       setIsUpdateModalOpen(false)
       setIsModalOpen(false)
     },
@@ -232,7 +207,7 @@ const User = () => {
   const handleUpdate = (e: any) => {
     e.preventDefault()
     // object item to be passed down to updateItem function 
-    if (tempData.firstName.length >= 5) {
+    if (tempData.firstName.length >= 3) {
       const item = {
         url: 'Users',
         data: tempData
@@ -249,7 +224,6 @@ const User = () => {
     showModal()
     setIsUpdateModalOpen(true)
     setTempData(values);
-    console.log(values)
   }
 
 
@@ -274,10 +248,11 @@ const User = () => {
 
   const { mutate: postData, isLoading: postLoading } = useMutation(postItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['users', tempData], data);
+      // queryClient.setQueryData(['users', tempData], data);
       reset()
       setTempData({})
-      loadData()
+      queryClient.invalidateQueries('users')
+      // loadData()
       setIsModalOpen(false)
     },
     onError: (error) => {
@@ -303,11 +278,7 @@ const User = () => {
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
               />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
             </Space>
             <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
@@ -387,12 +358,17 @@ const User = () => {
                     onChange={handleChange}
                     className="form-control form-control-solid" />
                 </div>
-                <div className='col-6 mb-7'>
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Password</label>
-                  <input type="text" {...register("password")}
-                    placeholder={isUpdateModalOpen === true ? 'enter new password' : 'password'}
-                    className="form-control form-control-solid" />
-                </div>
+
+                {
+                  isUpdateModalOpen === true ? null :
+                  <div className='col-6 mb-7'>
+                    <label htmlFor="exampleFormControlInput1" className="form-label">Password</label>
+                    <input type="text" {...register("password")}
+                      placeholder={'enter new password' }
+                      className="form-control form-control-solid" />
+                  </div>
+                }
+                
 
               </div>
             </form>

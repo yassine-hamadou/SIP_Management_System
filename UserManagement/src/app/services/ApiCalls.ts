@@ -2,8 +2,8 @@ import axios from 'axios';
 
 
 
-export const Api_Endpoint = "http://208.117.44.15/userapi/api";
-export const Api_Endpoint2 = "http://208.117.44.15/hrwebapi/api";
+export const Api_Endpoint = "https://208.117.44.15/userapi/api";
+export const Api_Endpoint2 = "https://208.117.44.15/hrwebapi/api";
 // const token:any = localStorage.getItem("accessToken")?.replace(/['"]/g, '')
 
 // export const fetchTaxes= ()=>{
