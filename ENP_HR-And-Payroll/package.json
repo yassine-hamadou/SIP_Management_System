@@ -86,7 +86,7 @@
     "scripts": {
         "start": "set PORT=3000 && react-scripts start",
         "startLinux": "PORT=3000 react-scripts start",
-        "build": "set GENERATE_SOURCEMAP=false&&react-scripts --max_old_space_size=4096 build",
+        "build": "react-scripts --max_old_space_size=4096 build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
         "lint": "prettier --check .",

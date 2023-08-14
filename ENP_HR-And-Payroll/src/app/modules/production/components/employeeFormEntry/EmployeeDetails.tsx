@@ -177,8 +177,8 @@ const EmplyeeDetails= () =>{
       <div className='col-4 mb-7'>
             {
               tempData?.imageUrl!==null?
-              <img style={{borderRadius:"10px", marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/${tempData?.imageUrl}`} width={150} height={150}></img>:
-              <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={150} height={150}></img>
+              <img style={{borderRadius:"10px", marginBottom:"20px"}} src={`https://208.117.44.15/hrwebapi/uploads/employee/${tempData?.imageUrl}`} width={150} height={150}></img>:
+              <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`https://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={150} height={150}></img>
             }
             
           </div>

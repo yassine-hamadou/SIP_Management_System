@@ -65,8 +65,8 @@ const Employee = () => {
        
         return  (
           row.imageUrl!==null?  
-          <img style={{borderRadius:"10px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/${row.imageUrl}`} width={50} height={50}></img>:
-          <img style={{borderRadius:"10px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={50} height={50}></img>
+          <img style={{borderRadius:"10px"}} src={`https://208.117.44.15/hrwebapi/uploads/employee/${row.imageUrl}`} width={50} height={50}></img>:
+          <img style={{borderRadius:"10px"}} src={`https://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={50} height={50}></img>
         )
       }
     },
