@@ -13,14 +13,15 @@ const HRNewDashBoard = () => {
                 id='web-dashboard'
                 style={{height: '100%'}}
                 // endpoint='https://demos.devexpress.com/services/dashboard/api'
-                // endpoint='https ://208.117.44.15/dashboards/dashboardcontrol'
-                endpoint='https://208.117.44.15/dashboards/dashboardcontrol'
+                // endpoint='https ://enp.sipconsult.net/dashboards/dashboardcontrol'
+                endpoint='https://enp.sipconsult.net/dashboards/dashboardcontrol'
                 workingMode='ViewerOnly'
                 dashboardId='HRDashBoard'
             ></DashboardControl>
         </div>  
     )
 }
+
 const EmpSummaryDashBoard = () => {
     return (
         <div style={{width: '100%', height: '80vh'}}>
@@ -29,7 +30,7 @@ const EmpSummaryDashBoard = () => {
                 style={{height: '100%'}}
                 // endpoint='https://demos.devexpress.com/services/dashboard/api'
                 // endpoint='https ://208.117.44.15/dashboards/dashboardcontrol'
-                endpoint='https://208.117.44.15/dashboards/dashboardcontrol'
+                endpoint='https://enp.sipconsult.net/dashboards/dashboardcontrol'
                 workingMode='ViewerOnly'
                 dashboardId='employee_summary'
             ></DashboardControl>

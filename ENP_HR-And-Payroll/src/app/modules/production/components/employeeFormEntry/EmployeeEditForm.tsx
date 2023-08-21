@@ -1399,8 +1399,8 @@ const EmployeeEditForm = () => {
             {
               !previewImage&&(
               tempData?.imageUrl!==null?
-              <img style={{borderRadius:"10px", marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/${tempData?.imageUrl}`} width={150} height={150}></img>:
-              <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={150} height={150}></img>
+              <img style={{borderRadius:"10px", marginBottom:"20px"}} src={`http://enp.sipconsult.net/hrwebapi/uploads/employee/${tempData?.imageUrl}`} width={150} height={150}></img>:
+              <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`http://enp.sipconsult.net/hrwebapi/uploads/employee/ahercode1.jpg`} width={150} height={150}></img>
               )
             }
             {
