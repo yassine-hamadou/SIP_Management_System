@@ -22,9 +22,11 @@ const UserRole = () => {
   const navigate = useNavigate();
   let [userFName, setUserFName] = useState<any>("")
   const queryClient = useQueryClient()
+  const [userID, setUserID] = useState<any>("")
 
 
     const {data:allUserRoles} = useQuery('userRoles',() => fetchDocument('UserRoles'), {cacheTime:5000})
+    const {data: userCompanies} = useQuery('userCompanies',() => fetchDocument('UserCompanies'), {cacheTime:5000})
     const {data:allUsers} = useQuery('users',() => fetchDocument('Users'), {cacheTime:5000})
     const {data:roles} = useQuery('roles',() => fetchDocument('Roles'), {cacheTime:5000})
   
@@ -121,24 +123,39 @@ const UserRole = () => {
   const getUserName= async (id:any) =>{
     let newName=null
      const itemTest = await allUsers?.data?.find((item:any) =>
-      item.id?.toString()===id
+      item.id===id
     )
      newName = await itemTest
     return newName
  }
 
+ console.log("User ID from Roles",userID);
+
+   // get user id from userApplications
+   const getUserID = (id:any) => {
+    // let userID = null
+    userCompanies?.data.map((item: any) => {
+      if (item.id?.toString() === id) {
+        return setUserID(item.userId)
+      }
+    })
+
+    return userID
+  }
+
   useEffect(() => {
     (async ()=>{
-      let res = await getUserName(param.id)
+      let res = await getUserName(userID)
       setUserFName(res?.firstName + "   "+ res?.surname)
     })();
     loadData()
+    getUserID(param.id?.toString())
     setGridData(allUserRoles?.data)
     setBeforeSearch(allUserRoles?.data)
-  }, [])
+  }, [param?.id, userCompanies?.data, userID])
 
   const dataByID = gridData?.filter((section:any) =>{
-    return section.userId.toString() === param.id
+    return section.userId === userID
   })
 
   const globalSearch = (searchValue: string) => {

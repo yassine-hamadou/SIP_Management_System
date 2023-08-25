@@ -80,6 +80,9 @@ const UserApplication = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
+          <Link to={`/user-companies/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Companies</span>
+          </Link>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
           Remove
           </a>
@@ -87,6 +90,8 @@ const UserApplication = () => {
       ),
     },
   ]
+
+  console.log()
 
   const {data:Applications} = useQuery('applications',() => fetchDocument('Applications'), {cacheTime:5000})
   const {data:userApplications} = useQuery('user-applications',() => fetchDocument('UserApplications'), {cacheTime:5000})

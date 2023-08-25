@@ -3,10 +3,9 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { deleteItem, fetchDocument, postItem } from '../../../../services/ApiCalls'
-
 
 const UserCompany = () => {
   const [gridData, setGridData] = useState<any>([])
@@ -15,18 +14,24 @@ const UserCompany = () => {
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [img, setImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false)
   const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
   const navigate = useNavigate();
   let [userFName, setUserFName] = useState<any>("")
   const queryClient = useQueryClient()
+  const [userID, setUserID] = useState<any>("")
 
     const {data: userCompanies} = useQuery('userCompanies',() => fetchDocument('UserCompanies'), {cacheTime:5000})
+    const {data: userApplications} = useQuery('userApplications',() => fetchDocument('UserApplications'), {cacheTime:5000})
     const {data: allUsers} = useQuery('users',() => fetchDocument('Users'), {cacheTime:5000})
     const {data: companies} = useQuery('companies',() => fetchDocument('Companies'), {cacheTime:5000})
   
+
+    // console.log("User ID",userID);
+
+ 
+    
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -87,6 +92,9 @@ const UserCompany = () => {
           {/* <Link to="#">
             <span className='btn btn-light-danger btn-sm'>Remove</span>
           </Link> */}
+          <Link to={`/user-roles/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Roles</span>
+          </Link>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
           Remove
           </a>
@@ -120,24 +128,40 @@ const UserCompany = () => {
   const getUserName= async (id:any) =>{
     let newName=null
      const itemTest = await allUsers?.data.find((item:any) =>
-      item.id.toString()===id
+      item.id===id
     )
      newName = await itemTest
     return newName
  }
 
+  // get user id from userApplications
+  const getUserID = (id:any) => {
+    // let userID = null
+    userApplications?.data.map((item: any) => {
+      if (item.id?.toString() === id) {
+        return setUserID(item.userId)
+      }
+    })
+
+    // console.log("Before userID:",param.id);
+    // console.log(userID);
+    return userID
+  }
+
   useEffect(() => {
     (async ()=>{
-      let res = await getUserName(param.id)
+      let res = await getUserName(userID)
       setUserFName(res?.firstName + "   "+ res?.surname)
     })();
     loadData()
+
+    getUserID(param.id?.toString())
     setGridData(userCompanies?.data)
     setBeforeSearch(userCompanies?.data)
-  }, [])
+  }, [param?.id, userApplications?.data, userCompanies?.data, userID])
 
   const dataByID = gridData?.filter((section:any) =>{
-    return section.userId?.toString() === param.id
+    return section.userId === userID
   })
 
   const globalSearch = (searchValue: string) => {
@@ -172,7 +196,7 @@ const UserCompany = () => {
     if(!checkCompany(values.companyId)){
       const item = {
         data: {
-          userId: parseInt(param.id),
+          userId: userID,
           companyId: values.companyId,
         },
         url: endpoint

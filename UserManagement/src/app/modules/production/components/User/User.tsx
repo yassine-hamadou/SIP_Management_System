@@ -128,12 +128,12 @@ const User = () => {
           <Link to={`/user-applications/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Applications</span>
           </Link>
-          <Link to={`/user-companies/${record.id}`}>
+          {/* <Link to={`/user-companies/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Companies</span>
-          </Link>
-          <Link to={`/user-roles/${record.id}`}>
+          </Link> */}
+          {/* <Link to={`/user-roles/${record.id}`}>
             <span className='btn btn-light-info btn-sm'>Roles</span>
-          </Link>
+          </Link> */}
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
