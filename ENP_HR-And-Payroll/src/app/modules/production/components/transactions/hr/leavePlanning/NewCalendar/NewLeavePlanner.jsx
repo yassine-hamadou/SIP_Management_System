@@ -51,12 +51,15 @@ const  NewLeavePlanner= () =>{
     // setLoading(true)
     const item = {
         data: {
-            name: values.name,
-            code: values.code,
-            tenantId: tenantId,
+          employeeId: values.employeeId,
+          toDate: values.toDate,
+          leaveId: values.leaveId,
+          fromDate: values.fromDate,
+          tenantId: tenantId,
         },
-        url: "/leaveplanning"
+        url: "/leavePlanings"
     }
+    console.log(item?.data)
     postData(item)
 })
 
@@ -101,20 +104,21 @@ const { mutate: postData, isLoading: postLoading } = useMutation(postItem
                 type='primary'
                 htmlType='submit'
                 // loading={submitLoading}
-                // onClick={OnSUbmit}
+                onClick={OnSubmit}
               >
                 Submit
               </Button>,
             ]}
           >
             <form
+              onSubmit={OnSubmit}
             >
               <hr></hr>
               <div style={{ padding: "20px 20px 20px 20px" }} className='row mb-0 '>
                 
                 <div className=' mb-7'>
                   <label className="form-label">Employee</label>
-                  <select  className="form-select form-select-solid" aria-label="Select example">
+                  <select  className="form-select form-select-solid"  {...register("employeeId")} aria-label="Select example">
                     <option>select </option>
                     {allEmployees?.data.map((item) => (
                       <option value={item.id}>{item.employeeId} - {item.firstName} {item.surname}</option>
@@ -124,7 +128,7 @@ const { mutate: postData, isLoading: postLoading } = useMutation(postItem
                 
                 <div className=' mb-7'>
                   <label className="form-label">Leave Type</label>
-                  <select  className="form-select form-select-solid" aria-label="Select example">
+                  <select  className="form-select form-select-solid" {...register("leaveId")} aria-label="Select example">
                     <option>select </option>
                     {leaves?.data.map((item) => (
                       <option value={item.id}>{item.name}</option>
