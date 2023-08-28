@@ -395,6 +395,7 @@ export function AsideMenuMain() {
           >
             {/* <AsideMenuItemWithSub to='#' title='Administration' hasBullet={true}> */}
             <AsideMenuItem to='setup/administration/audit' hasBullet={true} title='Audits' />
+            <AsideMenuItem to='newCalender' hasBullet={true} title='Test Calendar' />
             <AsideMenuItem to='setup/administration/company' hasBullet={true} title='Company Infos' />
             <AsideMenuItem to='setup/administration/configurations' hasBullet={true} title='Configurations' />
             <AsideMenuItem to='setup/administration/user-management' hasBullet={true} title='User Management' />
