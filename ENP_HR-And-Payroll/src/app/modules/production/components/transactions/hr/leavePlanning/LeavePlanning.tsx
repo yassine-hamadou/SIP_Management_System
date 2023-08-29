@@ -3,9 +3,10 @@ import {Link, useNavigate} from 'react-router-dom'
 import {useQuery} from 'react-query'
 import {useState} from 'react'
 import {KTCard, KTCardBody, KTSVG} from "../../../../../../../_metronic/helpers";
-import {Space} from "antd";
+import {Input, Space} from "antd";
 import {DropDownListComponent} from "@syncfusion/ej2-react-dropdowns";
 import {fetchDepartments, fetchLeaveTypes} from "../../../../../../services/ApiCalls";
+import { NewLeavePlanner } from './NewCalendar/NewLeavePlanner';
 
 const LeavePlanning = () => {
   const [chosenFilter, setChosenFilter] = useState(null)
@@ -22,7 +23,18 @@ const LeavePlanning = () => {
         <KTCardBody className='py-5 px-2'>
           <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
-              <DropDownListComponent
+            <Input
+                    placeholder='Enter Search Text'
+                    // onChange={handleInputChange}
+                    type='text'
+                    allowClear
+                    value=""
+                    // value={searchText}
+                  />
+                  {/* <Button type='primary' onClick={}>
+                    Search
+                  </Button> */}
+              {/* <DropDownListComponent
                     id='filterByLeaveType'
                   placeholder='Filter by Leave type'
                   type='text'
@@ -64,7 +76,7 @@ const LeavePlanning = () => {
                       const filterByLeaveType = (document.getElementById('filterByLeaveType') as any)
                       filterByLeaveType.value = null
                   }}
-                />
+                /> */}
             </Space>
             <Space style={{marginBottom: 16}}>
                 <Link
@@ -78,6 +90,7 @@ const LeavePlanning = () => {
             </Space>
           </div>
           {/* <Calendar chosenFilter={chosenFilter} /> */}
+          <NewLeavePlanner/>
         </KTCardBody>
       </KTCard>
     </>

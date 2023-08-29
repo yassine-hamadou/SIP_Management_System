@@ -30,7 +30,7 @@ const LeaveApproval = () => {
     }
 
     const { data: leaves } = useQuery('leaves', () => fetchDocument(`Leaves/tenant/${tenantId}`), { cacheTime: 5000 })
-    const { data: leavePlanning } = useQuery('leaveplannings', () => fetchDocument(`LeavePlanings/tenant/${tenantId}`), { cacheTime: 5000 })
+    const { data: leavePlanning } = useQuery('leaveplanings', () => fetchDocument(`leavePlanings/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: units } = useQuery('units', () => fetchDocument(`units/tenant/${tenantId}`), { cacheTime: 5000 })
     const { data: employees } = useQuery('employees', () => fetchEmployees(tenantId), { cacheTime: 5000 })
 
@@ -97,13 +97,24 @@ const LeaveApproval = () => {
     const columns: any = [
         {
             title: 'Profile',
-            dataIndex: 'employeeId',
-            render: (record: any) => {
-                return <img style={{ borderRadius: "10px" }} src={employeeImage(record)} width={50} height={50}></img>
+            // dataIndex: 'employeeId',
+            key: 'employeeId',
+            render: (row: any) => {
+                // return <img style={{ borderRadius: "10px" }} src={employeeImage(record)} width={50} height={50}></img>
+                return  (
+                    row.imageUrl!==null?  
+                    <img style={{borderRadius:"10px"}} 
+                        src={`https://enp.sipconsult.net/hrwebapi/uploads/employee/${row.imageUrl}`} 
+                        width={50} height={50}></img>:
+                    <img 
+                        style={{borderRadius:"10px"}} 
+                        src={`https://enp.sipconsult.net/hrwebapi/uploads/employee/ahercode1.jpg`} 
+                        width={50} height={50}></img>
+                  )
             }
         },
         {
-            title: 'Employee Code',
+            title: 'Employee Id',
             dataIndex: 'employeeId',
             sorter: (a: any, b: any) => {
                 if (a.empcode > b.empcode) {
@@ -118,22 +129,22 @@ const LeaveApproval = () => {
                 return <span>{employeeCode(record)}</span>
             }
         },
-        {
-            title: 'Unit',
-            dataIndex: 'unitId',
-            sorter: (a: any, b: any) => {
-                if (a.depart > b.depart) {
-                    return 1
-                }
-                if (b.depart > a.depart) {
-                    return -1
-                }
-                return 0
-            },
-            render: (record: any) => {
-                return <span>{unitName(record)}</span>
-            }
-        },
+        // {
+        //     title: 'Unit',
+        //     dataIndex: 'unitId',
+        //     sorter: (a: any, b: any) => {
+        //         if (a.depart > b.depart) {
+        //             return 1
+        //         }
+        //         if (b.depart > a.depart) {
+        //             return -1
+        //         }
+        //         return 0
+        //     },
+        //     render: (record: any) => {
+        //         return <span>{unitName(record)}</span>
+        //     }
+        // },
         {
             title: 'Type of Leave',
             dataIndex: 'leaveId',
@@ -216,8 +227,9 @@ const LeaveApproval = () => {
     const loadData = async () => {
         setLoading(true)
         try {
+            const response = await fetchDocument(`LeavePlanings/tenant/${tenantId}`)
             // const response = await axios.get(`${ENP_URL}/LeavePlanings/tenant/${tenantId}`)
-            setGridData(leavePlanning?.data)
+            setGridData(response?.data)
             setLoading(false)
         } catch (error) {
             console.log(error)

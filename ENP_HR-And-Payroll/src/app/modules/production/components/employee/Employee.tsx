@@ -23,6 +23,7 @@ const Employee = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState('employeeDetail');
   const queryClient = useQueryClient()
+  const [beforeSearch, setBeforeSearch] = useState([])
 
   const handleTabClick = (tab:any) => {
     setActiveTab(tab);
@@ -278,6 +279,7 @@ const Employee = () => {
 
   useEffect(() => {
     loadData()
+    setBeforeSearch(allEmployee?.data)
   }, [allEmployee?.data])
 
   
@@ -314,17 +316,25 @@ const Employee = () => {
     }
   }
 
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex?.filter((value) => {
+  // const globalSearch = () => {
+  //   // @ts-ignore
+  //   filteredData = dataWithIndex?.filter((value) => {
+  //     return (
+  //       value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       value.employeeId.toLowerCase().includes(searchText.toLowerCase())
+  //     )
+  //   })
+  //   setGridData(filteredData)
+  // }
+  const globalSearch = (searchValue: string) => {
+    const searchResult = allEmployee?.data?.filter((item: any) => {
       return (
-        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
       )
-    })
-    setGridData(filteredData)
+    })//search the grid data
+    setGridData(searchResult)
   }
 
   return (
@@ -376,9 +386,9 @@ const Employee = () => {
                     allowClear
                     value={searchText}
                   />
-                  <Button type='primary' onClick={globalSearch}>
+                  {/* <Button type='primary' onClick={globalSearch}>
                     Search
-                  </Button>
+                  </Button> */}
                 </Space>
                 <Space style={{marginBottom: 16}}>
                   <Link to='/employee-form'>

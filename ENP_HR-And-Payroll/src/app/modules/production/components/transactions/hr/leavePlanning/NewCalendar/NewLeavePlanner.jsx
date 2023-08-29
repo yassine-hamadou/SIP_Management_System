@@ -15,6 +15,7 @@ const  NewLeavePlanner= () =>{
   moment.locale("en-GB");
   const localizer = momentLocalizer(moment);
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [gridData, setGridData] = useState([])
   const tenantId = localStorage.getItem('tenant')
   const { register, reset, handleSubmit } = useForm()
   const queryClient = useQueryClient()
@@ -22,6 +23,22 @@ const  NewLeavePlanner= () =>{
 
   const { data: allEmployees } = useQuery('employees', () => fetchEmployees(tenantId), { cacheTime: 5000 })
   const { data: leaves } = useQuery('leaves', () => fetchDocument(`leaves/tenant/${tenantId}`), { cacheTime: 5000 })
+
+  const loadData = async () => {
+    // setLoading(true)
+    try {
+      // const response = await axios.get(`${Api_Endpoint}/UserApplications`)
+      const response = await fetchDocument(`leavePlanings/tenant/${tenantId}`)
+      setGridData(response.data)
+      // setLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    loadData()
+  }, [])
 
   const handleSelect = ({ start, end }) => {
     console.log(start);
@@ -57,16 +74,46 @@ const  NewLeavePlanner= () =>{
           fromDate: values.fromDate,
           tenantId: tenantId,
         },
-        url: "/leavePlanings"
+        url: "leavePlanings"
     }
     console.log(item?.data)
+
     postData(item)
 })
+
+const getCatName = (id) => {
+  let categoryName = ""
+  leaves?.data.map((item) => {
+    if (item.id === id) {
+      categoryName=item.name
+    }
+  })
+  return categoryName
+} 
+
+
+const getEmployee = (id) => {
+  let categoryName = ""
+  allEmployees?.data.map((item) => {
+    if (item.id === id) {
+      categoryName=item.firstName + " " + item.surname
+    }
+  })
+  return categoryName
+} 
+
+const dataWithIndex = gridData.map((item) => ({
+  ...item,
+  title: `${getCatName(item?.leaveId )} - ${getEmployee(item?.employeeId)}` ,
+  start: item.fromDate,
+  end: item.toDate,
+}))
 
 const { mutate: postData, isLoading: postLoading } = useMutation(postItem
   , {
   onSuccess: (data) => {
       queryClient.setQueryData(["", data], data);
+      loadData()
       reset()
       setIsModalOpen(false)
   },
@@ -75,18 +122,18 @@ const { mutate: postData, isLoading: postLoading } = useMutation(postItem
   }
 })
 
-
   return (
-    <div style={{background:"white", padding: "50px 30px", borderRadius:"5px", boxShadow:"2px 5px 15px rgba(0,0,0,0.06)"}}>
+    <div style={{padding: "50px 30px"}}>
+    {/* <div style={{background:"white", padding: "50px 30px", borderRadius:"5px", boxShadow:"2px 5px 15px rgba(0,0,0,0.06)"}}> */}
       <Calendar
-        views={["day", "agenda", "work_week", "month"]}
+        views={["agenda", "month"]}
         selectable
         localizer={localizer}
         defaultDate={new Date()}
         defaultView="month"
-        events={eventsData}
+        events={dataWithIndex}
         style={{ height: "70vh" }}
-        onSelectEvent={(event) => alert(event.title)}
+        onSelectEvent={(event) => alert(`${getCatName(event.leaveId )} - ${getEmployee(event.employeeId)}`)}
         onSelectSlot={showModal}
       />
       
