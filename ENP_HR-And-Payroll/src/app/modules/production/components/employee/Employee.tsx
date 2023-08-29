@@ -278,6 +278,11 @@ const Employee = () => {
   }
 
   useEffect(() => {
+    const dataWithIndex = allEmployee?.data?.map((item: any, index:any) => ({
+      ...item,
+      key: index,
+    }))
+    setGridData(dataWithIndex)
     loadData()
     setBeforeSearch(allEmployee?.data)
   }, [allEmployee?.data])
@@ -303,18 +308,15 @@ const Employee = () => {
     writeFile(wb, "Report.xlsx")
   }
   
-  const dataWithIndex = allEmployee?.data?.map((item: any, index:any) => ({
-    ...item,
-    key: index,
-  }))
+  
 
-  const handleInputChange = (e: any) => {
-    setSearchText(e.target.value)
-    if (e.target.value === '') {
-      queryClient.invalidateQueries('employees')  
-      loadData()
-    }
-  }
+  // const handleInputChange = (e: any) => {
+  //   setSearchText(e.target.value)
+  //   if (e.target.value === '') {
+  //     queryClient.invalidateQueries('employees')  
+  //     loadData()
+  //   }
+  // }
 
   // const globalSearch = () => {
   //   // @ts-ignore
@@ -335,6 +337,13 @@ const Employee = () => {
       )
     })//search the grid data
     setGridData(searchResult)
+  }
+
+  const handleInputChange = (e: any) => {
+    globalSearch(e.target.value)
+    if (e.target.value === '') {
+      setGridData(beforeSearch)
+    }
   }
 
   return (
@@ -380,11 +389,12 @@ const Employee = () => {
               <div className='d-flex justify-content-between'>
                 <Space style={{marginBottom: 16}}>
                   <Input
+                    
                     placeholder='Enter Search Text'
                     onChange={handleInputChange}
                     type='text'
                     allowClear
-                    value={searchText}
+                    // value={searchText}
                   />
                   {/* <Button type='primary' onClick={globalSearch}>
                     Search
@@ -404,7 +414,7 @@ const Employee = () => {
                 </button>
                 </Space>
               </div>
-              <Table columns={columns} dataSource={dataWithIndex}  loading={isLoading}/>
+              <Table columns={columns} dataSource={gridData}  loading={isLoading}/>
             </>
           }
 

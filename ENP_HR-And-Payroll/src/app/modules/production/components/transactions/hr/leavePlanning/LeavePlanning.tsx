@@ -26,6 +26,7 @@ const LeavePlanning = () => {
             <Input
                     placeholder='Enter Search Text'
                     // onChange={handleInputChange}
+                    style={{marginLeft:"15px", opacity:"0.6"}}
                     type='text'
                     allowClear
                     value=""
