@@ -21,7 +21,7 @@ const LeavePlanning = () => {
     <>
       <KTCard>
         <KTCardBody className='py-5 px-2'>
-          <div className='d-flex justify-content-between'>
+          {/*<div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
             <Input
                     placeholder='Enter Search Text'
@@ -32,10 +32,10 @@ const LeavePlanning = () => {
                     value=""
                     // value={searchText}
                   />
-                  {/* <Button type='primary' onClick={}>
+                  <Button type='primary' onClick={}>
                     Search
-                  </Button> */}
-              {/* <DropDownListComponent
+                  </Button>
+               <DropDownListComponent
                     id='filterByLeaveType'
                   placeholder='Filter by Leave type'
                   type='text'
@@ -77,7 +77,7 @@ const LeavePlanning = () => {
                       const filterByLeaveType = (document.getElementById('filterByLeaveType') as any)
                       filterByLeaveType.value = null
                   }}
-                /> */}
+                /> 
             </Space>
             <Space style={{marginBottom: 16}}>
                 <Link
@@ -89,7 +89,7 @@ const LeavePlanning = () => {
                     </button>
                 </Link>
             </Space>
-          </div>
+          </div>*/}
           {/* <Calendar chosenFilter={chosenFilter} /> */}
           <NewLeavePlanner/>
         </KTCardBody>
