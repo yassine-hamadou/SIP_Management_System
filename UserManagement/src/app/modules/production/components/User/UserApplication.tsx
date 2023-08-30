@@ -197,26 +197,7 @@ const UserApplication = () => {
     }
   })
 
-  // const url = `${Api_Endpoint}/UserApplication`
-  // const OnSUbmit = handleSubmit( async (values)=> {
-  //   setLoading(true)
-  //   const data = {
-  //         userId: parseInt(param.id),
-  //         applicationId: parseInt(values.applicationId),
-  //       }
-  //   console.log(data)
-  //   try {
-  //     const response = await axios.post(url, data)
-  //     setSubmitLoading(false)
-  //     reset()
-  //     setIsModalOpen(false)
-  //     loadData()
-  //     return response.statusText
-  //   } catch (error: any) {
-  //     setSubmitLoading(false)
-  //     return error.statusText
-  //   }
-  // })
+
 
   return (
     <div
