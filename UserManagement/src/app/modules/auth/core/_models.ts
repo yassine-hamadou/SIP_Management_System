@@ -1,4 +1,4 @@
-export interface AuthModel {
+ export interface AuthModel {
   jwtToken: string
   refreshToken?: string
 }

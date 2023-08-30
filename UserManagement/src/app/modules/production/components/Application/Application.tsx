@@ -1,13 +1,14 @@
 import { Button, Input, Modal, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { Api_Endpoint, deleteItem, fetchDocument, postItem, updateItem } from '../../../../services/ApiCalls'
 
 const Applications = () => {
   const [gridData, setGridData] = useState<any>([])
+  const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
@@ -19,6 +20,8 @@ const Applications = () => {
   const navigate = useNavigate();
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+
+  const {data:allApplications} = useQuery('applications',() => fetchDocument('Applications'), {cacheTime:5000})
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -106,26 +109,24 @@ const Applications = () => {
 
   useEffect(() => {
     loadData()
+    setGridData(allApplications?.data)
+    setBeforeSearch(allApplications?.data)
   }, [])
 
-  const handleInputChange = (e: any) => {
-    setSearchText(e.target.value)
-    if (e.target.value === '') {
-      loadData()
-    }
+  const globalSearch = (searchValue: string) => {
+    const searchResult = allApplications?.data?.filter((item: any) => {
+      return (
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
+      )
+    })//search the grid data
+    setGridData(searchResult)
   }
 
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex.filter((value) => {
-      return (
-        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
-      )
-    })
-    setGridData(filteredData)
+  const handleInputChange = (e: any) => {
+    globalSearch(e.target.value)
+    if (e.target.value === '') {
+      setGridData(beforeSearch)
+    }
   }
 
   const queryClient = useQueryClient()
@@ -207,11 +208,8 @@ const Applications = () => {
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
               />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
+              
             </Space>
             <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-8' onClick={showModal}>

@@ -8,6 +8,7 @@ import { deleteItem, fetchDocument, postItem, updateItem } from '../../../../ser
 
 const Companies = () => {
   const [gridData, setGridData] = useState<any>([])
+  const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
@@ -106,6 +107,7 @@ const Companies = () => {
   ]
 
 
+  const {data:companies} = useQuery('companies',() => fetchDocument('Companies'), {cacheTime:5000})
   const {data:Applications} = useQuery('applications',() => fetchDocument('Applications'), {cacheTime:5000})
 
   const getApplication= async (id:any) =>{
@@ -134,25 +136,25 @@ const Companies = () => {
         setApplicationName(res?.name)
       })();
     loadData()
+    setGridData(companies?.data)
+    setBeforeSearch(companies?.data)
   }, [])
 
 
-  const handleInputChange = (e: any) => {
-    setSearchText(e.target.value)
-    if (e.target.value === '') {
-      loadData()
-    }
+  const globalSearch = (searchValue: string) => {
+    const searchResult = companies?.data?.filter((item: any) => {
+      return (
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
+      )
+    })//search the grid data
+    setGridData(searchResult)
   }
 
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex.filter((value) => {
-      return (
-        value.name.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.description.toLowerCase().includes(searchText.toLowerCase()) 
-      )
-    })
-    setGridData(filteredData)
+  const handleInputChange = (e: any) => {
+    globalSearch(e.target.value)
+    if (e.target.value === '') {
+      setGridData(beforeSearch)
+    }
   }
 
   const queryClient = useQueryClient()
@@ -186,7 +188,7 @@ const Companies = () => {
     setTempData(values);
     console.log(values)
   }
-  const dataByID = gridData.filter((section:any) =>{
+  const dataByID = gridData?.filter((section:any) =>{
     return section.applicationId?.toString() === param.id
   })
   const OnSubmit = handleSubmit(async (values) => {
@@ -240,11 +242,7 @@ const Companies = () => {
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
               />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
             </Space>
             <Space style={{ marginBottom: 16 }}>
 

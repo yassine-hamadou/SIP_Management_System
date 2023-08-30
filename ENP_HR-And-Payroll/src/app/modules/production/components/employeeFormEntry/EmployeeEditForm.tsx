@@ -1392,6 +1392,7 @@ const EmployeeEditForm = () => {
 
           {/* Details */}
           {activeTab === 'tab1' &&
+<<<<<<< HEAD
             <>
               <div className='col-4 mb-7'>
                 {
@@ -1403,6 +1404,19 @@ const EmployeeEditForm = () => {
                 }
                 {
                   previewImage && (
+=======
+          <>
+            <div className='col-4 mb-7'>
+            {
+              !previewImage&&(
+              tempData?.imageUrl!==null?
+              <img style={{borderRadius:"10px", marginBottom:"20px"}} src={`http://enp.sipconsult.net/hrwebapi/uploads/employee/${tempData?.imageUrl}`} width={150} height={150}></img>:
+              <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`http://enp.sipconsult.net/hrwebapi/uploads/employee/ahercode1.jpg`} width={150} height={150}></img>
+              )
+            }
+            {
+              previewImage&&(
+>>>>>>> ad4080468169f6a2931706e8a5a2e6f8de55cbfd
 
                     <img style={{ borderRadius: "10px", marginBottom: "20px" }} src={previewImage} width={150} height={150}></img>
                   )
@@ -2357,6 +2371,5 @@ const EmployeeEditForm = () => {
     </div>
   );
 }
-
 
 export { EmployeeEditForm }

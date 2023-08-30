@@ -23,6 +23,7 @@ const Employee = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState('employeeDetail');
   const queryClient = useQueryClient()
+  const [beforeSearch, setBeforeSearch] = useState([])
 
   const handleTabClick = (tab: any) => {
     setActiveTab(tab);
@@ -61,12 +62,21 @@ const Employee = () => {
     {
       title: 'Profile',
       key: 'imageUrl',
+<<<<<<< HEAD
       render: (row: any) => {
 
         return (
           row.imageUrl !== null ?
             <img style={{ borderRadius: "10px" }} src={`http://208.117.44.15/hrwebapi/uploads/employee/${row.imageUrl}`} width={50} height={50}></img> :
             <img style={{ borderRadius: "10px" }} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={50} height={50}></img>
+=======
+      render: (row:any) => {
+       
+        return  (
+          row.imageUrl!==null?  
+          <img style={{borderRadius:"10px"}} src={`https://enp.sipconsult.net/hrwebapi/uploads/employee/${row.imageUrl}`} width={50} height={50}></img>:
+          <img style={{borderRadius:"10px"}} src={`https://enp.sipconsult.net/hrwebapi/uploads/employee/ahercode1.jpg`} width={50} height={50}></img>
+>>>>>>> ad4080468169f6a2931706e8a5a2e6f8de55cbfd
         )
       }
     },
@@ -277,7 +287,13 @@ const Employee = () => {
   }
 
   useEffect(() => {
+    const dataWithIndex = allEmployee?.data?.map((item: any, index:any) => ({
+      ...item,
+      key: index,
+    }))
+    setGridData(dataWithIndex)
     loadData()
+    setBeforeSearch(allEmployee?.data)
   }, [allEmployee?.data])
 
 
@@ -300,6 +316,7 @@ const Employee = () => {
     utils.book_append_sheet(wb, ws, "Report")
     writeFile(wb, "Report.xlsx")
   }
+<<<<<<< HEAD
 
   const dataWithIndex = allEmployee?.data?.map((item: any, index: any) => ({
     ...item,
@@ -323,6 +340,45 @@ const Employee = () => {
       )
     })
     setGridData(searchResult)
+=======
+  
+  
+
+  // const handleInputChange = (e: any) => {
+  //   setSearchText(e.target.value)
+  //   if (e.target.value === '') {
+  //     queryClient.invalidateQueries('employees')  
+  //     loadData()
+  //   }
+  // }
+
+  // const globalSearch = () => {
+  //   // @ts-ignore
+  //   filteredData = dataWithIndex?.filter((value) => {
+  //     return (
+  //       value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       value.employeeId.toLowerCase().includes(searchText.toLowerCase())
+  //     )
+  //   })
+  //   setGridData(filteredData)
+  // }
+  const globalSearch = (searchValue: string) => {
+    const searchResult = allEmployee?.data?.filter((item: any) => {
+      return (
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
+      )
+    })//search the grid data
+    setGridData(searchResult)
+  }
+
+  const handleInputChange = (e: any) => {
+    globalSearch(e.target.value)
+    if (e.target.value === '') {
+      setGridData(beforeSearch)
+    }
+>>>>>>> ad4080468169f6a2931706e8a5a2e6f8de55cbfd
   }
 
   return (
@@ -362,6 +418,7 @@ const Employee = () => {
 
           <div className="tab-content">
 
+<<<<<<< HEAD
             {activeTab === 'employeeDetail' &&
               <>
 
@@ -401,6 +458,42 @@ const Employee = () => {
                 <Roaster />
               </div>
             }
+=======
+          {activeTab === 'employeeDetail' && 
+            <>
+            
+              <div className='d-flex justify-content-between'>
+                <Space style={{marginBottom: 16}}>
+                  <Input
+                    
+                    placeholder='Enter Search Text'
+                    onChange={handleInputChange}
+                    type='text'
+                    allowClear
+                    // value={searchText}
+                  />
+                  {/* <Button type='primary' onClick={globalSearch}>
+                    Search
+                  </Button> */}
+                </Space>
+                <Space style={{marginBottom: 16}}>
+                  <Link to='/employee-form'>
+                  <button type='button' className='btn btn-primary me-3'>
+                    <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
+                    Add
+                  </button>
+                  </Link>
+                  {/* <a onClick={handleExport} className='btn btn-light-primary me-3'>Export Data</a> */}
+                  <button onClick={handleExport} type='button' className='btn btn-light-primary me-3'>
+                    <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
+                    Export
+                </button>
+                </Space>
+              </div>
+              <Table columns={columns} dataSource={gridData}  loading={isLoading}/>
+            </>
+          }
+>>>>>>> ad4080468169f6a2931706e8a5a2e6f8de55cbfd
 
             {activeTab === 'summary' &&
               <div>

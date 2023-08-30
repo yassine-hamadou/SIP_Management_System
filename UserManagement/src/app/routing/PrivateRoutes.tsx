@@ -15,6 +15,7 @@ import { UserApplication } from '../modules/production/components/User/UserAppli
 import { UserActivity } from '../modules/production/components/UserActivity/UserActivity'
 import { Companies } from '../modules/production/components/Company/Company'
 import { UserCompany } from '../modules/production/components/User/UserCompany'
+import { UserProfileModal } from '../modules/production/components/User/UserProfileModal'
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: '',
@@ -77,6 +78,15 @@ const PrivateRoutes = () => {
            <SuspensedView>
             <PageTitle breadcrumbs={accountBreadCrumbs}> User Applications</PageTitle>
              <UserApplication />
+           </SuspensedView>
+         }
+        />
+        <Route
+         path='userProfile'
+         element={
+           <SuspensedView>
+            <PageTitle breadcrumbs={accountBreadCrumbs}> User Profile</PageTitle>
+             <UserProfileModal />
            </SuspensedView>
          }
         />

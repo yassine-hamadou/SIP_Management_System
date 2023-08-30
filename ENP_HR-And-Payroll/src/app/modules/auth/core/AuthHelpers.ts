@@ -58,6 +58,7 @@ const setAuth = (auth: AuthModel) => {
     console.error('AUTH LOCAL STORAGE SAVE ERROR', error)
   }
 }
+
 const setTenant = (tenant: any) => {
   if (!localStorage) {
     return

@@ -1,31 +1,37 @@
-import { Button, Modal, Space, Table, message } from 'antd'
+import { Button, Input, Modal, Space, Table, message } from 'antd'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { KTCardBody, KTSVG } from '../../../../../_metronic/helpers'
 import { deleteItem, fetchDocument, postItem } from '../../../../services/ApiCalls'
 
-
 const UserCompany = () => {
   const [gridData, setGridData] = useState<any>([])
+  const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
-  const [img, setImg] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false)
   const {register, reset, handleSubmit} = useForm()
   const param:any  = useParams();
   const navigate = useNavigate();
   let [userFName, setUserFName] = useState<any>("")
   const queryClient = useQueryClient()
+  const [userID, setUserID] = useState<any>("")
 
     const {data: userCompanies} = useQuery('userCompanies',() => fetchDocument('UserCompanies'), {cacheTime:5000})
+    const {data: userApplications} = useQuery('userApplications',() => fetchDocument('UserApplications'), {cacheTime:5000})
     const {data: allUsers} = useQuery('users',() => fetchDocument('Users'), {cacheTime:5000})
     const {data: companies} = useQuery('companies',() => fetchDocument('Companies'), {cacheTime:5000})
   
+
+    // console.log("User ID",userID);
+
+ 
+    
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -86,6 +92,9 @@ const UserCompany = () => {
           {/* <Link to="#">
             <span className='btn btn-light-danger btn-sm'>Remove</span>
           </Link> */}
+          <Link to={`/user-roles/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Roles</span>
+          </Link>
           <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
           Remove
           </a>
@@ -119,42 +128,56 @@ const UserCompany = () => {
   const getUserName= async (id:any) =>{
     let newName=null
      const itemTest = await allUsers?.data.find((item:any) =>
-      item.id.toString()===id
+      item.id===id
     )
      newName = await itemTest
     return newName
  }
 
+  // get user id from userApplications
+  const getUserID = (id:any) => {
+    // let userID = null
+    userApplications?.data.map((item: any) => {
+      if (item.id?.toString() === id) {
+        return setUserID(item.userId)
+      }
+    })
+
+    // console.log("Before userID:",param.id);
+    // console.log(userID);
+    return userID
+  }
+
   useEffect(() => {
     (async ()=>{
-      let res = await getUserName(param.id)
+      let res = await getUserName(userID)
       setUserFName(res?.firstName + "   "+ res?.surname)
     })();
     loadData()
-  }, [])
 
-  const handleInputChange = (e: any) => {
-    setSearchText(e.target.value)
-    if (e.target.value === '') {
-      loadData()
-    }
-  }
+    getUserID(param.id?.toString())
+    setGridData(userCompanies?.data)
+    setBeforeSearch(userCompanies?.data)
+  }, [param?.id, userApplications?.data, userCompanies?.data, userID])
 
-  const dataByID = gridData.filter((section:any) =>{
-    return section.userId.toString() === param.id
+  const dataByID = gridData?.filter((section:any) =>{
+    return section.userId === userID
   })
 
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex.filter((value) => {
+  const globalSearch = (searchValue: string) => {
+    const searchResult = userCompanies?.data?.filter((item: any) => {
       return (
-        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
       )
-    })
-    setGridData(filteredData)
+    })//search the grid data
+    setGridData(searchResult)
+  }
+
+  const handleInputChange = (e: any) => {
+    globalSearch(e.target.value)
+    if (e.target.value === '') {
+      setGridData(beforeSearch)
+    }
   }
 
   const checkCompany = (companyId: any) => {
@@ -173,7 +196,7 @@ const UserCompany = () => {
     if(!checkCompany(values.companyId)){
       const item = {
         data: {
-          userId: parseInt(param.id),
+          userId: userID,
           companyId: values.companyId,
         },
         url: endpoint
@@ -212,18 +235,14 @@ const UserCompany = () => {
         <br></br>
         <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
         <br></br>
-          <div className='d-flex justify-content-end'>
+          <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
-              {/* <Input
+              <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
               />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button> */}
             </Space>
             <Space style={{marginBottom: 16}}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>

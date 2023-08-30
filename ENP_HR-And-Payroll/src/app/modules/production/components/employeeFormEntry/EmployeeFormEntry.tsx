@@ -239,7 +239,7 @@ const MultiTabForm= () =>{
                 }{
                   !previewImage&& (
 
-                    <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={120} height={120}></img>
+                    <img style={{borderRadius:"10px",marginBottom:"20px"}} src={`http://enp.sipconsult.net/hrwebapi/uploads/employee/ahercode1.jpg`} width={120} height={120}></img>
                   )
                 }
                 <br></br>

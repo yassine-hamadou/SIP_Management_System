@@ -3,9 +3,11 @@ import axios from 'axios';
 // const tenantId = localStorage.getItem('tenant')
 
 // export const Api_Endpoint = "https://app.sipconsult.net/hrwebapi/api";
-export const Api_Endpoint = "http://208.117.44.15/hrwebapi/api";
+export const Api_Endpoint = "https://enp.sipconsult.net/hrwebapi/api";
+// export const Api_Endpoint = "https://208.117.44.15/hrwebapi/api";
 // export const Api_Endpoint = "https://localhost:5001/api";
-export const UsersEndpoint = "http://208.117.44.15/userapi/api";
+export const UsersEndpoint = "https://enp.sipconsult.net/userapi/api";
+// export const UsersEndpoint = "https://208.117.44.15/userapi/api";
 // export const UsersEndpoint = "https://app.sipconsult.net/userapi/api";
 
 
@@ -40,6 +42,9 @@ export function postItem(item: any) {
 
 export const fetchUserRoles = () => {
     return axios.get(`${UsersEndpoint}/UserRoles`)
+}
+export const fetchUsers = () => {
+    return axios.get(`${UsersEndpoint}/Users`)
 }
 export const fetchUserApplications = () => {
     return axios.get(`${UsersEndpoint}/UserApplications`)

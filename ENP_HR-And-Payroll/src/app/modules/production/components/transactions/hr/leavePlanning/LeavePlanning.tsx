@@ -1,27 +1,45 @@
-import {Calendar} from './calendar/Calendar'
+// import {Calendar} from './calendar/Calendar'
 import {Link, useNavigate} from 'react-router-dom'
 import {useQuery} from 'react-query'
 import {useState} from 'react'
 import {KTCard, KTCardBody, KTSVG} from "../../../../../../../_metronic/helpers";
-import {Space} from "antd";
+import {Input, Space} from "antd";
 import {DropDownListComponent} from "@syncfusion/ej2-react-dropdowns";
 import {fetchDepartments, fetchLeaveTypes} from "../../../../../../services/ApiCalls";
+import { NewLeavePlanner } from './NewCalendar/NewLeavePlanner';
 
 const LeavePlanning = () => {
   const [chosenFilter, setChosenFilter] = useState(null)
   const navigate = useNavigate()
 
+  const tenantId = localStorage.getItem('tenant')
+
+  const {data:leaveTypes, isLoading} = useQuery('leaveTypes',() =>fetchLeaveTypes(tenantId), {cacheTime:5000}) 
+  const {data:departments} = useQuery('departments',() =>fetchDepartments(tenantId), {cacheTime:5000}) 
+
   return (
     <>
       <KTCard>
         <KTCardBody className='py-5 px-2'>
-          <div className='d-flex justify-content-between'>
+          {/*<div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
-              <DropDownListComponent
+            <Input
+                    placeholder='Enter Search Text'
+                    // onChange={handleInputChange}
+                    style={{marginLeft:"15px", opacity:"0.6"}}
+                    type='text'
+                    allowClear
+                    value=""
+                    // value={searchText}
+                  />
+                  <Button type='primary' onClick={}>
+                    Search
+                  </Button>
+               <DropDownListComponent
                     id='filterByLeaveType'
                   placeholder='Filter by Leave type'
                   type='text'
-                  dataSource={useQuery('leaveTypeForFilter', fetchLeaveTypes)?.data?.data}
+                  dataSource={leaveTypes?.data}
                     fields={{text: 'name', value: 'id'}}
                   change={(e: any) => {
                     setChosenFilter(e.value)
@@ -36,10 +54,10 @@ const LeavePlanning = () => {
                   id='filterByDep'
                   placeholder='Filter by Department'
                   type='text'
-                  dataSource={useQuery('depForFilter', fetchDepartments)?.data?.data}
+                  dataSource={departments?.data}
                   fields={{text: 'name', value: 'id'}}
                   change={(e: any) => {
-                      setChosenFilter(e.value)
+                      // setChosenFilter(e.value)
                       //reset above dropdown
                       const filterByLeaveType = (document.getElementById('filterByLeaveType') as any)
                       const filterByStatus = (document.getElementById('filterByStatus') as any)
@@ -59,7 +77,7 @@ const LeavePlanning = () => {
                       const filterByLeaveType = (document.getElementById('filterByLeaveType') as any)
                       filterByLeaveType.value = null
                   }}
-                />
+                /> 
             </Space>
             <Space style={{marginBottom: 16}}>
                 <Link
@@ -71,8 +89,9 @@ const LeavePlanning = () => {
                     </button>
                 </Link>
             </Space>
-          </div>
-          <Calendar chosenFilter={chosenFilter} />
+          </div>*/}
+          {/* <Calendar chosenFilter={chosenFilter} /> */}
+          <NewLeavePlanner/>
         </KTCardBody>
       </KTCard>
     </>

@@ -1,4 +1,4 @@
-import { Button, Modal, Space, Table, message } from 'antd'
+import { Button, Input, Modal, Space, Table, message } from 'antd'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -10,6 +10,7 @@ import { deleteItem, fetchDocument, postItem } from '../../../../services/ApiCal
 
 const UserRole = () => {
   const [gridData, setGridData] = useState<any>([])
+  const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
@@ -21,7 +22,11 @@ const UserRole = () => {
   const navigate = useNavigate();
   let [userFName, setUserFName] = useState<any>("")
   const queryClient = useQueryClient()
-    const {data:allRoles} = useQuery('userRoles',() => fetchDocument('UserRoles'), {cacheTime:5000})
+  const [userID, setUserID] = useState<any>("")
+
+
+    const {data:allUserRoles} = useQuery('userRoles',() => fetchDocument('UserRoles'), {cacheTime:5000})
+    const {data: userCompanies} = useQuery('userCompanies',() => fetchDocument('UserCompanies'), {cacheTime:5000})
     const {data:allUsers} = useQuery('users',() => fetchDocument('Users'), {cacheTime:5000})
     const {data:roles} = useQuery('roles',() => fetchDocument('Roles'), {cacheTime:5000})
   
@@ -117,48 +122,61 @@ const UserRole = () => {
 
   const getUserName= async (id:any) =>{
     let newName=null
-     const itemTest = await allUsers?.data.find((item:any) =>
-      item.id.toString()===id
+     const itemTest = await allUsers?.data?.find((item:any) =>
+      item.id===id
     )
      newName = await itemTest
     return newName
  }
 
+ console.log("User ID from Roles",userID);
+
+   // get user id from userApplications
+   const getUserID = (id:any) => {
+    // let userID = null
+    userCompanies?.data.map((item: any) => {
+      if (item.id?.toString() === id) {
+        return setUserID(item.userId)
+      }
+    })
+
+    return userID
+  }
+
   useEffect(() => {
     (async ()=>{
-      let res = await getUserName(param.id)
+      let res = await getUserName(userID)
       setUserFName(res?.firstName + "   "+ res?.surname)
     })();
     loadData()
-  }, [])
+    getUserID(param.id?.toString())
+    setGridData(allUserRoles?.data)
+    setBeforeSearch(allUserRoles?.data)
+  }, [param?.id, userCompanies?.data, userID])
 
-  const handleInputChange = (e: any) => {
-    setSearchText(e.target.value)
-    if (e.target.value === '') {
-      loadData()
-    }
-  }
-
-  const dataByID = gridData.filter((section:any) =>{
-    return section.userId.toString() === param.id
+  const dataByID = gridData?.filter((section:any) =>{
+    return section.userId === userID
   })
 
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex.filter((value) => {
+  const globalSearch = (searchValue: string) => {
+    const searchResult = allUserRoles?.data?.filter((item: any) => {
       return (
-        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
       )
-    })
-    setGridData(filteredData)
+    })//search the grid data
+    setGridData(searchResult)
+  }
+
+  const handleInputChange = (e: any) => {
+    globalSearch(e.target.value)
+    if (e.target.value === '') {
+      setGridData(beforeSearch)
+    }
   }
 
   const checkRole = (roleId: any) => {
     let isAssigned = false
-    allRoles?.data.map((item: any) => {
+    allUserRoles?.data.map((item: any) => {
       if (item.userId.toString() === param.id && item.roleId.toString() === roleId.toString()) {
         isAssigned = true
       }
@@ -211,18 +229,14 @@ const UserRole = () => {
         <br></br>
         <button className='mb-3 btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary' onClick={() => navigate(-1)}>Go Back</button>
         <br></br>
-          <div className='d-flex justify-content-end'>
+          <div className='d-flex justify-content-between'>
             <Space style={{marginBottom: 16}}>
-              {/* <Input
+              <Input
                 placeholder='Enter Search Text'
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
               />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button> */}
             </Space>
             <Space style={{marginBottom: 16}}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>

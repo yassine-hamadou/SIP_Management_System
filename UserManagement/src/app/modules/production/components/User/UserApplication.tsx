@@ -10,6 +10,7 @@ import { ENP_URL } from '../../urls'
 
 const UserApplication = () => {
   const [gridData, setGridData] = useState<any>([])
+  const [beforeSearch, setBeforeSearch] = useState([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
   let [filteredData] = useState([])
@@ -79,13 +80,18 @@ const UserApplication = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a onClick={() => handleDelete(record)} className='btn btn-light-success btn-sm'>
+          <Link to={`/user-companies/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Companies</span>
+          </Link>
+          <a onClick={() => handleDelete(record)} className='btn btn-light-danger btn-sm'>
           Remove
           </a>
         </Space>
       ),
     },
   ]
+
+  console.log()
 
   const {data:Applications} = useQuery('applications',() => fetchDocument('Applications'), {cacheTime:5000})
   const {data:userApplications} = useQuery('user-applications',() => fetchDocument('UserApplications'), {cacheTime:5000})
@@ -112,7 +118,7 @@ const UserApplication = () => {
     })
     return appName
   }
-  const dataByID = gridData.filter((section:any) =>{
+  const dataByID = gridData?.filter((section:any) =>{
     return section.userId.toString() === param.id
   })
 
@@ -131,26 +137,24 @@ const UserApplication = () => {
       setUserFName(res?.firstName + "   "+ res?.surname)
     })();
     loadData()
+    setGridData(userApplications?.data)
+    setBeforeSearch(userApplications?.data)
   }, [])
 
-  const handleInputChange = (e: any) => {
-    setSearchText(e.target.value)
-    if (e.target.value === '') {
-      loadData()
-    }
+  const globalSearch = (searchValue: string) => {
+    const searchResult = userApplications?.data?.filter((item: any) => {
+      return (
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
+      )
+    })//search the grid data
+    setGridData(searchResult)
   }
 
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithIndex.filter((value) => {
-      return (
-        value.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.surname.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.gender.toLowerCase().includes(searchText.toLowerCase()) ||
-        value.employeeId.toLowerCase().includes(searchText.toLowerCase())
-      )
-    })
-    setGridData(filteredData)
+  const handleInputChange = (e: any) => {
+    globalSearch(e.target.value)
+    if (e.target.value === '') {
+      setGridData(beforeSearch)
+    }
   }
 
   const checkRole = (applicationId: any) => {
@@ -193,26 +197,7 @@ const UserApplication = () => {
     }
   })
 
-  // const url = `${Api_Endpoint}/UserApplication`
-  // const OnSUbmit = handleSubmit( async (values)=> {
-  //   setLoading(true)
-  //   const data = {
-  //         userId: parseInt(param.id),
-  //         applicationId: parseInt(values.applicationId),
-  //       }
-  //   console.log(data)
-  //   try {
-  //     const response = await axios.post(url, data)
-  //     setSubmitLoading(false)
-  //     reset()
-  //     setIsModalOpen(false)
-  //     loadData()
-  //     return response.statusText
-  //   } catch (error: any) {
-  //     setSubmitLoading(false)
-  //     return error.statusText
-  //   }
-  // })
+
 
   return (
     <div
@@ -236,11 +221,8 @@ const UserApplication = () => {
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
               />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
+             
             </Space>
             <Space style={{marginBottom: 16}}>
             <button type='button' className='btn btn-primary me-3' onClick={showModal}>

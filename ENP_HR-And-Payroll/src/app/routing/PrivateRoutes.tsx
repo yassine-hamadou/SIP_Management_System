@@ -128,6 +128,7 @@ import { AppraisalDeliverables } from '../modules/production/components/setup/hr
 import { AppraisalObjectives } from '../modules/production/components/setup/hr/ParameterObjectives'
 import {ErrorBoundary} from '@ant-design/pro-components'
 import { AppraisalForm } from '../modules/production/components/appraisalForms/AppraisalForm'
+import { NewLeavePlanner } from '../modules/production/components/transactions/hr/leavePlanning/NewCalendar/NewLeavePlanner'
 
 
 
@@ -159,6 +160,13 @@ const PrivateRoutes = () => (
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Employee Details</PageTitle>
           <Employee />
+        </SuspensedView>} />
+
+      <Route
+        path='newCalender/*'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Calender</PageTitle>
+          <NewLeavePlanner />
         </SuspensedView>} />
 
       <Route
