@@ -129,6 +129,7 @@ import { AppraisalObjectives } from '../modules/production/components/setup/hr/P
 import {ErrorBoundary} from '@ant-design/pro-components'
 import { AppraisalForm } from '../modules/production/components/appraisalForms/AppraisalForm'
 import { NewLeavePlanner } from '../modules/production/components/transactions/hr/leavePlanning/NewCalendar/NewLeavePlanner'
+import { BankBranch } from '../modules/production/components/setup/payroll/BankBranch'
 
 
 
@@ -646,6 +647,12 @@ const PrivateRoutes = () => (
         element={<SuspensedView>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Banks</PageTitle>
           <Bank />
+        </SuspensedView>} />
+      <Route
+        path='bankbranches/:id'
+        element={<SuspensedView>
+          <PageTitle breadcrumbs={accountBreadCrumbs}>Bank  Branches</PageTitle>
+          <BankBranch />
         </SuspensedView>} />
       <Route
         path='setup/payroll/overtime/*'

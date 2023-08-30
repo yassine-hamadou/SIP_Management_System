@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { Api_Endpoint, deleteItem, fetchDocument, postItem, updateItem } from '../../../../../services/ApiCalls'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 const Bank = () => {
   const [gridData, setGridData] = useState([])
@@ -93,6 +94,9 @@ const Bank = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
+          <Link to={`/bankbranches/${record.id}`}>
+            <span className='btn btn-light-info btn-sm'>Branches</span>
+          </Link>
           <a onClick={() => showUpdateModal(record)} className='btn btn-light-warning btn-sm'>
             Update
           </a>
