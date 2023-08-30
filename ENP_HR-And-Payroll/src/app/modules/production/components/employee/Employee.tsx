@@ -62,21 +62,12 @@ const Employee = () => {
     {
       title: 'Profile',
       key: 'imageUrl',
-<<<<<<< HEAD
-      render: (row: any) => {
-
-        return (
-          row.imageUrl !== null ?
-            <img style={{ borderRadius: "10px" }} src={`http://208.117.44.15/hrwebapi/uploads/employee/${row.imageUrl}`} width={50} height={50}></img> :
-            <img style={{ borderRadius: "10px" }} src={`http://208.117.44.15/hrwebapi/uploads/employee/ahercode1.jpg`} width={50} height={50}></img>
-=======
       render: (row:any) => {
        
         return  (
           row.imageUrl!==null?  
           <img style={{borderRadius:"10px"}} src={`https://enp.sipconsult.net/hrwebapi/uploads/employee/${row.imageUrl}`} width={50} height={50}></img>:
           <img style={{borderRadius:"10px"}} src={`https://enp.sipconsult.net/hrwebapi/uploads/employee/ahercode1.jpg`} width={50} height={50}></img>
->>>>>>> ad4080468169f6a2931706e8a5a2e6f8de55cbfd
         )
       }
     },
@@ -315,34 +306,7 @@ const Employee = () => {
     utils.sheet_add_json(ws, gridData, { origin: "A2", skipHeader: true })
     utils.book_append_sheet(wb, ws, "Report")
     writeFile(wb, "Report.xlsx")
-  }
-<<<<<<< HEAD
-
-  const dataWithIndex = allEmployee?.data?.map((item: any, index: any) => ({
-    ...item,
-    key: index,
-  }))
-
-  const handleInputChange = (e: any) => {
-    // setSearchText(e.target.value)
-    globalSearch(e.target.value)
-    if (e.target.value === '') {
-      queryClient.invalidateQueries('employees')  
-      loadData()
-    }
-  }
-
-  const globalSearch = (searchValue: string) => {
-
-    const searchResult = dataWithIndex?.filter((item: any) => {
-      return (
-        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
-      )
-    })
-    setGridData(searchResult)
-=======
-  
-  
+  }  
 
   // const handleInputChange = (e: any) => {
   //   setSearchText(e.target.value)
@@ -378,7 +342,6 @@ const Employee = () => {
     if (e.target.value === '') {
       setGridData(beforeSearch)
     }
->>>>>>> ad4080468169f6a2931706e8a5a2e6f8de55cbfd
   }
 
   return (
@@ -412,56 +375,13 @@ const Employee = () => {
             >
               Summary
             </button>
-
-
           </div>
 
           <div className="tab-content">
 
-<<<<<<< HEAD
-            {activeTab === 'employeeDetail' &&
-              <>
 
-                <div className='d-flex justify-content-between'>
-                  <Space style={{ marginBottom: 16 }}>
-                    <Input
-                      placeholder='Enter Search Text'
-                      onChange={handleInputChange}
-                      type='text'
-                      allowClear
-                      value={searchText}
-                    />
-                    <Button type='primary' onClick={handleInputChange}>
-                      Search
-                    </Button>
-                  </Space>
-                  <Space style={{ marginBottom: 16 }}>
-                    <Link to='/employee-form'>
-                      <button type='button' className='btn btn-primary me-3'>
-                        <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                        Add
-                      </button>
-                    </Link>
-                    {/* <a onClick={handleExport} className='btn btn-light-primary me-3'>Export Data</a> */}
-                    <button onClick={handleExport} type='button' className='btn btn-light-primary me-3'>
-                      <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                      Export
-                    </button>
-                  </Space>
-                </div>
-                <Table columns={columns} dataSource={dataWithIndex} loading={isLoading} />
-              </>
-            }
-
-            {activeTab === 'roaster' &&
-              <div>
-                <Roaster />
-              </div>
-            }
-=======
           {activeTab === 'employeeDetail' && 
-            <>
-            
+            <>            
               <div className='d-flex justify-content-between'>
                 <Space style={{marginBottom: 16}}>
                   <Input
@@ -493,16 +413,12 @@ const Employee = () => {
               <Table columns={columns} dataSource={gridData}  loading={isLoading}/>
             </>
           }
->>>>>>> ad4080468169f6a2931706e8a5a2e6f8de55cbfd
-
             {activeTab === 'summary' &&
               <div>
                 <EmpSummaryDashBoard />
               </div>
             }
-
           </div>
-
         </div>
       </KTCardBody>
     </div>
