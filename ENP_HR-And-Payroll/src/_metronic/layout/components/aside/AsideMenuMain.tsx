@@ -344,6 +344,7 @@ export function AsideMenuMain() {
                     || currentUserRoles?.find((rolId: any) => rolId?.includes('3'))
                     ? <AsideMenuItemWithSub to='#' title='Setups' icon='/media/icons/duotune/technology/teh004.svg' hasBullet={false}>
                       <AsideMenuItem to='setup/payroll/bank' hasBullet={true} title='Bank' />
+                      {/* <AsideMenuItem to='setup/payroll/bankbranches' hasBullet={true} title='Bank Branches'/> */}
                       <AsideMenuItemWithSub to='#' title='Benefits' hasBullet={true}>
                         <AsideMenuItem to='setup/payroll/benefitcat' hasBullet={true} title='Categories' />
                         <AsideMenuItem to='setup/payroll/benefit' hasBullet={true} title='Details' />
