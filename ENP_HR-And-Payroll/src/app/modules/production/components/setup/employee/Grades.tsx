@@ -20,6 +20,7 @@ const Grades = () => {
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   let [itemName, setItemName] = useState<any>("")
+  const [beforeSearch, setBeforeSearch] = useState([])
 
   const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
@@ -143,7 +144,7 @@ const Grades = () => {
   ]
 
 
-  const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(`paygroups/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allPaygroups } = useQuery('paygroups', ()=> fetchPaygroups(`/tenant/${tenantId}`), { cacheTime: 5000 })
   const { data: allGrades } = useQuery('grades',()=>  fetchGrades(tenantId), { cacheTime: 5000 })
   
   const getItemName = async (param: any) => {

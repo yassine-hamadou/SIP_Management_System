@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
+import { Api_Endpoint } from '../../../../../services/ApiCalls'
 
 const TimeSheet = () => {
   const [gridData, setGridData] = useState([])
@@ -48,7 +49,7 @@ const TimeSheet = () => {
 
   const deleteData = async (element: any) => {
     try {
-      const response = await axios.delete(`${ENP_URL}/ProductionActivity/${element.id}`)
+      const response = await axios.delete(`${Api_Endpoint}/TimeSheets/${element.id}`)
       // update the local state so that react can refecth and re-render the table with the new data
       const newData = gridData.filter((item: any) => item.id !== element.id)
       setGridData(newData)
@@ -164,282 +165,17 @@ const TimeSheet = () => {
       
     },
   ]
-  const columnForDetails: any = [
-   
-    {
-      title: 'Date',
-      dataIndex: 'date',
-      sorter: (a: any, b: any) => {
-        if (a.date > b.date) {
-          return 1
-        }
-        if (b.date > a.date) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Time In',
-      dataIndex: 'timeout',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Time Out',
-      dataIndex: 'timein',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      sorter: (a: any, b: any) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      },
-    },
-  ]
 
   const loadData = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${ENP_URL}/ProductionActivity`)
+      const response = await axios.get(`${Api_Endpoint}/TimeSheets`)
       setGridData(response.data)
       setLoading(false)
     } catch (error) {
       console.log(error)
     }
   }
-
-
-  const  data= [
-
-    {
-      key:'1',
-      date:"01/02/2023", 
-      type:"Normal", 
-      timeout:"8:15am", 
-      timein:"5:00pm", 
-      
-    },
-    {
-      key:'2',
-      date:"02/02/2023",
-      type:"Normal",
-      timeout:"9:15am", 
-      timein:"5:20pm",
-    },
-    {
-      key:'3',  
-      date:"03/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'4',
-      date:"04/02/2023", 
-      type:"Normal", 
-      timeout:"8:15am", 
-      timein:"5:00pm", 
-      
-    },
-    {
-      key:'5',
-      date:"05/02/2023",
-      type:"Normal",
-      timeout:"9:15am", 
-      timein:"5:20pm",
-    },
-    {
-      key:'6', 
-      date:"06/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'7', 
-      date:"07/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'8',
-      date:"08/02/2023", 
-      type:"Normal", 
-      timeout:"8:15am", 
-      timein:"5:00pm", 
-      
-    },
-    {
-      key:'9',
-      date:"09/02/2023",
-      type:"Normal",
-      timeout:"9:15am", 
-      timein:"5:20pm",
-    },
-    {
-      key:'10',  
-      date:"10/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'11',
-      date:"11/02/2023", 
-      type:"Normal", 
-      timeout:"8:15am", 
-      timein:"5:00pm", 
-      
-    },
-    {
-      key:'12',
-      date:"12/02/2023",
-      type:"Normal",
-      timeout:"9:15am", 
-      timein:"5:20pm",
-    },
-    {
-      key:'13', 
-      date:"13/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'14', 
-      date:"14/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'15',
-      date:"15/02/2023", 
-      type:"Normal", 
-      timeout:"8:15am", 
-      timein:"5:00pm", 
-      
-    },
-    {
-      key:'16',
-      date:"16/02/2023",
-      type:"Normal",
-      timeout:"9:15am", 
-      timein:"5:20pm",
-    },
-    {
-      key:'17',  
-      date:"17/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'18',
-      date:"18/02/2023", 
-      type:"Normal", 
-      timeout:"8:15am", 
-      timein:"5:00pm", 
-      
-    },
-    {
-      key:'19',
-      date:"19/02/2023",
-      type:"Normal",
-      timeout:"9:15am", 
-      timein:"5:20pm",
-    },
-    {
-      key:'20', 
-      date:"20/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'21', 
-      date:"21/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'22',
-      date:"22/02/2023", 
-      type:"Normal", 
-      timeout:"8:15am", 
-      timein:"5:00pm", 
-      
-    },
-    {
-      key:'23',
-      date:"23/02/2023",
-      type:"Normal",
-      timeout:"9:15am", 
-      timein:"5:20pm",
-    },
-    {
-      key:'24',  
-      date:"24/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'25',
-      date:"25/02/2023", 
-      type:"Normal", 
-      timeout:"8:15am", 
-      timein:"5:00pm", 
-      
-    },
-    {
-      key:'26',
-      date:"26/02/2023",
-      type:"Normal",
-      timeout:"9:15am", 
-      timein:"5:20pm",
-    },
-    {
-      key:'27', 
-      date:"27/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-    {
-      key:'28', 
-      date:"28/02/2023",
-      type:"Weekend",
-      timeout:"8:30am", 
-      timein:"4:50pm", 
-    },
-   
-  ];
 
   useEffect(() => {
     loadData()
@@ -467,7 +203,7 @@ const TimeSheet = () => {
     setGridData(filteredData)
   }
 
-  const url = `${ENP_URL}/ProductionActivity`
+  const url = `${Api_Endpoint}/TimeSheets`
   const onFinish = async (values: any) => {
     setSubmitLoading(true)
     const data = {
@@ -539,9 +275,13 @@ const TimeSheet = () => {
               </button>
 
               <button type='button' className='btn btn-light-primary me-3'>
+                <KTSVG path='/media/icons/duotune/arrows/arr091.svg' className='svg-icon-2' />
+                Upload
+            </button>
+              {/* <button type='button' className='btn btn-light-primary me-3'>
                 <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
                 Export
-            </button>
+            </button> */}
             </Space>
           </div>
           <Table columns={columns}  />
@@ -604,7 +344,7 @@ const TimeSheet = () => {
                   <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="text" name="fname" value={employeeRecord?.dob} className="form-control form-control-solid"/>
+                      <input type="date" name="fname" value={employeeRecord?.dob} className="form-control form-control-solid"/>
                     </div>
                     <div className='col-6 mb-3'>
                       <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
@@ -612,33 +352,6 @@ const TimeSheet = () => {
                     </div>
                   </div>
                 </Form>
-          </Modal>
-
-                {/* Details table */}
-          <Modal
-                // title='Short List'
-                open={isShortModalOpen}
-                onCancel={handleShortCancel}
-                closable={true}
-                width="900px"
-                footer={[
-                    <Button key='back' onClick={handleShortCancel}>
-                        Cancel
-                    </Button>,
-                    <Button
-                    key='submit'
-                    type='primary'
-                    htmlType='submit'
-                    loading={submitLoading}
-                    onClick={() => {
-                      form.submit()
-                    }}
-                    >
-                        Submit
-                    </Button>,
-                ]}
-            >
-              <Table style={{margin: "50px 0px 30px 0px"}} columns={columnForDetails} dataSource={data} />
           </Modal>
         </div>
       </KTCardBody>

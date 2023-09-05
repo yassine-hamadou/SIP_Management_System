@@ -363,12 +363,12 @@ const Employee = () => {
             >
               Details
             </button>
-            <button
+            {/* <button
               className={`tab ${activeTab === 'roaster' ? 'active' : ''}`}
               onClick={() => handleTabClick('roaster')}
             >
               Roster
-            </button>
+            </button> */}
             <button
               className={`tab ${activeTab === 'summary' ? 'active' : ''}`}
               onClick={() => handleTabClick('summary')}

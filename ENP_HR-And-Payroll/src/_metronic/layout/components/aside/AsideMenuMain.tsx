@@ -291,13 +291,13 @@ export function AsideMenuMain() {
                     || currentUserRoles?.find((rolId: any) => rolId?.includes('7'))
                     || currentUserRoles?.find((rolId: any) => rolId?.includes('8'))
                     ? <AsideMenuItemWithSub to='#' title='Transactions' icon='/media/icons/duotune/ecommerce/ecm001.svg' hasBullet={false}>
-                      <AsideMenuItem to='transaction/payroll/loantran' hasBullet={true} title='Loans' />
                       <AsideMenuItem to='transaction/payroll/timesheet' hasBullet={true} title='Timesheets' />
                       <AsideMenuItem to='transaction/payroll/recurrent' hasBullet={true} title='Recurrents' />
                       <AsideMenuItem to='transaction/payroll/non-recurrent' hasBullet={true} title='Non-recurrents' />
                       <AsideMenuItem to='transaction/payroll/saving-schemes' hasBullet={true} title='Saving Schemes' />
                       <AsideMenuItem to='transaction/payroll/salary-upgrade' hasBullet={true} title='Salary Upgrades' />
                       <AsideMenuItem to='transaction/payroll/relief-rebate' hasBullet={true} title='Reliefs and Rebate Inputs' />
+                      <AsideMenuItem to='transaction/payroll/loantran' hasBullet={true} title='Loans' />
                     </AsideMenuItemWithSub>
                     : ""
                 }
@@ -354,7 +354,6 @@ export function AsideMenuMain() {
                         <AsideMenuItem to='setup/payroll/deduction' hasBullet={true} title='Details' />
                       </AsideMenuItemWithSub>
                       <AsideMenuItem to='setup/payroll/saving-scheme' hasBullet={true} title='Saving Schemes' />
-                      <AsideMenuItem to='setup/payroll/loan' hasBullet={true} title='Loans' />
                       <AsideMenuItem to='setup/payroll/approval-level' hasBullet={true} title='Approval Levels' />
                       <AsideMenuItem to='setup/payroll/period' hasBullet={true} title='Periods' />
                       <AsideMenuItem to='setup/payroll/currency' hasBullet={true} title='Currencies' />
@@ -364,6 +363,7 @@ export function AsideMenuMain() {
                         <AsideMenuItem to='setup/payroll/tax-formular' hasBullet={true} title='Tax Formular' />
                         <AsideMenuItem to='setup/payroll/snnit' hasBullet={true} title='SSNIT' />
                       </AsideMenuItemWithSub>
+                      <AsideMenuItem to='setup/payroll/loan' hasBullet={true} title='Loans' />
                       {/* <AsideMenuItem to='setup/payroll/parameter' hasBullet={true} title='Parameters' /> */}
                     </AsideMenuItemWithSub>
                     : ""

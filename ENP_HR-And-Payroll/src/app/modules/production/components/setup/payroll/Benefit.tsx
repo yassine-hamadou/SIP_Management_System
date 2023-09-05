@@ -68,7 +68,6 @@ const Benefit = () => {
     setTempData({ ...tempData, [name]: event })
   }
 
-
   const deleteData = async (element: any) => {
     try {
       const response = await axios.delete(`${Api_Endpoint}/Benefits/${element.id}`)
@@ -81,13 +80,11 @@ const Benefit = () => {
     }
   }
 
-
   function handleDelete(element: any) {
     deleteData(element)
   }
 
   const columns: any = [
-
     {
       title: 'Code',
       dataIndex: 'code',

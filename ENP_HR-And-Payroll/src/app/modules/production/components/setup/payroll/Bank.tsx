@@ -1,8 +1,7 @@
-
 import { Button, Input, Modal, Space, Table } from 'antd'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { KTCardBody, KTSVG } from '../../../../../../_metronic/helpers'
 import { Api_Endpoint, deleteItem, fetchDocument, postItem, updateItem } from '../../../../../services/ApiCalls'
 import axios from 'axios'
@@ -15,12 +14,12 @@ const Bank = () => {
   let [filteredData] = useState([])
   const [submitLoading, setSubmitLoading] = useState(false)
   const { register, reset, handleSubmit } = useForm()
-
+  const [beforeSearch, setBeforeSearch] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [tempData, setTempData] = useState<any>()
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const queryClient = useQueryClient()
-
+  const tenantId = localStorage.getItem('tenant')
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -58,7 +57,6 @@ const Bank = () => {
     }
     deleteData(item)
   }
-
 
   const columns: any = [
 
@@ -109,6 +107,7 @@ const Bank = () => {
     },
   ]
 
+  const { data: allBanks } = useQuery('banks',()=>  fetchDocument(`Banks/tenant/${tenantId}`), { cacheTime: 5000 })
   const loadData = async () => {
     setLoading(true)
     try {
@@ -122,35 +121,12 @@ const Bank = () => {
 
   useEffect(() => {
     loadData()
+    setBeforeSearch(allBanks?.data)
   }, [])
-
-  const dataWithIndex = gridData.map((item: any, index) => ({
-    ...item,
-    key: index,
-  }))
-
-//   console.log('dataWithIndex: ',dataWithIndex)
-
-  const handleInputChange = (e: any) => {
-    setSearchText(e.target.value)
-    if (e.target.value === '') {
-      loadData()
-    }
-  }
-
-  const globalSearch = () => {
-    // @ts-ignore
-    filteredData = dataWithVehicleNum.filter((value) => {
-      return (
-        value.name.toLowerCase().includes(searchText.toLowerCase())
-      )
-    })
-    setGridData(filteredData)
-  }
 
   const { isLoading: updateLoading, mutate: updateData } = useMutation(updateItem, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['Banks', tempData], data);
+      queryClient.setQueryData(['banks', tempData], data);
       reset()
       setTempData({})
       loadData()
@@ -165,7 +141,7 @@ const Bank = () => {
   const handleUpdate = (e: any) => {
     e.preventDefault()
     const item = {
-      url: 'Banks',
+      url: 'banks',
       data: tempData
     }
     updateData(item)
@@ -204,8 +180,24 @@ const Bank = () => {
       url: endpoint
     }
     console.log(item.data)
-    // postData(item)
+    postData(item)
   })
+
+  const globalSearch = (searchValue: string) => {
+    const searchResult = allBanks?.data?.filter((item: any) => {
+      return (
+        Object.values(item).join('').toLowerCase().includes(searchValue?.toLowerCase())
+      )
+    })//search the grid data
+    setGridData(searchResult)
+  }
+
+  const handleInputChange = (e: any) => {
+    globalSearch(e.target.value)
+    if (e.target.value === '') {
+      setGridData(beforeSearch)
+    }
+  }
 
  
   return (
@@ -226,11 +218,11 @@ const Bank = () => {
                 onChange={handleInputChange}
                 type='text'
                 allowClear
-                value={searchText}
+                // value={searchText}
               />
-              <Button type='primary' onClick={globalSearch}>
+              {/* <Button type='primary' onClick={globalSearch}>
                 Search
-              </Button>
+              </Button> */}
             </Space>
             <Space style={{ marginBottom: 16 }}>
               <button type='button' className='btn btn-primary me-3' onClick={showModal}>
