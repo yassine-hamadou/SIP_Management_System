@@ -243,7 +243,6 @@ const CompensationBenefit = () => {
   const { data: allEmployees } = useQuery('employees', ()=>fetchEmployees(tenantId), { cacheTime: 5000 })
   const { data: allUnits } = useQuery('units', ()=>fetchUnits(tenantId), { cacheTime: 5000 })
   const {data: allGradePerks} = useQuery('gradePerks', ()=>fetchGradePerks(tenantId), {cacheTime:5000})
-  // const {data:allMedicals} = useQuery('medicals', fetchMedicals, {cacheTime:5000})
   const { data: allPerks } = useQuery('perks', ()=>fetchPerks(tenantId), { cacheTime: 5000 })
   const { data: allPaygroups } = useQuery('paygroup', ()=>fetchPaygroups(tenantId), { cacheTime: 5000 })
 

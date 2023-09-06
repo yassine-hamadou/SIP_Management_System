@@ -3,7 +3,10 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import {KTCardBody, KTSVG} from '../../../../../../_metronic/helpers'
 import { ENP_URL } from '../../../urls'
-import { Api_Endpoint } from '../../../../../services/ApiCalls'
+import { Api_Endpoint, fetchDocument } from '../../../../../services/ApiCalls'
+import { useQuery } from 'react-query'
+import { EmployeeSelection } from '../hr/Common/EmployeeSelection'
+import { TimeSheetComponent } from './timeSheet/TimesheetComponent'
 
 const TimeSheet = () => {
   const [gridData, setGridData] = useState([])
@@ -13,39 +16,9 @@ const TimeSheet = () => {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [form] = Form.useForm()
   
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isShortModalOpen, setIsShortModalOpen] = useState(false)
-  const [employeeRecord, setEmployeeRecord]= useState<any>([])
-  const [radioValue, setRadioValue] = useState();
-  const [radio1Value, setRadio1Value] = useState();
-  const [radio2Value, setRadio2Value] = useState();
-  const [radio3Value, setRadio3Value] = useState();
-  const [radio4Value, setRadio4Value] = useState();
-  const showModal = () => {
-    setIsModalOpen(true)
-  }
-
-
-  const handleOk = () => {
-    setIsModalOpen(false)
-  }
-
-  const handleCancel = () => {
-    form.resetFields()
-    setIsModalOpen(false)
-  }
-  const showShortModal = () => {
-    setIsShortModalOpen(true)
-  }
-
-  const handleShortOk = () => {
-    setIsShortModalOpen(false)
-  }
-
-  const handleShortCancel = () => {
-    form.resetFields()
-    setIsShortModalOpen(false)
-  }
+  const [selectedPeriodId, setSelectedPeriodId] = useState<any>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
+  const tenantId = localStorage.getItem('tenant')
 
   const deleteData = async (element: any) => {
     try {
@@ -153,9 +126,9 @@ const TimeSheet = () => {
       width: 100,
       render: (_: any, record: any) => (
         <Space size='middle'>
-          <a href='#' onClick={showShortModal} className='btn btn-light-primary btn-sm'>
+          {/* <a href='#' onClick={showShortModal} className='btn btn-light-primary btn-sm'>
             Details
-          </a>
+          </a> */}
           {/* <a  className='btn btn-light-primary btn-sm'>
             Details
           </a> */}
@@ -165,6 +138,11 @@ const TimeSheet = () => {
       
     },
   ]
+
+  const { data: allPeriods } = useQuery('periods', () => fetchDocument(`Periods/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: allDepartments } = useQuery('department', () => fetchDocument(`Departments/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: employees } = useQuery('employees', () => fetchDocument(`Employees/tenant/${tenantId}`), { cacheTime: 5000 })
+  const { data: jobTitles } = useQuery('jobTitles', () => fetchDocument(`JobTitles/tenant/${tenantId}`), { cacheTime: 5000 })
 
   const loadData = async () => {
     setLoading(true)
@@ -203,6 +181,9 @@ const TimeSheet = () => {
     setGridData(filteredData)
   }
 
+  console.log( selectedDepartment);
+  
+
   const url = `${Api_Endpoint}/TimeSheets`
   const onFinish = async (values: any) => {
     setSubmitLoading(true)
@@ -216,7 +197,6 @@ const TimeSheet = () => {
       const response = await axios.post(url, data)
       setSubmitLoading(false)
       form.resetFields()
-      setIsModalOpen(false)
       loadData()
       return response.statusText
     } catch (error: any) {
@@ -226,136 +206,81 @@ const TimeSheet = () => {
   }
 
   return (
-    <div
-      style={{
-        backgroundColor: 'white',
-        padding: '20px',
-        borderRadius: '5px',
-        boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
-      }}
+    <>
+    <div className='row'
+     
     >
-      <div style={{padding: "0px 0px 20px 0px"}}  className='col-12'>
-        <div style={{padding: "20px 0px 0 0px"}} className='col-6 row mb-0'>
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Payroll Period</label>
-            <select className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
-              
-            </select>
-          </div>
 
-          <div className='col-6 mb-7'>
-            <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
-            <select className="form-select form-select-solid" aria-label="Select example">
-              <option> select</option>
-              
-            </select>
+      <div
+        className='col-12'
+        style={{
+          backgroundColor:'white',
+          padding: '20px',
+          borderRadius: '5px',
+          boxShadow: '2px 2px 15px rgba(0,0,0,0.08)',
+        }}
+      >
+        <div className='d-flex justify-content-between'>
+
+          <div className='col-7' style={{padding: "0px 0px 20px 0px"}}  >
+            <div style={{padding: "20px 0px 0 0px"}} className='col-8 row mb-0'>
+              <div className='col-6 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Payroll Period</label>
+                <select className="form-select form-select-solid" onChange={(e) => setSelectedPeriodId(e.target.value)}>
+                  <option> select</option>
+                  {allPeriods?.data?.map((item: any) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className='col-6 mb-7'>
+                <label htmlFor="exampleFormControlInput1" className=" form-label">Department</label>
+                <select className="form-select form-select-solid" onChange={(e) => setSelectedDepartment(e.target.value)}>
+                  <option> select</option>
+                  {allDepartments?.data?.map((item: any) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+            </div>
+
+              <div className='d-flex justify-content-between'>
+                <Space style={{marginBottom: 16}}>
+                  <Input
+                    placeholder='Enter Search Text'
+                    onChange={handleInputChange}
+                    type='text'
+                    allowClear
+                  />
+                </Space>
+                <Space style={{marginBottom: 16}}>
+                  <EmployeeSelection departmentId={selectedDepartment} />
+                  <button type='button' className='btn btn-light-primary me-3'>
+                    <KTSVG path='/media/icons/duotune/arrows/arr091.svg' className='svg-icon-2' />
+                    Upload
+                </button>
+                </Space>
+              </div>
+              <Table columns={columns}  />
+          </div>
+          <div className='col-5'>
+                  
+            <TimeSheetComponent/>
           </div>
         </div>
+        
+            
+           
+        
       </div>
-      <KTCardBody className='py-4 '>
-        <div className='table-responsive'>
-          <div className='d-flex justify-content-between'>
-            <Space style={{marginBottom: 16}}>
-              <Input
-                placeholder='Enter Search Text'
-                onChange={handleInputChange}
-                type='text'
-                allowClear
-                value={searchText}
-              />
-              <Button type='primary' onClick={globalSearch}>
-                Search
-              </Button>
-            </Space>
-            <Space style={{marginBottom: 16}}>
-              <button type='button' className='btn btn-primary me-3' onClick={showModal}>
-                <KTSVG path='/media/icons/duotune/arrows/arr075.svg' className='svg-icon-2' />
-                Add
-              </button>
-
-              <button type='button' className='btn btn-light-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr091.svg' className='svg-icon-2' />
-                Upload
-            </button>
-              {/* <button type='button' className='btn btn-light-primary me-3'>
-                <KTSVG path='/media/icons/duotune/arrows/arr078.svg' className='svg-icon-2' />
-                Export
-            </button> */}
-            </Space>
-          </div>
-          <Table columns={columns}  />
-          {/* Add form */}
-          <Modal
-                title='Employee Details'
-                open={isModalOpen}
-                onCancel={handleCancel}
-                closable={true}
-                width="900px"
-                footer={[
-                  <Button key='back' onClick={handleCancel}>
-                      Cancel
-                  </Button>,
-                  <Button
-                  key='submit'
-                  type='primary'
-                  htmlType='submit'
-                  loading={submitLoading}
-                  onClick={() => {
-                    form.submit()
-                  }}
-                  >
-                      Submit
-                  </Button>,
-                ]}
-            >
-                <Form
-                    labelCol={{span: 7}}
-                    wrapperCol={{span: 14}}
-                    layout='horizontal'
-                    form={form}
-                    name='control-hooks'
-                    onFinish={onFinish}
-                >
-                    <hr></hr>
-                    <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Employee ID</label>
-                      <select className="form-select form-select-solid" aria-label="Select example">
-                        <option> select</option>
-                        
-                      </select>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">Job Title</label>
-                      <input type="text" name="fname" value={employeeRecord?.jobt} className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 0 20px"}} className='row mb-0 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">First Name</label>
-                      <input type="text" name="fname" value={employeeRecord?.firstname} className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Last Name</label>
-                      <input type="text" name="fname" value={employeeRecord?.lastname} className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                  <div style={{padding: "20px 20px 10px 20px"}} className='row mb-7 '>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="form-label">DOB</label>
-                      <input type="date" name="fname" value={employeeRecord?.dob} className="form-control form-control-solid"/>
-                    </div>
-                    <div className='col-6 mb-3'>
-                      <label htmlFor="exampleFormControlInput1" className="required form-label">Gender</label>
-                      <input type="text" name="fname" value={employeeRecord?.sex} className="form-control form-control-solid"/>
-                    </div>
-                  </div>
-                </Form>
-          </Modal>
-        </div>
-      </KTCardBody>
     </div>
+    </>
   )
 }
 
